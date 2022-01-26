@@ -12,7 +12,7 @@ class fcsSample:
         self.smplName = self.fileName
         self.fileHeader = meta['__header__']
         self.compensationMat = parseCompStr(meta['$SPILLOVER'])
-        self.chnlNames = meta['_channel_names_']
+        self.chnlNameDict = dict(zip(meta['_channels_']['$PnN'], meta['_channels_']['$PnS']))
         self._meta = meta
         self.data = data
 

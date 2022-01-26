@@ -25,12 +25,15 @@
        </widget>
       </item>
       <item>
-       <widget class="QListView" name="SampleList">
+       <widget class="QListView" name="sampleListView">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
        </widget>
       </item>
@@ -58,8 +61,8 @@
         <widget class="QComboBox" name="yComboBox">
          <property name="geometry">
           <rect>
-           <x>20</x>
-           <y>70</y>
+           <x>230</x>
+           <y>60</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -68,8 +71,8 @@
         <widget class="QComboBox" name="xComboBox">
          <property name="geometry">
           <rect>
-           <x>230</x>
-           <y>70</y>
+           <x>20</x>
+           <y>60</y>
            <width>181</width>
            <height>25</height>
           </rect>
@@ -79,26 +82,39 @@
          <property name="geometry">
           <rect>
            <x>20</x>
-           <y>40</y>
+           <y>30</y>
            <width>68</width>
            <height>19</height>
           </rect>
          </property>
          <property name="text">
-          <string>X-Axis</string>
+          <string>X-Axis:</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_5">
          <property name="geometry">
           <rect>
            <x>230</x>
-           <y>40</y>
+           <y>30</y>
            <width>68</width>
            <height>19</height>
           </rect>
          </property>
          <property name="text">
-          <string>Y-Axis</string>
+          <string>Y-Axis:</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox">
+         <property name="geometry">
+          <rect>
+           <x>450</x>
+           <y>60</y>
+           <width>111</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Fix Axes</string>
          </property>
         </widget>
        </widget>
