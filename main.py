@@ -37,6 +37,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.sampleListView.setModel(self.smplListModel)
         self.smplSelectionModel = self.sampleListView.selectionModel()
 
+        self.gateListModel = QtGui.QStandardItemModel(self.gateListView)
+        self.gateListView.setModel(self.gateListModel)
+
         self.chnlListModel = QtGui.QStandardItemModel(self)
         self.xComboBox.setModel(self.chnlListModel)
         self.yComboBox.setModel(self.chnlListModel)
@@ -47,6 +50,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureReplot)
         self.xComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
         self.yComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
+        self.addGateButton.clicked.connect(lambda: self.mpl_canvas.addGate(self.gateListModel))
 
 
 

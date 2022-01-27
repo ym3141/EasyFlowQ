@@ -1,7 +1,11 @@
+import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
+import numpy as np
 
+from PyQt5 import QtCore, QtGui
+from gateClasses import polygonGate
 
 class plotCanvas(FigureCanvasQTAgg):
     def __init__(self):
@@ -10,7 +14,7 @@ class plotCanvas(FigureCanvasQTAgg):
         super().__init__(self.fig)
 
         self.navigationBar = NavigationToolbar(self, self)
-
+        self.setFocusPolicy(QtCore.Qt.ClickFocus)
 
     def redraw(self, smpls, chnlNames, axisNames, params=None):
         self.ax.clear()
@@ -29,3 +33,39 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.draw()
 
+    def addGate(self, gateListModel):
+        self._gateListModel = gateListModel
+        self.setFocus()
+
+        self.newGate = None
+        self.pressCid = self.mpl_connect('button_press_event', self.on_press_addGate)
+        self.moveCid = self.mpl_connect('motion_notify_event', self.on_motion_addGate)
+
+        pass
+    
+    def on_press_addGate(self, event):
+        if self.newGate == None:
+            self.newGate = polygonGate(self.ax, [[event.xdata]*2, [event.ydata]*2])
+        elif event.button == 3:
+            self.newGate.closeGate()
+            self.addGateFinished()
+        else:
+            self.newGate.addNewVert([[event.xdata, event.ydata]])
+        self.draw()
+
+    def on_motion_addGate(self, event):
+        if self.newGate == None:
+            return
+        self.newGate.replaceLastVert([event.xdata, event.ydata])
+        self.draw()
+        pass
+
+    def addGateFinished(self):
+        self.mpl_disconnect(self.pressCid)
+        self.mpl_disconnect(self.moveCid)
+
+        newQItem = QtGui.QStandardItem('New Gate')
+        newQItem.setData(self.newGate)
+        newQItem.setCheckable(False)
+        self._gateListModel.appendRow(newQItem)
+        pass
