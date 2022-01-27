@@ -1,3 +1,4 @@
+from cProfile import label
 import sys
 from os import getcwd
 
@@ -25,6 +26,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.chnlDict = dict()
 
         # add the matplotlib ui
+        matplotlib.rcParams['savefig.directory'] = self.baseDir
         self.fig, self.ax = plt.subplots()
         self.fig.set_tight_layout(True)
         self.mpl_canvas = FigureCanvasQTAgg(self.fig)
@@ -73,6 +75,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_FigureReplot(self):
         self.ax.clear()
+        self.mpl_nevigationToolbar.update()
 
         selectedSmpls = [self.smplListModel.itemFromIndex(idx).data() for idx in self.sampleListView.selectedIndexes()]
 
@@ -80,9 +83,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         yChnl = self.chnlLables[self.yComboBox.currentIndex()]
 
         for idx, selectedSmpl in enumerate(selectedSmpls):
-            self.ax.plot(selectedSmpl.data[self.chnlDict[xChnl]], selectedSmpl.data[self.chnlDict[yChnl]], '.', color='C'+str(idx%10))
+            self.ax.scatter(selectedSmpl.data[self.chnlDict[xChnl]], selectedSmpl.data[self.chnlDict[yChnl]], 
+                color='C'+str(idx%10), s=1, label=selectedSmpl.smplName)
 
-
+        self.ax.legend(markerscale=5)
         self.ax.set_xscale('log')
         self.ax.set_yscale('log')
         self.ax.set_xlabel(self.xComboBox.currentText())
