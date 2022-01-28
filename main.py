@@ -1,4 +1,3 @@
-from cProfile import label
 import sys
 from os import getcwd
 
@@ -7,6 +6,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
 from dataClasses import fcsSample
 from plotClasses import plotCanvas
+from gateClasses import polygonGateEditor
 
 matplotlib.use('QT5Agg')
 
@@ -22,6 +22,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         # other init
         self.baseDir = './demoSamples/'
         self.chnlDict = dict()
+        self.curChnls = None
+        self.curAxScales = None
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -50,8 +52,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureReplot)
         self.xComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
         self.yComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
-        self.addGateButton.clicked.connect(lambda: self.mpl_canvas.addGate(self.gateListModel))
-
+        self.addGateButton.clicked.connect(self.handle_addGate)
 
 
     def handle_LoadData(self):
@@ -74,17 +75,43 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.chnlListModel.appendRow(newQItem)
 
     def handle_FigureReplot(self):
-        # this function is used to provide info for the canvas to redraw
+        # this function is used to process info for the canvas to redraw
         selectedSmpls = [self.smplListModel.itemFromIndex(idx).data() for idx in self.sampleListView.selectedIndexes()]
 
         xChnl = self.chnlLables[self.xComboBox.currentIndex()]
         yChnl = self.chnlLables[self.yComboBox.currentIndex()]
 
+        self.curChnls = (xChnl, yChnl)
+        self.curAxScales = ('log', 'log')
+
         self.mpl_canvas.redraw(selectedSmpls, 
                                chnlNames=(self.chnlDict[xChnl], self.chnlDict[yChnl]), 
-                               axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText())
+                               axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
+                               axScales=self.curAxScales
         )
 
+    def handle_addGate(self):
+        self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.gateReturned, 
+                                            canvasParam=(self.curChnls, self.curAxScales))
+        self.gateEditor.addGate_connnect()
+
+    def gateReturned(self, gate, replace=None):
+        if replace:
+            pass
+        else:
+            gateName, flag = QtWidgets.QInputDialog.getText(self,'New gate', 'Name for the new gate')
+
+            if flag:
+                gate.name = gateName
+                newQItem = QtGui.QStandardItem(gate.name)
+                newQItem.setData(gate)
+                newQItem.setCheckable(True)
+                self.gateListModel.appendRow(newQItem)
+            else: 
+                self.handle_FigureReplot()
+                
+
+    
     def handle_NewSession(self):
         QtCore.QProcess().startDetached('python ./main.py')
 

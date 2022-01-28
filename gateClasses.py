@@ -32,37 +32,77 @@ def dist_point_to_segment(p, s0, s1):
     pb = s0 + b * v
     return dist(p, pb)
 
-class polygonGate:
-    def __init__(self, ax, firstVert) -> None:
-        self.line = Line2D([firstVert[0]], [firstVert[1]], animated=True,
-                           marker='s', markerfacecolor='w', markersize=5,)
+class polygonGateEditor:
+    """
+    This class deal with creating and editing gate
+    it take, edit, and generate a plygonGate instance
+    """
+    def __init__(self, ax, returnGateTo, canvasParam=None, gate=None) -> None:
+
         self.ax = ax
         self.canvas = self.ax.figure.canvas
+        self.returnToFunc = returnGateTo
+        self.background = None
+        self.chnls, self.axScales = canvasParam
 
+        if not gate:
+            self.line = Line2D([], [], animated=True,
+                            marker='s', markerfacecolor='w', markersize=5, color='r')
+        else:
+            pass
         self.ax.add_line(self.line)
-        self.canvas.mpl_connect('draw_event', self.on_draw)
+        # self.canvas.mpl_connect('draw_event', self.on_draw)
+        self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         # self.cid = self.line.add_callback(self.line_changed)
 
-    def addNewVert(self, vert):
-        xydata = self.line.get_xydata()
-        xydata = np.vstack((xydata[0:-1], vert, vert))
-        self.line.set_data(xydata.T)
+    def addGate_on_press(self, event):
+        if event.button == 1:
+            vert = [event.xdata, event.ydata]
+            xydata = self.line.get_xydata()
+            xydata = np.vstack((xydata[0:-1], vert, vert))
+            self.line.set_data(xydata.T)
 
-    def replaceLastVert(self, vert):
+            self.blitDraw()
+
+        elif event.button == 3:
+            # right click recieved, close the gate
+            xydata = self.line.get_xydata()
+            xydata = np.vstack((xydata[0:-1], xydata[0]))
+            self.line.set_data(xydata.T)
+
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
+            
+            self.blitDraw()
+            
+            finishedNewGate = polygonGate(self.line, self.chnls, self.axScales)
+            self.returnToFunc(finishedNewGate)
+
+            
+
+    def addGate_on_motion(self, event):
+        vert = [event.xdata, event.ydata]
         xydata = self.line.get_xydata()
         xydata = np.vstack((xydata[0:-1], vert))
         self.line.set_data(xydata.T)
 
-    def closeGate(self):
-        xydata = self.line.get_xydata()
-        xydata = np.vstack((xydata[0:-1], xydata[0]))
-        self.line.set_data(xydata.T)
+        self.blitDraw()
 
-    def on_draw(self, event):
-        # self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+    def addGate_connnect(self):
+        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
+        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
+
+    def blitDraw(self):
+        self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.line)
-        # do not need to blit here, this will fire before the screen is
-        # updated
+        self.canvas.blit(self.ax.bbox)
+
+class polygonGate():
+    def __init__(self, closedLine, chnls, axScales) -> None:
+        self.verts = closedLine.get_xydata()[0:-1]
+        self.chnls = chnls
+        self.axScales = axScales
+        self.name = None
 
 
 if __name__ == '__main__':
