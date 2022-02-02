@@ -7,6 +7,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from dataClasses import fcsSample
 from plotClasses import plotCanvas
 from gateClasses import polygonGateEditor
+from modelClasses import smplPlotItem
 
 matplotlib.use('QT5Agg')
 
@@ -41,6 +42,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.gateListModel = QtGui.QStandardItemModel(self.gateListView)
         self.gateListView.setModel(self.gateListModel)
+        self.gateSelectionModel = self.gateListView.selectionModel()
 
         self.chnlListModel = QtGui.QStandardItemModel(self)
         self.xComboBox.setModel(self.chnlListModel)
@@ -50,6 +52,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureReplot)
+        self.gateListModel.itemChanged.connect(self.handle_GateSelectionChanged)
         self.xComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
         self.yComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
         self.addGateButton.clicked.connect(self.handle_addGate)
@@ -60,8 +63,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         newSmplList = [fcsSample(fileName) for fileName in fileNames]
 
         for newSmpl in newSmplList:
-            newQItem = QtGui.QStandardItem(newSmpl.fileName)
-            newQItem.setData(newSmpl)
+            newQItem = smplPlotItem(newSmpl, plotColor=QtGui.QColor(0.9, 0., 0.))
             newQItem.setCheckable(False)
             self.smplListModel.appendRow(newQItem)
 
@@ -76,7 +78,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_FigureReplot(self):
         # this function is used to process info for the canvas to redraw
-        selectedSmpls = [self.smplListModel.itemFromIndex(idx).data() for idx in self.sampleListView.selectedIndexes()]
+        selectedSmpls = [self.smplListModel.itemFromIndex(idx).data(role=0x100) for idx in self.sampleListView.selectedIndexes()]
 
         xChnl = self.chnlLables[self.xComboBox.currentIndex()]
         yChnl = self.chnlLables[self.yComboBox.currentIndex()]
@@ -109,6 +111,16 @@ class mainUi(mainWindowBase, mainWindowUi):
                 self.gateListModel.appendRow(newQItem)
             else: 
                 self.handle_FigureReplot()
+
+    def handle_GateSelectionChanged(self, item):
+        if item.checkState() == 2:
+            pass
+        elif item.checkState() == 1:
+            pass
+        else:
+            pass
+        print(item.checkState())            
+        pass
                 
 
     

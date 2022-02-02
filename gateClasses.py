@@ -4,6 +4,7 @@
 import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.artist import Artist
+from matplotlib.path import Path as mpl_path
 
 
 def dist(x, y):
@@ -74,7 +75,7 @@ class polygonGateEditor:
             self.canvas.mpl_disconnect(self.moveCid)
             
             self.blitDraw()
-            
+
             finishedNewGate = polygonGate(self.line, self.chnls, self.axScales)
             self.returnToFunc(finishedNewGate)
 
@@ -103,6 +104,17 @@ class polygonGate():
         self.chnls = chnls
         self.axScales = axScales
         self.name = None
+
+        verts4path = self.verts.copy()
+        for idx, scale in enumerate(self.axScales):
+            if scale == 'log':
+                verts4path[:, idx] = np.log10(verts4path[:, idx])
+                
+        self.prebuiltPath = mpl_path(verts4path)
+
+    def isInsideGate(self, fcsData):
+        points = fcsData.data[self.chnls]
+        return self.prebuiltPath.contains_point(points)
 
 
 if __name__ == '__main__':

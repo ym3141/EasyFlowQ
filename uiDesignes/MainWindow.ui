@@ -35,6 +35,9 @@
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
+        <property name="viewMode">
+         <enum>QListView::ListMode</enum>
+        </property>
        </widget>
       </item>
      </layout>
