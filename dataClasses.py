@@ -11,10 +11,34 @@ class fcsSample:
         self.fileDir = fileDir
         self.smplName = self.fileName
         self.fileHeader = meta['__header__']
-        self.compensationMat = parseCompStr(meta['$SPILLOVER'])
-        self.chnlNameDict = dict(zip(meta['_channels_']['$PnN'], meta['_channels_']['$PnS']))
-        self._meta = meta
         self.data = data
+
+        self._meta = meta
+
+        # processing channel names. 
+        if '$PnS' in meta['_channels_']:
+            if tuple(meta['_channels_']['$PnS']) == meta['_channel_names_']:
+                # the normal naming model, in which $PnS should be unique in the fcs
+                # change data label to $PnN anyway
+                mapper = dict(zip(meta['_channels_']['$PnS'], meta['_channels_']['$PnN']))
+                self.data.rename(columns=mapper, inplace=True)
+                
+            elif tuple(meta['_channels_']['$PnN']) == meta['_channel_names_']:
+                # the alternative model, in which $PnS is not unique in the fcs, $PnN is used as naming instead
+                # do nothing, this is the safer mode
+                pass
+            
+            # build the dict for $PnN -> $PnS
+            self.chnlNameDict = dict(zip(meta['_channels_']['$PnN'], meta['_channels_']['$PnS']))
+
+        else:
+            self.chnlNameDict = dict(zip(meta['_channels_']['$PnN'], meta['_channels_']['$PnN']))
+        
+        # see if there is built-in compensation matrix
+        try:
+            self.compensationMat = parseCompStr(meta['$SPILLOVER'])
+        except KeyError:
+            self.compensationMat = None
 
     @property
     def fileName(self):

@@ -25,6 +25,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.chnlDict = dict()
         self.curChnls = None
         self.curAxScales = None
+        self.curGateList = []
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -51,11 +52,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         # link triggers
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
-        self.smplSelectionModel.selectionChanged.connect(self.handle_FigureReplot)
+        self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
         self.gateListModel.itemChanged.connect(self.handle_GateSelectionChanged)
-        self.xComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
-        self.yComboBox.currentIndexChanged.connect(self.handle_FigureReplot)
-        self.addGateButton.clicked.connect(self.handle_addGate)
+        self.xComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
+        self.yComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
+        self.addGateButton.clicked.connect(self.handle_AddGate)
 
 
     def handle_LoadData(self):
@@ -76,23 +77,27 @@ class mainUi(mainWindowBase, mainWindowUi):
             newQItem = QtGui.QStandardItem('{0}: {1}'.format(key, self.chnlDict[key]))
             self.chnlListModel.appendRow(newQItem)
 
-    def handle_FigureReplot(self):
+    def handle_FigureUpdate(self):
         # this function is used to process info for the canvas to redraw
         selectedSmpls = [self.smplListModel.itemFromIndex(idx).data(role=0x100) for idx in self.sampleListView.selectedIndexes()]
 
         xChnl = self.chnlLables[self.xComboBox.currentIndex()]
         yChnl = self.chnlLables[self.yComboBox.currentIndex()]
+        self.curChnls = [xChnl, yChnl]
 
-        self.curChnls = (xChnl, yChnl)
-        self.curAxScales = ('log', 'log')
+        self.curAxScales = ['log', 'log']
+
+        allGateItems = [self.gateListModel.item(idx) for idx in range(self.gateListModel.rowCount())]
+        self.curGateList = [gateItem.data() for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
         self.mpl_canvas.redraw(selectedSmpls, 
-                               chnlNames=(self.chnlDict[xChnl], self.chnlDict[yChnl]), 
+                               chnlNames=self.curChnls, 
                                axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
-                               axScales=self.curAxScales
+                               axScales=self.curAxScales,
+                               gateList=self.curGateList
         )
 
-    def handle_addGate(self):
+    def handle_AddGate(self):
         self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.gateReturned, 
                                             canvasParam=(self.curChnls, self.curAxScales))
         self.gateEditor.addGate_connnect()
@@ -110,7 +115,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 newQItem.setCheckable(True)
                 self.gateListModel.appendRow(newQItem)
             else: 
-                self.handle_FigureReplot()
+                self.handle_FigureUpdate()
 
     def handle_GateSelectionChanged(self, item):
         if item.checkState() == 2:
@@ -119,7 +124,9 @@ class mainUi(mainWindowBase, mainWindowUi):
             pass
         else:
             pass
-        print(item.checkState())            
+
+        self.handle_FigureUpdate()
+        # print(item.checkState())            
         pass
                 
 

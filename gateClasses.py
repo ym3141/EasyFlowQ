@@ -113,8 +113,15 @@ class polygonGate():
         self.prebuiltPath = mpl_path(verts4path)
 
     def isInsideGate(self, fcsData):
-        points = fcsData.data[self.chnls]
-        return self.prebuiltPath.contains_point(points)
+        points = fcsData.data[self.chnls].copy()
+
+        for idx, scale in enumerate(self.axScales):
+            if scale == 'log':
+                points.iloc[:, idx] = np.log10(points.iloc[:, idx])
+
+        insideFlags = self.prebuiltPath.contains_points(points)
+
+        return insideFlags
 
 
 if __name__ == '__main__':

@@ -15,14 +15,19 @@ class plotCanvas(FigureCanvasQTAgg):
         self.navigationBar = NavigationToolbar(self, self)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
 
-    def redraw(self, smpls, chnlNames, axisNames, axScales, params=None):
+    def redraw(self, smpls, chnlNames, axisNames, axScales, gateList=[], params=None):
         self.ax.clear()
         self.navigationBar.update()
 
         xChnl, yChnl = chnlNames
 
         for idx, smpl in enumerate(smpls):
-            self.ax.scatter(smpl.data[xChnl], smpl.data[yChnl], color='C'+str(idx%10), s=1, label=smpl.smplName)
+            inGateFlag = np.ones(smpl.data.shape[0], dtype=bool)
+            for gate in gateList:
+                inGateFlag = np.logical_and(gate.isInsideGate(smpl), inGateFlag)
+            gatedSmpl = smpl.data.loc[inGateFlag, :]
+
+            self.ax.scatter(gatedSmpl[xChnl], gatedSmpl[yChnl], color='C'+str(idx%10), s=1, label=smpl.smplName)
 
         self.ax.legend(markerscale=5)
         self.ax.set_xscale(axScales[0])
