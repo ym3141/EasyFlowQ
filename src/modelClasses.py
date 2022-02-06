@@ -1,7 +1,5 @@
 from PyQt5.QtGui import QStandardItem
 
-from plotClasses import plotCanvas
-
 class smplPlotItem(QStandardItem):
     def __init__(self, fcsSmpl, plotColor):
         super(smplPlotItem, self).__init__(fcsSmpl.fileName)

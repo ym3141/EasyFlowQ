@@ -4,10 +4,7 @@ from os import getcwd
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from dataClasses import fcsSample
-from plotClasses import plotCanvas
-from gateClasses import polygonGateEditor
-from modelClasses import smplPlotItem
+from src import fcsSample, plotCanvas, polygonGateEditor, smplPlotItem
 
 matplotlib.use('QT5Agg')
 
@@ -129,7 +126,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         # print(item.checkState())            
         pass
                 
-
     
     def handle_NewSession(self):
         QtCore.QProcess().startDetached('python ./main.py')
