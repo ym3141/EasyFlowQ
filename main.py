@@ -4,7 +4,7 @@ from os import getcwd
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src import fcsSample, plotCanvas, polygonGateEditor, smplPlotItem
+from src import fcsSample, plotCanvas, polygonGateEditor, smplPlotItem, colorGenerator
 
 matplotlib.use('QT5Agg')
 
@@ -23,6 +23,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.curChnls = None
         self.curAxScales = None
         self.curGateList = []
+        self.colorGen = colorGenerator()
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -60,8 +61,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
         newSmplList = [fcsSample(fileName) for fileName in fileNames]
 
-        for newSmpl in newSmplList:
-            newQItem = smplPlotItem(newSmpl, plotColor=QtGui.QColor(0.9, 0., 0.))
+        newColorList = self.colorGen.giveColors(len(newSmplList))
+
+        for newSmpl, newColor in zip(newSmplList, newColorList):
+            newQItem = smplPlotItem(newSmpl, plotColor=QtGui.QColor.fromRgbF(*newColor))
             newQItem.setCheckable(False)
             self.smplListModel.appendRow(newQItem)
 
@@ -76,7 +79,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_FigureUpdate(self):
         # this function is used to process info for the canvas to redraw
-        selectedSmpls = [self.smplListModel.itemFromIndex(idx).data(role=0x100) for idx in self.sampleListView.selectedIndexes()]
+        selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
         xChnl = self.chnlLables[self.xComboBox.currentIndex()]
         yChnl = self.chnlLables[self.yComboBox.currentIndex()]

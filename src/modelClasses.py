@@ -11,6 +11,10 @@ class smplPlotItem(QStandardItem):
     
     @property
     def displayName(self):
+        return self.data(role=0)
+
+    @property
+    def plotColor(self):
         return self.data(role=1)
 
     @property
@@ -19,4 +23,8 @@ class smplPlotItem(QStandardItem):
 
     @displayName.setter
     def displayName(self, displayName):
-        self.setData(displayName, role=1)  
+        self.setData(displayName, role=0) 
+
+    @plotColor.setter
+    def plotColor(self, plotColor):
+        self.setData(plotColor, role=1) 

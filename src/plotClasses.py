@@ -21,12 +21,15 @@ class plotCanvas(FigureCanvasQTAgg):
         xChnl, yChnl = chnlNames
 
         for idx, smpl in enumerate(smpls):
-            inGateFlag = np.ones(smpl.data.shape[0], dtype=bool)
-            for gate in gateList:
-                inGateFlag = np.logical_and(gate.isInsideGate(smpl), inGateFlag)
-            gatedSmpl = smpl.data.loc[inGateFlag, :]
+            fcsSmpl = smpl.fcsSmpl
 
-            self.ax.scatter(gatedSmpl[xChnl], gatedSmpl[yChnl], color='C'+str(idx%10), s=1, label=smpl.smplName)
+            inGateFlag = np.ones(fcsSmpl.data.shape[0], dtype=bool)
+            for gate in gateList:
+                inGateFlag = np.logical_and(gate.isInsideGate(fcsSmpl), inGateFlag)
+            gatedSmpl = fcsSmpl.data.loc[inGateFlag, :]
+
+            self.ax.scatter(gatedSmpl[xChnl], gatedSmpl[yChnl], 
+                            color=smpl.plotColor.getRgbF(), s=1, label=smpl.displayName)
 
         self.ax.legend(markerscale=5)
         self.ax.set_xscale(axScales[0])
