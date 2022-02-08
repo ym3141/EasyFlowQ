@@ -14,12 +14,20 @@ class plotCanvas(FigureCanvasQTAgg):
         self.navigationBar = NavigationToolbar(self, self)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
 
-    def redraw(self, smpls, chnlNames, axisNames, axScales, gateList=[], params=None):
+    def redraw(self, smpls, chnlNames, axisNames, axScales, gateList=[], options=[0, 0], subSampleN=None):
         self.ax.clear()
         self.navigationBar.update()
 
         xChnl, yChnl = chnlNames
 
+        plotType, normOption = options
+
+        # get the min and max, for histogram
+        xDatamin = np.inf
+        xDatamax = 0
+
+        # gate the samples
+        gatedSmpls = []
         for idx, smpl in enumerate(smpls):
             fcsSmpl = smpl.fcsSmpl
 
@@ -27,9 +35,37 @@ class plotCanvas(FigureCanvasQTAgg):
             for gate in gateList:
                 inGateFlag = np.logical_and(gate.isInsideGate(fcsSmpl), inGateFlag)
             gatedSmpl = fcsSmpl.data.loc[inGateFlag, :]
+            gatedSmpls.append(gatedSmpl)
 
-            self.ax.scatter(gatedSmpl[xChnl], gatedSmpl[yChnl], 
-                            color=smpl.plotColor.getRgbF(), s=1, label=smpl.displayName)
+            # record the min/max if histogram
+            if plotType == 1:
+                xDatamin = np.min([xDatamin, np.min(gatedSmpl[xChnl])])
+                xDatamax = np.max([xDatamax, np.max(gatedSmpl[xChnl])])
+                
+
+        # Plot dots or histogram
+        if plotType == 0:
+            # plot dots
+            for gatedSmpl, smpl in zip(gatedSmpls, smpls):
+                self.ax.scatter(gatedSmpl[xChnl], gatedSmpl[yChnl], 
+                                color=smpl.plotColor.getRgbF(), s=1, label=smpl.displayName)
+        else:
+            # plot a histograme
+            if axScales[0] == 'log':
+                xDatamin = 10**(np.floor(np.log10(xDatamin)))
+                xDatamax = 10**(np.ceil(np.log10(xDatamax)))
+
+                hist, bins = np.histogram(gatedSmpl[xChnl], bins=np.geomspace(xDatamin, xDatamax, 1000))
+                
+                self.ax.plot((bins[0:-1] + bins[1:]) / 2, hist, color=smpl.plotColor.getRgbF(), label=smpl.displayName)
+            else:
+                # A lin x-scale
+                xDatamin = 0
+                maxDigit = np.floor(np.log10(xDatamax))
+                xDatamax = np.ceil(xDatamax / (10**maxDigit)) * (10**maxDigit)
+
+                hist, bins = np.histogram(gatedSmpl[xChnl], bins=np.linspace(xDatamin, xDatamax, 1000))
+                self.ax.plot((bins[0:-1] + bins[1:]) / 2, hist, color=smpl.plotColor.getRgbF(), label=smpl.displayName)
 
         self.ax.legend(markerscale=5)
         self.ax.set_xscale(axScales[0])

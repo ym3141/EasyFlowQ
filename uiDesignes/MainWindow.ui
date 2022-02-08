@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="LeftLayout">
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
@@ -43,7 +43,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QVBoxLayout" name="MidLayout">
       <item>
        <widget class="QGroupBox" name="toolBox">
         <property name="sizePolicy">
@@ -116,6 +116,9 @@
            <height>23</height>
           </rect>
          </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fix both axis for dot plot; &lt;/p&gt;&lt;p&gt;Fix x axis for histogram&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Fix Axes</string>
          </property>
@@ -125,12 +128,24 @@
           <rect>
            <x>580</x>
            <y>60</y>
-           <width>181</width>
+           <width>221</width>
            <height>20</height>
           </rect>
          </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Limit the number of dots drawn per sample&lt;/p&gt;&lt;p&gt;Don't affect histogram&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Draw less dots, but faster</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </widget>
@@ -234,25 +249,153 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame_3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Overlay gate:</string>
         </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>600</height>
-         </size>
+        <property name="flat">
+         <bool>true</bool>
         </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QComboBox" name="comboBox"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="plotTypeBox">
+        <property name="title">
+         <string>Plot type</string>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+        <property name="flat">
+         <bool>true</bool>
         </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QRadioButton" name="dotRadio">
+           <property name="text">
+            <string>Dot plot</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="histRadio">
+           <property name="text">
+            <string>Histogram</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="axisOptionBox">
+        <property name="title">
+         <string>Axes option</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QGroupBox" name="xAxisOptionBox">
+           <property name="title">
+            <string>X-Axis</string>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QRadioButton" name="xLogRadio">
+              <property name="text">
+               <string>log</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="xLinRadio">
+              <property name="text">
+               <string>linear</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="yAxisOptionBox">
+           <property name="title">
+            <string>Y-Axis</string>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QRadioButton" name="yLogRadio">
+              <property name="text">
+               <string>log</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="yLinRadio">
+              <property name="text">
+               <string>linear</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="normBox">
+        <property name="title">
+         <string>Y-Axis in histogram</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <widget class="QRadioButton" name="norm2PercRadio">
+           <property name="text">
+            <string>Percentage</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="norm2TotalRadio">
+           <property name="text">
+            <string>Percentage of total</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="norm2CountRadio">
+           <property name="text">
+            <string>Cell count</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -265,7 +408,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>26</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">

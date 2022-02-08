@@ -16,12 +16,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         # init and setup UI
         mainWindowBase.__init__(self)
         self.setupUi(self)
+
+        self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = self._organizeButtonGroups()
         
         # other init
         self.baseDir = './demoSamples/'
         self.chnlDict = dict()
         self.curChnls = None
-        self.curAxScales = None
         self.curGateList = []
         self.colorGen = colorGenerator()
 
@@ -85,16 +86,17 @@ class mainUi(mainWindowBase, mainWindowUi):
         yChnl = self.chnlLables[self.yComboBox.currentIndex()]
         self.curChnls = [xChnl, yChnl]
 
-        self.curAxScales = ['log', 'log']
-
         allGateItems = [self.gateListModel.item(idx) for idx in range(self.gateListModel.rowCount())]
         self.curGateList = [gateItem.data() for gateItem in allGateItems if (gateItem.checkState() == 2)]
+
+        plotOptions = (self.plotOptionBG.checkedId(), self.normOptionBG.checkedId())
 
         self.mpl_canvas.redraw(selectedSmpls, 
                                chnlNames=self.curChnls, 
                                axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                axScales=self.curAxScales,
-                               gateList=self.curGateList
+                               gateList=self.curGateList,
+                               options=plotOptions
         )
 
     def handle_AddGate(self):
@@ -129,13 +131,39 @@ class mainUi(mainWindowBase, mainWindowUi):
         # print(item.checkState())            
         pass
                 
-    
     def handle_NewSession(self):
         QtCore.QProcess().startDetached('python ./main.py')
+
+
+    def _organizeButtonGroups(self):
+        # Create button groups to manage the radio button for plot options
+
+        plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG = [QtWidgets.QButtonGroup(self) for i in range(4)]
+
+        plotOptionBG.addButton(self.dotRadio, 0)
+        plotOptionBG.addButton(self.histRadio, 1)
+
+        xAxisOptionBG.addButton(self.xLogRadio, 0)
+        xAxisOptionBG.addButton(self.xLinRadio, 1)
+
+        yAxisOptionBG.addButton(self.yLogRadio, 0)
+        yAxisOptionBG.addButton(self.yLinRadio, 1)
+
+        normOptionBG.addButton(self.norm2PercRadio, 0)
+        normOptionBG.addButton(self.norm2TotalRadio, 1)
+        normOptionBG.addButton(self.norm2CountRadio, 2)
+
+        return plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG
 
     @property
     def chnlLables(self):
         return list(self.chnlDict.keys())
+
+    @property
+    def curAxScales(self):
+        return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
+
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
