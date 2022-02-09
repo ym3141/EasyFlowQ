@@ -1,0 +1,3 @@
+[submodule "FlowCal"]
+	path = FlowCal
+	url = https://github.com/ym3141/FlowCal.git
