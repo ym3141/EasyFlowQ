@@ -4,7 +4,7 @@ from os import getcwd
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src import plotCanvas, polygonGateEditor, smplPlotItem, colorGenerator
+from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator
 
 matplotlib.use('QT5Agg')
 

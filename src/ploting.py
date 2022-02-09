@@ -7,7 +7,7 @@ from PyQt5 import QtCore, QtGui
 
 import sys
 sys.path.insert(0, './FlowCal')
-# from FlowCal.plot import scatter2d
+from FlowCal.plot import scatter2d
 
 
 class plotCanvas(FigureCanvasQTAgg):
@@ -42,10 +42,12 @@ class plotCanvas(FigureCanvasQTAgg):
         if plotType == 0:
             # plot dots
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
-                # scatter2d(gatedSmpl, [xChnl, yChnl], ax=self.ax,
-                #           xscale=axScales[0], yscale=axScales[1],
-                #           color=smplItem.plotColor.getRgbF(), s=1, label=smplItem.displayName)
-                pass
+                scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
+                          xscale=axScales[0], yscale=axScales[1],
+                          color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+
+            self.ax.autoscale()
+            self.ax.margins()
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
