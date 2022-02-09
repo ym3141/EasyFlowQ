@@ -141,11 +141,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         plotOptionBG.addButton(self.dotRadio, 0)
         plotOptionBG.addButton(self.histRadio, 1)
 
-        xAxisOptionBG.addButton(self.xLogRadio, 0)
-        xAxisOptionBG.addButton(self.xLinRadio, 1)
+        xAxisOptionBG.addButton(self.xLinRadio, 0)
+        xAxisOptionBG.addButton(self.xLogRadio, 1)
+        xAxisOptionBG.addButton(self.xLogicleRadio, 2)
 
-        yAxisOptionBG.addButton(self.yLogRadio, 0)
-        yAxisOptionBG.addButton(self.yLinRadio, 1)
+        yAxisOptionBG.addButton(self.yLinRadio, 0)
+        yAxisOptionBG.addButton(self.yLogRadio, 1)
+        yAxisOptionBG.addButton(self.yLogicleRadio, 2)
 
         normOptionBG.addButton(self.norm2PercRadio, 0)
         normOptionBG.addButton(self.norm2TotalRadio, 1)
