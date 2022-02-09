@@ -1,6 +1,6 @@
-from .dataClasses import fcsSample
-from .gateClasses import polygonGateEditor, polygonGate
-from .modelClasses import smplPlotItem
-from .plotClasses import plotCanvas
+# from .dataClasses import fcsSample
+from .gates import polygonGateEditor, polygonGate
+from .qtModels import smplPlotItem
+from .ploting import plotCanvas
 
-from .util import colorGenerator
+from .utils import colorGenerator

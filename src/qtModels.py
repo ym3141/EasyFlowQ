@@ -1,11 +1,23 @@
 from PyQt5.QtGui import QStandardItem
+# from dataClasses import fcsSample
+
+from pathlib import Path
+import sys
+
+sys.path.insert(0, './FlowCal')
+from FlowCal.io import FCSData
+from FlowCal.transform import to_rfi
 
 class smplPlotItem(QStandardItem):
-    def __init__(self, fcsSmpl, plotColor):
-        super(smplPlotItem, self).__init__(fcsSmpl.fileName)
+    def __init__(self, fcsFileDir, plotColor):
+        self.fileDir = fcsFileDir
+        super(smplPlotItem, self).__init__(Path(self.fileDir).stem)
         
-        # fcsSample class; fcs data is stored here
-        self.setData(fcsSmpl, role=0x100)
+        # FCSData class; fcs data is stored here
+        fcsData = to_rfi(FCSData(self.fileDir))
+        self.setData(fcsData, role=0x100)
+
+        self.chnlNameDict = dict(zip(fcsData.channels, fcsData.channel_labels()))
 
         self.setData(plotColor, role=1)
     

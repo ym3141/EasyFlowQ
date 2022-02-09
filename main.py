@@ -4,7 +4,7 @@ from os import getcwd
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src import fcsSample, plotCanvas, polygonGateEditor, smplPlotItem, colorGenerator
+from src import plotCanvas, polygonGateEditor, smplPlotItem, colorGenerator
 
 matplotlib.use('QT5Agg')
 
@@ -60,18 +60,16 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_LoadData(self):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
-        newSmplList = [fcsSample(fileName) for fileName in fileNames]
+        newColorList = self.colorGen.giveColors(len(fileNames))
 
-        newColorList = self.colorGen.giveColors(len(newSmplList))
-
-        for newSmpl, newColor in zip(newSmplList, newColorList):
-            newQItem = smplPlotItem(newSmpl, plotColor=QtGui.QColor.fromRgbF(*newColor))
+        for fileName, newColor in zip(fileNames, newColorList):
+            newQItem = smplPlotItem(fileName, plotColor=QtGui.QColor.fromRgbF(*newColor))
             newQItem.setCheckable(False)
             self.smplListModel.appendRow(newQItem)
 
             # merging the channel dictionary. 
             # If two channel with same channel name (key), but different flurophore (value), the later one will be kept
-            self.chnlDict = {**newSmpl.chnlNameDict, **self.chnlDict}
+            self.chnlDict = {**newQItem.chnlNameDict, **self.chnlDict}
         
         self.chnlListModel.clear()
         for key in self.chnlDict:

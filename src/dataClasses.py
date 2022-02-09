@@ -4,9 +4,16 @@ import fcsparser
 import numpy as np
 import pandas as pd
 
+import sys
 
-class fcsSample:
+sys.path.insert(0, '../FlowCal')
+from FlowCal.io import FCSData
+
+
+class fcsSample(FCSData):
     def __init__(self, fileDir) -> None:
+        super(fcsSample, self).__init__(fileDir)
+
         meta, data = fcsparser.parse(fileDir, reformat_meta=True)
         self.fileDir = fileDir
         self.smplName = self.fileName
