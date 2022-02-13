@@ -7,7 +7,7 @@ from PyQt5 import QtCore, QtGui
 
 import sys
 sys.path.insert(0, './FlowCal')
-from FlowCal.plot import scatter2d
+from FlowCal.plot import scatter2d, hist1d
 
 
 class plotCanvas(FigureCanvasQTAgg):
@@ -28,7 +28,7 @@ class plotCanvas(FigureCanvasQTAgg):
         plotType, normOption = options
 
         # gate the samples
-        gatedSmpls = []
+        gatedSmpls = [] 
         for idx, smplItem in enumerate(smplItems):
             fcsData = smplItem.fcsSmpl
 
@@ -47,13 +47,24 @@ class plotCanvas(FigureCanvasQTAgg):
                           color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
 
             self.ax.autoscale()
-            self.ax.margins()
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
         else:
-            pass
             # plot histograme
+
+            # set the 
+            for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+                hist1d(gatedSmpl, self.ax, xChnl, histtype='step',
+                       xscale=axScales[0], edgecolor=smplItem.plotColor.getRgbF(), label=smplItem.displayName)
+
+            self.ax.autoscale()
+
+            self.ax.set_xlabel(axisNames[0])
+            self.ax.set_ylabel(axisNames[1])
+
+            pass
+            
             # if axScales[0] == 'log':
             #     xDatamin = 10**(np.floor(np.log10(xDatamin)))
             #     xDatamax = 10**(np.ceil(np.log10(xDatamax)))
