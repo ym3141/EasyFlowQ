@@ -55,44 +55,23 @@ class plotCanvas(FigureCanvasQTAgg):
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
+
+            self.ax.legend(markerscale=5)
         else:
             # plot histograme
 
             # set the 
+
+            # plot
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
                 hist1d(gatedSmpl, self.ax, xChnl, histtype='step',
-                       xscale=axScales[0], edgecolor=smplItem.plotColor.getRgbF(), label=smplItem.displayName)
+                       xscale=axScales[0],
+                       edgecolor=smplItem.plotColor.getRgbF(), label=smplItem.displayName)
 
             self.ax.autoscale()
 
             self.ax.set_xlabel(axisNames[0])
-            self.ax.set_ylabel(axisNames[1])
-
-            pass
-            
-            # if axScales[0] == 'log':
-            #     xDatamin = 10**(np.floor(np.log10(xDatamin)))
-            #     xDatamax = 10**(np.ceil(np.log10(xDatamax)))
-                
-            #     for gatedSmpl, smpl in zip(gatedSmpls, smplItems): 
-            #         hist, bins = np.histogram(gatedSmpl[xChnl], bins=np.geomspace(xDatamin, xDatamax, 1000))
-            #         self.ax.plot((bins[0:-1] + bins[1:]) / 2, hist, color=smpl.plotColor.getRgbF(), label=smpl.displayName)
-            # else:
-            #     # A lin x-scale
-            #     xDatamin = 0
-            #     maxDigit = np.floor(np.log10(xDatamax))
-            #     xDatamax = np.ceil(xDatamax / (10**maxDigit)) * (10**maxDigit)
-
-            #     for gatedSmpl, smpl in zip(gatedSmpls, smplItems):
-            #         hist, bins = np.histogram(gatedSmpl[xChnl], bins=np.linspace(xDatamin, xDatamax, 1000))
-            #         self.ax.plot((bins[0:-1] + bins[1:]) / 2, hist, color=smpl.plotColor.getRgbF(), label=smpl.displayName)
-            
-            self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel('Count')
-
-        self.ax.legend(markerscale=5)
-        self.ax.set_xscale(axScales[0])
-        self.ax.set_yscale(axScales[1])
         
 
         self.draw()
