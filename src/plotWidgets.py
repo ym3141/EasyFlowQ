@@ -19,6 +19,11 @@ class plotCanvas(FigureCanvasQTAgg):
         self.navigationBar = NavigationToolbar(self, self)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
 
+        self.ax.set_xlabel('None')
+        self.ax.set_ylabel('None')
+
+        self.draw()
+
     def redraw(self, smplItems, chnlNames, axisNames, axScales, gateList=[], options=[0, 0], subSampleN=None):
         self.ax.clear()
         self.navigationBar.update()

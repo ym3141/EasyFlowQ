@@ -311,6 +311,13 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
+             <widget class="QRadioButton" name="xLinRadio">
+              <property name="text">
+               <string>linear</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QRadioButton" name="xLogRadio">
               <property name="text">
                <string>log</string>
@@ -321,9 +328,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="xLinRadio">
+             <widget class="QRadioButton" name="xLogicleRadio">
               <property name="text">
-               <string>linear</string>
+               <string>logicle</string>
               </property>
              </widget>
             </item>
@@ -340,6 +347,13 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
+             <widget class="QRadioButton" name="yLinRadio">
+              <property name="text">
+               <string>linear</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QRadioButton" name="yLogRadio">
               <property name="text">
                <string>log</string>
@@ -350,9 +364,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="yLinRadio">
+             <widget class="QRadioButton" name="yLogicleRadio">
               <property name="text">
-               <string>linear</string>
+               <string>logicle</string>
               </property>
              </widget>
             </item>
@@ -408,7 +422,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
