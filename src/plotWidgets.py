@@ -6,8 +6,10 @@ import numpy as np
 from PyQt5 import QtCore, QtGui
 
 import sys
+
+from sympy import csc
 sys.path.insert(0, './FlowCal')
-from FlowCal.plot import scatter2d, hist1d
+from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 
 
 class plotCanvas(FigureCanvasQTAgg):
@@ -25,6 +27,10 @@ class plotCanvas(FigureCanvasQTAgg):
         self.draw()
 
     def redraw(self, smplItems, chnlNames, axisNames, axScales, gateList=[], options=[0, 0], subSampleN=None):
+
+        if len(smplItems) == 0:
+            return
+
         self.ax.clear()
         self.navigationBar.update()
 
@@ -63,15 +69,62 @@ class plotCanvas(FigureCanvasQTAgg):
             # set the 
 
             # plot
-            for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
-                hist1d(gatedSmpl, self.ax, xChnl, histtype='step',
-                       xscale=axScales[0],
-                       edgecolor=smplItem.plotColor.getRgbF(), label=smplItem.displayName)
 
-            self.ax.autoscale()
+            xlim = [np.inf, -np.inf]
+            for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+
+                xlim[0] = np.min([np.min(gatedSmpl[:, xChnl]), xlim[0]])
+                xlim[1] = np.max([np.max(gatedSmpl[:, xChnl]), xlim[1]])
+
+                hist1d_line(gatedSmpl, self.ax, xChnl, 
+                            color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=True)
+
+            if axScales[0] == 'log':
+                if xlim[0] <= 0:
+                    xlim[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
+            self.ax.set_xlim(xlim)
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel('Count')
         
 
         self.draw()
+
+def hist1d_line(data, ax, channel, xscale, color,
+                bins=1024,
+                normed_area=False,
+                normed_height=False):
+
+    xscale_kwargs = {}
+    if xscale=='logicle':
+        t = _LogicleTransform(data=data[:, channel], channel=channel)
+        xscale_kwargs['T'] = t.T
+        xscale_kwargs['M'] = t.M
+        xscale_kwargs['W'] = t.W
+    
+    if hasattr(data, 'hist_bins') and hasattr(data.hist_bins, '__call__'):
+            # If bins is None or an integer, get bin edges from
+            # ``data_plot.hist_bins()``.
+            if bins is None or isinstance(bins, int):
+                bins = data.hist_bins(channels=channel, nbins=bins, scale=xscale, **xscale_kwargs)
+
+    weights = None
+    # Calculate weights if normalizing bins by height
+    if normed_height and not normed_area:
+        weights = np.ones_like(data[:, channel]) / float(len(data[:, channel]))
+
+    # Plot
+    n, edges = np.histogram(data[:, channel], bins=bins, weights=weights, density=normed_area)
+
+    line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color)
+
+    if xscale=='logicle':
+        ax.set_xscale(xscale, data=data, channel=channel)
+    else:
+        ax.set_xscale(xscale)
+
+    return n, edges, line
+
+
+if __name__ == '__main__':
+    QtCore.QProcess().startDetached('python ./main.py')

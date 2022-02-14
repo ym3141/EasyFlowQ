@@ -3,6 +3,7 @@ from os import getcwd
 
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from sympy import rad
 
 from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator
 
@@ -17,12 +18,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         mainWindowBase.__init__(self)
         self.setupUi(self)
 
-        self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = self._organizeButtonGroups()
+        buttonGroups = self._organizeButtonGroups()
+        self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
         
         # other init
         self.baseDir = './demoSamples/'
         self.chnlDict = dict()
-        self.curChnls = None
+        self.curChnls = [None, None]
         self.curGateList = []
         self.colorGen = colorGenerator()
 
@@ -48,13 +50,24 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.xComboBox.setModel(self.chnlListModel)
         self.yComboBox.setModel(self.chnlListModel)
 
-        # link triggers
+        # link triggers:
+        # manu
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
+
+
+        # everything update figure
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
         self.gateListModel.itemChanged.connect(self.handle_GateSelectionChanged)
+
         self.xComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
         self.yComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
+
+        for bg in buttonGroups:
+            for radio in bg.buttons():
+                radio.clicked.connect(self.handle_FigureUpdate)
+
+        # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
 
 
@@ -80,9 +93,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         # this function is used to process info for the canvas to redraw
         selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
-        xChnl = self.chnlLables[self.xComboBox.currentIndex()]
-        yChnl = self.chnlLables[self.yComboBox.currentIndex()]
-        self.curChnls = [xChnl, yChnl]
+        if self.xComboBox.currentIndex() == -1 and self.yComboBox.currentIndex() == -1:
+            self.curChnls = [None, None]
+        else:
+            xChnl = self.chnlLables[self.xComboBox.currentIndex()]
+            yChnl = self.chnlLables[self.yComboBox.currentIndex()]
+            self.curChnls = [xChnl, yChnl]
 
         allGateItems = [self.gateListModel.item(idx) for idx in range(self.gateListModel.rowCount())]
         self.curGateList = [gateItem.data() for gateItem in allGateItems if (gateItem.checkState() == 2)]
