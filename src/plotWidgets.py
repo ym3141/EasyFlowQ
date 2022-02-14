@@ -7,7 +7,6 @@ from PyQt5 import QtCore, QtGui
 
 import sys
 
-from sympy import csc
 sys.path.insert(0, './FlowCal')
 from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 
@@ -24,9 +23,11 @@ class plotCanvas(FigureCanvasQTAgg):
         self.ax.set_xlabel('None')
         self.ax.set_ylabel('None')
 
+        self.sampleRNG = rng = np.random.default_rng()
+
         self.draw()
 
-    def redraw(self, smplItems, chnlNames, axisNames, axScales, gateList=[], options=[0, 0], subSampleN=None):
+    def redraw(self, smplItems, chnlNames, axisNames, axScales, gateList=[], perfModeN=None, options=[0, 0]):
 
         if len(smplItems) == 0:
             return
@@ -52,10 +53,25 @@ class plotCanvas(FigureCanvasQTAgg):
         # Plot dots or histogram
         if plotType == 0:
             # plot dots
-            for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
-                scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
-                          xscale=axScales[0], yscale=axScales[1],
-                          color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+            if perfModeN:
+                NperSmpl = int(perfModeN / len(gatedSmpls))
+                for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+                    if len(gatedSmpl) > NperSmpl:
+                        sampledIdx = self.sampleRNG.choice(NperSmpl, size=NperSmpl, replace=False, axis=0, shuffle=False)
+                        sampledSmpl = gatedSmpl[sampledIdx, :]
+                    else: 
+                        sampledSmpl = gatedSmpl
+                
+                    scatter2d(sampledSmpl, self.ax, [xChnl, yChnl],
+                            xscale=axScales[0], yscale=axScales[1],
+                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+
+            else:
+                for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+                    scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
+                            xscale=axScales[0], yscale=axScales[1],
+                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+                
 
             self.ax.autoscale()
 
@@ -65,18 +81,13 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.legend(markerscale=5)
         else:
             # plot histograme
-
-            # set the 
-
-            # plot
-
             xlim = [np.inf, -np.inf]
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
 
                 xlim[0] = np.min([np.min(gatedSmpl[:, xChnl]), xlim[0]])
                 xlim[1] = np.max([np.max(gatedSmpl[:, xChnl]), xlim[1]])
 
-                hist1d_line(gatedSmpl, self.ax, xChnl, 
+                hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
                             color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=True)
 
             if axScales[0] == 'log':
@@ -84,8 +95,9 @@ class plotCanvas(FigureCanvasQTAgg):
                     xlim[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
             self.ax.set_xlim(xlim)
 
+            self.ax.legend()
             self.ax.set_xlabel(axisNames[0])
-            self.ax.set_ylabel('Count')
+            self.ax.set_ylabel('Density')
         
 
         self.draw()
@@ -93,7 +105,8 @@ class plotCanvas(FigureCanvasQTAgg):
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,
                 normed_area=False,
-                normed_height=False):
+                normed_height=False,
+                label=''):
 
     xscale_kwargs = {}
     if xscale=='logicle':
@@ -116,7 +129,7 @@ def hist1d_line(data, ax, channel, xscale, color,
     # Plot
     n, edges = np.histogram(data[:, channel], bins=bins, weights=weights, density=normed_area)
 
-    line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color)
+    line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color, label=label)
 
     if xscale=='logicle':
         ax.set_xscale(xscale, data=data, channel=channel)

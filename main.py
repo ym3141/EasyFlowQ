@@ -3,7 +3,6 @@ from os import getcwd
 
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from sympy import rad
 
 from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator
 
@@ -66,6 +65,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         for bg in buttonGroups:
             for radio in bg.buttons():
                 radio.clicked.connect(self.handle_FigureUpdate)
+        self.perfCheck.stateChanged.connect(self.handle_FigureUpdate)
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
@@ -105,11 +105,14 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         plotOptions = (self.plotOptionBG.checkedId(), self.normOptionBG.checkedId())
 
+        perfModeN = 10000 if self.perfCheck.isChecked() else None
+
         self.mpl_canvas.redraw(selectedSmpls, 
                                chnlNames=self.curChnls, 
                                axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                axScales=self.curAxScales,
                                gateList=self.curGateList,
+                               perfModeN = perfModeN,
                                options=plotOptions
         )
 
