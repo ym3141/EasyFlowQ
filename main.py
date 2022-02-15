@@ -105,7 +105,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         plotOptions = (self.plotOptionBG.checkedId(), self.normOptionBG.checkedId())
 
-        perfModeN = 10000 if self.perfCheck.isChecked() else None
+        perfModeN = 20000 if self.perfCheck.isChecked() else None
 
         self.mpl_canvas.redraw(selectedSmpls, 
                                chnlNames=self.curChnls, 
