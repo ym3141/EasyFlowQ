@@ -112,8 +112,9 @@ class mainUi(mainWindowBase, mainWindowUi):
                                axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                axScales=self.curAxScales,
                                gateList=self.curGateList,
-                               perfModeN = perfModeN,
-                               options=plotOptions
+                               plotType = self.curPlotType,
+                               normOption = self.curNormOption,
+                               perfModeN = perfModeN
         )
 
     def handle_AddGate(self):
@@ -181,6 +182,14 @@ class mainUi(mainWindowBase, mainWindowUi):
     @property
     def curAxScales(self):
         return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
+
+    @property
+    def curNormOption(self):
+        return self.normOptionBG.checkedButton().text()
+
+    @property
+    def curPlotType(self):
+        return self.plotOptionBG.checkedButton().text()
 
 
 

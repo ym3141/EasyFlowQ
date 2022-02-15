@@ -27,7 +27,11 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.draw()
 
-    def redraw(self, smplItems, chnlNames, axisNames, axScales, gateList=[], perfModeN=None, options=[0, 0]):
+    def redraw(self, smplItems, chnlNames, axisNames, axScales, 
+               gateList=[], 
+               plotType = 'Dot plot',
+               normOption = 'Percentage',
+               perfModeN=None):
 
         if len(smplItems) == 0:
             return
@@ -36,8 +40,6 @@ class plotCanvas(FigureCanvasQTAgg):
         self.navigationBar.update()
 
         xChnl, yChnl = chnlNames
-
-        plotType, normOption = options
 
         # gate the samples
         gatedSmpls = [] 
@@ -51,7 +53,7 @@ class plotCanvas(FigureCanvasQTAgg):
             gatedSmpls.append(gatedSmpl)
                 
         # Plot dots or histogram
-        if plotType == 0:
+        if plotType == 'Dot plot':
             # plot dots
             if perfModeN:
                 NperSmpl = int(perfModeN / len(gatedSmpls))
@@ -78,8 +80,8 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
 
-            self.ax.legend(markerscale=5)
-        else:
+            
+        elif plotType == 'Histogram':
             # plot histograme
             xlim = [np.inf, -np.inf]
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -88,23 +90,27 @@ class plotCanvas(FigureCanvasQTAgg):
                 xlim[1] = np.max([np.max(gatedSmpl[:, xChnl]), xlim[1]])
 
                 hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
-                            color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=True)
+                            color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption)
 
             if axScales[0] == 'log':
                 if xlim[0] <= 0:
                     xlim[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
             self.ax.set_xlim(xlim)
 
-            self.ax.legend()
-            self.ax.set_xlabel(axisNames[0])
-            self.ax.set_ylabel('Density')
-        
+            if axScales[1] == 'logicle':
+                self.ax.set_yscale('log')
+            else:
+                self.ax.set_yscale(axScales[1])
 
+            self.ax.set_xlabel(axisNames[0])
+            self.ax.set_ylabel(normOption)
+        
+        if len(smplItems) < 12:
+            self.ax.legend(markerscale=5)   
         self.draw()
 
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,
-                normed_area=False,
                 normed_height=False,
                 label=''):
 
@@ -121,13 +127,16 @@ def hist1d_line(data, ax, channel, xscale, color,
             if bins is None or isinstance(bins, int):
                 bins = data.hist_bins(channels=channel, nbins=bins, scale=xscale, **xscale_kwargs)
 
-    weights = None
     # Calculate weights if normalizing bins by height
-    if normed_height and not normed_area:
+    if normed_height == 'Percentage':
         weights = np.ones_like(data[:, channel]) / float(len(data[:, channel]))
+    elif normed_height == 'Percentage of total':
+        weights = np.ones_like(data[:, channel]) / float(int(data.text['$TOT']))
+    else:
+        weights = None
 
     # Plot
-    n, edges = np.histogram(data[:, channel], bins=bins, weights=weights, density=normed_area)
+    n, edges = np.histogram(data[:, channel], bins=bins, weights=weights)
 
     line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color, label=label)
 
