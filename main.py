@@ -4,7 +4,7 @@ from os import getcwd
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator
+from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave
 
 matplotlib.use('QT5Agg')
 
@@ -53,6 +53,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # manu
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
+        self.actionSave.triggered.connect(self.handle_save)
 
 
         # everything update figure
@@ -73,6 +74,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_LoadData(self):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
+
+        if not len(fileNames):
+            return
+
         newColorList = self.colorGen.giveColors(len(fileNames))
 
         for fileName, newColor in zip(fileNames, newColorList):
@@ -88,6 +93,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         for key in self.chnlDict:
             newQItem = QtGui.QStandardItem('{0}: {1}'.format(key, self.chnlDict[key]))
             self.chnlListModel.appendRow(newQItem)
+
 
     def handle_FigureUpdate(self):
         # this function is used to process info for the canvas to redraw
@@ -152,6 +158,11 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_NewSession(self):
         QtCore.QProcess().startDetached('python ./main.py')
 
+    def handle_save(self):
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.baseDir, filter='*.eflq')
+        sessionSave(self, saveFileDir)
+        pass
+
 
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
@@ -198,5 +209,8 @@ if __name__ == "__main__":
 
     MainWindow = mainUi()
     MainWindow.show()
+
+    MainWindow.handle_LoadData()
+
     sys.exit(app.exec_())
 
