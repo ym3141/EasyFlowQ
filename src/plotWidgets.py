@@ -33,11 +33,18 @@ class plotCanvas(FigureCanvasQTAgg):
                normOption = 'Percentage',
                perfModeN=None):
 
-        if len(smplItems) == 0:
-            return
-
         self.ax.clear()
         self.navigationBar.update()
+
+        # only draw samples that has the specified channels
+        smplItems = [a for a in smplItems if (chnlNames[0] in a.fcsSmpl.channels and chnlNames[1] in a.fcsSmpl.channels)] 
+
+        # return if no sample to draw, call redraw to show blank
+        if len(smplItems) == 0:
+            self.draw()
+            return
+
+
 
         xChnl, yChnl = chnlNames
 
