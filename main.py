@@ -26,6 +26,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.curChnls = [None, None]
         self.curGateList = []
         self.colorGen = colorGenerator()
+        self.sessionSaveFile = None
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -53,12 +54,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         # manu
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
-        self.actionSave.triggered.connect(self.handle_save)
+        self.actionSave.triggered.connect(self.handle_Save)
 
 
         # everything update figure
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
         self.gateListModel.itemChanged.connect(self.handle_GateSelectionChanged)
+        self.gateListModel.itemChanged.connect(self.handle_FigureUpdate)
 
         self.xComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
         self.yComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
@@ -81,21 +83,21 @@ class mainUi(mainWindowBase, mainWindowUi):
         newColorList = self.colorGen.giveColors(len(fileNames))
 
         for fileName, newColor in zip(fileNames, newColorList):
-            newQItem = smplPlotItem(fileName, plotColor=QtGui.QColor.fromRgbF(*newColor))
-            newQItem.setCheckable(False)
-            self.smplListModel.appendRow(newQItem)
+            newSmplItem = smplPlotItem(fileName, plotColor=QtGui.QColor.fromRgbF(*newColor))
+            newSmplItem.setCheckable(False)
+            self.smplListModel.appendRow(newSmplItem)
 
             # merging the channel dictionary. 
-            # If two channel with same channel name (key), but different flurophore (value), the later one will be kept
-            self.chnlDict = {**newQItem.chnlNameDict, **self.chnlDict}
-        
-        self.chnlListModel.clear()
-        for key in self.chnlDict:
-            newQItem = QtGui.QStandardItem('{0}: {1}'.format(key, self.chnlDict[key]))
-            self.chnlListModel.appendRow(newQItem)
+            # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
+            for key in newSmplItem.chnlNameDict:
+                if not (key in self.chnlDict):
+                    self.chnlDict[key] = newSmplItem.chnlNameDict[key]
+                    newChnlItem = QtGui.QStandardItem('{0}: {1}'.format(key, self.chnlDict[key]))
+                    self.chnlListModel.appendRow(newChnlItem)
 
 
-    def handle_FigureUpdate(self):
+
+    def handle_FigureUpdate(self, event):
         # this function is used to process info for the canvas to redraw
         selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
@@ -141,7 +143,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 newQItem.setCheckable(True)
                 self.gateListModel.appendRow(newQItem)
             else: 
-                self.handle_FigureUpdate()
+                self.handle_FigureUpdate(event='No gate name given, still refresh plot')
 
     def handle_GateSelectionChanged(self, item):
         if item.checkState() == 2:
@@ -150,17 +152,23 @@ class mainUi(mainWindowBase, mainWindowUi):
             pass
         else:
             pass
-
-        self.handle_FigureUpdate()
         # print(item.checkState())            
         pass
                 
     def handle_NewSession(self):
         QtCore.QProcess().startDetached('python ./main.py')
 
-    def handle_save(self):
-        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.baseDir, filter='*.eflq')
-        sessionSave(self, saveFileDir)
+    def handle_Save(self):
+        if self.sessionSaveFile:
+            # if save exist, replace it at the same dir
+            self.sessionSaveFile = sessionSave(self, self.sessionSaveFile.fileDir)
+        else: 
+            saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.baseDir, filter='*.eflq')
+            if not saveFileDir:
+                return
+
+            self.sessionSaveFile = sessionSave(self, saveFileDir)
+        self.sessionSaveFile.saveJson()
         pass
 
 
