@@ -1,5 +1,6 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.ticker import PercentFormatter
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -108,6 +109,9 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.set_yscale('log')
             else:
                 self.ax.set_yscale(axScales[1])
+
+            if not (normOption == 'Cell count'):
+                self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
