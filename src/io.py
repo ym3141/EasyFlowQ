@@ -2,6 +2,8 @@ import json
 from os import path
 from copy import deepcopy
 
+from .gates import polygonGate
+
 class sessionSave():
     # This is a json serializable class, used for save the session
 
@@ -44,19 +46,33 @@ class sessionSave():
         with open(saveFileDir) as f:
             jDict = json.load(f)
         
+        failedFiles = []
         for jSmpl in jDict['smplSaveList']:
 
             _fileDir_rel = path.join(path.dirname(saveFileDir), jSmpl['fileDir_rel'])
 
+            confirmedDir = None
             if path.exists(_fileDir_rel):
                 confirmedDir = _fileDir_rel
             elif path.exists(jSmpl['fileDir_abs']):
                 confirmedDir = jSmpl['fileDir_rel']
             else:
                 pass
+            
+            if confirmedDir:
+                mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], displayName = jSmpl['displayName'], selected=jSmpl['selected'])
+            else:
+                failedFiles.append(jSmpl)
 
-            mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], displayName = jSmpl['displayName'], selected=jSmpl['selected'])
+        for jGate in jDict['gateSaveList']:
+            mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'])
+
         
+        mainUiWindow.curAxScales = jDict['figOptions']['curAxScales']
+        mainUiWindow.curNormOption = jDict['figOptions']['curNormOption']
+        mainUiWindow.curPlotType = jDict['figOptions']['curPlotType']
+
+        print(failedFiles)
 
 
 def _convert_smplPlotItem(item, saveDir):
@@ -86,14 +102,6 @@ def _convert_gateItem(gateItem):
         pass
 
     return gateSave
-
-    
-
-
-
-
-
-
             
 
 class smplSave:

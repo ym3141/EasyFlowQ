@@ -23,7 +23,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         # other init
         self.baseDir = './demoSamples/'
         self.chnlDict = dict()
-        self.curChnls = [None, None]
         self.curGateList = []
         self.colorGen = colorGenerator()
         self.sessionSaveDir = None
@@ -88,13 +87,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         # this function is used to process info for the canvas to redraw
         selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
-        if self.xComboBox.currentIndex() == -1 and self.yComboBox.currentIndex() == -1:
-            self.curChnls = [None, None]
-        else:
-            xChnl = self.chnlLables[self.xComboBox.currentIndex()]
-            yChnl = self.chnlLables[self.yComboBox.currentIndex()]
-            self.curChnls = [xChnl, yChnl]
-
         allGateItems = [self.gateListModel.item(idx) for idx in range(self.gateListModel.rowCount())]
         self.curGateList = [gateItem.data() for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
@@ -113,24 +105,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         )
 
     def handle_AddGate(self):
-        self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.gateReturned, 
+        self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.loadGate, 
                                             canvasParam=(self.curChnls, self.curAxScales))
         self.gateEditor.addGate_connnect()
-
-    def gateReturned(self, gate, replace=None):
-        if replace:
-            pass
-        else:
-            gateName, flag = QtWidgets.QInputDialog.getText(self,'New gate', 'Name for the new gate')
-
-            if flag:
-                gate.name = gateName
-                newQItem = QtGui.QStandardItem(gate.name)
-                newQItem.setData(gate)
-                newQItem.setCheckable(True)
-                self.gateListModel.appendRow(newQItem)
-            else: 
-                self.handle_FigureUpdate(event='No gate name given, still refresh plot')
 
     def handle_GateSelectionChanged(self, item):
         if item.checkState() == 2:
@@ -211,19 +188,67 @@ class mainUi(mainWindowBase, mainWindowUi):
                 newChnlItem = QtGui.QStandardItem('{0}: {1}'.format(key, self.chnlDict[key]))
                 self.chnlListModel.appendRow(newChnlItem)
 
+    def loadGate(self, gate, replace=None, gateName=None):
+        if replace:
+            pass
+        else:
+            if not gateName:
+                gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
+                if not flag:
+                    self.handle_FigureUpdate()
+                    return
+
+            newQItem = QtGui.QStandardItem(gateName)
+            newQItem.setData(gate)
+            newQItem.setCheckable(True)
+            self.gateListModel.appendRow(newQItem)
 
     @property
     def chnlLables(self):
         return list(self.chnlDict.keys())
 
     @property
+    def curChnls(self):
+        if self.xComboBox.currentIndex() == -1 and self.yComboBox.currentIndex() == -1:
+            return [None, None]
+        else:
+            xChnl = self.chnlLables[self.xComboBox.currentIndex()]
+            yChnl = self.chnlLables[self.yComboBox.currentIndex()]
+            return [xChnl, yChnl]
+
+    @property
     def curAxScales(self):
         return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
+
+    @curAxScales.setter
+    def curAxScales(self, AxScales):
+        for xRadio in self.xAxisOptionBG.buttons():
+            if xRadio.text() == AxScales[0]:
+                xRadio.setChecked(True)
+                continue
+        for yRadio in self.yAxisOptionBG.buttons():
+            if yRadio.text() == AxScales[1]:
+                yRadio.setChecked(True)
+                continue
 
     @property
     def curNormOption(self):
         return self.normOptionBG.checkedButton().text()
 
+    @curNormOption.setter
+    def curNormOption(self, normOption):
+        for normRadio in self.normOptionBG.buttons():
+            if normRadio.text() == normOption:
+                normRadio.setChecked(True)
+                continue
+
     @property
     def curPlotType(self):
         return self.plotOptionBG.checkedButton().text()
+
+    @curPlotType.setter
+    def curPlotType(self, plotType):
+        for plotRadio in self.plotOptionBG.buttons():
+            if plotRadio.text() == plotType:
+                plotRadio.setChecked(True)
+                continue

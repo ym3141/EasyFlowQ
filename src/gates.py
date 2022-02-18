@@ -76,7 +76,7 @@ class polygonGateEditor:
             
             self.blitDraw()
 
-            finishedNewGate = polygonGate(self.line, self.chnls, self.axScales)
+            finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
             self.returnToFunc(finishedNewGate)
 
             
@@ -99,11 +99,17 @@ class polygonGateEditor:
         self.canvas.blit(self.ax.bbox)
 
 class polygonGate():
-    def __init__(self, closedLine, chnls, axScales) -> None:
-        self.verts = closedLine.get_xydata()[0:-1]
+    def __init__(self, chnls, axScales, closedLine=None, verts=None) -> None:
+
+        if closedLine:
+            self.verts = closedLine.get_xydata()[0:-1]
+        elif verts:
+            self.verts = np.array(verts)
+        else:
+            verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
+
         self.chnls = chnls
         self.axScales = axScales
-        self.name = None
 
         verts4path = self.verts.copy()
         for idx, scale in enumerate(self.axScales):
