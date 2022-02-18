@@ -39,6 +39,26 @@ class sessionSave():
         with open(self.fileDir, 'w+') as f:
             json.dump(self.__dict__, f, sort_keys=True, indent=4)
 
+    @classmethod
+    def loadSessionSave(cls, mainUiWindow, saveFileDir):
+        with open(saveFileDir) as f:
+            jDict = json.load(f)
+        
+        for jSmpl in jDict['smplSaveList']:
+
+            _fileDir_rel = path.join(path.dirname(saveFileDir), jSmpl['fileDir_rel'])
+
+            if path.exists(_fileDir_rel):
+                confirmedDir = _fileDir_rel
+            elif path.exists(jSmpl['fileDir_abs']):
+                confirmedDir = jSmpl['fileDir_rel']
+            else:
+                pass
+
+            mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], displayName = jSmpl['displayName'], selected=jSmpl['selected'])
+        
+
+
 def _convert_smplPlotItem(item, saveDir):
     smplSave = deepcopy(item.__dict__)
 
