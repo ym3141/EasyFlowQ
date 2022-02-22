@@ -68,9 +68,9 @@ class sessionSave():
             mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'])
 
         
-        mainUiWindow.curAxScales = jDict['figOptions']['curAxScales']
-        mainUiWindow.curNormOption = jDict['figOptions']['curNormOption']
-        mainUiWindow.curPlotType = jDict['figOptions']['curPlotType']
+        mainUiWindow.set_curAxScales(jDict['figOptions']['curAxScales'])
+        mainUiWindow.set_curNormOption(jDict['figOptions']['curNormOption'])
+        mainUiWindow.set_curPlotType(jDict['figOptions']['curPlotType'])
 
         print(failedFiles)
 

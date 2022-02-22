@@ -3,6 +3,8 @@ __pycache__/
 
 __temp/*
 
+.vscode/
+
 # *.py[cod]
 # *$py.class
 

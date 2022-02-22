@@ -26,6 +26,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.curGateList = []
         self.colorGen = colorGenerator()
         self.sessionSaveDir = None
+        self.holdFigureUpdate = True
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -74,6 +75,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.addGateButton.clicked.connect(self.handle_AddGate)
 
 
+        self.holdFigureUpdate = False
+
+
     def handle_LoadData(self):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
         newColorList = self.colorGen.giveColors(len(fileNames))
@@ -83,14 +87,16 @@ class mainUi(mainWindowBase, mainWindowUi):
 
 
 
-    def handle_FigureUpdate(self, event):
+    def handle_FigureUpdate(self):
         # this function is used to process info for the canvas to redraw
+
+        if self.holdFigureUpdate:
+            return
+
         selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
         allGateItems = [self.gateListModel.item(idx) for idx in range(self.gateListModel.rowCount())]
         self.curGateList = [gateItem.data() for gateItem in allGateItems if (gateItem.checkState() == 2)]
-
-        plotOptions = (self.plotOptionBG.checkedId(), self.normOptionBG.checkedId())
 
         perfModeN = 20000 if self.perfCheck.isChecked() else None
 
@@ -131,9 +137,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         newSessionWindow = mainUi(self.addToInstanceListFunc)
         newSessionWindow.move(self.pos() + QtCore.QPoint(30, 30))
-        
+        newSessionWindow.holdFigureUpdate = True        
         sessionSave.loadSessionSave(newSessionWindow, openFileDir)
-
+        newSessionWindow.holdFigureUpdate = False
+        newSessionWindow.handle_FigureUpdate()
         newSessionWindow.show()
 
 
@@ -216,12 +223,16 @@ class mainUi(mainWindowBase, mainWindowUi):
             yChnl = self.chnlLables[self.yComboBox.currentIndex()]
             return [xChnl, yChnl]
 
+    def set_curChnls(self, chnls):
+        pass
+        # for chnl in chnls:
+
+
     @property
     def curAxScales(self):
         return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
 
-    @curAxScales.setter
-    def curAxScales(self, AxScales):
+    def set_curAxScales(self, AxScales):
         for xRadio in self.xAxisOptionBG.buttons():
             if xRadio.text() == AxScales[0]:
                 xRadio.setChecked(True)
@@ -235,8 +246,7 @@ class mainUi(mainWindowBase, mainWindowUi):
     def curNormOption(self):
         return self.normOptionBG.checkedButton().text()
 
-    @curNormOption.setter
-    def curNormOption(self, normOption):
+    def set_curNormOption(self, normOption):
         for normRadio in self.normOptionBG.buttons():
             if normRadio.text() == normOption:
                 normRadio.setChecked(True)
@@ -246,8 +256,7 @@ class mainUi(mainWindowBase, mainWindowUi):
     def curPlotType(self):
         return self.plotOptionBG.checkedButton().text()
 
-    @curPlotType.setter
-    def curPlotType(self, plotType):
+    def set_curPlotType(self, plotType):
         for plotRadio in self.plotOptionBG.buttons():
             if plotRadio.text() == plotType:
                 plotRadio.setChecked(True)
