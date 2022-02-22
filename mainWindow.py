@@ -1,7 +1,7 @@
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave
+from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave, chnlModel
 
 matplotlib.use('QT5Agg')
 
@@ -46,7 +46,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.gateListView.setModel(self.gateListModel)
         self.gateSelectionModel = self.gateListView.selectionModel()
 
-        self.chnlListModel = QtGui.QStandardItemModel(self)
+        self.chnlListModel = chnlModel()
         self.xComboBox.setModel(self.chnlListModel)
         self.yComboBox.setModel(self.chnlListModel)
 
@@ -190,10 +190,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # merging the channel dictionary. 
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
         for key in newSmplItem.chnlNameDict:
-            if not (key in self.chnlDict):
-                self.chnlDict[key] = newSmplItem.chnlNameDict[key]
-                newChnlItem = QtGui.QStandardItem('{0}: {1}'.format(key, self.chnlDict[key]))
-                self.chnlListModel.appendRow(newChnlItem)
+            self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
 
     def loadGate(self, gate, replace=None, gateName=None):
         if replace:
@@ -211,22 +208,17 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.gateListModel.appendRow(newQItem)
 
     @property
-    def chnlLables(self):
-        return list(self.chnlDict.keys())
-
-    @property
     def curChnls(self):
         if self.xComboBox.currentIndex() == -1 and self.yComboBox.currentIndex() == -1:
             return [None, None]
         else:
-            xChnl = self.chnlLables[self.xComboBox.currentIndex()]
-            yChnl = self.chnlLables[self.yComboBox.currentIndex()]
+            xChnl = self.chnlListModel.keyList[self.xComboBox.currentIndex()]
+            yChnl = self.chnlListModel.keyList[self.yComboBox.currentIndex()]
             return [xChnl, yChnl]
 
     def set_curChnls(self, chnls):
-        pass
-        # for chnl in chnls:
-
+        self.xComboBox.currentIndx = self.chnlListModel.keyList.index(chnls[0])
+        self.yComboBox.currentIndx = self.chnlListModel.keyList.index(chnls[1])
 
     @property
     def curAxScales(self):

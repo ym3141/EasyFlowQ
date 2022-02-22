@@ -1,4 +1,5 @@
-from PyQt5.QtGui import QStandardItem
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtCore import QModelIndex
 # from dataClasses import fcsSample
 
 from pathlib import Path
@@ -40,3 +41,32 @@ class smplPlotItem(QStandardItem):
     @plotColor.setter
     def plotColor(self, plotColor):
         self.setData(plotColor, role=1) 
+
+
+class chnlModel(QStandardItemModel):
+    def __init__(self):
+        super().__init__()
+
+    def addChnl(self, chnlKey, chnlName):
+        if not (chnlKey in self.keyList):
+            newChnlItem = QStandardItem('{0}: {1}'.format(chnlKey, chnlName))
+            newChnlItem.setData(chnlKey)
+            self.appendRow(newChnlItem)
+            return 1
+        else:
+            return 0
+
+    def qIdxFromKey(self, chnlKey):
+        if chnlKey in self.chnlNameDict:
+            idx = self.keyList.index(chnlKey)
+            return self.indexFromItem(self.item(row=idx))
+        else:
+            return QModelIndex()
+
+    def keyFormQIdx(self, qIdx):
+        return self.itemFromIndex(qIdx).data()
+        
+    @property
+    def keyList(self):
+        return [self.item(idx).data() for idx in range(self.rowCount())]
+
