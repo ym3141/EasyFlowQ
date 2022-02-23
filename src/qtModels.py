@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtCore import QModelIndex
-# from dataClasses import fcsSample
+from PyQt5.QtCore import QModelIndex, QAbstractTableModel, Qt
+import pandas as pd
 
 from pathlib import Path
 import sys
@@ -69,4 +69,53 @@ class chnlModel(QStandardItemModel):
     @property
     def keyList(self):
         return [self.item(idx).data() for idx in range(self.rowCount())]
+
+
+
+
+class pandasTableModel(QAbstractTableModel):
+
+    def __init__(self, data):
+        super(pandasTableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole or role == Qt.EditRole:
+            value = self._data.iloc[index.row(), index.column()]
+            return str(value)
+
+    def rowCount(self, index):
+        return self._data.shape[0]
+
+    def columnCount(self, index):
+        return self._data.shape[1]
+
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._data.columns[section])
+
+            if orientation == Qt.Vertical:
+                return str(self._data.index[section])
+    
+    def setData(self, index, value, role):
+        if not index.isValid():
+            return False
+        if role != Qt.EditRole:
+            return False
+        row = index.row()
+        if row < 0 or row >= len(self._data.values):
+            return False
+        column = index.column()
+        if column < 0 or column >= self._data.columns.size:
+            return False
+        self._data.iloc[row, column] = value
+        self.dataChanged.emit(index, index)
+        return True
+
+    def flags(self, index):
+        flags = super(self.__class__,self).flags(index)
+        flags |= Qt.ItemIsEditable
+        return flags
 
