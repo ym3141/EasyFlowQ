@@ -1,26 +1,25 @@
 import sys
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QPoint
 from mainWindow import mainUi
+
+from multiprocessing import Process
 
 from os import getpid
 
-class eflqApplication(QtWidgets.QApplication):
-    def __init__(self, argv) -> None:
-        super().__init__(argv)
-        
-        self.instanceList = []
-        self.pid = getpid()
+windowList = []
 
-        firstWindow = mainUi(self.addInstanceToList)
-        firstWindow.show()
+def newWindowFunc(sessionSaveFile=None, pos=None):
+    app = QtWidgets.QApplication(sys.argv)
+    mainW = mainUi(newWindowProc, sessionSaveFile=sessionSaveFile, pos=pos)
 
-    def addInstanceToList(self, newInstance):
-        self.instanceList.append(newInstance)
-        print('{0} of instance is runnign with PID={1}'.format(len(self.instanceList), self.pid))
-
-
-if __name__ == "__main__":
-    app = eflqApplication(sys.argv)
-
+    windowList.append(mainW)
+    mainW.show()
     sys.exit(app.exec_())
 
+def newWindowProc(sessionSaveFile=None, pos=None):
+    newProcess = Process(target=newWindowFunc, args=(sessionSaveFile, pos))
+    newProcess.start()
+
+if __name__ == "__main__":
+    newWindowFunc()

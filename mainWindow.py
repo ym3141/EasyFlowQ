@@ -1,3 +1,4 @@
+import sys
 import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
@@ -8,14 +9,13 @@ matplotlib.use('QT5Agg')
 mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesignes/MainWindow.ui') # Load the .ui file
 
 class mainUi(mainWindowBase, mainWindowUi):
-    def __init__(self, addToInstanceListFunc, sessionSaveFile=None):
-
-        addToInstanceListFunc(self)
-        self.addToInstanceListFunc = addToInstanceListFunc
+    def __init__(self, newSessionFunc, sessionSaveFile=None, pos=None):
 
         # init and setup UI
         mainWindowBase.__init__(self)
         self.setupUi(self)
+
+        self.newSessionFunc = newSessionFunc
 
         buttonGroups = self._organizeButtonGroups()
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
@@ -27,6 +27,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.colorGen = colorGenerator()
         self.sessionSaveDir = None
         self.holdFigureUpdate = True
+        self.version = 0.1
+        self.gateEditor = None
+
+        self.set_sessionSaveDir(sessionSaveFile)
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -56,6 +60,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionSave.triggered.connect(self.handle_Save)
         self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
+        self.actionSave_as.triggered.connect(self.handle_SaveAs)
 
 
         # everything update figure
@@ -74,6 +79,14 @@ class mainUi(mainWindowBase, mainWindowUi):
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
 
+        # load the session if there is a session save file:
+        if sessionSaveFile:
+            sessionSave.loadSessionSave(self, sessionSaveFile)
+            self.holdFigureUpdate = False
+            self.handle_FigureUpdate()
+
+        if pos:
+            self.move(pos)
 
         self.holdFigureUpdate = False
 
@@ -126,35 +139,39 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
                 
     def handle_NewSession(self):
-        newSessionWindow = mainUi(self.addToInstanceListFunc)
-        newSessionWindow.move(self.pos() + QtCore.QPoint(30, 30))
-        newSessionWindow.show()
+        self.newSessionFunc(pos = self.pos() + QtCore.QPoint(60, 60))
 
     def handle_OpenSession(self):
         openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Save session', self.baseDir, filter='*.eflq')
         if not openFileDir:
             return
+        # print(openFileDir)
 
-        newSessionWindow = mainUi(self.addToInstanceListFunc)
-        newSessionWindow.move(self.pos() + QtCore.QPoint(30, 30))
-        newSessionWindow.holdFigureUpdate = True        
-        sessionSave.loadSessionSave(newSessionWindow, openFileDir)
-        newSessionWindow.holdFigureUpdate = False
-        newSessionWindow.handle_FigureUpdate()
-        newSessionWindow.show()
-
+        if not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListModel.rowCount()):
+        #If there is nothing in this current window, update the current window
+            self.holdFigureUpdate = True
+            sessionSave.loadSessionSave(self, openFileDir)
+            self.set_sessionSaveDir(openFileDir)
+            self.holdFigureUpdate = False
+            self.handle_FigureUpdate()
+        else:
+            self.newSessionFunc(sessionSaveFile=openFileDir, pos=self.pos() + QtCore.QPoint(60, 60))
 
     def handle_Save(self):
         if self.sessionSaveDir:
             # if save exist, replace it at the same dir
             sessionSaveFile = sessionSave(self, self.sessionSaveDir)
+            sessionSaveFile.saveJson()
         else: 
-            saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.baseDir, filter='*.eflq')
-            if not saveFileDir:
-                return
+            self.handle_SaveAs()
 
-            self.sessionSaveDir = saveFileDir
-            sessionSaveFile = sessionSave(self, saveFileDir)
+    def handle_SaveAs(self):
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.baseDir, filter='*.eflq')
+        if not saveFileDir:
+            return
+
+        self.set_sessionSaveDir(saveFileDir)
+        sessionSaveFile = sessionSave(self, saveFileDir)
         sessionSaveFile.saveJson()
         pass
 
@@ -217,8 +234,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             return [xChnl, yChnl]
 
     def set_curChnls(self, chnls):
-        self.xComboBox.currentIndx = self.chnlListModel.keyList.index(chnls[0])
-        self.yComboBox.currentIndx = self.chnlListModel.keyList.index(chnls[1])
+        self.xComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[0]))
+        self.yComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[1]))
 
     @property
     def curAxScales(self):
@@ -253,3 +270,19 @@ class mainUi(mainWindowBase, mainWindowUi):
             if plotRadio.text() == plotType:
                 plotRadio.setChecked(True)
                 continue
+
+    def set_sessionSaveDir(self, sessionSaveDir):
+        # Set the sessionSaveDir, also update the window title
+        self.sessionSaveDir = sessionSaveDir
+        self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1})'.format(self.version, (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
+
+
+def addToFunc(inst):
+    pass
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    window = mainUi(addToFunc)
+    window.show()
+    sys.exit(app.exec_())
+

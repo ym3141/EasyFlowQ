@@ -35,6 +35,7 @@ class sessionSave():
         self.figOptions['curNormOption'] = mainUiWindow.curNormOption
         self.figOptions['curPlotType'] = mainUiWindow.curPlotType
         self.figOptions['curAxScales'] = mainUiWindow.curAxScales
+        self.figOptions['curChnls'] = mainUiWindow.curChnls
 
         
     def saveJson(self):
@@ -71,8 +72,9 @@ class sessionSave():
         mainUiWindow.set_curAxScales(jDict['figOptions']['curAxScales'])
         mainUiWindow.set_curNormOption(jDict['figOptions']['curNormOption'])
         mainUiWindow.set_curPlotType(jDict['figOptions']['curPlotType'])
+        mainUiWindow.set_curChnls(jDict['figOptions']['curChnls'])
 
-        print(failedFiles)
+        # print(failedFiles)
 
 
 def _convert_smplPlotItem(item, saveDir):
