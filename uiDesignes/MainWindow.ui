@@ -521,7 +521,7 @@
   </action>
   <action name="actionFor_Cytoflex">
    <property name="text">
-    <string>For Cytoflex</string>
+    <string>Cytoflex naming system</string>
    </property>
   </action>
  </widget>

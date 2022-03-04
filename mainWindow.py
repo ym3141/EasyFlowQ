@@ -4,6 +4,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
 from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave, chnlModel
 
+from renameWindow_CF import renameWindow_CF
+
 matplotlib.use('QT5Agg')
 
 mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesignes/MainWindow.ui') # Load the .ui file
@@ -62,6 +64,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
         self.actionSave_as.triggered.connect(self.handle_SaveAs)
 
+        self.actionFor_Cytoflex.triggered.connect(self.handle_renameForCF)
+
 
         # everything update figure
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
@@ -97,8 +101,6 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         for fileName, newColor in zip(fileNames, newColorList):
             self.loadFcsFile(fileName, newColor)
-
-
 
     def handle_FigureUpdate(self):
         # this function is used to process info for the canvas to redraw
@@ -147,7 +149,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             return
         # print(openFileDir)
 
-        if not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListModel.rowCount()):
+        if self.isWindowAlmostNew():
         #If there is nothing in this current window, update the current window
             self.holdFigureUpdate = True
             sessionSave.loadSessionSave(self, openFileDir)
@@ -174,6 +176,29 @@ class mainUi(mainWindowBase, mainWindowUi):
         sessionSaveFile = sessionSave(self, saveFileDir)
         sessionSaveFile.saveJson()
         pass
+
+    def handle_renameForCF(self):
+        if  not self.smplListModel.rowCount():
+            msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
+            return
+
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.baseDir, filter='*.xlsx')
+        if not openFileDir:
+            return
+
+        smplNameList = [self.smplListModel.item(idx).fcsFileName for idx in range(self.smplListModel.rowCount())]
+        self.renameWindow = renameWindow_CF(openFileDir, smplNameList)
+        self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.renameWindow.renameConfirmed.connect(self.handel_renameForCF_return)
+        self.renameWindow.show()
+
+    def handel_renameForCF_return(self, renameDict):
+        for idx in range(self.smplListModel.rowCount()):
+            smplItem = self.smplListModel.item(idx)
+            if smplItem.fcsFileName in renameDict:
+                smplItem.displayName = renameDict[smplItem.fcsFileName]
+
+        self.handle_FigureUpdate()
 
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
@@ -275,6 +300,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         # Set the sessionSaveDir, also update the window title
         self.sessionSaveDir = sessionSaveDir
         self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1})'.format(self.version, (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
+
+    def isWindowAlmostNew(self):
+        return not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListModel.rowCount())
 
 
 def addToFunc(inst):

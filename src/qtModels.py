@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QStandardItem, QStandardItemModel
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
 from PyQt5.QtCore import QModelIndex, QAbstractTableModel, Qt
 import pandas as pd
 
@@ -33,6 +33,10 @@ class smplPlotItem(QStandardItem):
     @property
     def fcsSmpl(self):
         return self.data(role=0x100)
+
+    @property
+    def fcsFileName(self):
+        return Path(self.fileDir).stem
 
     @displayName.setter
     def displayName(self, displayName):
@@ -75,14 +79,33 @@ class chnlModel(QStandardItemModel):
 
 class pandasTableModel(QAbstractTableModel):
 
-    def __init__(self, data):
+    def __init__(self, data, foregroundDF = None, backgroundDF = None):
         super(pandasTableModel, self).__init__()
         self._data = data
+
+        if foregroundDF is None:
+            self._foreground =  pd.DataFrame().reindex_like(data).fillna('#000000')
+        else:
+            self._foreground = foregroundDF
+
+        if backgroundDF is None:
+            self._background =  pd.DataFrame().reindex_like(data).fillna('#ffffff')
+        else:
+            self._background = backgroundDF
 
     def data(self, index, role):
         if role == Qt.DisplayRole or role == Qt.EditRole:
             value = self._data.iloc[index.row(), index.column()]
             return str(value)
+        elif role == Qt.ForegroundRole:
+            value = self._foreground.iloc[index.row(), index.column()]
+
+            return QColor(value)
+
+        elif role == Qt.BackgroundRole:
+            value = self._background.iloc[index.row(), index.column()]
+
+            return QColor(value)
 
     def rowCount(self, index):
         return self._data.shape[0]
