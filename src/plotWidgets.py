@@ -28,11 +28,13 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.draw()
 
+    # the function that draw
     def redraw(self, smplItems, chnlNames, axisNames, axScales, 
                gateList=[], 
                plotType = 'Dot plot',
                normOption = 'Percentage',
                perfModeN=None):
+
 
         self.ax.clear()
         self.navigationBar.update()
@@ -43,14 +45,12 @@ class plotCanvas(FigureCanvasQTAgg):
         # return if no sample to draw, call redraw to show blank
         if len(smplItems) == 0:
             self.draw()
-            return
-
-
+            return []
 
         xChnl, yChnl = chnlNames
 
         # gate the samples
-        gatedSmpls = [] 
+        gatedSmpls = []
         for idx, smplItem in enumerate(smplItems):
             fcsData = smplItem.fcsSmpl
 
@@ -119,6 +119,8 @@ class plotCanvas(FigureCanvasQTAgg):
         if len(smplItems) < 12:
             self.ax.legend(markerscale=5)   
         self.draw()
+
+        return list(zip(smplItems, gatedSmpls))
 
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,

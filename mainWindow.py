@@ -5,6 +5,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave, chnlModel
 
 from renameWindow_CF import renameWindow_CF
+from statWindow import statWindow
 
 matplotlib.use('QT5Agg')
 
@@ -31,7 +32,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = True
         self.version = 0.1
         self.gateEditor = None
+
         self.renameWindow = None
+        self.statWindow = statWindow()
 
         self.set_sessionSaveDir(sessionSaveFile)
 
@@ -65,8 +68,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
         self.actionSave_as.triggered.connect(self.handle_SaveAs)
 
-        self.actionFor_Cytoflex.triggered.connect(self.handle_renameForCF)
+        self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
 
+        self.actionStats_window.triggered.connect(self.handel_StatWindow)
 
         # everything update figure
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
@@ -116,15 +120,19 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         perfModeN = 20000 if self.perfCheck.isChecked() else None
 
-        self.mpl_canvas.redraw(selectedSmpls, 
-                               chnlNames=self.curChnls, 
-                               axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
-                               axScales=self.curAxScales,
-                               gateList=self.curGateList,
-                               plotType = self.curPlotType,
-                               normOption = self.curNormOption,
-                               perfModeN = perfModeN
+
+        smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
+                                             chnlNames=self.curChnls, 
+                                             axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
+                                             axScales=self.curAxScales,
+                                             gateList=self.curGateList,
+                                             plotType = self.curPlotType,
+                                             normOption = self.curNormOption,
+                                             perfModeN = perfModeN
         )
+
+        if self.statWindow.isVisible() and len(smplsOnPlot):
+            self.statWindow.updateStat(smplsOnPlot, self.curChnls)
 
     def handle_AddGate(self):
         self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.loadGate, 
@@ -178,7 +186,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         sessionSaveFile.saveJson()
         pass
 
-    def handle_renameForCF(self):
+    def handle_RenameForCF(self):
         if  not self.smplListModel.rowCount():
             msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
@@ -190,16 +198,23 @@ class mainUi(mainWindowBase, mainWindowUi):
         smplNameList = [self.smplListModel.item(idx).fcsFileName for idx in range(self.smplListModel.rowCount())]
         self.renameWindow = renameWindow_CF(openFileDir, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.renameWindow.renameConfirmed.connect(self.handel_renameForCF_return)
+        self.renameWindow.renameConfirmed.connect(self.handel_RenameForCF_return)
         self.renameWindow.show()
 
-    def handel_renameForCF_return(self, renameDict):
+    def handel_RenameForCF_return(self, renameDict):
         for idx in range(self.smplListModel.rowCount()):
             smplItem = self.smplListModel.item(idx)
             if smplItem.fcsFileName in renameDict:
                 smplItem.displayName = renameDict[smplItem.fcsFileName]
 
         self.handle_FigureUpdate()
+
+    def handel_StatWindow(self):
+        if not self.statWindow.isVisible():
+            self.statWindow.show()
+        self.statWindow.raise_()
+        self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
+        pass
 
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options

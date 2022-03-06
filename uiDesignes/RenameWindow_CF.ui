@@ -65,6 +65,9 @@
            <pointsize>8</pointsize>
           </font>
          </property>
+         <property name="styleSheet">
+          <string notr="true">QHeaderView::section { background-color:lightGray }</string>
+         </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
