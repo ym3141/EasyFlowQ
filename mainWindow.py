@@ -31,6 +31,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = True
         self.version = 0.1
         self.gateEditor = None
+        self.renameWindow = None
 
         self.set_sessionSaveDir(sessionSaveFile)
 
