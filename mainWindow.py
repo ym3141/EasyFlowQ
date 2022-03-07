@@ -1,5 +1,6 @@
 import sys
 import matplotlib
+import pandas as pd
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
 from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave, chnlModel
@@ -63,14 +64,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         # link triggers:
         # manu
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
-        self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionSave.triggered.connect(self.handle_Save)
         self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
         self.actionSave_as.triggered.connect(self.handle_SaveAs)
 
+        self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
+        self.actionExport_data_in_current_gates.triggered.connect(self.handle_ExportDataInGates)
 
-        self.actionStats_window.triggered.connect(self.handel_StatWindow)
+        self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
         # everything update figure
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
@@ -198,10 +200,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         smplNameList = [self.smplListModel.item(idx).fcsFileName for idx in range(self.smplListModel.rowCount())]
         self.renameWindow = renameWindow_CF(openFileDir, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.renameWindow.renameConfirmed.connect(self.handel_RenameForCF_return)
+        self.renameWindow.renameConfirmed.connect(self.handle_RenameForCF_return)
         self.renameWindow.show()
 
-    def handel_RenameForCF_return(self, renameDict):
+    def handle_RenameForCF_return(self, renameDict):
         for idx in range(self.smplListModel.rowCount()):
             smplItem = self.smplListModel.item(idx)
             if smplItem.fcsFileName in renameDict:
@@ -209,7 +211,26 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.handle_FigureUpdate()
 
-    def handel_StatWindow(self):
+    def handle_ExportDataInGates(self):
+
+        if len(self.statWindow.cur_Name_RawData_Pairs):
+            saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export raw data', self.sessionSaveDir, filter='*.xlsx')
+            if not saveFileDir:
+                return
+
+            self.statusbar.showMessage('Start exporting')
+    
+            with pd.ExcelWriter(saveFileDir) as writer:
+                for idx, pair in enumerate(self.statWindow.cur_Name_RawData_Pairs):
+                    name, fcsData = pair
+                    df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
+                    df2write.to_excel(writer, sheet_name=name)
+
+            self.statusbar.showMessage('Fished exporting')
+        else:
+            QtWidgets.QMessageBox.warning(self, 'Error', 'No sample selected to export')
+
+    def handle_StatWindow(self):
         if not self.statWindow.isVisible():
             self.statWindow.show()
         self.statWindow.raise_()

@@ -78,7 +78,7 @@ class statWindow(wUi, wBase):
             return
 
         self.progressBar.setEnabled(True)
-        self.progressBar.setValue(0)        
+        self.progressBar.reset()        
         with pd.ExcelWriter(saveFileDir) as writer:
             for idx, pair in enumerate(self.cur_Name_RawData_Pairs):
                 name, fcsData = pair
