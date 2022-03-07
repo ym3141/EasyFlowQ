@@ -24,19 +24,19 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
         
         # other init
+        self.version = 0.1
         self.baseDir = './demoSamples/'
+        self.set_sessionSaveDir(sessionSaveFile)
+
         self.chnlDict = dict()
         self.curGateList = []
         self.colorGen = colorGenerator()
         self.sessionSaveDir = None
         self.holdFigureUpdate = True
-        self.version = 0.1
         self.gateEditor = None
 
         self.renameWindow = None
-        self.statWindow = statWindow()
-
-        self.set_sessionSaveDir(sessionSaveFile)
+        self.statWindow = statWindow(self.sessionSaveDir if self.sessionSaveDir else self.baseDir)
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
@@ -131,7 +131,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              perfModeN = perfModeN
         )
 
-        if self.statWindow.isVisible() and len(smplsOnPlot):
+        if len(smplsOnPlot):
             self.statWindow.updateStat(smplsOnPlot, self.curChnls)
 
     def handle_AddGate(self):
