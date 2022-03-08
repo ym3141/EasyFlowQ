@@ -9,7 +9,7 @@ from src import pandasTableModel
 
 import re
 
-wUi, wBase = uic.loadUiType('./uiDesignes/StatWindow.ui') # Load the .ui file
+wUi, wBase = uic.loadUiType('./uiDesigns/StatWindow.ui') # Load the .ui file
 
 class statWindow(wUi, wBase):
     def __init__(self, sessionDir) -> None:

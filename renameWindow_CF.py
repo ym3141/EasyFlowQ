@@ -9,7 +9,7 @@ from src import pandasTableModel
 
 import re
 
-wUi, wBase = uic.loadUiType('./uiDesignes/RenameWindow_CF.ui') # Load the .ui file
+wUi, wBase = uic.loadUiType('./uiDesigns/RenameWindow_CF.ui') # Load the .ui file
 re_CFName = re.compile(r'(\d\d)-Well-([A-H])(\d\d?)')
 
 class renameWindow_CF(wUi, wBase):

@@ -9,9 +9,9 @@
 __version__ = '1.3.0'
 
 from . import io
-from . import excel_ui
-from . import gate
+# from . import excel_ui
+# from . import gate
 from . import transform
-from . import mef
+# from . import mef
 from . import plot
-from . import stats
+# from . import stats

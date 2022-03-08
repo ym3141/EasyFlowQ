@@ -5,7 +5,6 @@ import pandas as pd
 from pathlib import Path
 import sys
 
-sys.path.insert(0, './FlowCal')
 from FlowCal.io import FCSData
 from FlowCal.transform import to_rfi
 

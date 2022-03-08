@@ -10,7 +10,7 @@ from statWindow import statWindow
 
 matplotlib.use('QT5Agg')
 
-mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesignes/MainWindow.ui') # Load the .ui file
+mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesigns/MainWindow.ui') # Load the .ui file
 
 class mainUi(mainWindowBase, mainWindowUi):
     def __init__(self, newSessionFunc, sessionSaveFile=None, pos=None):

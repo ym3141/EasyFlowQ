@@ -8,7 +8,6 @@ from PyQt5 import QtCore, QtGui
 
 import sys
 
-sys.path.insert(0, './FlowCal')
 from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 
 
