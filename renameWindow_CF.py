@@ -75,6 +75,7 @@ def exel2renameTable(renamingFileDir, maxPlatN):
         allNameTable.append(names.popitem()[1].fillna('').astype(str))
         plateNumber = int(np.max([np.ceil(allNameTable[-1].shape[0]/12), plateNumber]))
 
+    allNameTable.reverse()
     # Make sure all the tables are (8xN)x12 shape
     for nameTable in allNameTable:
         for colName in range(12):

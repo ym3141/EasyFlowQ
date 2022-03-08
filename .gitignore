@@ -5,6 +5,8 @@ _temp/*
 
 .vscode/
 
+run.bat
+
 # *.py[cod]
 # *$py.class
 

@@ -57,7 +57,7 @@ class statWindow(wUi, wBase):
         formatters = ['{:.0f}', '{:.2%}'] + ['{:.4e}'] * 4
         self.displayDF = pd.DataFrame()
         for idx, col in enumerate(newDF.columns):
-            self.displayDF[col] = newDF[col].apply(formatters[idx].format)
+            self.displayDF[col] = newDF.iloc[:, idx].apply(formatters[idx].format)
         
         self.statTabelModel = pandasTableModel(self.displayDF)
         self.tableView.setModel(self.statTabelModel)
