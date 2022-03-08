@@ -1,0 +1,2 @@
+This is a adopted version of the FLowCal library. The orignal code is hosted on https://github.com/ym3141/FlowCal, a fork from https://github.com/taborlab/FlowCal.
+Please refer to the "ReadmeLicense" folder for the original readme and license files.
