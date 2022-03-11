@@ -48,6 +48,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
         self.plotLayout.addWidget(self.mpl_canvas)
 
+        self.smplsOnPlot = []
+
         # init ui models
         self.smplListModel = QtGui.QStandardItemModel(self.sampleListView)
         self.sampleListView.setModel(self.smplListModel)
@@ -133,10 +135,17 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              perfModeN = perfModeN
         )
 
-        if len(smplsOnPlot):
-            self.statWindow.updateStat(smplsOnPlot, self.curChnls)
+        self.smplsOnPlot = smplsOnPlot
+
+        if self.statWindow.isVisible() and len(self.smplsOnPlot):
+            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls)
 
     def handle_AddGate(self):
+        self._disableInputForGate(True)
+        self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+
+        self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
+
         self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.loadGate, 
                                             canvasParam=(self.curChnls, self.curAxScales))
         self.gateEditor.addGate_connnect()
@@ -232,6 +241,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_StatWindow(self):
         if not self.statWindow.isVisible():
+            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls)
             self.statWindow.show()
         self.statWindow.raise_()
         self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
@@ -259,6 +269,13 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         return plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG
 
+    def _disableInputForGate(self, disable=True):
+        self.toolBox.setEnabled(not disable)
+        for idx in range(self.leftLayout.count()):
+            self.leftLayout.itemAt(idx).widget().setEnabled(not disable)
+        for idx in range(self.rightLayout.count()):
+            self.rightLayout.itemAt(idx).widget().setEnabled(not disable)
+
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         newSmplItem = smplPlotItem(fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
         self.smplListModel.appendRow(newSmplItem)
@@ -272,19 +289,28 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
 
     def loadGate(self, gate, replace=None, gateName=None):
+        self._disableInputForGate(False)
+        self.mpl_canvas.unsetCursor()
+        self.statusbar.clearMessage()
         if replace:
             pass
         else:
-            if not gateName:
-                gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
-                if not flag:
-                    self.handle_FigureUpdate()
-                    return
+            if gate is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
+                self.handle_FigureUpdate()
+            else:
+                if not gateName:
+                    gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
+                    if not flag:
+                        self.handle_FigureUpdate()
+                        return
+                
+                self._disableInputForGate(False)
 
-            newQItem = QtGui.QStandardItem(gateName)
-            newQItem.setData(gate)
-            newQItem.setCheckable(True)
-            self.gateListModel.appendRow(newQItem)
+                newQItem = QtGui.QStandardItem(gateName)
+                newQItem.setData(gate)
+                newQItem.setCheckable(True)
+                self.gateListModel.appendRow(newQItem)
 
     @property
     def curChnls(self):

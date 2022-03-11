@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QVBoxLayout" name="LeftLayout">
+     <layout class="QVBoxLayout" name="leftLayout">
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
@@ -43,7 +43,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="MidLayout">
+     <layout class="QVBoxLayout" name="midLayout">
       <item>
        <widget class="QGroupBox" name="toolBox">
         <property name="sizePolicy">
@@ -166,7 +166,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="RightLayout">
+     <layout class="QVBoxLayout" name="rightLayout">
       <item>
        <widget class="QFrame" name="frame">
         <property name="minimumSize">

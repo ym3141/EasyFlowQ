@@ -76,8 +76,11 @@ class polygonGateEditor:
             
             self.blitDraw()
 
-            finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
-            self.returnToFunc(finishedNewGate)
+            if len(xydata) > 3:
+                finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
+                self.returnToFunc(finishedNewGate)
+            else:
+                self.returnToFunc(None)
 
             
 
