@@ -4,6 +4,7 @@ __pycache__/
 _temp/*
 
 .vscode/
+.releases/
 
 run.bat
 
