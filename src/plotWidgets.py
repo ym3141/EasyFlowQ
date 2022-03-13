@@ -2,7 +2,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.ticker import PercentFormatter
 import matplotlib.pyplot as plt
+
 import numpy as np
+from scipy.ndimage import gaussian_filter1d
 
 from PyQt5 import QtCore, QtGui
 
@@ -32,7 +34,8 @@ class plotCanvas(FigureCanvasQTAgg):
                gateList=[], 
                plotType = 'Dot plot',
                normOption = 'Percentage',
-               perfModeN=None):
+               perfModeN=None,
+               smooth=0):
 
 
         self.ax.clear()
@@ -93,11 +96,22 @@ class plotCanvas(FigureCanvasQTAgg):
             xlim = [np.inf, -np.inf]
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
 
-                xlim[0] = np.min([np.min(gatedSmpl[:, xChnl]), xlim[0]])
-                xlim[1] = np.max([np.max(gatedSmpl[:, xChnl]), xlim[1]])
+                n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
+                                            color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)
 
-                hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
-                            color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption)
+                nonZeros = np.nonzero(n)
+                if np.min(nonZeros) > 0:
+                    minIdx = np.min(nonZeros) - 1
+                else:
+                    minIdx = np.min(nonZeros)
+
+                if np.max(nonZeros) < len(nonZeros) - 1:
+                    maxIdx = np.max(nonZeros) + 1
+                else:
+                    maxIdx = np.max(nonZeros)
+
+                xlim[0] = np.min([edge[minIdx], xlim[0]])
+                xlim[1] = np.max([edge[maxIdx], xlim[1]])
 
             if axScales[0] == 'log':
                 if xlim[0] <= 0:
@@ -124,7 +138,8 @@ class plotCanvas(FigureCanvasQTAgg):
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,
                 normed_height=False,
-                label=''):
+                label='',
+                smooth=0):
 
     xscale_kwargs = {}
     if xscale=='logicle':
@@ -149,6 +164,9 @@ def hist1d_line(data, ax, channel, xscale, color,
 
     # Plot
     n, edges = np.histogram(data[:, channel], bins=bins, weights=weights)
+
+    if smooth:
+        n = gaussian_filter1d(n, sigma=smooth/16)
 
     line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color, label=label)
 

@@ -89,6 +89,8 @@ class mainUi(mainWindowBase, mainWindowUi):
                 radio.clicked.connect(self.handle_FigureUpdate)
         self.perfCheck.stateChanged.connect(self.handle_FigureUpdate)
 
+        self.smoothSlider.valueChanged.connect(self.handle_FigureUpdate)
+
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
 
@@ -132,7 +134,8 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              gateList=self.curGateList,
                                              plotType = self.curPlotType,
                                              normOption = self.curNormOption,
-                                             perfModeN = perfModeN
+                                             perfModeN = perfModeN,
+                                             smooth = self.smoothSlider.value()
         )
 
         self.smplsOnPlot = smplsOnPlot
@@ -368,12 +371,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         return not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListModel.rowCount())
 
 
-def addToFunc(inst):
-    pass
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    window = mainUi(addToFunc)
+    window = mainUi()
     window.show()
     sys.exit(app.exec_())
 
