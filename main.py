@@ -5,19 +5,19 @@ from mainWindow import mainUi
 
 from multiprocessing import Process
 
-from os import getpid
-
-windowList = []
-
 def newWindowFunc(sessionSaveFile=None, pos=None):
     app = QtWidgets.QApplication(sys.argv)
-    mainW = mainUi(newWindowProc, sessionSaveFile=sessionSaveFile, pos=pos)
+    mainW = mainUi(sessionSaveFile=sessionSaveFile, pos=pos)
+    mainW.requestNewWindow.connect(newWindowProc)
 
-    windowList.append(mainW)
     mainW.show()
     sys.exit(app.exec_())
 
-def newWindowProc(sessionSaveFile=None, pos=None):
+def newWindowProc(sessionSaveFile, pos):
+
+    if sessionSaveFile == '':
+        sessionSaveFile = None
+
     newProcess = Process(target=newWindowFunc, args=(sessionSaveFile, pos))
     newProcess.start()
 

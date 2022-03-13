@@ -13,13 +13,13 @@ matplotlib.use('QT5Agg')
 mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesigns/MainWindow.ui') # Load the .ui file
 
 class mainUi(mainWindowBase, mainWindowUi):
-    def __init__(self, newSessionFunc, sessionSaveFile=None, pos=None):
+    requestNewWindow = QtCore.pyqtSignal(str, QtCore.QPoint)
+
+    def __init__(self, sessionSaveFile=None, pos=None):
 
         # init and setup UI
         mainWindowBase.__init__(self)
         self.setupUi(self)
-
-        self.newSessionFunc = newSessionFunc
 
         buttonGroups = self._organizeButtonGroups()
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
@@ -161,7 +161,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
                 
     def handle_NewSession(self):
-        self.newSessionFunc(pos = self.pos() + QtCore.QPoint(60, 60))
+        self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
     def handle_OpenSession(self):
         openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Save session', self.baseDir, filter='*.eflq')
@@ -177,7 +177,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.holdFigureUpdate = False
             self.handle_FigureUpdate()
         else:
-            self.newSessionFunc(sessionSaveFile=openFileDir, pos=self.pos() + QtCore.QPoint(60, 60))
+            self.requestNewWindow.emit(openFileDir, self.pos() + QtCore.QPoint(60, 60))
 
     def handle_Save(self):
         if self.sessionSaveDir:
