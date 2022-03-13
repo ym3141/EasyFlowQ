@@ -2,8 +2,6 @@
 
 
 block_cipher = None
-DISTPATH = './releases'
-workpath = './releases'
 
 
 a = Analysis(['main.py'],
