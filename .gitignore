@@ -2,8 +2,10 @@
 __pycache__/
 
 _temp/*
+releases/*
 
 .vscode/
+
 
 run.bat
 
