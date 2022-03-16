@@ -1,5 +1,6 @@
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
 from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt
+from PyQt5.QtWidgets import QListWidgetItem
 import pandas as pd
 
 from pathlib import Path
@@ -44,6 +45,15 @@ class smplPlotItem(QStandardItem):
     @plotColor.setter
     def plotColor(self, plotColor):
         self.setData(plotColor, role=1) 
+
+class gateWidgetItem(QListWidgetItem):
+    def __init__(self, gateName, gate):
+        super(QListWidgetItem, self).__init__(gateName)
+
+        self.setFlags(self.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEditable)
+        self.setCheckState(0)
+
+        self.gate = gate
 
 class chnlModel(QStandardItemModel):
     def __init__(self):

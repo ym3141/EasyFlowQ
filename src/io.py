@@ -26,8 +26,8 @@ class sessionSave():
 
 
         self.gateSaveList = []
-        for idx in range(mainUiWindow.gateListModel.rowCount()):
-            gateItem = mainUiWindow.gateListModel.item(idx)
+        for idx in range(mainUiWindow.gateListWidget.count()):
+            gateItem = mainUiWindow.gateListWidget.item(idx)
             self.gateSaveList.append(_convert_gateItem(gateItem))
 
         self.figOptions = dict()
@@ -90,11 +90,11 @@ def _convert_smplPlotItem(item, saveDir):
     return smplSave
 
 def _convert_gateItem(gateItem):
-    gateSave = deepcopy(gateItem.data().__dict__)
+    gateSave = deepcopy(gateItem.gate.__dict__)
 
     gateSave['verts'] = gateSave['verts'].tolist()
 
-    gateSave['type'] = gateItem.data().__class__.__name__
+    gateSave['type'] = gateItem.gate.__class__.__name__
     gateSave['displayName'] = gateItem.text()
     gateSave['checkState'] = gateItem.checkState()
 

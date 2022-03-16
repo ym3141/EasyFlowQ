@@ -3,7 +3,7 @@ import matplotlib
 import pandas as pd
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src.qtModels import smplPlotItem, chnlModel
+from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor
 from src.plotWidgets import plotCanvas
 from src.io import sessionSave
@@ -59,9 +59,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.sampleListView.setModel(self.smplListModel)
         self.smplSelectionModel = self.sampleListView.selectionModel()
 
-        self.gateListModel = QtGui.QStandardItemModel(self.gateListView)
-        self.gateListView.setModel(self.gateListModel)
-        self.gateSelectionModel = self.gateListView.selectionModel()
+        self.gateListWidgetModel = self.gateListWidget.model()
+        # self.gateListView.setModel(self.gateListModel)
+        # self.gateSelectionModel = self.gateListView.selectionModel()
 
         self.chnlListModel = chnlModel()
         self.xComboBox.setModel(self.chnlListModel)
@@ -82,8 +82,9 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # everything update figure
         self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
-        self.gateListModel.itemChanged.connect(self.handle_GateSelectionChanged)
-        self.gateListModel.itemChanged.connect(self.handle_FigureUpdate)
+
+        self.gateListWidget.itemChanged.connect(self.handle_FigureUpdate)
+        self.gateListWidgetModel.rowsMoved.connect(self.handle_FigureUpdate)
 
         self.xComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
         self.yComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
@@ -125,8 +126,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
-        allGateItems = [self.gateListModel.item(idx) for idx in range(self.gateListModel.rowCount())]
-        self.curGateList = [gateItem.data() for gateItem in allGateItems if (gateItem.checkState() == 2)]
+        allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
+        self.curGateList = [gateItem.gate for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
         perfModeN = 20000 if self.perfCheck.isChecked() else None
 
@@ -314,10 +315,10 @@ class mainUi(mainWindowBase, mainWindowUi):
                 
                 self._disableInputForGate(False)
 
-                newQItem = QtGui.QStandardItem(gateName)
-                newQItem.setData(gate)
-                newQItem.setCheckable(True)
-                self.gateListModel.appendRow(newQItem)
+                newQItem = gateWidgetItem(gateName, gate)
+                # newQItem.setData(0x100, gate)
+                # newQItem.setCheckable(True)
+                self.gateListWidget.addItem(newQItem)
 
     @property
     def curChnls(self):
@@ -372,7 +373,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1})'.format(self.version, (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
 
     def isWindowAlmostNew(self):
-        return not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListModel.rowCount())
+        return not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListWidget.count())
 
 
 if __name__ == '__main__':
