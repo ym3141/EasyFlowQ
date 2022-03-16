@@ -5,7 +5,7 @@ from os import path
 
 import pandas as pd
 import numpy as np
-from src import pandasTableModel
+from src.qtModels import pandasTableModel
 
 import re
 

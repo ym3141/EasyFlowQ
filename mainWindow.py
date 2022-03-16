@@ -3,7 +3,11 @@ import matplotlib
 import pandas as pd
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
-from src import polygonGateEditor, smplPlotItem, plotCanvas, colorGenerator, sessionSave, chnlModel
+from src.qtModels import smplPlotItem, chnlModel
+from src.gates import polygonGateEditor
+from src.plotWidgets import plotCanvas
+from src.io import sessionSave
+from src.utils import colorGenerator
 
 from renameWindow_CF import renameWindow_CF
 from statWindow import statWindow

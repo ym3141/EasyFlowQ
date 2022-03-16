@@ -8,8 +8,6 @@ from scipy.ndimage import gaussian_filter1d
 
 from PyQt5 import QtCore, QtGui
 
-import sys
-
 from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 
 

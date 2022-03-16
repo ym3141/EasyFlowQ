@@ -1,5 +1,5 @@
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
-from PyQt5.QtCore import QModelIndex, QAbstractTableModel, Qt
+from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt
 import pandas as pd
 
 from pathlib import Path
@@ -45,7 +45,6 @@ class smplPlotItem(QStandardItem):
     def plotColor(self, plotColor):
         self.setData(plotColor, role=1) 
 
-
 class chnlModel(QStandardItemModel):
     def __init__(self):
         super().__init__()
@@ -73,8 +72,16 @@ class chnlModel(QStandardItemModel):
     def keyList(self):
         return [self.item(idx).data() for idx in range(self.rowCount())]
 
+class gateProxyModel(QSortFilterProxyModel):
+    def __init__(self, parent):
+        QSortFilterProxyModel.__init__(self, parent)
 
+    def lessThan(self, left: QModelIndex, right: QModelIndex) -> bool:
+        # leftData = self.sourceModel().data(left)
+        # rightData = self.sourceModel().data(right)
 
+        return super().lessThan(left, right)
+    pass
 
 class pandasTableModel(QAbstractTableModel):
 
@@ -141,3 +148,5 @@ class pandasTableModel(QAbstractTableModel):
         flags |= Qt.ItemIsEditable
         return flags
 
+if __name__ == '__main__':
+    pass
