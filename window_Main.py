@@ -96,6 +96,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
 
+        # others
+        self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
+
         # load the session if there is a session save file:
         if sessionSaveFile:
             sessionSave.loadSessionSave(self, sessionSaveFile)
@@ -248,6 +251,14 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
         pass
 
+
+    def handle_ChangeSmplColor(self):
+        color = QtWidgets.QColorDialog.getColor()
+
+        if color.isValid():
+            for item in self.smplListWidget.selectedItems():
+                item.plotColor = color
+
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
 
@@ -283,7 +294,6 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         if selected:
             newSmplItem.setSelected(True)
-
 
         # merging the channel dictionary. 
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
