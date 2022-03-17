@@ -25,18 +25,27 @@
        </widget>
       </item>
       <item>
-       <widget class="QListView" name="sampleListView">
+       <widget class="QListWidget" name="smplListWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="acceptDrops">
+         <bool>true</bool>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
-        </property>
-        <property name="viewMode">
-         <enum>QListView::ListMode</enum>
         </property>
        </widget>
       </item>
@@ -148,6 +157,23 @@
           <bool>true</bool>
          </property>
         </widget>
+        <widget class="QPushButton" name="colorPB">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>90</y>
+           <width>131</width>
+           <height>34</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Sample color</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resource/qt_resource.qrc">
+           <normaloff>:/icons/PelatteIcon2.tif</normaloff>:/icons/PelatteIcon2.tif</iconset>
+         </property>
+        </widget>
        </widget>
       </item>
       <item>
@@ -206,7 +232,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Gate List</string>
+            <string>Gate List (in order)</string>
            </property>
           </widget>
          </item>
@@ -557,20 +583,32 @@
    <property name="text">
     <string>New Session</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionOpen_Session">
    <property name="text">
     <string>Open Session...</string>
+   </property>
+   <property name="shortcut">
+    <string>Return</string>
    </property>
   </action>
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionSave_as">
    <property name="text">
     <string>Save as...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionLoad_Data_Files">
@@ -609,7 +647,9 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource/qt_resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>smoothSlider</sender>

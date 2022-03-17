@@ -54,13 +54,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplsOnPlot = []
 
         # init ui models
-        self.smplListModel = QtGui.QStandardItemModel(self.sampleListView)
-        self.sampleListView.setModel(self.smplListModel)
-        self.smplSelectionModel = self.sampleListView.selectionModel()
-
+        self.smplListWidgetModel = self.smplListWidget.model()
         self.gateListWidgetModel = self.gateListWidget.model()
-        # self.gateListView.setModel(self.gateListModel)
-        # self.gateSelectionModel = self.gateListView.selectionModel()
+
 
         self.chnlListModel = chnlModel()
         self.xComboBox.setModel(self.chnlListModel)
@@ -80,7 +76,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
         # everything update figure
-        self.smplSelectionModel.selectionChanged.connect(self.handle_FigureUpdate)
+        self.smplListWidget.itemChanged.connect(self.handle_FigureUpdate)
+        self.smplListWidget.itemSelectionChanged.connect(self.handle_FigureUpdate)
+        self.smplListWidgetModel.rowsMoved.connect(self.handle_FigureUpdate)
 
         self.gateListWidget.itemChanged.connect(self.handle_FigureUpdate)
         self.gateListWidgetModel.rowsMoved.connect(self.handle_FigureUpdate)
@@ -97,6 +95,9 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
+
+        # others
+        self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -123,7 +124,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         if self.holdFigureUpdate:
             return
 
-        selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
+        selectedSmpls = self.smplListWidget.selectedItems()
 
         perfModeN = 20000 if self.perfCheck.isChecked() else None
 
@@ -250,6 +251,14 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
         pass
 
+
+    def handle_ChangeSmplColor(self):
+        color = QtWidgets.QColorDialog.getColor()
+
+        if color.isValid():
+            for item in self.smplListWidget.selectedItems():
+                item.plotColor = color
+
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
 
@@ -281,10 +290,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         newSmplItem = smplPlotItem(fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
-        self.smplListModel.appendRow(newSmplItem)
+        self.smplListWidget.addItem(newSmplItem)
 
         if selected:
-            self.smplSelectionModel.select(self.smplListModel.indexFromItem(newSmplItem), QtCore.QItemSelectionModel.Select)
+            newSmplItem.setSelected(True)
 
         # merging the channel dictionary. 
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
