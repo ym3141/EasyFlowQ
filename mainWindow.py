@@ -34,7 +34,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.set_sessionSaveDir(sessionSaveFile)
 
         self.chnlDict = dict()
-        self.curGateList = []
         self.colorGen = colorGenerator()
         self.sessionSaveDir = None
         self.holdFigureUpdate = True
@@ -126,17 +125,13 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         selectedSmpls = [self.smplListModel.itemFromIndex(idx) for idx in self.sampleListView.selectedIndexes()]
 
-        allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
-        self.curGateList = [gateItem.gate for gateItem in allGateItems if (gateItem.checkState() == 2)]
-
         perfModeN = 20000 if self.perfCheck.isChecked() else None
-
 
         smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
                                              chnlNames=self.curChnls, 
                                              axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                              axScales=self.curAxScales,
-                                             gateList=self.curGateList,
+                                             gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              plotType = self.curPlotType,
                                              normOption = self.curNormOption,
                                              perfModeN = perfModeN,
@@ -146,7 +141,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplsOnPlot = smplsOnPlot
 
         if self.statWindow.isVisible() and len(self.smplsOnPlot):
-            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls)
+            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
 
     def handle_AddGate(self):
         self._disableInputForGate(True)
@@ -249,7 +244,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_StatWindow(self):
         if not self.statWindow.isVisible():
-            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls)
+            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
             self.statWindow.show()
         self.statWindow.raise_()
         self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
@@ -366,6 +361,12 @@ class mainUi(mainWindowBase, mainWindowUi):
             if plotRadio.text() == plotType:
                 plotRadio.setChecked(True)
                 continue
+
+    @property
+    def curGateItems(self):
+        allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
+
+        return [gateItem for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
     def set_sessionSaveDir(self, sessionSaveDir):
         # Set the sessionSaveDir, also update the window title

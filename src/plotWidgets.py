@@ -10,6 +10,8 @@ from PyQt5 import QtCore, QtGui
 
 from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 
+import warnings
+
 
 class plotCanvas(FigureCanvasQTAgg):
     def __init__(self):
@@ -50,15 +52,7 @@ class plotCanvas(FigureCanvasQTAgg):
         xChnl, yChnl = chnlNames
 
         # gate the samples
-        gatedSmpls = []
-        for idx, smplItem in enumerate(smplItems):
-            fcsData = smplItem.fcsSmpl
-
-            inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
-            for gate in gateList:
-                inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
-            gatedSmpl = fcsData[inGateFlag, :]
-            gatedSmpls.append(gatedSmpl)
+        gatedSmpls, gateFracs = self.gateSmpls(smplItems, gateList)
                 
         # Plot dots or histogram
         if plotType == 'Dot plot':
@@ -131,7 +125,44 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.legend(markerscale=5)   
         self.draw()
 
-        return list(zip(smplItems, gatedSmpls))
+        return list(zip(smplItems, gatedSmpls, gateFracs))
+
+    def gateSmpls(self, smplItems, gateList):
+        #gate samples with a list of gate:
+
+        gatedSmpls = []
+        gateFracs = []
+        for idx, smplItem in enumerate(smplItems):
+            
+            fcsData = smplItem.fcsSmpl
+            inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
+
+            fracInEachGate = []
+
+            for gate in gateList:
+
+                if gate.chnls[0] in fcsData.channels and gate.chnls[1] in fcsData.channels:
+
+                    newFlag = gate.isInsideGate(fcsData)
+
+                    fracInParent = np.sum(np.logical_and(newFlag, inGateFlag)) / np.sum(inGateFlag)
+                    fracInEachGate.append(fracInParent)
+
+                    inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
+
+                else: 
+                    warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
+                    fracInEachGate.append(1.0)
+            
+            gateFracs.append(fracInEachGate)
+
+            gatedSmpl = fcsData[inGateFlag, :]
+            gatedSmpls.append(gatedSmpl)
+        
+        return gatedSmpls, gateFracs
+
+
+
 
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,
