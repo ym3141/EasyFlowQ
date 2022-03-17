@@ -25,18 +25,27 @@
        </widget>
       </item>
       <item>
-       <widget class="QListView" name="sampleListView">
+       <widget class="QListWidget" name="smplListWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="acceptDrops">
+         <bool>true</bool>
+        </property>
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::MoveAction</enum>
+        </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::ExtendedSelection</enum>
-        </property>
-        <property name="viewMode">
-         <enum>QListView::ListMode</enum>
         </property>
        </widget>
       </item>
@@ -206,7 +215,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Gate List</string>
+            <string>Gate List (in order)</string>
            </property>
           </widget>
          </item>
