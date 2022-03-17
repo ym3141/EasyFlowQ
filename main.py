@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPoint
-from mainWindow import mainUi
+from window_Main import mainUi
 
 from multiprocessing import Process
 

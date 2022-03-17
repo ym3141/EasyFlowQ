@@ -3,9 +3,10 @@ import numpy as np
 
 class colorGenerator:
     allColors = np.vstack([
-        sns.husl_palette(6, h=0, s=.9, l=.7),
-        sns.husl_palette(6, h=0.0625, s=.9, l=.5),
-        sns.husl_palette(6, h=-0.0625, s=.5, l=.7) 
+        sns.husl_palette(8, h=0, s=.9, l=.7),
+        sns.husl_palette(5, h=0.0625, s=.6, l=.5),
+        sns.husl_palette(2, h=0.2, s=.5, l=.3),
+        sns.husl_palette(5, h=-0.1, s=.8, l=.8)
     ])
 
     def __init__(self) -> None:
