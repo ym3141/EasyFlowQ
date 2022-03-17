@@ -9,8 +9,8 @@ from src.plotWidgets import plotCanvas
 from src.io import sessionSave
 from src.utils import colorGenerator
 
-from renameWindow_CF import renameWindow_CF
-from statWindow import statWindow
+from window_RenameCF import renameWindow_CF
+from window_Stats import statWindow
 
 matplotlib.use('QT5Agg')
 
