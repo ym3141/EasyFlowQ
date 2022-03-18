@@ -17,6 +17,7 @@ class plotCanvas(FigureCanvasQTAgg):
     def __init__(self):
         self.fig, self.ax = plt.subplots()
         self.fig.set_tight_layout(True)
+        self.fig.dpi = self.fig.dpi * 1.5
         super().__init__(self.fig)
 
         self.navigationBar = NavigationToolbar(self, self)

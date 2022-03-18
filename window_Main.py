@@ -202,7 +202,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_RenameForCF(self):
-        if  not self.smplListModel.rowCount():
+        if  not self.smplListWidget.count():
             msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
 
@@ -210,15 +210,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         if not openFileDir:
             return
 
-        smplNameList = [self.smplListModel.item(idx).fcsFileName for idx in range(self.smplListModel.rowCount())]
+        smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
         self.renameWindow = renameWindow_CF(openFileDir, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.renameWindow.renameConfirmed.connect(self.handle_RenameForCF_return)
         self.renameWindow.show()
 
     def handle_RenameForCF_return(self, renameDict):
-        for idx in range(self.smplListModel.rowCount()):
-            smplItem = self.smplListModel.item(idx)
+        for idx in range(self.smplListWidget.count()):
+            smplItem = self.smplListWidget.item(idx)
             if smplItem.fcsFileName in renameDict:
                 smplItem.displayName = renameDict[smplItem.fcsFileName]
 
@@ -291,6 +291,8 @@ class mainUi(mainWindowBase, mainWindowUi):
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         newSmplItem = smplPlotItem(fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
         self.smplListWidget.addItem(newSmplItem)
+        if displayName:
+            newSmplItem.displayName = displayName
 
         if selected:
             newSmplItem.setSelected(True)
@@ -383,7 +385,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1})'.format(self.version, (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
 
     def isWindowAlmostNew(self):
-        return not (len(self.chnlListModel.keyList) and self.smplListModel.rowCount() and self.gateListWidget.count())
+        return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
 
 
 if __name__ == '__main__':

@@ -13,9 +13,9 @@ class sessionSave():
         baseDir = path.dirname(saveFileDir)
 
         self.smplSaveList = []
-        selectedSmplItems = [mainUiWindow.smplListModel.itemFromIndex(idx) for idx in mainUiWindow.sampleListView.selectedIndexes()]
-        for idx in range(mainUiWindow.smplListModel.rowCount()):
-            plotItem = mainUiWindow.smplListModel.item(idx)
+        selectedSmplItems = mainUiWindow.smplListWidget.selectedItems()
+        for idx in range(mainUiWindow.smplListWidget.count()):
+            plotItem = mainUiWindow.smplListWidget.item(idx)
             self.smplSaveList.append(_convert_smplPlotItem(plotItem, baseDir))
 
             if plotItem in selectedSmplItems:
