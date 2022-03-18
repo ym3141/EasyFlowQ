@@ -592,7 +592,7 @@
     <string>Open Session...</string>
    </property>
    <property name="shortcut">
-    <string>Return</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSave">

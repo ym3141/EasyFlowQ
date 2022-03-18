@@ -2,7 +2,7 @@ import json
 from os import path
 from copy import deepcopy
 
-from .gates import polygonGate
+from .gates import polygonGate, lineGate
 
 class sessionSave():
     # This is a json serializable class, used for save the session
@@ -66,7 +66,10 @@ class sessionSave():
                 failedFiles.append(jSmpl)
 
         for jGate in jDict['gateSaveList']:
-            mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'])
+            if jGate['type'] == 'polygonGate':
+                mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'])
+            elif jGate['type'] == 'lineGate':
+                mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'])
 
         
         mainUiWindow.set_curAxScales(jDict['figOptions']['curAxScales'])
@@ -92,15 +95,15 @@ def _convert_smplPlotItem(item, saveDir):
 def _convert_gateItem(gateItem):
     gateSave = deepcopy(gateItem.gate.__dict__)
 
-    gateSave['verts'] = gateSave['verts'].tolist()
-
     gateSave['type'] = gateItem.gate.__class__.__name__
     gateSave['displayName'] = gateItem.text()
     gateSave['checkState'] = gateItem.checkState()
 
     if gateSave['type'] == 'polygonGate':
+        gateSave['verts'] = gateSave['verts'].tolist()
         del gateSave['prebuiltPath']
-    else:
+
+    elif gateSave['type'] == 'lineGate':
         pass
 
     return gateSave

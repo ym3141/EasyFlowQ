@@ -2,23 +2,23 @@
     "figOptions": {
         "curAxScales": [
             "log",
-            "log"
+            "linear"
         ],
         "curChnls": [
             "FL10-A",
             "FL6-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Dot plot"
+        "curPlotType": "Histogram"
     },
-    "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/tteses1.eflq",
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/tteses1.eflq",
     "gateSaveList": [
         {
             "axScales": [
                 "log",
                 "log"
             ],
-            "checkState": 2,
+            "checkState": 0,
             "chnls": [
                 "FSC-A",
                 "SSC-A"
@@ -49,11 +49,21 @@
             ]
         },
         {
+            "checkState": 2,
+            "chnl": "FL10-A",
+            "displayName": "ling",
+            "ends": [
+                261.84979595645416,
+                10662.311781343662
+            ],
+            "type": "lineGate"
+        },
+        {
             "axScales": [
                 "log",
                 "log"
             ],
-            "checkState": 2,
+            "checkState": 0,
             "chnls": [
                 "FL10-A",
                 "FL6-A"
@@ -87,8 +97,8 @@
     "smplSaveList": [
         {
             "displayName": "01-Well-A1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-A1.fcs",
             "plotColor": [
                 0.9705653467612726,
@@ -100,8 +110,8 @@
         },
         {
             "displayName": "01-Well-B1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-B1.fcs",
             "plotColor": [
                 0.8143892576485847,
@@ -113,8 +123,8 @@
         },
         {
             "displayName": "01-Well-C2",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-C2.fcs",
             "plotColor": [
                 0.40616464484626535,
@@ -126,8 +136,8 @@
         },
         {
             "displayName": "01-Well-C3",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-C3.fcs",
             "plotColor": [
                 0.2301823453116655,
@@ -139,8 +149,8 @@
         },
         {
             "displayName": "BDLyrics",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\BDLyrics.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\BDLyrics.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "BDLyrics.fcs",
             "plotColor": [
                 0.2598611429007401,

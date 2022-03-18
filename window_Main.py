@@ -4,7 +4,7 @@ import pandas as pd
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
-from src.gates import polygonGateEditor
+from src.gates import polygonGateEditor, lineGateEditor
 from src.plotWidgets import plotCanvas
 from src.io import sessionSave
 from src.utils import colorGenerator
@@ -148,10 +148,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
 
-        self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
+        if self.curPlotType == 'Dot plot':
+            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
+            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, self.curAxScales))
+        
+        elif self.curPlotType == 'Histogram':
+            self.statusbar.showMessage('Left click to draw a line gate, Right click to cancel', 0)
+            self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
 
-        self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, self.loadGate, 
-                                            canvasParam=(self.curChnls, self.curAxScales))
+        self.gateEditor.gateConfirmed.connect(self.loadGate)
         self.gateEditor.addGate_connnect()
 
     def handle_GateSelectionChanged(self, item):
@@ -303,9 +308,11 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
 
     def loadGate(self, gate, replace=None, gateName=None):
+        
         self._disableInputForGate(False)
         self.mpl_canvas.unsetCursor()
         self.statusbar.clearMessage()
+
         if replace:
             pass
         else:
@@ -319,8 +326,6 @@ class mainUi(mainWindowBase, mainWindowUi):
                         self.handle_FigureUpdate()
                         return
                 
-                self._disableInputForGate(False)
-
                 newQItem = gateWidgetItem(gateName, gate)
                 # newQItem.setData(0x100, gate)
                 # newQItem.setCheckable(True)

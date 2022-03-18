@@ -6,6 +6,8 @@ from matplotlib.lines import Line2D
 from matplotlib.artist import Artist
 from matplotlib.path import Path as mpl_path
 
+from PyQt5 import QtCore
+
 
 def dist(x, y):
     """
@@ -33,16 +35,49 @@ def dist_point_to_segment(p, s0, s1):
     pb = s0 + b * v
     return dist(p, pb)
 
-class polygonGateEditor:
+class polygonGate():
+    def __init__(self, chnls, axScales, closedLine=None, verts=None) -> None:
+
+        if closedLine:
+            self.verts = closedLine.get_xydata()[0:-1]
+        elif verts:
+            self.verts = np.array(verts)
+        else:
+            verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
+
+        self.chnls = chnls
+        self.axScales = axScales
+
+        verts4path = self.verts.copy()
+        for idx, scale in enumerate(self.axScales):
+            if scale == 'log':
+                verts4path[:, idx] = np.log10(verts4path[:, idx])
+                
+        self.prebuiltPath = mpl_path(verts4path)
+
+    def isInsideGate(self, fcsData):
+        points = fcsData[:, self.chnls].copy()
+
+        for idx, scale in enumerate(self.axScales):
+            if scale == 'log':
+                points[:, idx] = np.log10(points[:, idx])
+
+        insideFlags = self.prebuiltPath.contains_points(points)
+
+        return insideFlags
+
+class polygonGateEditor(QtCore.QObject):
     """
     This class deal with creating and editing gate
     it take, edit, and generate a plygonGate instance
     """
-    def __init__(self, ax, returnGateTo, canvasParam=None, gate=None) -> None:
+    gateConfirmed = QtCore.pyqtSignal(object)
+
+    def __init__(self, ax, canvasParam=None, gate=None) -> None:
+        super(QtCore.QObject, self).__init__()
 
         self.ax = ax
         self.canvas = self.ax.figure.canvas
-        self.returnToFunc = returnGateTo
         self.background = None
         self.chnls, self.axScales = canvasParam
 
@@ -78,11 +113,9 @@ class polygonGateEditor:
 
             if len(xydata) > 3:
                 finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
-                self.returnToFunc(finishedNewGate)
+                self.gateConfirmed.emit(finishedNewGate)
             else:
-                self.returnToFunc(None)
-
-            
+                self.gateConfirmed.emit(None)
 
     def addGate_on_motion(self, event):
         vert = [event.xdata, event.ydata]
@@ -101,37 +134,93 @@ class polygonGateEditor:
         self.ax.draw_artist(self.line)
         self.canvas.blit(self.ax.bbox)
 
-class polygonGate():
-    def __init__(self, chnls, axScales, closedLine=None, verts=None) -> None:
+class lineGate:
+    def __init__(self, chnl, ends) -> None:
 
-        if closedLine:
-            self.verts = closedLine.get_xydata()[0:-1]
-        elif verts:
-            self.verts = np.array(verts)
-        else:
-            verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
-
-        self.chnls = chnls
-        self.axScales = axScales
-
-        verts4path = self.verts.copy()
-        for idx, scale in enumerate(self.axScales):
-            if scale == 'log':
-                verts4path[:, idx] = np.log10(verts4path[:, idx])
-                
-        self.prebuiltPath = mpl_path(verts4path)
+        self.chnl = chnl
+        self.ends = ends
 
     def isInsideGate(self, fcsData):
-        points = fcsData[:, self.chnls].copy()
+        points = fcsData[:, self.chnls[0]].copy()
 
-        for idx, scale in enumerate(self.axScales):
-            if scale == 'log':
-                points[:, idx] = np.log10(points[:, idx])
-
-        insideFlags = self.prebuiltPath.contains_points(points)
+        insideFlags = np.logical_and(points > self.ends[0], points < self.ends[1])
 
         return insideFlags
 
+    @property
+    def chnls(self):
+        return [self.chnl, self.chnl]
+
+class lineGateEditor(QtCore.QObject):
+
+    gateConfirmed = QtCore.pyqtSignal(object)
+
+    def __init__(self, ax, chnl=None, gate=None) -> None:
+
+        super().__init__()
+
+        self.ax = ax
+        self.canvas = self.ax.figure.canvas
+        self.background = None
+        self.chnl = chnl
+
+        if not gate:
+            self.line = Line2D([], [], animated=True,
+                            marker='|', markerfacecolor='w', markersize=5, color='r')
+        else:
+            pass
+        self.ax.add_line(self.line)
+        self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+
+    def addGate_on_press(self, event):
+        if event.button == 1:
+            vert = [event.xdata, event.ydata]
+            xydata = self.line.get_xydata()
+
+            if xydata.shape[0] < 2:
+                xydata = np.vstack((xydata[0:-1], vert, vert))
+                self.line.set_data(xydata.T)
+
+                self.blitDraw()
+            else:
+                self.canvas.mpl_disconnect(self.pressCid)
+                self.canvas.mpl_disconnect(self.moveCid)
+
+                xydata = np.vstack((xydata[0:-1], [vert[0], xydata[0, 1]]))
+                self.line.set_data(xydata.T)
+                self.blitDraw()
+                
+                if xydata[0, 0] < xydata[1, 0]:
+                    newLineGate = lineGate(self.chnl, [xydata[0, 0], xydata[1, 0]])
+                else: 
+                    newLineGate = lineGate(self.chnl, [xydata[1, 0], xydata[0, 0]])
+
+                self.gateConfirmed.emit(newLineGate)
+        
+        elif event.button == 3:
+            self.gateConfirmed.emit(None)
+            pass
+            
+    def addGate_on_motion(self, event):
+        vert = [event.xdata, event.ydata]
+        xydata = self.line.get_xydata()
+
+        if xydata.shape[0] < 2:
+            xydata = np.vstack((xydata[0:-1], vert))
+        else:
+            xydata = np.vstack((xydata[0:-1], [vert[0], xydata[0, 1]]))
+
+        self.line.set_data(xydata.T)
+        self.blitDraw()
+
+    def addGate_connnect(self):
+        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
+        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
+
+    def blitDraw(self):
+        self.canvas.restore_region(self.background)
+        self.ax.draw_artist(self.line)
+        self.canvas.blit(self.ax.bbox)
 
 if __name__ == '__main__':
     pass

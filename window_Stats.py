@@ -33,7 +33,8 @@ class statWindow(wUi, wBase):
 
     def updateStat(self, smplsOnPlot, chnls, curGateItems):
 
-        self.cur_Name_RawData_Pairs = []
+        if len(smplsOnPlot) == 0:
+            return
 
         firstItem = smplsOnPlot[0][0]
 
@@ -53,8 +54,6 @@ class statWindow(wUi, wBase):
             med_avg2 = [np.median(gatedFCS[:,chnls[1]]), np.mean(gatedFCS[:,chnls[1]])]
 
             newDF.loc[originItem.displayName] = N_Perc + gateFracs + med_avg1 + med_avg2
-
-            self.cur_Name_RawData_Pairs.append((originItem.displayName, gatedFCS))
 
         self.dataDF = newDF
 
