@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor
 from src.plotWidgets import plotCanvas
-from src.io import sessionSave
+from src.efio import sessionSave
 from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF

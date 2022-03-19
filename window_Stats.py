@@ -7,7 +7,8 @@ import pandas as pd
 import numpy as np
 from src.qtModels import pandasTableModel
 
-import re
+import csv
+import io
 from xlsxwriter.utility import xl_col_to_name
 
 wUi, wBase = uic.loadUiType('./uiDesigns/StatWindow.ui') # Load the .ui file
@@ -30,6 +31,8 @@ class statWindow(wUi, wBase):
 
         self.exportStatsPB.clicked.connect(self.handle_ExportStats)
         self.exportDataPB.clicked.connect(self.handle_ExportData)
+
+        self.tableView.installEventFilter(self)
 
     def updateStat(self, smplsOnPlot, chnls, curGateItems):
 
@@ -116,6 +119,33 @@ class statWindow(wUi, wBase):
         self.exportLabel.setText('Finished')
         self.progressBar.setEnabled(False)
         pass
+
+    def eventFilter(self, source, event):
+
+        if (event.type() == QtCore.QEvent.KeyPress and event.matches(QtGui.QKeySequence.Copy)):
+            self.copySelection()
+            return True
+
+        return super(wBase, self).eventFilter(source, event)
+
+    def copySelection(self):
+        # this parts enables copy multiple cells.
+
+        selection = self.tableView.selectedIndexes()
+        if selection:
+            rows = sorted(index.row() for index in selection)
+            columns = sorted(index.column() for index in selection)
+            rowcount = rows[-1] - rows[0] + 1
+            colcount = columns[-1] - columns[0] + 1
+            table = [[''] * colcount for _ in range(rowcount)]
+            for index in selection:
+                row = index.row() - rows[0]
+                column = index.column() - columns[0]
+                table[row][column] = index.data()
+            stream = io.StringIO()
+            csv.writer(stream, delimiter='\t').writerows(table)
+            QtWidgets.qApp.clipboard().setText(stream.getvalue())
+        return
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
