@@ -1,0 +1,6 @@
+{
+    "version": 0.1,
+    "defaultDir": "./",
+    "dotNinPerf": 20000,
+    "plotDpiScale" : 1.25
+}
