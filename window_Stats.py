@@ -71,14 +71,22 @@ class statWindow(wUi, wBase):
         if not saveFileDir:
             return
 
-        with pd.ExcelWriter(saveFileDir, engine='xlsxwriter') as writer:
-            self.dataDF.to_excel(excel_writer=writer, sheet_name='stats')
-            #format the fractions as percentage in excel
-            percFmt = writer.book.add_format({'num_format': '0.00%'})
-            fmtRange = '{0}:{1}'.format(xl_col_to_name(2), xl_col_to_name(len(self.dataDF.columns)-4))
-            writer.sheets['stats'].set_column(fmtRange, None, cell_format=percFmt)
+        try:
+            with pd.ExcelWriter(saveFileDir, engine='xlsxwriter') as writer:
+                self.dataDF.to_excel(excel_writer=writer, sheet_name='stats')
+                #format the fractions as percentage in excel
+                percFmt = writer.book.add_format({'num_format': '0.00%'})
+                fmtRange = '{0}:{1}'.format(xl_col_to_name(2), xl_col_to_name(len(self.dataDF.columns)-4))
+                writer.sheets['stats'].set_column(fmtRange, None, cell_format=percFmt)
 
-            writer.save()
+                writer.save()
+        
+        except PermissionError:
+            QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
+
+        except BaseException as err:
+            QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
+
         pass
 
 
@@ -87,16 +95,23 @@ class statWindow(wUi, wBase):
         if not saveFileDir:
             return
 
-        self.progressBar.setEnabled(True)
-        self.progressBar.reset()        
-        with pd.ExcelWriter(saveFileDir) as writer:
-            for idx, pair in enumerate(self.cur_Name_RawData_Pairs):
-                name, fcsData = pair
-                self.exportLabel.setText(name)
-                df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
-                df2write.to_excel(writer, sheet_name=name)
+        try:
+            self.progressBar.setEnabled(True)
+            self.progressBar.reset()        
+            with pd.ExcelWriter(saveFileDir) as writer:
+                for idx, pair in enumerate(self.cur_Name_RawData_Pairs):
+                    name, fcsData = pair
+                    self.exportLabel.setText(name)
+                    df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
+                    df2write.to_excel(writer, sheet_name=name)
 
-                self.progressBar.setValue((idx + 1) / len(self.cur_Name_RawData_Pairs) * 100)
+                    self.progressBar.setValue((idx + 1) / len(self.cur_Name_RawData_Pairs) * 100)
+
+        except PermissionError:
+            QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
+
+        except BaseException as err:
+            QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
 
         self.exportLabel.setText('Finished')
         self.progressBar.setEnabled(False)
