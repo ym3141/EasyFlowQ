@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor
 from src.plotWidgets import plotCanvas
-from src.io import sessionSave
+from src.efio import sessionSave
 from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
@@ -222,10 +222,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.renameWindow.show()
 
     def handle_RenameForCF_return(self, renameDict):
+        self.holdFigureUpdate(True)
         for idx in range(self.smplListWidget.count()):
             smplItem = self.smplListWidget.item(idx)
             if smplItem.fcsFileName in renameDict:
                 smplItem.displayName = renameDict[smplItem.fcsFileName]
+        
+        self.holdFigureUpdate(False)
 
         self.handle_FigureUpdate()
 
@@ -237,14 +240,22 @@ class mainUi(mainWindowBase, mainWindowUi):
                 return
 
             self.statusbar.showMessage('Start exporting')
-    
-            with pd.ExcelWriter(saveFileDir) as writer:
-                for idx, pair in enumerate(self.statWindow.cur_Name_RawData_Pairs):
-                    name, fcsData = pair
-                    df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
-                    df2write.to_excel(writer, sheet_name=name)
 
-            self.statusbar.showMessage('Fished exporting')
+            try:
+                with pd.ExcelWriter(saveFileDir) as writer:
+                    for idx, pair in enumerate(self.statWindow.cur_Name_RawData_Pairs):
+                        name, fcsData = pair
+                        df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
+                        df2write.to_excel(writer, sheet_name=name)
+
+                self.statusbar.showMessage('Fished exporting')
+
+            except PermissionError:
+                QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
+
+            except BaseException as err:
+                QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
+
         else:
             QtWidgets.QMessageBox.warning(self, 'Error', 'No sample selected to export')
 

@@ -7,7 +7,8 @@ import pandas as pd
 import numpy as np
 from src.qtModels import pandasTableModel
 
-import re
+import csv
+import io
 from xlsxwriter.utility import xl_col_to_name
 
 wUi, wBase = uic.loadUiType('./uiDesigns/StatWindow.ui') # Load the .ui file
@@ -30,6 +31,8 @@ class statWindow(wUi, wBase):
 
         self.exportStatsPB.clicked.connect(self.handle_ExportStats)
         self.exportDataPB.clicked.connect(self.handle_ExportData)
+
+        self.tableView.installEventFilter(self)
 
     def updateStat(self, smplsOnPlot, chnls, curGateItems):
 
@@ -71,14 +74,22 @@ class statWindow(wUi, wBase):
         if not saveFileDir:
             return
 
-        with pd.ExcelWriter(saveFileDir, engine='xlsxwriter') as writer:
-            self.dataDF.to_excel(excel_writer=writer, sheet_name='stats')
-            #format the fractions as percentage in excel
-            percFmt = writer.book.add_format({'num_format': '0.00%'})
-            fmtRange = '{0}:{1}'.format(xl_col_to_name(2), xl_col_to_name(len(self.dataDF.columns)-4))
-            writer.sheets['stats'].set_column(fmtRange, None, cell_format=percFmt)
+        try:
+            with pd.ExcelWriter(saveFileDir, engine='xlsxwriter') as writer:
+                self.dataDF.to_excel(excel_writer=writer, sheet_name='stats')
+                #format the fractions as percentage in excel
+                percFmt = writer.book.add_format({'num_format': '0.00%'})
+                fmtRange = '{0}:{1}'.format(xl_col_to_name(2), xl_col_to_name(len(self.dataDF.columns)-4))
+                writer.sheets['stats'].set_column(fmtRange, None, cell_format=percFmt)
 
-            writer.save()
+                writer.save()
+        
+        except PermissionError:
+            QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
+
+        except BaseException as err:
+            QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
+
         pass
 
 
@@ -87,20 +98,54 @@ class statWindow(wUi, wBase):
         if not saveFileDir:
             return
 
-        self.progressBar.setEnabled(True)
-        self.progressBar.reset()        
-        with pd.ExcelWriter(saveFileDir) as writer:
-            for idx, pair in enumerate(self.cur_Name_RawData_Pairs):
-                name, fcsData = pair
-                self.exportLabel.setText(name)
-                df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
-                df2write.to_excel(writer, sheet_name=name)
+        try:
+            self.progressBar.setEnabled(True)
+            self.progressBar.reset()        
+            with pd.ExcelWriter(saveFileDir) as writer:
+                for idx, pair in enumerate(self.cur_Name_RawData_Pairs):
+                    name, fcsData = pair
+                    self.exportLabel.setText(name)
+                    df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
+                    df2write.to_excel(writer, sheet_name=name)
 
-                self.progressBar.setValue((idx + 1) / len(self.cur_Name_RawData_Pairs) * 100)
+                    self.progressBar.setValue((idx + 1) / len(self.cur_Name_RawData_Pairs) * 100)
+
+        except PermissionError:
+            QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
+
+        except BaseException as err:
+            QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
 
         self.exportLabel.setText('Finished')
         self.progressBar.setEnabled(False)
         pass
+
+    def eventFilter(self, source, event):
+
+        if (event.type() == QtCore.QEvent.KeyPress and event.matches(QtGui.QKeySequence.Copy)):
+            self.copySelection()
+            return True
+
+        return super(wBase, self).eventFilter(source, event)
+
+    def copySelection(self):
+        # this parts enables copy multiple cells.
+
+        selection = self.tableView.selectedIndexes()
+        if selection:
+            rows = sorted(index.row() for index in selection)
+            columns = sorted(index.column() for index in selection)
+            rowcount = rows[-1] - rows[0] + 1
+            colcount = columns[-1] - columns[0] + 1
+            table = [[''] * colcount for _ in range(rowcount)]
+            for index in selection:
+                row = index.row() - rows[0]
+                column = index.column() - columns[0]
+                table[row][column] = index.data()
+            stream = io.StringIO()
+            csv.writer(stream, delimiter='\t').writerows(table)
+            QtWidgets.qApp.clipboard().setText(stream.getvalue())
+        return
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
