@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
-    <height>278</height>
+    <width>982</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="OKPB">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>170</y>
+      <x>840</x>
+      <y>190</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="defaultPB">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>170</y>
+      <x>720</x>
+      <y>190</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -45,7 +45,7 @@
      <rect>
       <x>320</x>
       <y>20</y>
-      <width>301</width>
+      <width>491</width>
       <height>31</height>
      </rect>
     </property>
@@ -69,7 +69,7 @@
    <widget class="QPushButton" name="browsePB">
     <property name="geometry">
      <rect>
-      <x>640</x>
+      <x>840</x>
       <y>20</y>
       <width>112</width>
       <height>31</height>
@@ -121,7 +121,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="dipSpinBox">
+   <widget class="QDoubleSpinBox" name="dpiSpinBox">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -143,18 +143,38 @@
      <double>1.250000000000000</double>
     </property>
    </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>120</y>
+      <width>341</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <underline>false</underline>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0)</string>
+    </property>
+    <property name="text">
+     <string>(This setting will only take effect after restart)</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>788</width>
+     <width>982</width>
      <height>31</height>
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

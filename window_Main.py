@@ -11,6 +11,7 @@ from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
 from window_Stats import statWindow
+from window_Settings import settingsWindow
 
 matplotlib.use('QT5Agg')
 
@@ -74,6 +75,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionExport_data_in_current_gates.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
+
+        self.actionSettings.triggered.connect(self.handle_settings)
 
         # everything update figure
         self.smplListWidget.itemChanged.connect(self.handle_FigureUpdate)
@@ -274,6 +277,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         if color.isValid():
             for item in self.smplListWidget.selectedItems():
                 item.plotColor = color
+
+    def handle_settings(self):
+        self.settingsWindow = settingsWindow()
+        self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.settingsWindow.show()
+
 
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
