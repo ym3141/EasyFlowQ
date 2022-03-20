@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>982</width>
-    <height>250</height>
+    <width>963</width>
+    <height>247</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="OKPB">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>190</y>
+      <x>820</x>
+      <y>170</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="defaultPB">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>190</y>
+      <x>700</x>
+      <y>170</y>
       <width>112</width>
       <height>34</height>
      </rect>
@@ -41,6 +41,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="dirEdit">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -53,14 +56,14 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>120</x>
       <y>20</y>
-      <width>141</width>
+      <width>181</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Defalut directory:</string>
+     <string>Defaut fcs directory:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -69,7 +72,7 @@
    <widget class="QPushButton" name="browsePB">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>820</x>
       <y>20</y>
       <width>112</width>
       <height>31</height>
@@ -164,13 +167,38 @@
      <string>(This setting will only take effect after restart)</string>
     </property>
    </widget>
+   <widget class="QLabel" name="firstTimeMsg">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>220</y>
+      <width>901</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 0, 0);
+background-color: rgb(255, 255, 127)</string>
+    </property>
+    <property name="text">
+     <string>Seems this is a first time startup, welcome! 
+If you have not used EasyflowQ before, we recomend change only the &quot;Default fcs directory&quot; setting (click &quot;Browse&quot; to tell us 
+where you normally keep your data), and leave the rest as default.</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>982</width>
+     <width>963</width>
      <height>31</height>
     </rect>
    </property>

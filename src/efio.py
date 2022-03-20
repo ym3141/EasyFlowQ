@@ -79,7 +79,6 @@ class sessionSave():
 
         # print(failedFiles)
 
-
 def _convert_smplPlotItem(item, saveDir):
     smplSave = deepcopy(item.__dict__)
 
@@ -107,8 +106,3 @@ def _convert_gateItem(gateItem):
         pass
 
     return gateSave
-            
-
-class smplSave:
-    def __init__(self, smplPlotItem) -> None:
-        pass

@@ -1,6 +1,6 @@
 {
-    "version": 0.1,
-    "defaultDir": "./",
-    "dotNinPerf": 20000,
-    "plotDpiScale" : 1.25
+    "default dir": "./",
+    "dot N in perf mode": 20000,
+    "plot dpi scale": 1.25,
+    "version": 0.1
 }

@@ -20,7 +20,7 @@ mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesigns/MainWindow.ui') # Loa
 class mainUi(mainWindowBase, mainWindowUi):
     requestNewWindow = QtCore.pyqtSignal(str, QtCore.QPoint)
 
-    def __init__(self, sessionSaveFile=None, pos=None):
+    def __init__(self, sessionSaveFile=None, pos=None, localSetting=None):
 
         # init and setup UI
         mainWindowBase.__init__(self)
@@ -76,7 +76,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
-        self.actionSettings.triggered.connect(self.handle_settings)
+        self.actionSettings.triggered.connect(self.handle_Settings)
 
         # everything update figure
         self.smplListWidget.itemChanged.connect(self.handle_FigureUpdate)
@@ -278,8 +278,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             for item in self.smplListWidget.selectedItems():
                 item.plotColor = color
 
-    def handle_settings(self):
-        self.settingsWindow = settingsWindow()
+    def handle_Settings(self, firstTime=False):
+        self.settingsWindow = settingsWindow(firstTime=firstTime)
         self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.settingsWindow.show()
 

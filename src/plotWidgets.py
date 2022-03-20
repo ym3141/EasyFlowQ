@@ -26,7 +26,7 @@ class plotCanvas(FigureCanvasQTAgg):
         self.ax.set_xlabel('None')
         self.ax.set_ylabel('None')
 
-        self.sampleRNG = rng = np.random.default_rng()
+        self.sampleRNG = np.random.default_rng()
 
         self.draw()
 
