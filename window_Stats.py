@@ -37,6 +37,13 @@ class statWindow(wUi, wBase):
     def updateStat(self, smplsOnPlot, chnls, curGateItems):
 
         if len(smplsOnPlot) == 0:
+            self.self.cur_Name_RawData_Pairs = []
+            self.dataDF = pd.DataFrame()
+            self.displayDF = pd.DataFrame()
+
+            self.statTabelModel = pandasTableModel(self.displayDF)
+            self.tableView.setModel(self.statTabelModel)
+
             return
 
         firstItem = smplsOnPlot[0][0]
@@ -49,6 +56,7 @@ class statWindow(wUi, wBase):
                    'Mean of \n{0}:{1}'.format(chnls[1], firstItem.chnlNameDict[chnls[1]])]
 
         newDF = pd.DataFrame(columns=columns)
+        self.cur_Name_RawData_Pairs = []
 
         for originItem, gatedFCS, gateFracs in smplsOnPlot:
             N_Perc = [gatedFCS.shape[0], gatedFCS.shape[0]/originItem.fcsSmpl.shape[0]]
@@ -57,6 +65,8 @@ class statWindow(wUi, wBase):
             med_avg2 = [np.median(gatedFCS[:,chnls[1]]), np.mean(gatedFCS[:,chnls[1]])]
 
             newDF.loc[originItem.displayName] = N_Perc + gateFracs + med_avg1 + med_avg2
+
+            self.cur_Name_RawData_Pairs.append((originItem.displayName, gatedFCS))
 
         self.dataDF = newDF
 

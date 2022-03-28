@@ -243,6 +243,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 return
 
             self.statusbar.showMessage('Start exporting')
+            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
 
             try:
                 with pd.ExcelWriter(saveFileDir) as writer:
