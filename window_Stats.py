@@ -37,7 +37,7 @@ class statWindow(wUi, wBase):
     def updateStat(self, smplsOnPlot, chnls, curGateItems):
 
         if len(smplsOnPlot) == 0:
-            self.self.cur_Name_RawData_Pairs = []
+            self.cur_Name_RawData_Pairs = []
             self.dataDF = pd.DataFrame()
             self.displayDF = pd.DataFrame()
 

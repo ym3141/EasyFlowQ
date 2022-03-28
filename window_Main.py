@@ -32,6 +32,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # other init
         self.version = 0.1
         self.baseDir = './demoSamples/'
+        self._saveFlag = False
         self.set_sessionSaveDir(sessionSaveFile)
 
         self.chnlDict = dict()
@@ -127,6 +128,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         if self.holdFigureUpdate:
             return
 
+        self.set_saveFlag(True)
         selectedSmpls = self.smplListWidget.selectedItems()
 
         perfModeN = 20000 if self.perfCheck.isChecked() else None
@@ -188,6 +190,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.set_sessionSaveDir(openFileDir)
             self.holdFigureUpdate = False
             self.handle_FigureUpdate()
+
+            self.set_saveFlag(False)
         else:
             self.requestNewWindow.emit(openFileDir, self.pos() + QtCore.QPoint(60, 60))
 
@@ -196,6 +200,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             # if save exist, replace it at the same dir
             sessionSaveFile = sessionSave(self, self.sessionSaveDir)
             sessionSaveFile.saveJson()
+
+            self.set_saveFlag(False)
         else: 
             self.handle_SaveAs()
 
@@ -207,6 +213,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.set_sessionSaveDir(saveFileDir)
         sessionSaveFile = sessionSave(self, saveFileDir)
         sessionSaveFile.saveJson()
+
+        self.set_saveFlag(False)
         pass
 
     def handle_RenameForCF(self):
@@ -285,6 +293,26 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingsWindow.show()
 
 
+    def closeEvent(self, event: QtGui.QCloseEvent):
+        if self.statWindow.isVisible():
+            self.statWindow.close()
+
+        if self.saveFlag:
+            input = QtWidgets.QMessageBox.question(self, 'Close session', 'Save changes to the file?', buttons=
+                                                   QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+
+            if input == QtWidgets.QMessageBox.Cancel:
+                event.ignore()
+            elif input == QtWidgets.QMessageBox.Discard:
+                event.accept()
+            elif input == QtWidgets.QMessageBox.Save:
+                self.handle_Save()
+                event.accept
+
+        else:
+            event.accept()
+
+
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
 
@@ -315,6 +343,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.rightLayout.itemAt(idx).widget().setEnabled(not disable)
 
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
+        self.set_saveFlag(True)
         newSmplItem = smplPlotItem(fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
         self.smplListWidget.addItem(newSmplItem)
         if displayName:
@@ -329,7 +358,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
 
     def loadGate(self, gate, replace=None, gateName=None):
-        
+        self.set_saveFlag(True)
         self._disableInputForGate(False)
         self.mpl_canvas.unsetCursor()
         self.statusbar.clearMessage()
@@ -405,10 +434,22 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         return [gateItem for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
+    @property
+    def saveFlag(self):
+        return self._saveFlag
+
+    def set_saveFlag(self, flag: bool):
+        if not self._saveFlag == flag:
+            self._saveFlag = flag
+
+            self.set_sessionSaveDir(self.sessionSaveDir)    
+
     def set_sessionSaveDir(self, sessionSaveDir):
         # Set the sessionSaveDir, also update the window title
         self.sessionSaveDir = sessionSaveDir
-        self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1})'.format(self.version, (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
+        self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1}{2})'.format(self.version, 
+                                                                         ('*' if self.saveFlag else ''), 
+                                                                         (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
 
     def isWindowAlmostNew(self):
         return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
