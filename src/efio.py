@@ -4,6 +4,42 @@ from copy import deepcopy
 
 from .gates import polygonGate, lineGate
 
+from PyQt5.QtCore import QThread, pyqtSignal
+
+from FlowCal.io import FCSData
+from typing import List
+
+import pandas as pd
+
+class writeRawFcs(QThread):
+    prograssChanged = pyqtSignal(str, float)
+
+    def __init__(self, parent, names, rawDatas: List[FCSData], saveDir: str) -> None:
+        super().__init__(parent)
+
+        self.names = names
+        self.rawDatas = rawDatas
+        self.saveDir = saveDir
+
+    def run(self):
+
+        for idx, name, fcsData in zip(range(len(self.names)), self.names, self.rawDatas):
+            df2Write = pd.DataFrame(fcsData, columns=fcsData.channels)
+
+            if not path.exists('{0}.csv'.format(path.join(self.saveDir, name))):
+                df2Write.to_csv('{0}.csv'.format(path.join(self.saveDir, name)))
+
+            else:
+                alterName = 1
+                while path.exists('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName)):
+                    alterName += 1
+                
+                df2Write.to_csv('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName))
+
+            self.prograssChanged.emit(name, idx/len(self.names))
+
+
+
 class sessionSave():
     # This is a json serializable class, used for save the session
 

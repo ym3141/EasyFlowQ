@@ -26,7 +26,7 @@
      <item>
       <widget class="QPushButton" name="exportDataPB">
        <property name="text">
-        <string>Export raw data as .xlsx</string>
+        <string>Export raw data as .csv</string>
        </property>
       </widget>
      </item>
