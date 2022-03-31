@@ -472,11 +472,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
 
 
-_excepthook = sys.excepthook
-def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
-    _excepthook(type, value, traceback)
 
 if __name__ == '__main__':
+
+    _excepthook = sys.excepthook
+    def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
+        _excepthook(type, value, traceback)
+
     sys.excepthook = myexcepthook
 
     app = QtWidgets.QApplication(sys.argv)

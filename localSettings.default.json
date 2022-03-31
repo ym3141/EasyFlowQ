@@ -1,5 +1,5 @@
 {
-    "default dir": "./",
+    "default dir": "",
     "dot N in perf mode": 20000,
     "plot dpi scale": 1.25,
     "version": 0.1

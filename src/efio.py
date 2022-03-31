@@ -39,7 +39,6 @@ class writeRawFcs(QThread):
             self.prograssChanged.emit(name, idx/len(self.names))
 
 
-
 class sessionSave():
     # This is a json serializable class, used for save the session
 
@@ -115,6 +114,7 @@ class sessionSave():
 
         # print(failedFiles)
 
+
 def _convert_smplPlotItem(item, saveDir):
     smplSave = deepcopy(item.__dict__)
 
@@ -142,3 +142,14 @@ def _convert_gateItem(gateItem):
         pass
 
     return gateSave
+
+
+def getSysDefaultDir():
+    if path.exists(path.expanduser('~/Desktop')):
+        return path.expanduser('~/Desktop')
+
+    elif path.exists(path.expanduser('./Documents')):
+        return path.expanduser('~/Documents')
+        
+    else:
+        return path.expanduser('~/')

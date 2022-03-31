@@ -9,7 +9,7 @@ from window_Settings import localSettings
 from multiprocessing import Process
 
 _excepthook = sys.excepthook
-def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
+def myexcepthook(type, value, traceback):
     _excepthook(type, value, traceback)
 
 def newWindowFunc(sessionSaveFile=None, pos=None):
