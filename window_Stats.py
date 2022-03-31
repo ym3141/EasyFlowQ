@@ -6,6 +6,7 @@ from os import path
 import pandas as pd
 import numpy as np
 from src.qtModels import pandasTableModel
+from src.efio import writeRawFcs
 
 import csv
 import io
@@ -104,31 +105,32 @@ class statWindow(wUi, wBase):
 
 
     def handle_ExportData(self):
-        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export raw data', self.sessionDir, filter='*.xlsx')
+        saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionDir)
         if not saveFileDir:
             return
 
-        try:
-            self.progressBar.setEnabled(True)
-            self.progressBar.reset()        
-            with pd.ExcelWriter(saveFileDir) as writer:
-                for idx, pair in enumerate(self.cur_Name_RawData_Pairs):
-                    name, fcsData = pair
-                    self.exportLabel.setText(name)
-                    df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
-                    df2write.to_excel(writer, sheet_name=name)
+        self.exportLabel.setText('Starting...')
+        self.progressBar.setValue(0)
 
-                    self.progressBar.setValue((idx + 1) / len(self.cur_Name_RawData_Pairs) * 100)
+        names = [a[0] for a in self.cur_Name_RawData_Pairs]
+        fcsDatas = [a[1] for a in self.cur_Name_RawData_Pairs]
 
-        except PermissionError:
-            QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
+        writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
+        writterThread.prograssChanged.connect(self.handle_updateProgBar)
+        writterThread.finished.connect(self.handle_ExportDataFinished)
 
-        except BaseException as err:
-            QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
+        writterThread.start()
 
-        self.exportLabel.setText('Finished')
-        self.progressBar.setEnabled(False)
         pass
+    
+    def handle_updateProgBar(self, curName, progFrac):
+        self.exportLabel.setText('{0}'.format(curName))
+        self.progressBar.setValue(int(progFrac*100))
+
+    def handle_ExportDataFinished(self):
+        self.exportLabel.setText('Finished')
+        self.progressBar.setValue(100)
+    
 
     def eventFilter(self, source, event):
 

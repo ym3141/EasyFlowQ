@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor
 from src.plotWidgets import plotCanvas
-from src.efio import sessionSave
+from src.efio import sessionSave, writeRawFcs
 from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
@@ -41,7 +41,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = True
         self.gateEditor = None
 
+        # initiate other windows
         self.renameWindow = None
+        self.settingsWindow = None
         self.statWindow = statWindow(self.sessionSaveDir if self.sessionSaveDir else self.baseDir)
 
         # add the matplotlib ui
@@ -248,28 +250,25 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_ExportDataInGates(self):
 
+        self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
+
         if len(self.statWindow.cur_Name_RawData_Pairs):
-            saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export raw data', self.sessionSaveDir, filter='*.xlsx')
+            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSaveDir)
             if not saveFileDir:
                 return
 
-            self.statusbar.showMessage('Start exporting')
-            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
+            self.progBar = QtWidgets.QProgressBar(self)
+            self.statusbar.addPermanentWidget(self.progBar)
+            self.statusbar.showMessage('Exporting starting...')
 
-            try:
-                with pd.ExcelWriter(saveFileDir) as writer:
-                    for idx, pair in enumerate(self.statWindow.cur_Name_RawData_Pairs):
-                        name, fcsData = pair
-                        df2write = pd.DataFrame(fcsData, columns=fcsData.channels)
-                        df2write.to_excel(writer, sheet_name=name)
+            names = [a[0] for a in self.statWindow.cur_Name_RawData_Pairs]
+            fcsDatas = [a[1] for a in self.statWindow.cur_Name_RawData_Pairs]
 
-                self.statusbar.showMessage('Fished exporting')
+            writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
+            writterThread.prograssChanged.connect(lambda a, b: self.handle_updateProgBar(a, b, 'Exporting: '))
+            writterThread.finished.connect(self.handle_ExportDataFinished)
 
-            except PermissionError:
-                QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
-
-            except BaseException as err:
-                QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
+            writterThread.start()
 
         else:
             QtWidgets.QMessageBox.warning(self, 'Error', 'No sample selected to export')
@@ -295,6 +294,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.settingsWindow.show()
 
+    def handle_updateProgBar(self, curName, progFrac, prefixText=''):
+        self.statusbar.showMessage(prefixText + curName)
+        self.progBar.setValue(int(progFrac*100))
+
+    def handle_ExportDataFinished(self):
+        self.statusbar.removeWidget(self.progBar)
+        self.statusbar.showMessage('Exporting Finished')
 
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():

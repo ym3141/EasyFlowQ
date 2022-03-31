@@ -525,7 +525,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
@@ -578,7 +578,14 @@
    <addaction name="menuSettings"/>
    <addaction name="menuAbout"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
   <action name="actionNew_Session">
    <property name="text">
     <string>New Session</string>
