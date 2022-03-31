@@ -64,6 +64,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.xComboBox.setModel(self.chnlListModel)
         self.yComboBox.setModel(self.chnlListModel)
 
+        # add the secret testing shortcut
+        secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
+
         # link triggers:
         # manu
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
@@ -380,6 +383,13 @@ class mainUi(mainWindowBase, mainWindowUi):
                 # newQItem.setData(0x100, gate)
                 # newQItem.setCheckable(True)
                 self.gateListWidget.addItem(newQItem)
+
+    def secretCrash(self):
+        input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 
+                                               'You have reached the secret place for crashing the app, proceed?',
+                                               buttons=QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Cancel)
+        if input == QtWidgets.QMessageBox.StandardButton.Ok:
+            null_val1 = nall_val2
 
     @property
     def curChnls(self):
