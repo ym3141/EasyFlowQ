@@ -6,7 +6,7 @@ releases/*
 
 .vscode/
 
-
+localSettings.user.json
 run.bat
 
 # *.py[cod]

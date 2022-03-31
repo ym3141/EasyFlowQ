@@ -8,7 +8,13 @@ from window_Settings import localSettings
 
 from multiprocessing import Process
 
+_excepthook = sys.excepthook
+def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
+    _excepthook(type, value, traceback)
+
 def newWindowFunc(sessionSaveFile=None, pos=None):
+    sys.excepthook = myexcepthook
+
     app = QtWidgets.QApplication(sys.argv)
 
     if path.exists('./localSettings.user.json'):

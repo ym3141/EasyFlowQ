@@ -395,7 +395,8 @@ class mainUi(mainWindowBase, mainWindowUi):
                                                'You have reached the secret place for crashing the app, proceed?',
                                                buttons=QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Cancel)
         if input == QtWidgets.QMessageBox.StandardButton.Ok:
-            null_val1 = nall_val2
+            null_val2 = dict()
+            null_val1 = null_val2['Key_Not_Exsit']
 
     @property
     def curChnls(self):
@@ -471,7 +472,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
 
 
+_excepthook = sys.excepthook
+def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
+    _excepthook(type, value, traceback)
+
 if __name__ == '__main__':
+    sys.excepthook = myexcepthook
+
     app = QtWidgets.QApplication(sys.argv)
     window = mainUi()
     window.show()
