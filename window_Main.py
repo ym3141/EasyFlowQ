@@ -7,7 +7,7 @@ from os import path
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor
 from src.plotWidgets import plotCanvas
-from src.efio import sessionSave, writeRawFcs
+from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
@@ -494,7 +494,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         elif path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
-            return path.abspath('./')
+            return path.abspath(getSysDefaultDir())
         pass
 
 
