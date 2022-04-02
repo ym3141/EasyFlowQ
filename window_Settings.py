@@ -6,6 +6,7 @@ from os import path
 import pandas as pd
 import numpy as np
 from src.qtModels import pandasTableModel
+from src.efio import getSysDefaultDir
 
 import json
 
@@ -67,7 +68,7 @@ class settingsWindow(wUi, wBase):
         if path.isdir(jSettings['default dir']):
             self.dirEdit.setText(path.abspath(jSettings['default dir']))
         else:
-            self.dirEdit.setText(path.abspath('./'))
+            self.dirEdit.setText(getSysDefaultDir())
 
         self.dotNEdit.setText('{0:d}'.format(jSettings['dot N in perf mode']))
         self.dpiSpinBox.setValue(jSettings['plot dpi scale'])
