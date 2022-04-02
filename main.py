@@ -20,11 +20,11 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     if path.exists('./localSettings.user.json'):
         # there is a user setting, load it
         setting = localSettings('./localSettings.user.json')
-        mainW = mainUi(sessionSaveFile=sessionSaveFile, pos=pos, localSetting=setting)
+        mainW = mainUi(setting, sessionSaveFile=sessionSaveFile, pos=pos)
 
     else:
         setting = localSettings('./localSettings.default.json')
-        mainW = mainUi(sessionSaveFile=sessionSaveFile, pos=pos, localSetting=setting)
+        mainW = mainUi(setting, sessionSaveFile=sessionSaveFile, pos=pos)
         mainW.handle_Settings(firstTime=True)
 
     mainW.requestNewWindow.connect(newWindowProc)

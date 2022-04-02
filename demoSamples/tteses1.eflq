@@ -2,16 +2,16 @@
     "figOptions": {
         "curAxScales": [
             "log",
-            "linear"
+            "log"
         ],
         "curChnls": [
             "FL10-A",
             "FL6-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Histogram"
+        "curPlotType": "Dot plot"
     },
-    "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/tteses1.eflq",
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/tteses1.eflq",
     "gateSaveList": [
         {
             "axScales": [
@@ -97,8 +97,8 @@
     "smplSaveList": [
         {
             "displayName": "01-Well-A1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-A1.fcs",
             "plotColor": [
                 0.9705653467612726,
@@ -106,12 +106,12 @@
                 0.6268558785381857,
                 1.0
             ],
-            "selected": true
+            "selected": false
         },
         {
             "displayName": "01-Well-B1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-B1.fcs",
             "plotColor": [
                 0.8143892576485847,
@@ -119,12 +119,12 @@
                 0.21393148699168382,
                 1.0
             ],
-            "selected": true
+            "selected": false
         },
         {
             "displayName": "01-Well-C2",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-C2.fcs",
             "plotColor": [
                 0.40616464484626535,
@@ -136,8 +136,8 @@
         },
         {
             "displayName": "01-Well-C3",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-C3.fcs",
             "plotColor": [
                 0.2301823453116655,
@@ -145,12 +145,12 @@
                 0.6841687647821775,
                 1.0
             ],
-            "selected": true
+            "selected": false
         },
         {
             "displayName": "BDLyrics",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\BDLyrics.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\BDLyrics.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "BDLyrics.fcs",
             "plotColor": [
                 0.2598611429007401,

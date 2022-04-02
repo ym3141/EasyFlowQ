@@ -2,6 +2,7 @@ import sys
 import matplotlib
 import pandas as pd
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from os import path
 
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor
@@ -11,7 +12,7 @@ from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
 from window_Stats import statWindow
-from window_Settings import settingsWindow
+from window_Settings import settingsWindow, localSettings
 
 matplotlib.use('QT5Agg')
 
@@ -20,7 +21,7 @@ mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesigns/MainWindow.ui') # Loa
 class mainUi(mainWindowBase, mainWindowUi):
     requestNewWindow = QtCore.pyqtSignal(str, QtCore.QPoint)
 
-    def __init__(self, sessionSaveFile=None, pos=None, localSetting=None):
+    def __init__(self, setting: localSettings, sessionSaveFile=None, pos=None):
 
         # init and setup UI
         mainWindowBase.__init__(self)
@@ -28,10 +29,13 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         buttonGroups = self._organizeButtonGroups()
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
+
+        # load the seetings:
+        self.settingDict = setting.settingDict
         
         # other init
         self.version = 0.1
-        self.baseDir = './demoSamples/'
+        
         self._saveFlag = False
         self.set_sessionSaveDir(sessionSaveFile)
 
@@ -49,7 +53,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.baseDir
 
-        self.mpl_canvas = plotCanvas()
+        self.mpl_canvas = plotCanvas(dpiScale=self.settingDict['plot dpi scale'])
 
         self.plotLayout = QtWidgets.QVBoxLayout(self.plotBox)
         self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
@@ -136,7 +140,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.set_saveFlag(True)
         selectedSmpls = self.smplListWidget.selectedItems()
 
-        perfModeN = 20000 if self.perfCheck.isChecked() else None
+        if self.perfCheck.isChecked():
+            try:
+                perfModeN = self.settingDict['dot N in perf mode']
+            except:
+                perfModeN = 20000
+        else:
+            perfModeN = None
 
         smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
                                              chnlNames=self.curChnls, 
@@ -265,7 +275,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             fcsDatas = [a[1] for a in self.statWindow.cur_Name_RawData_Pairs]
 
             writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
-            writterThread.prograssChanged.connect(lambda a, b: self.handle_updateProgBar(a, b, 'Exporting: '))
+            writterThread.prograssChanged.connect(lambda a, b: self.handle_UpdateProgBar(a, b, 'Exporting: '))
             writterThread.finished.connect(self.handle_ExportDataFinished)
 
             writterThread.start()
@@ -292,9 +302,15 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_Settings(self, firstTime=False):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
         self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
+
+        self.settingsWindow.newLocalSettingConfimed.connect(self.handle_newSetting)
+
         self.settingsWindow.show()
 
-    def handle_updateProgBar(self, curName, progFrac, prefixText=''):
+    def handle_newSetting(self, newNetting):
+        self.settingDict = newNetting.settingDict
+
+    def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
         self.statusbar.showMessage(prefixText + curName)
         self.progBar.setValue(int(progFrac*100))
 
@@ -471,6 +487,16 @@ class mainUi(mainWindowBase, mainWindowUi):
     def isWindowAlmostNew(self):
         return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
 
+    @property
+    def baseDir(self):
+        if self.sessionSaveDir is not None:
+            return path.dirname(self.sessionSaveDir)
+        elif path.exists(self.settingDict['default dir']):
+            return self.settingDict['default dir']
+        else:
+            return path.abspath('./')
+        pass
+
 
 _excepthook = sys.excepthook
 def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
@@ -480,7 +506,7 @@ if __name__ == '__main__':
     sys.excepthook = myexcepthook
 
     app = QtWidgets.QApplication(sys.argv)
-    window = mainUi()
+    window = mainUi(localSettings('./localSettings.default.json'))
     window.show()
     sys.exit(app.exec_())
 
