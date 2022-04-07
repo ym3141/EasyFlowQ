@@ -248,13 +248,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.renameWindow.show()
 
     def handle_RenameForCF_return(self, renameDict):
-        self.holdFigureUpdate(True)
+        self.holdFigureUpdate = True
         for idx in range(self.smplListWidget.count()):
             smplItem = self.smplListWidget.item(idx)
             if smplItem.fcsFileName in renameDict:
                 smplItem.displayName = renameDict[smplItem.fcsFileName]
         
-        self.holdFigureUpdate(False)
+        self.holdFigureUpdate = False
 
         self.handle_FigureUpdate()
 
@@ -491,6 +491,8 @@ class mainUi(mainWindowBase, mainWindowUi):
     def baseDir(self):
         if self.sessionSaveDir is not None:
             return path.dirname(self.sessionSaveDir)
+        elif self.smplListWidget.count() > 0:
+            return path.dirname(self.smplListWidget.item(0).fileDir)
         elif path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
