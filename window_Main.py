@@ -303,11 +303,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
         self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
 
-        self.settingsWindow.newLocalSettingConfimed.connect(self.handle_newSetting)
+        self.settingsWindow.newLocalSettingConfimed.connect(self.handle_NewSetting)
 
         self.settingsWindow.show()
 
-    def handle_newSetting(self, newNetting):
+    def handle_NewSetting(self, newNetting):
         self.settingDict = newNetting.settingDict
 
     def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
@@ -332,7 +332,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 event.accept()
             elif input == QtWidgets.QMessageBox.Save:
                 self.handle_Save()
-                event.accept
+                event.accept()
 
         else:
             event.accept()

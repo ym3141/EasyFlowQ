@@ -56,7 +56,7 @@
       <item>
        <widget class="QGroupBox" name="toolBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -160,7 +160,7 @@
         <widget class="QPushButton" name="colorPB">
          <property name="geometry">
           <rect>
-           <x>580</x>
+           <x>410</x>
            <y>90</y>
            <width>131</width>
            <height>34</height>
@@ -172,6 +172,19 @@
          <property name="icon">
           <iconset resource="resource/qt_resource.qrc">
            <normaloff>:/icons/PelatteIcon2.tif</normaloff>:/icons/PelatteIcon2.tif</iconset>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>90</y>
+           <width>181</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Single sample mode</string>
          </property>
         </widget>
        </widget>
@@ -267,7 +280,7 @@
       <item>
        <widget class="QListWidget" name="gateListWidget">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
