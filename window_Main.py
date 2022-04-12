@@ -27,6 +27,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         mainWindowBase.__init__(self)
         self.setupUi(self)
 
+        # show manubar on macos
+        self.menubar.setNativeMenuBar(False)
+
+        # Group the buttons
         buttonGroups = self._organizeButtonGroups()
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
 
