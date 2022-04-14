@@ -386,7 +386,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         for key in newSmplItem.chnlNameDict:
             self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
 
-    def loadGate(self, gate, replace=None, gateName=None):
+    def loadGate(self, gate, replace=None, gateName=None, checkState=0):
         self.set_saveFlag(True)
         self._disableInputForGate(False)
         self.mpl_canvas.unsetCursor()
@@ -404,8 +404,10 @@ class mainUi(mainWindowBase, mainWindowUi):
                     if not flag:
                         self.handle_FigureUpdate()
                         return
-                
+                    
                 newQItem = gateWidgetItem(gateName, gate)
+                if checkState: 
+                    newQItem.setCheckState(checkState)
                 # newQItem.setData(0x100, gate)
                 # newQItem.setCheckable(True)
                 self.gateListWidget.addItem(newQItem)

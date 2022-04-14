@@ -102,9 +102,9 @@ class sessionSave():
 
         for jGate in jDict['gateSaveList']:
             if jGate['type'] == 'polygonGate':
-                mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'])
+                mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
             elif jGate['type'] == 'lineGate':
-                mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'])
+                mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
 
         
         mainUiWindow.set_curAxScales(jDict['figOptions']['curAxScales'])

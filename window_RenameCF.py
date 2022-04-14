@@ -10,7 +10,7 @@ from src.qtModels import pandasTableModel
 import re
 
 wUi, wBase = uic.loadUiType('./uiDesigns/RenameWindow_CF.ui') # Load the .ui file
-re_CFName = re.compile(r'(\d\d)-Well-([A-H])(\d\d?)')
+re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
 
 class renameWindow_CF(wUi, wBase):
     renameConfirmed = QtCore.pyqtSignal(dict)
@@ -25,7 +25,8 @@ class renameWindow_CF(wUi, wBase):
         self.splitNames = []
         for smplName in smplNameList:
             reMatch = re_CFName.match(smplName)
-            self.splitNames.append((int(reMatch.group(1)), reMatch.group(2), int(reMatch.group(3))))
+            if not (reMatch is None):
+                self.splitNames.append((int(reMatch.group(1)), reMatch.group(3), int(reMatch.group(4))))
 
 
         self.loadRenameFile(renamingFileDir)
