@@ -2,13 +2,22 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QPoint
 from window_Main import mainUi
-from os import path
+from os import path, chdir
 
 from window_Settings import localSettings
 
 from multiprocessing import Process
 from traceback import format_exception
 
+# detect what mode this program is running
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    chdir(sys._MEIPASS)
+    print('running in a PyInstaller bundle')
+else:
+    print('running in a normal Python process')
+
+
+# set up the excepthook so unhandled exception won't crash the program
 _excepthook = sys.excepthook
 def myexcepthook(type, value, traceback):
     except_msg = ''.join(format_exception(type, value, traceback))
