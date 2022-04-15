@@ -27,6 +27,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         mainWindowBase.__init__(self)
         self.setupUi(self)
 
+        # show manubar on macos
+        self.menubar.setNativeMenuBar(False)
+
+        # Group the buttons
         buttonGroups = self._organizeButtonGroups()
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
 
@@ -303,11 +307,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
         self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
 
-        self.settingsWindow.newLocalSettingConfimed.connect(self.handle_newSetting)
+        self.settingsWindow.newLocalSettingConfimed.connect(self.handle_NewSetting)
 
         self.settingsWindow.show()
 
-    def handle_newSetting(self, newNetting):
+    def handle_NewSetting(self, newNetting):
         self.settingDict = newNetting.settingDict
 
     def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
@@ -332,7 +336,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 event.accept()
             elif input == QtWidgets.QMessageBox.Save:
                 self.handle_Save()
-                event.accept
+                event.accept()
 
         else:
             event.accept()
@@ -382,7 +386,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         for key in newSmplItem.chnlNameDict:
             self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
 
-    def loadGate(self, gate, replace=None, gateName=None):
+    def loadGate(self, gate, replace=None, gateName=None, checkState=0):
         self.set_saveFlag(True)
         self._disableInputForGate(False)
         self.mpl_canvas.unsetCursor()
@@ -400,8 +404,10 @@ class mainUi(mainWindowBase, mainWindowUi):
                     if not flag:
                         self.handle_FigureUpdate()
                         return
-                
+                    
                 newQItem = gateWidgetItem(gateName, gate)
+                if checkState: 
+                    newQItem.setCheckState(checkState)
                 # newQItem.setData(0x100, gate)
                 # newQItem.setCheckable(True)
                 self.gateListWidget.addItem(newQItem)

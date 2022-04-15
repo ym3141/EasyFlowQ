@@ -15,6 +15,7 @@ class smplPlotItem(QListWidgetItem):
         super(smplPlotItem, self).__init__(Path(self.fileDir).stem)
         
         # FCSData class; fcs data is stored here
+        self.setFlags(self.flags() | Qt.ItemIsEditable)
         fcsData = to_rfi(FCSData(self.fileDir))
         self.setData(0x100, fcsData)
 
