@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --distpath .\EasyFlowQ_release_win\ --workpath .\_temp\ .\pyi_win.spec
