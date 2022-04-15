@@ -1,13 +1,5 @@
 import sys
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QPoint
-from window_Main import mainUi
-from os import path, chdir
-
-from window_Settings import localSettings
-
-from multiprocessing import Process
-from traceback import format_exception
+from os import path, chdir, getcwd
 
 # detect what mode this program is running
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -15,6 +7,15 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
     print('running in a PyInstaller bundle')
 else:
     print('running in a normal Python process')
+
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QPoint
+from window_Main import mainUi
+
+from window_Settings import localSettings
+
+from multiprocessing import Process
+from traceback import format_exception
 
 
 # set up the excepthook so unhandled exception won't crash the program

@@ -4,7 +4,9 @@ __pycache__/
 # temp and release files
 _temp/*
 EasyFlowQ_release_win/EasyFlowQ_Bundle
+EasyFlowQ_release_mac/EasyFlowQ_Bundle
 
 # local stuff
 .vscode/
+.DS_store
 localSettings.user.json
