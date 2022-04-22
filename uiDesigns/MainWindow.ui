@@ -116,11 +116,11 @@
           <string>Y-Axis:</string>
          </property>
         </widget>
-        <widget class="QCheckBox" name="fixAxisCheck">
+        <widget class="QCheckBox" name="fixAxesCheck">
          <property name="geometry">
           <rect>
            <x>580</x>
-           <y>30</y>
+           <y>20</y>
            <width>111</width>
            <height>23</height>
           </rect>
@@ -136,7 +136,7 @@
          <property name="geometry">
           <rect>
            <x>580</x>
-           <y>60</y>
+           <y>50</y>
            <width>221</width>
            <height>20</height>
           </rect>
@@ -151,7 +151,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Limit the number of dots drawn per sample&lt;/p&gt;&lt;p&gt;Don't affect histogram&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>Draw less dots, but faster</string>
+          <string>Normalize dots among samples</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -178,13 +178,26 @@
          <property name="geometry">
           <rect>
            <x>580</x>
-           <y>90</y>
+           <y>80</y>
            <width>181</width>
            <height>23</height>
           </rect>
          </property>
          <property name="text">
           <string>Single sample mode</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="showLegendCheck">
+         <property name="geometry">
+          <rect>
+           <x>580</x>
+           <y>110</y>
+           <width>111</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Show legend</string>
          </property>
         </widget>
        </widget>
@@ -538,7 +551,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">

@@ -115,6 +115,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
+        self.fixAxesCheck.stateChanged.connect(self.handle_FixAxes)
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -302,6 +303,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         if color.isValid():
             for item in self.smplListWidget.selectedItems():
                 item.plotColor = color
+
+    def handle_FixAxes(self, fixAxes: bool):
+        self.mpl_canvas.set_fixAxes(fixAxes)
+
+        if not fixAxes:
+            self.handle_FigureUpdate()
 
     def handle_Settings(self, firstTime=False):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
