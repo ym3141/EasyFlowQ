@@ -169,7 +169,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              chnlNames=self.curChnls, 
                                              axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                              axScales=self.curAxScales,
-                                             axRanges=[None, None, None, None],
+                                             axRanges=self.curLimSettings,
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              plotType = self.curPlotType,
                                              normOption = self.curNormOption,
@@ -551,7 +551,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         xAuto = (self.xlimAutoCheck.checkState() == 2)
         yAuto = (self.ylimAutoCheck.checkState() == 2)
 
-        return (xAuto, yAuto)
+        xlim = ['auto', 'auto'] if xAuto else [float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text())]
+        ylim = ['auto', 'auto'] if yAuto else [float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())]
+
+        return xlim + ylim
 
     @property
     def saveFlag(self):

@@ -51,6 +51,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.curPlotType = plotType
         self.ax.clear()
+        self.ax.autoscale(False)
         self.navigationBar.update()
 
         # only draw samples that has the specified channels
@@ -87,8 +88,6 @@ class plotCanvas(FigureCanvasQTAgg):
                     scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
                             xscale=axScales[0], yscale=axScales[1],
                             color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
-                
-            self.ax.autoscale()
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
@@ -96,7 +95,9 @@ class plotCanvas(FigureCanvasQTAgg):
             
         elif plotType == 'Histogram':
             # plot histograme
-            xlim = [np.inf, -np.inf]
+
+            # record possible xlims for later use, if xlim is auto
+            xlim_auto = [np.inf, -np.inf]
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
 
                 n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
@@ -113,14 +114,12 @@ class plotCanvas(FigureCanvasQTAgg):
                 else:
                     maxIdx = np.max(nonZeros)
 
-                xlim[0] = np.min([edge[minIdx], xlim[0]])
-                xlim[1] = np.max([edge[maxIdx], xlim[1]])
+                xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
+                xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
 
             if axScales[0] == 'log':
-                if xlim[0] <= 0:
-                    xlim[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
-
-            self.ax.set_xlim(xlim)
+                if xlim_auto[0] <= 0:
+                    xlim_auto[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
 
             if axScales[1] == 'logicle':
                 self.ax.set_yscale('log')
@@ -132,6 +131,22 @@ class plotCanvas(FigureCanvasQTAgg):
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
+
+        # deal with xlim and ylim            
+        xmin, xmax, ymin, ymax = axRanges
+        if xmin == 'auto' or xmax =='auto':
+            if plotType == 'Histogram':
+                self.ax.set_xlim(xlim_auto)
+            else:
+                self.ax.autoscale(True, 'x')
+        else:
+            self.ax.set_xlim([xmin, xmax])
+
+        if ymin == 'auto' or ymax == 'auto':
+            self.ax.autoscale(True, 'y')
+        else:
+            self.ax.set_ylim([ymin, ymax])
+    
         
         if len(smplItems) < 12:
             self.ax.legend(markerscale=5)   
@@ -179,14 +194,14 @@ class plotCanvas(FigureCanvasQTAgg):
 
         if not (xmin is None or xmax is None):
             if xmin == 'auto' or xmax == 'auto':
-                self.ax.autoscale(axis='x')
+                self.ax.autoscale(True, axis='x')
                 self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
             else:
                 self.ax.set_xlim([xmin, xmax])
 
         if not (ymin is None or ymax is None):
             if ymin == 'auto' or ymax == 'auto':
-                self.ax.autoscale(axis='y')
+                self.ax.autoscale(True, axis='y')
                 self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
             else:
                 self.ax.set_ylim([ymin, ymax])
