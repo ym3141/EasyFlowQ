@@ -1,6 +1,8 @@
 import sys
 import matplotlib
 import pandas as pd
+import math
+
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
@@ -115,6 +117,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
 
+        # axes lims
+        self.mpl_canvas.axLimUpdated.connect(self.handle_UpdateAxLim)
+        self.xlimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
+        self.ylimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
+
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
 
@@ -162,6 +169,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              chnlNames=self.curChnls, 
                                              axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                              axScales=self.curAxScales,
+                                             axRanges=[None, None, None, None],
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              plotType = self.curPlotType,
                                              normOption = self.curNormOption,
@@ -309,12 +317,6 @@ class mainUi(mainWindowBase, mainWindowUi):
             for item in self.smplListWidget.selectedItems():
                 item.plotColor = color
 
-    def handle_FixAxes(self, fixAxes: bool):
-        self.mpl_canvas.set_fixAxes(fixAxes)
-
-        if not fixAxes:
-            self.handle_FigureUpdate()
-
     def handle_Settings(self, firstTime=False):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
         self.settingsWindow.setWindowModality(QtCore.Qt.ApplicationModal)
@@ -334,7 +336,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statusbar.removeWidget(self.progBar)
         self.statusbar.showMessage('Exporting Finished')
 
-    def handle_RangeEdit(self):
+    def handle_AxlimEdited(self):
         which = self.sender()
         if which is self.rangeEdits[0]:
             self.rangeEdits[1].setValidator(axlimValidator(float(which.text()), float('inf'), 5))
@@ -345,8 +347,32 @@ class mainUi(mainWindowBase, mainWindowUi):
         elif which is self.rangeEdits[3]:
             self.rangeEdits[2].setValidator(axlimValidator(float('-inf'), float(which.text()), 5))
 
-        # print('range edited')
+        if which in self.rangeEdits[0:2]:
+            self.mpl_canvas.updateLims(float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text()), None, None)
+        elif which in self.rangeEdits[2:4]:
+            self.mpl_canvas.updateLims(None, None, float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text()))
+        
+        print('range edited')
 
+    def handle_UpdateAxLim(self, xmin, xmax, ymin, ymax):
+        if not (math.isnan(xmin) or math.isnan(xmax)):
+            self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
+            self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
+
+        if not (math.isnan(ymin) or math.isnan(ymax)):
+            self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
+            self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
+
+    def handle_AxisAuto(self, checkState):
+        which = self.sender()
+
+        if checkState == 2:
+            if which is self.xlimAutoCheck:
+                self.mpl_canvas.updateLims(xmin='auto', xmax='auto')
+                pass
+            elif which is self.ylimAutoCheck:
+                self.mpl_canvas.updateLims(ymin='auto', ymax='auto')
+                pass
 
     #     if which == 'x':
     #         self.xlimMinEdit.setReadOnly(bool(checkState))
@@ -406,7 +432,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         rangeEdits = [self.xlimMinEdit, self.xlimMaxEdit, self.ylimMinEdit, self.ylimMaxEdit]
         for edit in rangeEdits:
             edit.setValidator(QtGui.QDoubleValidator())
-            edit.editingFinished.connect(self.handle_RangeEdit)
+            edit.editingFinished.connect(self.handle_AxlimEdited)
 
         return rangeEdits
 
@@ -521,6 +547,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         return [gateItem for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
     @property
+    def curLimSettings(self):
+        xAuto = (self.xlimAutoCheck.checkState() == 2)
+        yAuto = (self.ylimAutoCheck.checkState() == 2)
+
+        return (xAuto, yAuto)
+
+    @property
     def saveFlag(self):
         return self._saveFlag
 
@@ -563,7 +596,11 @@ if __name__ == '__main__':
     sys.excepthook = myexcepthook
 
     app = QtWidgets.QApplication(sys.argv)
-    window = mainUi(localSettings('./localSettings.default.json'))
+
+    testSettings = localSettings('./localSettings.default.json')
+    testSettings.settingDict["default dir"] = './demoSamples'
+
+    window = mainUi(testSettings)
     window.show()
     sys.exit(app.exec_())
 

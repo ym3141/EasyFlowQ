@@ -15,7 +15,7 @@ import warnings
 
 class plotCanvas(FigureCanvasQTAgg):
 
-    updateAxisLims = QtCore.pyqtSignal(float, float, float, float)
+    axLimUpdated = QtCore.pyqtSignal(float, float, float, float)
 
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()
@@ -35,9 +35,6 @@ class plotCanvas(FigureCanvasQTAgg):
         self.ax.set_ylabel('None')
 
         self.sampleRNG = np.random.default_rng()
-
-        self.fixedXlim = None
-        self.fixedYlim = None
 
         self.curPlotType = 'Dot plot'
 
@@ -139,6 +136,7 @@ class plotCanvas(FigureCanvasQTAgg):
         if len(smplItems) < 12:
             self.ax.legend(markerscale=5)   
         self.draw()
+        self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
 
         return list(zip(smplItems, gatedSmpls, gateFracs))
 
@@ -175,6 +173,25 @@ class plotCanvas(FigureCanvasQTAgg):
             gatedSmpls.append(gatedSmpl)
         
         return gatedSmpls, gateFracs
+
+    def updateLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
+        # self.ax.autoscale()
+
+        if not (xmin is None or xmax is None):
+            if xmin == 'auto' or xmax == 'auto':
+                self.ax.autoscale(axis='x')
+                self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+            else:
+                self.ax.set_xlim([xmin, xmax])
+
+        if not (ymin is None or ymax is None):
+            if ymin == 'auto' or ymax == 'auto':
+                self.ax.autoscale(axis='y')
+                self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+            else:
+                self.ax.set_ylim([ymin, ymax])
+
+        self.draw()
     
 
 
