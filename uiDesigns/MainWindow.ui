@@ -116,22 +116,6 @@
           <string>Y-Axis:</string>
          </property>
         </widget>
-        <widget class="QCheckBox" name="fixAxesCheck">
-         <property name="geometry">
-          <rect>
-           <x>580</x>
-           <y>20</y>
-           <width>111</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fix both axis for dot plot; &lt;/p&gt;&lt;p&gt;Fix x axis for histogram&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Fix Axes</string>
-         </property>
-        </widget>
         <widget class="QCheckBox" name="perfCheck">
          <property name="geometry">
           <rect>
@@ -313,21 +297,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>Overlay gate:</string>
-        </property>
-        <property name="flat">
-         <bool>true</bool>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QComboBox" name="comboBox"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
        <widget class="QGroupBox" name="plotTypeBox">
         <property name="title">
          <string>Plot type</string>
@@ -359,7 +328,7 @@
       <item>
        <widget class="QGroupBox" name="axisOptionBox">
         <property name="title">
-         <string>Axes option</string>
+         <string>Axes scale</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -438,6 +407,177 @@
           </widget>
          </item>
         </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="xRangeBox">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>61</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>X-Axis range</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <widget class="QCheckBox" name="xlimAutoCheck">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>61</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="xlimMinEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>30</y>
+           <width>71</width>
+           <height>22</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>10</y>
+           <width>31</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>min:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>10</y>
+           <width>31</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>max:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="xlimMaxEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>30</y>
+           <width>71</width>
+           <height>22</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="yRangeBox">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>61</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Y-Axis range</string>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+        <widget class="QCheckBox" name="ylimAutoCheck">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>61</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Auto</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="ylimMinEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>30</y>
+           <width>71</width>
+           <height>22</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_7">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>10</y>
+           <width>31</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>min:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_8">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>10</y>
+           <width>31</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>max:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="ylimMaxEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>30</y>
+           <width>71</width>
+           <height>22</height>
+          </rect>
+         </property>
+        </widget>
        </widget>
       </item>
       <item>
@@ -732,6 +872,70 @@
     <hint type="destinationlabel">
      <x>1297</x>
      <y>998</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>xlimAutoCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>xlimMaxEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1242</x>
+     <y>758</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1387</x>
+     <y>759</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>xlimAutoCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>xlimMinEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1242</x>
+     <y>758</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1317</x>
+     <y>759</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ylimAutoCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ylimMinEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1242</x>
+     <y>826</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1317</x>
+     <y>827</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ylimAutoCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>ylimMaxEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1242</x>
+     <y>826</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1387</x>
+     <y>827</y>
     </hint>
    </hints>
   </connection>

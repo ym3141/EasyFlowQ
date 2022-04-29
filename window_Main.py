@@ -8,7 +8,7 @@ from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
-from src.utils import colorGenerator
+from src.utils import colorGenerator, axlimValidator
 
 from window_RenameCF import renameWindow_CF
 from window_Stats import statWindow
@@ -41,6 +41,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.version = 0.1
         
         self._saveFlag = False
+        self.rangeEdits = self._setupLineEdit()
+
         self.set_sessionSaveDir(sessionSaveFile)
 
         self.chnlDict = dict()
@@ -115,7 +117,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
-        self.fixAxesCheck.stateChanged.connect(self.handle_FixAxes)
+
+        # axis ranges
+        # self.xlimAutoCheck.stateChanged.connect(lambda checkState: self.handle_axisAuto('x', checkState))
+        # self.ylimAutoCheck.stateChanged.connect(lambda checkState: self.handle_axisAuto('y', checkState))
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -329,6 +334,30 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statusbar.removeWidget(self.progBar)
         self.statusbar.showMessage('Exporting Finished')
 
+    def handle_RangeEdit(self):
+        which = self.sender()
+        if which is self.rangeEdits[0]:
+            self.rangeEdits[1].setValidator(axlimValidator(float(which.text()), float('inf'), 5))
+        elif which is self.rangeEdits[1]:
+            self.rangeEdits[0].setValidator(axlimValidator(float('-inf'), float(which.text()), 5))
+        elif which is self.rangeEdits[2]:
+            self.rangeEdits[3].setValidator(axlimValidator(float(which.text()), float('inf'), 5))
+        elif which is self.rangeEdits[3]:
+            self.rangeEdits[2].setValidator(axlimValidator(float('-inf'), float(which.text()), 5))
+
+        # print('range edited')
+
+
+    #     if which == 'x':
+    #         self.xlimMinEdit.setReadOnly(bool(checkState))
+    #         self.xlimMaxEdit.setReadOnly(bool(checkState))
+    #         pass
+    #     elif which == 'y':
+    #         self.ylimMinEdit.setReadOnly(bool(checkState))
+    #         self.ylimMaxEdit.setReadOnly(bool(checkState))
+    #         pass
+        pass
+
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
             self.statWindow.close()
@@ -356,6 +385,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         plotOptionBG.addButton(self.dotRadio, 0)
         plotOptionBG.addButton(self.histRadio, 1)
+        # Make sure y auto is always unchecked when switch figure type
+        plotOptionBG.buttonToggled.connect(lambda: self.ylimAutoCheck.setChecked(2))
 
         xAxisOptionBG.addButton(self.xLinRadio, 0)
         xAxisOptionBG.addButton(self.xLogRadio, 1)
@@ -370,6 +401,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         normOptionBG.addButton(self.norm2CountRadio, 2)
 
         return plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG
+    
+    def _setupLineEdit(self):
+        rangeEdits = [self.xlimMinEdit, self.xlimMaxEdit, self.ylimMinEdit, self.ylimMaxEdit]
+        for edit in rangeEdits:
+            edit.setValidator(QtGui.QDoubleValidator())
+            edit.editingFinished.connect(self.handle_RangeEdit)
+
+        return rangeEdits
+
 
     def _disableInputForGate(self, disable=True):
         self.toolBox.setEnabled(not disable)

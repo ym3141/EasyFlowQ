@@ -14,6 +14,9 @@ import warnings
 
 
 class plotCanvas(FigureCanvasQTAgg):
+
+    updateAxisLims = QtCore.pyqtSignal(float, float, float, float)
+
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()
         self.fig.set_tight_layout(True)
@@ -38,12 +41,10 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.curPlotType = 'Dot plot'
 
-        self._fixAxes = False
-
         self.draw()
 
     # the function that draw
-    def redraw(self, smplItems, chnlNames, axisNames, axScales, 
+    def redraw(self, smplItems, chnlNames, axisNames, axScales, axRanges,
                gateList=[], 
                plotType = 'Dot plot',
                normOption = 'Percentage',
@@ -90,12 +91,7 @@ class plotCanvas(FigureCanvasQTAgg):
                             xscale=axScales[0], yscale=axScales[1],
                             color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
                 
-            if self.fixAxes:
-                self.ax.set_xlim(self.fixedXlim)
-                if self.fixedYlim:
-                    self.ax.set_ylim(self.fixedYlim)
-            else:
-                self.ax.autoscale()
+            self.ax.autoscale()
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
@@ -122,10 +118,6 @@ class plotCanvas(FigureCanvasQTAgg):
 
                 xlim[0] = np.min([edge[minIdx], xlim[0]])
                 xlim[1] = np.max([edge[maxIdx], xlim[1]])
-
-            # Override only the xlim if user want to fix axis
-            if self.fixAxes:
-                xlim = self.fixedXlim
 
             if axScales[0] == 'log':
                 if xlim[0] <= 0:
@@ -183,25 +175,7 @@ class plotCanvas(FigureCanvasQTAgg):
             gatedSmpls.append(gatedSmpl)
         
         return gatedSmpls, gateFracs
-
-    @property
-    def fixAxes(self):
-        return self._fixAxes
-
-    def set_fixAxes(self, fixAxis : bool):
-        self._fixAxes = fixAxis
-
-        if fixAxis:
-            self.fixedXlim = list(self.ax.get_xlim())
-
-            if self.curPlotType == 'Dot plot':
-                self.fixedYlim = list(self.ax.get_ylim())
-
-        else:
-            self.fixedXlim = None
-            self.fixedYlim = None
-
-            self.ax.autoscale()
+    
 
 
 def hist1d_line(data, ax, channel, xscale, color,
