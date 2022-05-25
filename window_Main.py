@@ -1,6 +1,5 @@
 import sys
 import matplotlib
-import pandas as pd
 import math
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
