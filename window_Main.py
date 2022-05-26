@@ -77,11 +77,14 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.xComboBox.setModel(self.chnlListModel)
         self.yComboBox.setModel(self.chnlListModel)
 
+        # add actions to context memu
+        self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
+
         # add the secret testing shortcut
         secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
 
         # link triggers:
-        # manu
+        # menu
         self.actionNew_Session.triggered.connect(self.handle_NewSession)
         self.actionSave.triggered.connect(self.handle_Save)
         self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
@@ -95,23 +98,27 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionSettings.triggered.connect(self.handle_Settings)
 
+        # context menu
+        self.actionDelete_Gate.triggered.connect(self.handle_DeleteGate)
+        self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
+
         # everything update figure
-        self.smplListWidget.itemChanged.connect(self.handle_FigureUpdate)
-        self.smplListWidget.itemSelectionChanged.connect(self.handle_FigureUpdate)
-        self.smplListWidgetModel.rowsMoved.connect(self.handle_FigureUpdate)
+        self.smplListWidget.itemChanged.connect(self.handler_One)
+        self.smplListWidget.itemSelectionChanged.connect(self.handler_One)
+        self.smplListWidgetModel.rowsMoved.connect(self.handler_One)
 
-        self.gateListWidget.itemChanged.connect(self.handle_FigureUpdate)
-        self.gateListWidgetModel.rowsMoved.connect(self.handle_FigureUpdate)
+        self.gateListWidget.itemChanged.connect(self.handler_One)
+        self.gateListWidgetModel.rowsMoved.connect(self.handler_One)
 
-        self.xComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
-        self.yComboBox.currentIndexChanged.connect(self.handle_FigureUpdate)
+        self.xComboBox.currentIndexChanged.connect(self.handler_One)
+        self.yComboBox.currentIndexChanged.connect(self.handler_One)
 
         for bg in buttonGroups:
             for radio in bg.buttons():
-                radio.clicked.connect(self.handle_FigureUpdate)
-        self.perfCheck.stateChanged.connect(self.handle_FigureUpdate)
+                radio.clicked.connect(self.handler_One)
+        self.perfCheck.stateChanged.connect(self.handler_One)
 
-        self.smoothSlider.valueChanged.connect(self.handle_FigureUpdate)
+        self.smoothSlider.valueChanged.connect(self.handler_One)
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
@@ -132,22 +139,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         if sessionSaveFile:
             sessionSave.loadSessionSave(self, sessionSaveFile)
             self.holdFigureUpdate = False
-            self.handle_FigureUpdate()
+            self.handler_One()
 
         if pos:
             self.move(pos)
 
         self.holdFigureUpdate = False
 
-
-    def handle_LoadData(self):
-        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
-        newColorList = self.colorGen.giveColors(len(fileNames))
-
-        for fileName, newColor in zip(fileNames, newColorList):
-            self.loadFcsFile(fileName, newColor)
-
-    def handle_FigureUpdate(self):
+    # the centre handler for updating the figure.
+    def handler_One(self):
         # this function is used to process info for the canvas to redraw
 
         if self.holdFigureUpdate:
@@ -181,6 +181,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         if self.statWindow.isVisible() and len(self.smplsOnPlot):
             self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
 
+    def handle_LoadData(self):
+        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
+        newColorList = self.colorGen.giveColors(len(fileNames))
+
+        for fileName, newColor in zip(fileNames, newColorList):
+            self.loadFcsFile(fileName, newColor)
+    
     def handle_AddGate(self):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
@@ -221,7 +228,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             sessionSave.loadSessionSave(self, openFileDir)
             self.set_sessionSaveDir(openFileDir)
             self.holdFigureUpdate = False
-            self.handle_FigureUpdate()
+            self.handler_One()
 
             self.set_saveFlag(False)
         else:
@@ -273,7 +280,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.holdFigureUpdate = False
 
-        self.handle_FigureUpdate()
+        self.handler_One()
 
     def handle_ExportDataInGates(self):
 
@@ -372,15 +379,21 @@ class mainUi(mainWindowBase, mainWindowUi):
             elif which is self.ylimAutoCheck:
                 self.mpl_canvas.updateLims(ymin='auto', ymax='auto')
                 pass
+        pass
 
-    #     if which == 'x':
-    #         self.xlimMinEdit.setReadOnly(bool(checkState))
-    #         self.xlimMaxEdit.setReadOnly(bool(checkState))
-    #         pass
-    #     elif which == 'y':
-    #         self.ylimMinEdit.setReadOnly(bool(checkState))
-    #         self.ylimMaxEdit.setReadOnly(bool(checkState))
-    #         pass
+    def handle_DeleteGate(self):
+        curSelected = self.gateListWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No gate selected', 'Please select a gate to delete')
+            return
+        input = QtWidgets.QMessageBox.question(self, 'Delete gate?', 'Are you sure to delete gate \"{0}\"'.format(curSelected[0].text()))
+
+        if input == QtWidgets.QMessageBox.Yes:
+            self.gateListWidget.takeItem(self.gateListWidget.row(curSelected[0]))
+            self.handler_One()
+        pass
+
+    def handle_EditGate(self):
         pass
 
     def closeEvent(self, event: QtGui.QCloseEvent):
@@ -469,12 +482,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             if gate is None:
                 QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
-                self.handle_FigureUpdate()
+                self.handler_One()
             else:
                 if not gateName:
                     gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
                     if not flag:
-                        self.handle_FigureUpdate()
+                        self.handler_One()
                         return
                     
                 newQItem = gateWidgetItem(gateName, gate)

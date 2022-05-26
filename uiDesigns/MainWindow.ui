@@ -282,6 +282,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::ActionsContextMenu</enum>
+        </property>
         <property name="acceptDrops">
          <bool>true</bool>
         </property>
@@ -703,7 +706,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>26</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
@@ -742,7 +745,7 @@
     <property name="title">
      <string>About</string>
     </property>
-    <addaction name="actionAbot"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuSettings">
     <property name="title">
@@ -804,7 +807,7 @@
     <string>Ctrl+L</string>
    </property>
   </action>
-  <action name="actionAbot">
+  <action name="actionAbout">
    <property name="text">
     <string>About</string>
    </property>
@@ -832,6 +835,16 @@
   <action name="actionExport_data_in_current_gates">
    <property name="text">
     <string>Export data in current gates</string>
+   </property>
+  </action>
+  <action name="actionDelete_Gate">
+   <property name="text">
+    <string>Delete Gate</string>
+   </property>
+  </action>
+  <action name="actionEdit_Gate">
+   <property name="text">
+    <string>Edit Gate</string>
    </property>
   </action>
  </widget>
