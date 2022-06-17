@@ -56,6 +56,14 @@ class gateWidgetItem(QListWidgetItem):
 
         self.gate = gate
 
+class quadWidgetItem(QListWidgetItem):
+    def __init__(self, quadName, quad):
+        super(QListWidgetItem, self).__init__(quadName)
+
+        self.setFlags(self.flags() | Qt.ItemIsEditable)
+
+        self.quad = quad
+
 class chnlModel(QStandardItemModel):
     def __init__(self):
         super().__init__()

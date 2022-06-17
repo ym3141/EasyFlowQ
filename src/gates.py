@@ -222,5 +222,107 @@ class lineGateEditor(QtCore.QObject):
         self.ax.draw_artist(self.line)
         self.canvas.blit(self.ax.bbox)
 
+class quadrant:
+    corners = [[False, False], [False, True], [True, False], [True, True]]
+
+    def __init__(self, chnls, center) -> None:
+
+        self.chnls = chnls
+        self.center = center
+        pass
+
+    def generateGates(self):
+        return [quadrantGate(self.chnls, self.center, corner) for corner in quadrant.corners]
+    
+
+class quadrantGate:
+    def __init__(self, chnls, center, corner) -> None:
+        self.chnls = chnls
+        self.center = center
+        self.corner = corner
+        pass
+
+    def isInsideGate(self, fcsData):
+        points = fcsData[:, self.chnls].copy()
+
+        xFlags = points[:,0] < self.center[0] if self.corner[0] else points[:,0] > self.center[0]
+        yFlags = points[:,1] < self.center[1] if self.corner[1] else points[:,1] > self.center[1]
+
+        insideFlags = np.logical_and(xFlags, yFlags)
+
+        return insideFlags
+
+class quadrantEditor(QtCore.QObject):
+    """
+    This class deal with creating and editing quadrant
+    it take, edit, and generate a quadrant instance
+    """
+    quadrantConfirmed = QtCore.pyqtSignal(object)
+
+    def __init__(self, ax, canvasParam=None, quad=None) -> None:
+        super(QtCore.QObject, self).__init__()
+
+        self.ax = ax
+        self.canvas = self.ax.figure.canvas
+        self.background = None
+        self.chnls, self.axScales = canvasParam
+
+        if not quad:
+            self.hline = self.ax.axhline(np.mean(self.ax.get_ylim()), animated=True, color='r')
+            self.vline = self.ax.axvline(np.mean(self.ax.get_xlim()), animated=True, color='r')
+
+            self.cur_xlim = self.ax.get_xlim()
+            self.cur_ylim = self.ax.get_ylim()
+            
+        else:
+            pass
+
+        # self.canvas.mpl_connect('draw_event', self.on_draw)
+        self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+        # self.cid = self.line.add_callback(self.line_changed)
+
+    def addQuad_on_press(self, event):
+        if event.button == 1:
+            vert = [event.xdata, event.ydata]
+
+            finishedQuadrant = quadrant(self.chnls, vert)
+            self.quadrantConfirmed.emit(finishedQuadrant)
+
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
+
+            self.blitDraw()
+
+        elif event.button == 3:
+            # right click recieved, cancel the quadrant
+
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
+            
+            self.quadrantConfirmed.emit(None)
+            
+            self.canvas.restore_region(self.background)
+            self.canvas.blit(self.ax.bbox)
+
+
+    def addQuad_on_motion(self, event):
+        vert = [event.xdata, event.ydata]
+
+        self.hline.set_data(self.cur_xlim, [vert[1], vert[1]])
+        self.vline.set_data([vert[0], vert[0]], self.cur_ylim)
+
+        self.blitDraw()
+
+    def addQuad_connnect(self):
+        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addQuad_on_press)
+        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addQuad_on_motion)
+
+    def blitDraw(self):
+        self.canvas.restore_region(self.background)
+        self.ax.draw_artist(self.hline)
+        self.ax.draw_artist(self.vline)
+
+        self.canvas.blit(self.ax.bbox)
+
 if __name__ == '__main__':
     pass

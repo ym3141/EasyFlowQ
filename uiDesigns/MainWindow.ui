@@ -205,7 +205,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabGate">
          <property name="enabled">
@@ -251,7 +251,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Gating list (in order)</string>
+                <string>List of gates:</string>
                </property>
               </widget>
              </item>
@@ -348,12 +348,12 @@
              <item>
               <widget class="QLabel" name="label_9">
                <property name="text">
-                <string>Quadrant list:</string>
+                <string>Gate of quadrants:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="addQuadButton">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -381,7 +381,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QListWidget" name="listWidget"/>
+           <widget class="QListWidget" name="quadListWidget"/>
           </item>
          </layout>
         </widget>
@@ -1049,6 +1049,22 @@
     <hint type="destinationlabel">
      <x>1387</x>
      <y>827</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>histRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>addQuadButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1349</x>
+     <y>454</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1387</x>
+     <y>101</y>
     </hint>
    </hints>
   </connection>

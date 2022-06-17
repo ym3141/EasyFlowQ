@@ -5,8 +5,8 @@ import math
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
-from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem
-from src.gates import polygonGateEditor, lineGateEditor
+from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem, quadWidgetItem
+from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from src.utils import colorGenerator, axlimValidator
@@ -103,25 +103,26 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
 
         # everything update figure
-        self.smplListWidget.itemChanged.connect(self.handler_One)
-        self.smplListWidget.itemSelectionChanged.connect(self.handler_One)
-        self.smplListWidgetModel.rowsMoved.connect(self.handler_One)
+        self.smplListWidget.itemChanged.connect(self.handle_One)
+        self.smplListWidget.itemSelectionChanged.connect(self.handle_One)
+        self.smplListWidgetModel.rowsMoved.connect(self.handle_One)
 
-        self.gateListWidget.itemChanged.connect(self.handler_One)
-        self.gateListWidgetModel.rowsMoved.connect(self.handler_One)
+        self.gateListWidget.itemChanged.connect(self.handle_One)
+        self.gateListWidgetModel.rowsMoved.connect(self.handle_One)
 
-        self.xComboBox.currentIndexChanged.connect(self.handler_One)
-        self.yComboBox.currentIndexChanged.connect(self.handler_One)
+        self.xComboBox.currentIndexChanged.connect(self.handle_One)
+        self.yComboBox.currentIndexChanged.connect(self.handle_One)
 
         for bg in buttonGroups:
             for radio in bg.buttons():
-                radio.clicked.connect(self.handler_One)
-        self.perfCheck.stateChanged.connect(self.handler_One)
+                radio.clicked.connect(self.handle_One)
+        self.perfCheck.stateChanged.connect(self.handle_One)
 
-        self.smoothSlider.valueChanged.connect(self.handler_One)
+        self.smoothSlider.valueChanged.connect(self.handle_One)
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
+        self.addQuadButton.clicked.connect(self.handle_AddQuad)
 
         # axes lims
         self.mpl_canvas.axLimUpdated.connect(self.handle_UpdateAxLim)
@@ -139,7 +140,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         if sessionSaveFile:
             sessionSave.loadSessionSave(self, sessionSaveFile)
             self.holdFigureUpdate = False
-            self.handler_One()
+            self.handle_One()
 
         if pos:
             self.move(pos)
@@ -147,7 +148,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = False
 
     # the centre handler for updating the figure.
-    def handler_One(self):
+    def handle_One(self):
         # this function is used to process info for the canvas to redraw
 
         if self.holdFigureUpdate:
@@ -212,6 +213,21 @@ class mainUi(mainWindowBase, mainWindowUi):
             pass
         # print(item.checkState())            
         pass
+
+    def handle_AddQuad(self):
+        self._disableInputForGate(True)
+        self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+
+        if self.curPlotType == 'Dot plot':
+            self.statusbar.showMessage('Left click to confirm, Right click to close the gate and confirm', 0)
+            self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, self.curAxScales))
+        
+        else:
+            pass
+
+        self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
+        self.quadEditor.addQuad_connnect()
+
                 
     def handle_NewSession(self):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
@@ -228,7 +244,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             sessionSave.loadSessionSave(self, openFileDir)
             self.set_sessionSaveDir(openFileDir)
             self.holdFigureUpdate = False
-            self.handler_One()
+            self.handle_One()
 
             self.set_saveFlag(False)
         else:
@@ -280,7 +296,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.holdFigureUpdate = False
 
-        self.handler_One()
+        self.handle_One()
 
     def handle_ExportDataInGates(self):
 
@@ -390,7 +406,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         if input == QtWidgets.QMessageBox.Yes:
             self.gateListWidget.takeItem(self.gateListWidget.row(curSelected[0]))
-            self.handler_One()
+            self.handle_One()
         pass
 
     def handle_EditGate(self):
@@ -482,12 +498,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             if gate is None:
                 QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
-                self.handler_One()
+                self.handle_One()
             else:
                 if not gateName:
                     gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
                     if not flag:
-                        self.handler_One()
+                        self.handle_One()
                         return
                     
                 newQItem = gateWidgetItem(gateName, gate)
@@ -496,6 +512,33 @@ class mainUi(mainWindowBase, mainWindowUi):
                 # newQItem.setData(0x100, gate)
                 # newQItem.setCheckable(True)
                 self.gateListWidget.addItem(newQItem)
+
+    def loadQuadrant(self, quadrant, replace=None, quadName=None, checkState=0):
+        self.set_saveFlag(True)
+        self._disableInputForGate(False)
+        self.mpl_canvas.unsetCursor()
+        self.statusbar.clearMessage()
+
+        if replace:
+            pass
+        else:
+            if quadrant is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid quadrant')
+                self.handle_One()
+            else:
+                if not quadName:
+                    quadName, flag = QtWidgets.QInputDialog.getText(self, 'New quadrant', 'Name for the new quadrant')
+                    if not flag:
+                        self.handle_One()
+                        return
+                    
+                newQItem = quadWidgetItem(quadName, quadrant)
+
+                # newQItem.setData(0x100, gate)
+                # newQItem.setCheckable(True)
+                self.quadListWidget.addItem(newQItem)
+
+        pass
 
     def secretCrash(self):
         input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 
