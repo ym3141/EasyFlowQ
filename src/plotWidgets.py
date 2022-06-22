@@ -12,6 +12,7 @@ from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _Log
 
 import warnings
 
+quadrantTextProps = dict(boxstyle='square', facecolor='w', alpha=0.8)
 
 class plotCanvas(FigureCanvasQTAgg):
 
@@ -42,7 +43,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
     # the function that draw
     def redraw(self, smplItems, chnlNames, axisNames, axScales, axRanges,
-               gateList=[], 
+               gateList=[], quadrant=None,
                plotType = 'Dot plot',
                normOption = 'Percentage',
                perfModeN=None,
@@ -53,6 +54,8 @@ class plotCanvas(FigureCanvasQTAgg):
         self.ax.clear()
         self.ax.autoscale(False)
         self.navigationBar.update()
+
+        drawnQuadrant = False
 
         # only draw samples that has the specified channels
         smplItems = [a for a in smplItems if (chnlNames[0] in a.fcsSmpl.channels and chnlNames[1] in a.fcsSmpl.channels)] 
@@ -88,6 +91,31 @@ class plotCanvas(FigureCanvasQTAgg):
                     scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
                             xscale=axScales[0], yscale=axScales[1],
                             color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+
+            if quadrant:
+                if quadrant.chnls[0] == xChnl and quadrant.chnls[1] == yChnl:
+                # Only draw quadrant if requested, and the chnls match
+
+                    totQs = np.zeros(4)
+                    for gateSmpl in gatedSmpls:
+                        totQs += quadrant.cellNs(gatedSmpl)
+
+                    qFracs = totQs / np.sum(totQs)
+                    
+                    self.ax.axvline(quadrant.center[0], linestyle = '--', color='k')
+                    self.ax.axhline(quadrant.center[1], linestyle = '--', color='k')
+                    
+                    textingProps = {
+                        'transform': self.ax.transAxes,
+                        'fontsize': 'large',
+                        'bbox': quadrantTextProps
+                    }
+                    self.ax.text(0.03, 0.03, '{:.2%}'.format(qFracs[0]), **textingProps)
+                    self.ax.text(0.03, 0.97, '{:.2%}'.format(qFracs[1]), **textingProps, va='top')
+                    self.ax.text(0.97, 0.03, '{:.2%}'.format(qFracs[2]), **textingProps, ha='right')
+                    self.ax.text(0.97, 0.97, '{:.2%}'.format(qFracs[3]), **textingProps, va='top', ha='right')
+
+                    drawnQuadrant = True
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
@@ -149,7 +177,12 @@ class plotCanvas(FigureCanvasQTAgg):
     
         
         if len(smplItems) < 12:
-            self.ax.legend(markerscale=5)   
+            if drawnQuadrant:
+                # if a quadrant is drawn, instruct legend will try to avoid the texts
+                self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
+            else:
+                self.ax.legend(markerscale=5)
+            
         self.draw()
         self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
 

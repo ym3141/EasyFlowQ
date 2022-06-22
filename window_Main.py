@@ -171,6 +171,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              axScales=self.curAxScales,
                                              axRanges=self.curLimSettings,
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
+                                             quadrant = self.curQuadrantItem.quad if self.curQuadrantItem else None,
                                              plotType = self.curPlotType,
                                              normOption = self.curNormOption,
                                              perfModeN = perfModeN,
@@ -600,6 +601,14 @@ class mainUi(mainWindowBase, mainWindowUi):
         allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
 
         return [gateItem for gateItem in allGateItems if (gateItem.checkState() == 2)]
+
+    @property
+    def curQuadrantItem(self):
+        quadList = self.quadListWidget.selectedItems()
+        if quadList:
+            return quadList[0]
+        else:
+            return None
 
     @property
     def curLimSettings(self):

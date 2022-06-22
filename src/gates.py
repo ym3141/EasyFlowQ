@@ -231,6 +231,18 @@ class quadrant:
         self.center = center
         pass
 
+    def cellNs(self, fcsData):
+        xFlags = fcsData[:, self.chnls[0]] < self.center[0]
+        yFlags = fcsData[:, self.chnls[1]] < self.center[1]
+
+        Q1 = np.sum(np.logical_and(xFlags, yFlags))
+        Q2 = np.sum(np.logical_and(xFlags, np.logical_not(yFlags)))
+        Q3 = np.sum(np.logical_and(np.logical_not(xFlags), yFlags))
+        Q4 = np.sum(np.logical_and(np.logical_not(xFlags), np.logical_not(yFlags)))
+
+        return [np.sum(Q) for Q in [Q1, Q2, Q3, Q4]]
+
+
     def generateGates(self):
         return [quadrantGate(self.chnls, self.center, corner) for corner in quadrant.corners]
     
