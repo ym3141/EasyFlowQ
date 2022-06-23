@@ -280,12 +280,11 @@ class quadrantEditor(QtCore.QObject):
         self.chnls, self.axScales = canvasParam
 
         if not quad:
-            self.hline = self.ax.axhline(np.mean(self.ax.get_ylim()), animated=True, color='r')
-            self.vline = self.ax.axvline(np.mean(self.ax.get_xlim()), animated=True, color='r')
-
             self.cur_xlim = self.ax.get_xlim()
             self.cur_ylim = self.ax.get_ylim()
-            
+            self.hline = self.ax.axhline(np.mean(self.cur_ylim), animated=True, color='r', ls='--')
+            self.vline = self.ax.axvline(np.mean(self.cur_xlim), animated=True, color='r', ls='--')
+
         else:
             pass
 
@@ -320,8 +319,11 @@ class quadrantEditor(QtCore.QObject):
     def addQuad_on_motion(self, event):
         vert = [event.xdata, event.ydata]
 
-        self.hline.set_data(self.cur_xlim, [vert[1], vert[1]])
-        self.vline.set_data([vert[0], vert[0]], self.cur_ylim)
+        hlineLims = self.hline.get_xdata()
+        self.hline.set_data(hlineLims, [vert[1], vert[1]])
+
+        vlineLims = self.vline.get_ydata()
+        self.vline.set_data([vert[0], vert[0]], vlineLims)
 
         self.blitDraw()
 
