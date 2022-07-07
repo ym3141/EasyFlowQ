@@ -43,6 +43,8 @@ class sessionSave():
     # This is a json serializable class, used for save the session
 
     def __init__(self, mainUiWindow, saveFileDir) -> None:
+
+        self.save_ver = 1.0
         
         self.fileDir = saveFileDir
         baseDir = path.dirname(saveFileDir)
@@ -59,11 +61,16 @@ class sessionSave():
                 self.smplSaveList[-1]['selected'] = False
 
 
-
         self.gateSaveList = []
         for idx in range(mainUiWindow.gateListWidget.count()):
             gateItem = mainUiWindow.gateListWidget.item(idx)
             self.gateSaveList.append(_convert_gateItem(gateItem))
+
+        self.quadSaveList = []
+        for idx in range(mainUiWindow.quadListWidget.count()):
+            quadItem = mainUiWindow.quadListWidget.item(idx)
+            self.quadSaveList.append(_convert_quadItem(quadItem))
+
 
         self.figOptions = dict()
         self.figOptions['curAxScales'] = mainUiWindow.curAxScales
@@ -71,7 +78,7 @@ class sessionSave():
         self.figOptions['curPlotType'] = mainUiWindow.curPlotType
         self.figOptions['curAxScales'] = mainUiWindow.curAxScales
         self.figOptions['curChnls'] = mainUiWindow.curChnls
-
+        self.figOptions['curSmooth'] = mainUiWindow.smoothSlider.value()
         
     def saveJson(self):
         with open(self.fileDir, 'w+') as f:
@@ -138,10 +145,18 @@ def _convert_gateItem(gateItem):
         gateSave['verts'] = gateSave['verts'].tolist()
         del gateSave['prebuiltPath']
 
-    elif gateSave['type'] == 'lineGate':
+    elif gateSave['type'] == 'lineGate' or gateSave['type'] == 'quadrantGate':
         pass
 
     return gateSave
+
+def _convert_quadItem(quadItem):
+    quadSave = deepcopy(quadItem.quad.__dict__)
+
+    quadSave['displayName'] = quadItem.text()
+
+    return quadSave
+
 
 
 def getSysDefaultDir():

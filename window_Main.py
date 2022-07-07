@@ -107,6 +107,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplListWidget.itemSelectionChanged.connect(self.handle_One)
         self.smplListWidgetModel.rowsMoved.connect(self.handle_One)
 
+        self.quadListWidget.itemSelectionChanged.connect(self.handle_One)
+
         self.gateListWidget.itemChanged.connect(self.handle_One)
         self.gateListWidgetModel.rowsMoved.connect(self.handle_One)
 
@@ -131,6 +133,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
+        self.clearQuadPB.clicked.connect(lambda : self.quadListWidget.clearSelection())
+        self.histRadio.toggled.connect(self.handle_ChangedToHist)
 
         # axis ranges
         # self.xlimAutoCheck.stateChanged.connect(lambda checkState: self.handle_axisAuto('x', checkState))
@@ -412,6 +416,15 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_EditGate(self):
         pass
+
+    def handle_ChangedToHist(self, flag):
+        if flag:
+            self.tab_GateQuad.setCurrentWidget(self.tabGate)
+        else:
+            pass
+
+        self.tabQuadrant.setEnabled(not flag)
+        
 
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
