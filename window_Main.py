@@ -1,6 +1,5 @@
 import sys
 import matplotlib
-import math
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
@@ -9,7 +8,7 @@ from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem, quadWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
-from src.utils import colorGenerator, axlimValidator
+from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
 from window_Stats import statWindow
@@ -31,18 +30,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         # show manubar on macos
         self.menubar.setNativeMenuBar(False)
 
-        # Group the buttons
-        buttonGroups = self._organizeButtonGroups()
-        self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
-
         # load the seetings:
         self.settingDict = setting.settingDict
         
         # other init
         self.version = 0.1
-        
         self._saveFlag = False
-        self.rangeEdits = self._setupLineEdit()
 
         self.set_sessionSaveDir(sessionSaveFile)
 
@@ -115,30 +108,20 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.xComboBox.currentIndexChanged.connect(self.handle_One)
         self.yComboBox.currentIndexChanged.connect(self.handle_One)
 
-        for bg in buttonGroups:
-            for radio in bg.buttons():
-                radio.clicked.connect(self.handle_One)
         self.perfCheck.stateChanged.connect(self.handle_One)
-
-        self.smoothSlider.valueChanged.connect(self.handle_One)
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
         self.addQuadButton.clicked.connect(self.handle_AddQuad)
 
         # axes lims
-        self.mpl_canvas.axLimUpdated.connect(self.handle_UpdateAxLim)
-        self.xlimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
-        self.ylimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
+        self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.updateAxLims)
+        self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
         self.clearQuadPB.clicked.connect(lambda : self.quadListWidget.clearSelection())
-        self.histRadio.toggled.connect(self.handle_ChangedToHist)
 
-        # axis ranges
-        # self.xlimAutoCheck.stateChanged.connect(lambda checkState: self.handle_axisAuto('x', checkState))
-        # self.ylimAutoCheck.stateChanged.connect(lambda checkState: self.handle_axisAuto('y', checkState))
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -363,45 +346,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statusbar.removeWidget(self.progBar)
         self.statusbar.showMessage('Exporting Finished')
 
-    def handle_AxlimEdited(self):
-        which = self.sender()
-        if which is self.rangeEdits[0]:
-            self.rangeEdits[1].setValidator(axlimValidator(float(which.text()), float('inf'), 5))
-        elif which is self.rangeEdits[1]:
-            self.rangeEdits[0].setValidator(axlimValidator(float('-inf'), float(which.text()), 5))
-        elif which is self.rangeEdits[2]:
-            self.rangeEdits[3].setValidator(axlimValidator(float(which.text()), float('inf'), 5))
-        elif which is self.rangeEdits[3]:
-            self.rangeEdits[2].setValidator(axlimValidator(float('-inf'), float(which.text()), 5))
-
-        if which in self.rangeEdits[0:2]:
-            self.mpl_canvas.updateLims(float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text()), None, None)
-        elif which in self.rangeEdits[2:4]:
-            self.mpl_canvas.updateLims(None, None, float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text()))
-        
-        print('range edited')
-
-    def handle_UpdateAxLim(self, xmin, xmax, ymin, ymax):
-        if not (math.isnan(xmin) or math.isnan(xmax)):
-            self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
-            self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
-
-        if not (math.isnan(ymin) or math.isnan(ymax)):
-            self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
-            self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
-
-    def handle_AxisAuto(self, checkState):
-        which = self.sender()
-
-        if checkState == 2:
-            if which is self.xlimAutoCheck:
-                self.mpl_canvas.updateLims(xmin='auto', xmax='auto')
-                pass
-            elif which is self.ylimAutoCheck:
-                self.mpl_canvas.updateLims(ymin='auto', ymax='auto')
-                pass
-        pass
-
     def handle_DeleteGate(self):
         curSelected = self.gateListWidget.selectedItems()
         if len(curSelected) == 0:
@@ -444,39 +388,6 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         else:
             event.accept()
-
-
-    def _organizeButtonGroups(self):
-        # Create button groups to manage the radio button for plot options
-
-        plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG = [QtWidgets.QButtonGroup(self) for i in range(4)]
-
-        plotOptionBG.addButton(self.dotRadio, 0)
-        plotOptionBG.addButton(self.histRadio, 1)
-        # Make sure y auto is always unchecked when switch figure type
-        plotOptionBG.buttonToggled.connect(lambda: self.ylimAutoCheck.setChecked(2))
-
-        xAxisOptionBG.addButton(self.xLinRadio, 0)
-        xAxisOptionBG.addButton(self.xLogRadio, 1)
-        xAxisOptionBG.addButton(self.xLogicleRadio, 2)
-
-        yAxisOptionBG.addButton(self.yLinRadio, 0)
-        yAxisOptionBG.addButton(self.yLogRadio, 1)
-        yAxisOptionBG.addButton(self.yLogicleRadio, 2)
-
-        normOptionBG.addButton(self.norm2PercRadio, 0)
-        normOptionBG.addButton(self.norm2TotalRadio, 1)
-        normOptionBG.addButton(self.norm2CountRadio, 2)
-
-        return plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG
-    
-    def _setupLineEdit(self):
-        rangeEdits = [self.xlimMinEdit, self.xlimMaxEdit, self.ylimMinEdit, self.ylimMaxEdit]
-        for edit in rangeEdits:
-            edit.setValidator(QtGui.QDoubleValidator())
-            edit.editingFinished.connect(self.handle_AxlimEdited)
-
-        return rangeEdits
 
 
     def _disableInputForGate(self, disable=True):
@@ -575,39 +486,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.xComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[0]))
         self.yComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[1]))
 
-    @property
-    def curAxScales(self):
-        return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
-
-    def set_curAxScales(self, AxScales):
-        for xRadio in self.xAxisOptionBG.buttons():
-            if xRadio.text() == AxScales[0]:
-                xRadio.setChecked(True)
-                continue
-        for yRadio in self.yAxisOptionBG.buttons():
-            if yRadio.text() == AxScales[1]:
-                yRadio.setChecked(True)
-                continue
-
-    @property
-    def curNormOption(self):
-        return self.normOptionBG.checkedButton().text()
-
-    def set_curNormOption(self, normOption):
-        for normRadio in self.normOptionBG.buttons():
-            if normRadio.text() == normOption:
-                normRadio.setChecked(True)
-                continue
-
-    @property
-    def curPlotType(self):
-        return self.plotOptionBG.checkedButton().text()
-
-    def set_curPlotType(self, plotType):
-        for plotRadio in self.plotOptionBG.buttons():
-            if plotRadio.text() == plotType:
-                plotRadio.setChecked(True)
-                continue
 
     @property
     def curGateItems(self):
@@ -622,16 +500,6 @@ class mainUi(mainWindowBase, mainWindowUi):
             return quadList[0]
         else:
             return None
-
-    @property
-    def curLimSettings(self):
-        xAuto = (self.xlimAutoCheck.checkState() == 2)
-        yAuto = (self.ylimAutoCheck.checkState() == 2)
-
-        xlim = ['auto', 'auto'] if xAuto else [float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text())]
-        ylim = ['auto', 'auto'] if yAuto else [float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())]
-
-        return xlim + ylim
 
     @property
     def saveFlag(self):
@@ -664,7 +532,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             return path.abspath(getSysDefaultDir())
         pass
-
 
 
 if __name__ == '__main__':

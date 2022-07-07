@@ -16,7 +16,7 @@ quadrantTextProps = dict(boxstyle='square', facecolor='w', alpha=0.8)
 
 class plotCanvas(FigureCanvasQTAgg):
 
-    axLimUpdated = QtCore.pyqtSignal(float, float, float, float)
+    signal_AxLimsUpdated = QtCore.pyqtSignal(float, float, float, float)
 
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()
@@ -184,7 +184,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.legend(markerscale=5)
             
         self.draw()
-        self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+        self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
 
         return list(zip(smplItems, gatedSmpls, gateFracs))
 
@@ -222,26 +222,25 @@ class plotCanvas(FigureCanvasQTAgg):
         
         return gatedSmpls, gateFracs
 
-    def updateLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
+    def updateAxLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
         # self.ax.autoscale()
 
         if not (xmin is None or xmax is None):
             if xmin == 'auto' or xmax == 'auto':
                 self.ax.autoscale(True, axis='x')
-                self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+                self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
             else:
                 self.ax.set_xlim([xmin, xmax])
 
         if not (ymin is None or ymax is None):
             if ymin == 'auto' or ymax == 'auto':
                 self.ax.autoscale(True, axis='y')
-                self.axLimUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+                self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
             else:
                 self.ax.set_ylim([ymin, ymax])
 
         self.draw()
     
-
 
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,

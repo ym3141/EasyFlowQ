@@ -1,7 +1,6 @@
 import seaborn as sns
 import numpy as np
 
-from PyQt5.QtGui import QDoubleValidator
 
 class colorGenerator:
     allColors = np.vstack([
@@ -27,12 +26,3 @@ class colorGenerator:
         self.count = self.count % colorLibLength
 
         return returnColors
-
-class axlimValidator(QDoubleValidator):
-    def fixup(self, a0: str) -> str:
-        if float(a0) > self.top():
-            return str(self.top())
-        elif float(a0) < self.bottom():
-            return str(self.bottom())
-        
-        return super().fixup(a0)
