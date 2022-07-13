@@ -205,7 +205,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabGate">
          <property name="enabled">
@@ -387,7 +387,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QListWidget" name="quadListWidget"/>
+           <widget class="QListWidget" name="quadListWidget">
+            <property name="contextMenuPolicy">
+             <enum>Qt::ActionsContextMenu</enum>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="clearQuadPB">
@@ -411,7 +415,7 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>590</height>
+          <height>530</height>
          </size>
         </property>
        </widget>
@@ -565,6 +569,16 @@
   <action name="actionEdit_Gate">
    <property name="text">
     <string>Edit Gate</string>
+   </property>
+  </action>
+  <action name="actionDelete_Quad">
+   <property name="text">
+    <string>Delete Quadrant</string>
+   </property>
+  </action>
+  <action name="actionQuad2Gate">
+   <property name="text">
+    <string>Generate gates from quadrant</string>
    </property>
   </action>
  </widget>

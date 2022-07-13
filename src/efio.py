@@ -73,12 +73,8 @@ class sessionSave():
 
 
         self.figOptions = dict()
-        self.figOptions['curAxScales'] = mainUiWindow.curAxScales
-        self.figOptions['curNormOption'] = mainUiWindow.curNormOption
-        self.figOptions['curPlotType'] = mainUiWindow.curPlotType
-        self.figOptions['curAxScales'] = mainUiWindow.curAxScales
+        self.figOptions['curPlotType'], self.figOptions['curAxScales'], self.figOptions['curAxLims'], self.figOptions['curNormOption'], self.figOptions['curSmooth'] = mainUiWindow.figOpsPanel.curFigOptions
         self.figOptions['curChnls'] = mainUiWindow.curChnls
-        self.figOptions['curSmooth'] = mainUiWindow.smoothSlider.value()
         
     def saveJson(self):
         with open(self.fileDir, 'w+') as f:
@@ -117,6 +113,9 @@ class sessionSave():
                 mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
             elif jGate['type'] == 'lineGate':
                 mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+            elif jGate['type'] == 'quadrantGate':
+                mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+            
 
         mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
         mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])

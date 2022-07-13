@@ -1,5 +1,11 @@
 {
     "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto",
+            "auto",
+            "auto"
+        ],
         "curAxScales": [
             "log",
             "log"
@@ -9,10 +15,10 @@
             "FL6-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Histogram",
+        "curPlotType": "Dot plot",
         "curSmooth": 24
     },
-    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/Save_v2.eflq",
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTest_v1.0.eflq",
     "gateSaveList": [
         {
             "axScales": [
@@ -93,6 +99,74 @@
                     3276.992578479848
                 ]
             ]
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 2,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                false,
+                false
+            ],
+            "displayName": "jyjy (Right bottom)",
+            "type": "quadrantGate"
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                false,
+                true
+            ],
+            "displayName": "jyjy (Left bottom)",
+            "type": "quadrantGate"
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                true,
+                false
+            ],
+            "displayName": "jyjy (Right upper)",
+            "type": "quadrantGate"
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                true,
+                true
+            ],
+            "displayName": "jyjy (Left upper)",
+            "type": "quadrantGate"
         }
     ],
     "quadSaveList": [

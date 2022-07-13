@@ -257,8 +257,8 @@ class quadrantGate:
     def isInsideGate(self, fcsData):
         points = fcsData[:, self.chnls].copy()
 
-        xFlags = points[:,0] < self.center[0] if self.corner[0] else points[:,0] > self.center[0]
-        yFlags = points[:,1] < self.center[1] if self.corner[1] else points[:,1] > self.center[1]
+        xFlags = points[:,0] > self.center[0] if self.corner[0] else points[:,0] < self.center[0]
+        yFlags = points[:,1] > self.center[1] if self.corner[1] else points[:,1] < self.center[1]
 
         insideFlags = np.logical_and(xFlags, yFlags)
 

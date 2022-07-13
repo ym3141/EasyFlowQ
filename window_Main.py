@@ -72,6 +72,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # add actions to context memu
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
+        self.quadListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
 
         # add the secret testing shortcut
         secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
@@ -94,6 +95,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         # context menu
         self.actionDelete_Gate.triggered.connect(self.handle_DeleteGate)
         self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
+        self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
+        self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
 
         # everything update figure
         self.smplListWidget.itemChanged.connect(self.handle_One)
@@ -123,6 +126,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
         self.clearQuadPB.clicked.connect(lambda : self.quadListWidget.clearSelection())
+        self.figOpsPanel.signal_HistTypeSelected.connect(self.handle_ChangedToHist)
 
 
         # load the session if there is a session save file:
@@ -351,12 +355,33 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_EditGate(self):
         pass
 
+    def handle_DeleteQuad(self):
+        curSelected = self.quadListWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No quadrant selected', 'Please select a gate to delete')
+            return
+        input = QtWidgets.QMessageBox.question(self, 'Delete quadrant?', 'Are you sure to delete quadrant \"{0}\"'.format(curSelected[0].text()))
+
+        if input == QtWidgets.QMessageBox.Yes:
+            self.quadListWidget.takeItem(self.quadListWidget.row(curSelected[0]))
+            self.handle_One()
+
+    def handle_Quad2Gate(self):
+        curSelected = self.quadListWidget.selectedItems()
+        if not len(curSelected) == 0:
+            newGates = curSelected[0].quad.generateGates()
+            gateNameSuffixes = ['Right bottom', 'Left bottom', 'Right upper', 'Left upper']
+            for newGate, suffix in zip(newGates, gateNameSuffixes):
+                self.loadGate(newGate, gateName='{0} ({1})'.format(curSelected[0].text(), suffix))
+        
+        self.tab_GateQuad.setCurrentWidget(self.tabGate)
+
+
     def handle_ChangedToHist(self, flag):
         if flag:
             self.tab_GateQuad.setCurrentWidget(self.tabGate)
         else:
             pass
-
         self.tabQuadrant.setEnabled(not flag)
         
 

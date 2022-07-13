@@ -7,6 +7,7 @@ figOpsUi, figOpsBase = uic.loadUiType('./uiDesigns/MainWindow_FigOptions.ui') # 
 
 class mainUI_figOps(figOpsBase, figOpsUi):
     signal_AxLimsNeedUpdate = QtCore.pyqtSignal(object, object, object, object)
+    signal_HistTypeSelected = QtCore.pyqtSignal(bool)
     signal_PlotRedraw = QtCore.pyqtSignal()
 
     def __init__(self, parent):
@@ -21,6 +22,8 @@ class mainUI_figOps(figOpsBase, figOpsUi):
 
         self.xlimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
         self.ylimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
+
+        self.histRadio.toggled.connect(self.signal_HistTypeSelected)
 
         for bg in buttonGroups:
             for radio in bg.buttons():

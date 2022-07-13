@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>346</width>
-    <height>590</height>
+    <width>370</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -37,6 +37,12 @@
    </property>
    <item>
     <widget class="QGroupBox" name="plotTypeBox">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>70</height>
+      </size>
+     </property>
      <property name="title">
       <string>Plot type</string>
      </property>
@@ -66,6 +72,12 @@
    </item>
    <item>
     <widget class="QGroupBox" name="axisOptionBox">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>180</height>
+      </size>
+     </property>
      <property name="title">
       <string>Axes scale</string>
      </property>
@@ -73,6 +85,9 @@
       <bool>true</bool>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
       <item>
        <widget class="QGroupBox" name="xAxisOptionBox">
         <property name="title">
@@ -82,6 +97,15 @@
          <bool>false</bool>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>5</number>
+         </property>
+         <property name="bottomMargin">
+          <number>5</number>
+         </property>
          <item>
           <widget class="QRadioButton" name="xLinRadio">
            <property name="text">
@@ -118,6 +142,15 @@
          <bool>false</bool>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>5</number>
+         </property>
+         <property name="bottomMargin">
+          <number>5</number>
+         </property>
          <item>
           <widget class="QRadioButton" name="yLinRadio">
            <property name="text">
@@ -154,6 +187,12 @@
       <size>
        <width>0</width>
        <height>61</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>70</height>
       </size>
      </property>
      <property name="title">
@@ -246,6 +285,12 @@
        <height>61</height>
       </size>
      </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>70</height>
+      </size>
+     </property>
      <property name="title">
       <string>Y-Axis range</string>
      </property>
@@ -336,38 +381,66 @@
      <property name="enabled">
       <bool>false</bool>
      </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>95</height>
+      </size>
+     </property>
      <property name="title">
       <string>Y-Axis in histogram</string>
      </property>
      <property name="flat">
       <bool>true</bool>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_6">
-      <item>
-       <widget class="QRadioButton" name="norm2PercRadio">
-        <property name="text">
-         <string>Percentage</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="norm2TotalRadio">
-        <property name="text">
-         <string>Percentage of total</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="norm2CountRadio">
-        <property name="text">
-         <string>Cell count</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QRadioButton" name="norm2PercRadio">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>110</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Percentage</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="norm2TotalRadio">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>60</y>
+        <width>165</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Percentage of total</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="norm2CountRadio">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>30</y>
+        <width>103</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Cell count</string>
+      </property>
+     </widget>
     </widget>
    </item>
    <item>
