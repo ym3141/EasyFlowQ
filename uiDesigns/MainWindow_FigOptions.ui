@@ -333,6 +333,9 @@
    </item>
    <item>
     <widget class="QGroupBox" name="normBox">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Y-Axis in histogram</string>
      </property>
@@ -548,6 +551,38 @@
     <hint type="destinationlabel">
      <x>1387</x>
      <y>827</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dotRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>normBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>448</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>histRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>normBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>448</y>
     </hint>
    </hints>
   </connection>

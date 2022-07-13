@@ -22,6 +22,11 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         self.xlimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
         self.ylimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
 
+        for bg in buttonGroups:
+            for radio in bg.buttons():
+                radio.clicked.connect(self.signal_PlotRedraw)
+
+        self.smoothSlider.valueChanged.connect(self.signal_PlotRedraw)
 
     def handle_AxlimEdited(self):
         which = self.sender()
@@ -53,17 +58,7 @@ class mainUI_figOps(figOpsBase, figOpsUi):
                 pass
         pass
 
-    def updateAxLims(self, xmin, xmax, ymin, ymax):
-        if not (math.isnan(xmin) or math.isnan(xmax)):
-            self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
-            self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
-
-        if not (math.isnan(ymin) or math.isnan(ymax)):
-            self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
-            self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
-
     
-
     def _organizeButtonGroups(self):
         # Create button groups to manage the radio button for plot options
 
@@ -95,6 +90,10 @@ class mainUI_figOps(figOpsBase, figOpsUi):
             edit.editingFinished.connect(self.handle_AxlimEdited)
 
         return rangeEdits
+
+    @property
+    def curFigOptions(self):
+        return self.curPlotType, self.curAxScales, self.curAxLims, self.curNormOption, self.smoothSlider.value()
 
     @property
     def curAxScales(self):
@@ -131,7 +130,7 @@ class mainUI_figOps(figOpsBase, figOpsUi):
                 continue
 
     @property
-    def curLimSettings(self):
+    def curAxLims(self):
         xAuto = (self.xlimAutoCheck.checkState() == 2)
         yAuto = (self.ylimAutoCheck.checkState() == 2)
 
@@ -139,6 +138,22 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         ylim = ['auto', 'auto'] if yAuto else [float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())]
 
         return xlim + ylim
+
+    def set_curAxLims(self, xmin, xmax, ymin, ymax):
+        if not (math.isnan(xmin) or math.isnan(xmax)):
+            self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
+            self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
+
+        if not (math.isnan(ymin) or math.isnan(ymax)):
+            self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
+            self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
+
+    @property
+    def curSmooth(self):
+        return self.smoothSlider.value()
+
+    def set_curSmooth(self, smooth):
+        self.smoothSlider.setValue(smooth)
 
 
 class axlimValidator(QDoubleValidator):

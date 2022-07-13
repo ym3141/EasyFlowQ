@@ -117,7 +117,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.addQuadButton.clicked.connect(self.handle_AddQuad)
 
         # axes lims
-        self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.updateAxLims)
+        self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
         self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
 
         # others
@@ -154,17 +154,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             perfModeN = None
 
+        plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
+
         smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
                                              chnlNames=self.curChnls, 
                                              axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
-                                             axScales=self.curAxScales,
-                                             axRanges=self.curLimSettings,
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              quadrant = self.curQuadrantItem.quad if self.curQuadrantItem else None,
-                                             plotType = self.curPlotType,
-                                             normOption = self.curNormOption,
-                                             perfModeN = perfModeN,
-                                             smooth = self.smoothSlider.value()
+                                             plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
+                                             perfModeN = perfModeN
         )
 
         self.smplsOnPlot = smplsOnPlot
@@ -426,11 +424,10 @@ class mainUi(mainWindowBase, mainWindowUi):
                 newQItem = gateWidgetItem(gateName, gate)
                 if checkState: 
                     newQItem.setCheckState(checkState)
-                # newQItem.setData(0x100, gate)
-                # newQItem.setCheckable(True)
+
                 self.gateListWidget.addItem(newQItem)
 
-    def loadQuadrant(self, quadrant, replace=None, quadName=None, checkState=0):
+    def loadQuadrant(self, quadrant, replace=None, quadName=None):
         self.set_saveFlag(True)
         self._disableInputForGate(False)
         self.mpl_canvas.unsetCursor()
@@ -450,9 +447,6 @@ class mainUi(mainWindowBase, mainWindowUi):
                         return
                     
                 newQItem = quadWidgetItem(quadName, quadrant)
-
-                # newQItem.setData(0x100, gate)
-                # newQItem.setCheckable(True)
                 self.quadListWidget.addItem(newQItem)
 
         pass

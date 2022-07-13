@@ -2,7 +2,7 @@ import json
 from os import path
 from copy import deepcopy
 
-from .gates import polygonGate, lineGate
+from .gates import polygonGate, lineGate, quadrantGate, quadrant
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -89,6 +89,11 @@ class sessionSave():
         with open(saveFileDir) as f:
             jDict = json.load(f)
         
+        if not 'save_ver' in jDict:
+            save_ver = 0.1
+        else:
+            save_ver = jDict['save_ver']
+
         failedFiles = []
         for jSmpl in jDict['smplSaveList']:
 
@@ -113,11 +118,16 @@ class sessionSave():
             elif jGate['type'] == 'lineGate':
                 mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
 
-        
-        mainUiWindow.set_curAxScales(jDict['figOptions']['curAxScales'])
-        mainUiWindow.set_curNormOption(jDict['figOptions']['curNormOption'])
-        mainUiWindow.set_curPlotType(jDict['figOptions']['curPlotType'])
+        mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
+        mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])
+        mainUiWindow.figOpsPanel.set_curPlotType(jDict['figOptions']['curPlotType'])
+
         mainUiWindow.set_curChnls(jDict['figOptions']['curChnls'])
+
+        if save_ver >= 1.0:
+            mainUiWindow.figOpsPanel.set_curSmooth(jDict['figOptions']['curSmooth'])
+            for jQuad in jDict['quadSaveList']:
+                mainUiWindow.loadQuadrant(quadrant(jQuad['chnls'], jQuad['center']), quadName=jQuad['displayName'])
 
         # print(failedFiles)
 
