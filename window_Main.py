@@ -110,6 +110,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.perfCheck.stateChanged.connect(self.handle_One)
 
+        self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
+
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
         self.addQuadButton.clicked.connect(self.handle_AddQuad)
@@ -191,16 +193,6 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.gateEditor.gateConfirmed.connect(self.loadGate)
         self.gateEditor.addGate_connnect()
-
-    def handle_GateSelectionChanged(self, item):
-        if item.checkState() == 2:
-            pass
-        elif item.checkState() == 1:
-            pass
-        else:
-            pass
-        # print(item.checkState())            
-        pass
 
     def handle_AddQuad(self):
         self._disableInputForGate(True)

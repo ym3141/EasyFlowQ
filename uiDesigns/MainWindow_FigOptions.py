@@ -7,6 +7,7 @@ figOpsUi, figOpsBase = uic.loadUiType('./uiDesigns/MainWindow_FigOptions.ui') # 
 
 class mainUI_figOps(figOpsBase, figOpsUi):
     signal_AxLimsNeedUpdate = QtCore.pyqtSignal(object, object, object, object)
+    signal_PlotRedraw = QtCore.pyqtSignal()
 
     def __init__(self, parent):
 
