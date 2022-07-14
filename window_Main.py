@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
 from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem, quadWidgetItem
-from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor
+from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from src.utils import colorGenerator
@@ -194,7 +194,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
 
         self.gateEditor.gateConfirmed.connect(self.loadGate)
-        self.gateEditor.addGate_connnect()
+        self.gateEditor.addGate_connect()
 
     def handle_AddQuad(self):
         self._disableInputForGate(True)
@@ -208,7 +208,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             pass
 
         self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
-        self.quadEditor.addQuad_connnect()
+        self.quadEditor.addQuad_connect()
 
                 
     def handle_NewSession(self):
@@ -353,7 +353,47 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_EditGate(self):
-        pass
+        curSelected = self.gateListWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No gate selected', 'Please select a gate to edit')
+            return
+        else:
+            curSelectedGate = curSelected[0].gate
+
+        if isinstance(curSelectedGate, quadrantGate):
+            QtWidgets.QMessageBox.warning(self, 'This is a quadrant gate', 'Sorry you cannot edit gate generated from quadrant')
+            return
+
+        plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
+
+        if isinstance(curSelectedGate, polygonGate):
+            if not (plotType == 'Dot plot' and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls):
+                input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
+                                                                              Switch to them (current plot will be lost)?')
+                if input == QtWidgets.QMessageBox.Yes:
+                    self.holdFigureUpdate = True
+                    self.set_curChnls(curSelectedGate.chnls)
+                    self.figOpsPanel.set_curPlotType('dot')
+                    self.figOpsPanel.set_curAxScales(curSelectedGate.axScales)
+
+                    self.holdFigureUpdate = False
+                    self.handle_One()
+                else:
+                    return
+
+            self.figOpsPanel.set_axAuto(True, True)
+
+            self.statusbar.showMessage('Drag to move, Right click to delete a vertex, ENTER to confirm edit, ESC to exit', 0)
+            self._disableInputForGate(True)
+            self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
+
+            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
+            self.gateEditor.gateConfirmed.connect(self.loadGate)
+            self.gateEditor.editGate_connect()
+
+        else:
+            QtWidgets.QMessageBox.warning(self, 'Only polygon gate can be edited', 'Sorry you cannot edit gate types that are not polygon gate!')
+            return
 
     def handle_DeleteQuad(self):
         curSelected = self.quadListWidget.selectedItems()

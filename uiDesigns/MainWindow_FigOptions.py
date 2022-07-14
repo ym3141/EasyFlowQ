@@ -151,6 +151,12 @@ class mainUI_figOps(figOpsBase, figOpsUi):
             self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
             self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
 
+    def set_axAuto(self, xAxis=False, yAxis=False):
+        if xAxis:
+            self.xlimAutoCheck.setCheckState(2)
+        if yAxis:
+            self.ylimAutoCheck.setCheckState(2)
+
     @property
     def curSmooth(self):
         return self.smoothSlider.value()

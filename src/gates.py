@@ -73,23 +73,32 @@ class polygonGateEditor(QtCore.QObject):
     """
     gateConfirmed = QtCore.pyqtSignal(object)
 
-    def __init__(self, ax, canvasParam=None, gate=None) -> None:
+    def __init__(self, ax, canvasParam=None, gate:polygonGate=None) -> None:
         super(QtCore.QObject, self).__init__()
 
         self.ax = ax
         self.canvas = self.ax.figure.canvas
         self.background = None
-        self.chnls, self.axScales = canvasParam
+
+        self.mousehold = False
+        self.trans_axis2data = self.ax.transAxes + self.ax.transData.inverted()
+        self.trans_data2axis = self.trans_axis2data.inverted()
 
         if not gate:
             self.line = Line2D([], [], animated=True,
                             marker='s', markerfacecolor='w', markersize=5, color='r')
+            self.chnls, self.axScales = canvasParam
         else:
-            pass
+            self.chnls = gate.chnls
+            self.axScales = gate.axScales
+
+            xydata = np.vstack([gate.verts, gate.verts[0, :]])
+            self.line = Line2D(xydata[:, 0], xydata[:, 1], animated=True,
+                            marker='s', markerfacecolor='w', markersize=5, color='r')
+
         self.ax.add_line(self.line)
-        # self.canvas.mpl_connect('draw_event', self.on_draw)
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
-        # self.cid = self.line.add_callback(self.line_changed)
+        self.blitDraw()
 
     def addGate_on_press(self, event):
         if event.button == 1:
@@ -125,9 +134,40 @@ class polygonGateEditor(QtCore.QObject):
 
         self.blitDraw()
 
-    def addGate_connnect(self):
+    def addGate_connect(self):
         self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
+
+    def editGate_on_press(self, event):
+        self.mousehold = True
+        self.lastPos = np.array([event.xdata, event.ydata])
+        self.canvas.setCursor(QtCore.Qt.ClosedHandCursor)
+        pass
+
+    def editGate_on_release(self, event):
+        self.mousehold = False
+        self.canvas.setCursor(QtCore.Qt.OpenHandCursor)
+        pass
+
+    def editGate_on_motion(self, event):
+        if self.mousehold:
+            curPos = np.array([event.xdata, event.ydata])
+            moveVector_Axes = self.trans_data2axis.transform(curPos) - self.trans_data2axis.transform(self.lastPos)
+            xydata_Axes = self.trans_data2axis.transform(self.line.get_xydata())
+
+            new_xydata_Axes = xydata_Axes + np.repeat(moveVector_Axes[np.newaxis], repeats=xydata_Axes.shape[0], axis=0)
+            new_xydata = self.trans_axis2data.transform(new_xydata_Axes)
+            self.line.set_data(new_xydata.T)
+
+            self.lastPos = curPos
+            self.blitDraw()
+        pass
+
+    def editGate_connect(self):
+        self.lastPos = None
+        self.pressCid = self.canvas.mpl_connect('button_press_event', self.editGate_on_press)
+        self.releaseCid = self.canvas.mpl_connect('button_release_event', self.editGate_on_release)
+        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.editGate_on_motion)
 
     def blitDraw(self):
         self.canvas.restore_region(self.background)
@@ -213,7 +253,7 @@ class lineGateEditor(QtCore.QObject):
         self.line.set_data(xydata.T)
         self.blitDraw()
 
-    def addGate_connnect(self):
+    def addGate_connect(self):
         self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
 
@@ -327,7 +367,7 @@ class quadrantEditor(QtCore.QObject):
 
         self.blitDraw()
 
-    def addQuad_connnect(self):
+    def addQuad_connect(self):
         self.pressCid = self.canvas.mpl_connect('button_press_event', self.addQuad_on_press)
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addQuad_on_motion)
 
