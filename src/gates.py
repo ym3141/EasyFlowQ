@@ -80,7 +80,10 @@ class polygonGateEditor(QtCore.QObject):
         self.canvas = self.ax.figure.canvas
         self.background = None
 
-        self.mousehold = False
+        self.mouseholdAll = False
+        self.mouseholdOnPoint = False
+        self.mouseOverPoint = -1
+
         self.trans_axis2data = self.ax.transAxes + self.ax.transData.inverted()
         self.trans_data2axis = self.trans_axis2data.inverted()
 
@@ -139,26 +142,58 @@ class polygonGateEditor(QtCore.QObject):
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
 
     def editGate_on_press(self, event):
-        self.mousehold = True
+        if self.mouseOverPoint == -1:
+            self.mouseholdAll = True
+            self.canvas.setCursor(QtCore.Qt.ClosedHandCursor)
+        else:
+            self.mouseholdOnPoint = True
+
         self.lastPos = np.array([event.xdata, event.ydata])
-        self.canvas.setCursor(QtCore.Qt.ClosedHandCursor)
-        pass
+        
 
     def editGate_on_release(self, event):
-        self.mousehold = False
+        self.mouseholdAll = False
+        self.mouseholdOnPoint = False
+        self.mouseOverPoint = -1
         self.canvas.setCursor(QtCore.Qt.OpenHandCursor)
         pass
 
     def editGate_on_motion(self, event):
-        if self.mousehold:
-            curPos = np.array([event.xdata, event.ydata])
-            moveVector_Axes = self.trans_data2axis.transform(curPos) - self.trans_data2axis.transform(self.lastPos)
-            xydata_Axes = self.trans_data2axis.transform(self.line.get_xydata())
+        curPos = np.array([event.xdata, event.ydata])
+        curPos_Axes = self.trans_data2axis.transform(curPos)
+        xydata_Axes = self.trans_data2axis.transform(self.line.get_xydata())
+
+        if not (self.mouseholdOnPoint or self.mouseholdAll):
+            for idx, point in enumerate(xydata_Axes):
+                if dist(curPos_Axes, point) < 0.02:
+                    self.canvas.setCursor(QtCore.Qt.SizeAllCursor)
+                    self.mouseOverPoint = idx
+                    return
+            self.canvas.setCursor(QtCore.Qt.OpenHandCursor)
+            self.mouseOverPoint = -1
+
+        elif self.mouseholdAll:
+            moveVector_Axes = curPos_Axes - self.trans_data2axis.transform(self.lastPos)
 
             new_xydata_Axes = xydata_Axes + np.repeat(moveVector_Axes[np.newaxis], repeats=xydata_Axes.shape[0], axis=0)
-            new_xydata = self.trans_axis2data.transform(new_xydata_Axes)
-            self.line.set_data(new_xydata.T)
+            new_xydata = self.trans_axis2data.transform(new_xydata_Axes).T
+            self.line.set_data(new_xydata)
 
+            self.lastPos = curPos
+            self.blitDraw()
+
+        else:
+            moveVector_Axes = curPos_Axes - self.trans_data2axis.transform(self.lastPos)
+            
+            if self.mouseOverPoint == 0 or self.mouseOverPoint == len(xydata_Axes):
+                xydata_Axes[0] = curPos_Axes
+                xydata_Axes[-1] = curPos_Axes
+            else:
+                xydata_Axes[self.mouseOverPoint] = curPos_Axes
+
+            new_xydata = self.trans_axis2data.transform(xydata_Axes).T
+
+            self.line.set_data(new_xydata)
             self.lastPos = curPos
             self.blitDraw()
         pass
