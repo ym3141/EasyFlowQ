@@ -366,6 +366,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
+        # Check if it's a polygone gate, and also change the current plot to the state that the gate was created on
         if isinstance(curSelectedGate, polygonGate):
             if not (plotType == 'Dot plot' and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls):
                 input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
@@ -383,12 +384,12 @@ class mainUi(mainWindowBase, mainWindowUi):
 
             self.figOpsPanel.set_axAuto(True, True)
 
-            self.statusbar.showMessage('Drag to move, Right click to delete a vertex, ENTER to confirm edit, ESC to exit', 0)
+            self.statusbar.showMessage('Left click to drag gate/point; Right click to delete/add vertex; ENTER to confirm edit; ESC to exit', 0)
             self._disableInputForGate(True)
             self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
 
             self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
-            self.gateEditor.gateConfirmed.connect(self.loadGate)
+            self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
             self.gateEditor.editGate_connect()
 
         else:
@@ -473,8 +474,28 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.mpl_canvas.unsetCursor()
         self.statusbar.clearMessage()
 
-        if replace:
-            pass
+        if not (replace is None):
+            if gate is None:
+                self.handle_One()
+            else:
+                qBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 
+                                             'Polygon gate edited', 'Do you want to save to overwrite, or to save as a new gate?', 
+                                             buttons=QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard)
+                newGateButton = qBox.addButton('As New Gate', QtWidgets.QMessageBox.ActionRole)
+                
+                input = qBox.exec()
+
+                if qBox.clickedButton() == newGateButton:
+                    gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
+                    if not flag:
+                        self.handle_One()
+                        return
+                    newQItem = gateWidgetItem(gateName, gate)
+                    self.gateListWidget.addItem(newQItem)
+
+                elif input == QtWidgets.QMessageBox.Save:
+                    replace.gate = gate
+
         else:
             if gate is None:
                 QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')

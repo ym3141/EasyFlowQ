@@ -142,19 +142,44 @@ class polygonGateEditor(QtCore.QObject):
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
 
     def editGate_on_press(self, event):
-        if self.mouseOverPoint == -1:
-            self.mouseholdAll = True
-            self.canvas.setCursor(QtCore.Qt.ClosedHandCursor)
-        else:
-            self.mouseholdOnPoint = True
-
-        self.lastPos = np.array([event.xdata, event.ydata])
+        if event.button == 1:
+            if self.mouseOverPoint == -1:
+                self.mouseholdAll = True
+                self.canvas.setCursor(QtCore.Qt.ClosedHandCursor)
+            else:
+                self.mouseholdOnPoint = True
+            self.lastPos = np.array([event.xdata, event.ydata])
+        
+        if event.button == 3: 
+            xydata = self.line.get_xydata()
+            if self.mouseOverPoint != -1:
+                if len(xydata) > 4:
+                    if self.mouseOverPoint > 0 and self.mouseOverPoint != len(xydata):
+                        xydata = np.delete(xydata, self.mouseOverPoint, axis=0)
+                    if self.mouseOverPoint == 0  or self.mouseOverPoint == len(xydata):
+                        xydata = np.delete(xydata, [0,-1], axis=0)
+                        xydata = np.vstack([xydata, xydata[0,:]])
+                    self.line.set_data(xydata.T)
+                    self.blitDraw()
+            else:
+                xydata_Axes = self.trans_data2axis.transform(xydata)
+                newXY_Axes = self.trans_data2axis.transform(np.array([event.xdata, event.ydata]))
+                allDist_Axes = []
+                for idx in range(len(xydata) - 1):
+                    dist = dist_point_to_segment(newXY_Axes, xydata_Axes[idx, :], xydata_Axes[idx+1, :])
+                    allDist_Axes.append(dist)
+                
+                addIdx = np.argmin(allDist_Axes)
+                xydata_Axes = np.insert(xydata_Axes, addIdx+1, newXY_Axes, axis=0)
+                new_xydata = self.trans_axis2data.transform(xydata_Axes)
+                self.line.set_data(new_xydata.T)
+                self.blitDraw()
+                pass
         
 
     def editGate_on_release(self, event):
         self.mouseholdAll = False
         self.mouseholdOnPoint = False
-        self.mouseOverPoint = -1
         self.canvas.setCursor(QtCore.Qt.OpenHandCursor)
         pass
 
@@ -198,10 +223,27 @@ class polygonGateEditor(QtCore.QObject):
             self.blitDraw()
         pass
 
+    def editGate_on_keyInput(self, event):
+        if event.key == 'enter':
+            # enter key recieved
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
+            self.canvas.mpl_disconnect(self.releaseCid)
+            self.canvas.mpl_disconnect(self.keyPressCid)
+
+            finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
+            self.gateConfirmed.emit(finishedNewGate)
+
+        elif event.key == 'esc':
+            self.gateConfirmed.emit(None)
+
+
     def editGate_connect(self):
         self.lastPos = None
         self.pressCid = self.canvas.mpl_connect('button_press_event', self.editGate_on_press)
         self.releaseCid = self.canvas.mpl_connect('button_release_event', self.editGate_on_release)
+        self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.editGate_on_keyInput)
+
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.editGate_on_motion)
 
     def blitDraw(self):
