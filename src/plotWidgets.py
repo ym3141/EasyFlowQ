@@ -9,6 +9,7 @@ from scipy.ndimage import gaussian_filter1d
 from PyQt5 import QtCore, QtGui
 
 from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
+from .gates import quadrant, split
 
 import warnings
 
@@ -43,7 +44,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
     # the function that draw
     def redraw(self, smplItems, chnlNames, axisNames, axScales, axRanges,
-               gateList=[], quadrant=None,
+               gateList=[], quad_split=None,
                plotType = 'Dot plot',
                normOption = 'Percentage',
                perfModeN=None,
@@ -56,6 +57,7 @@ class plotCanvas(FigureCanvasQTAgg):
         self.navigationBar.update()
 
         drawnQuadrant = False
+        drawnSplit = False
 
         # only draw samples that has the specified channels
         smplItems = [a for a in smplItems if (chnlNames[0] in a.fcsSmpl.channels and chnlNames[1] in a.fcsSmpl.channels)] 
@@ -92,18 +94,18 @@ class plotCanvas(FigureCanvasQTAgg):
                             xscale=axScales[0], yscale=axScales[1],
                             color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
 
-            if quadrant:
-                if quadrant.chnls[0] == xChnl and quadrant.chnls[1] == yChnl:
+            if isinstance(quad_split, quadrant):
+                if quad_split.chnls[0] == xChnl and quad_split.chnls[1] == yChnl:
                 # Only draw quadrant if requested, and the chnls match
 
                     totQs = np.zeros(4)
                     for gateSmpl in gatedSmpls:
-                        totQs += quadrant.cellNs(gatedSmpl)
+                        totQs += quad_split.cellNs(gateSmpl)
 
                     qFracs = totQs / np.sum(totQs)
                     
-                    self.ax.axvline(quadrant.center[0], linestyle = '--', color='k')
-                    self.ax.axhline(quadrant.center[1], linestyle = '--', color='k')
+                    self.ax.axvline(quad_split.center[0], linestyle = '--', color='k')
+                    self.ax.axhline(quad_split.center[1], linestyle = '--', color='k')
                     
                     textingProps = {
                         'transform': self.ax.transAxes,
@@ -123,7 +125,6 @@ class plotCanvas(FigureCanvasQTAgg):
             
         elif plotType == 'Histogram':
             # plot histograme
-
             # record possible xlims for later use, if xlim is auto
             xlim_auto = [np.inf, -np.inf]
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -157,6 +158,24 @@ class plotCanvas(FigureCanvasQTAgg):
             if not (normOption == 'Cell count'):
                 self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
 
+            if isinstance(quad_split, split):
+                totSs = np.zeros(2)
+                for gateSmpl in gatedSmpls:
+                    totSs += quad_split.cellNs(gateSmpl)
+
+                sFracs = totSs / np.sum(totSs)
+                self.ax.axvline(quad_split.splitValue, linestyle = '--', color='k')
+                
+                textingProps = {
+                    'transform': self.ax.transAxes,
+                    'fontsize': 'large',
+                    'bbox': quadrantTextProps
+                }
+                self.ax.text(0.03, 0.97, '{:.2%}'.format(sFracs[0]), **textingProps, va='top')
+                self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[1]), **textingProps, va='top', ha='right')
+
+                drawnSplit = True
+
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
 
@@ -180,6 +199,8 @@ class plotCanvas(FigureCanvasQTAgg):
             if drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
+            elif drawnSplit:
+                self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0, 1, 0.9))
             else:
                 self.ax.legend(markerscale=5)
             

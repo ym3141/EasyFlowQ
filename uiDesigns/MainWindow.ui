@@ -205,7 +205,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabGate">
          <property name="enabled">
@@ -312,7 +312,7 @@
         </widget>
         <widget class="QWidget" name="tabQuadrant">
          <attribute name="title">
-          <string>Quadrant</string>
+          <string>Quadrant/Split</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -347,8 +347,14 @@
              </property>
              <item>
               <widget class="QLabel" name="label_9">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
-                <string>List of quadrants:</string>
+                <string>List of quadrants &amp; splits:</string>
                </property>
               </widget>
              </item>

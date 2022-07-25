@@ -64,6 +64,14 @@ class quadWidgetItem(QListWidgetItem):
 
         self.quad = quad
 
+class splitWidgetItem(QListWidgetItem):
+    def __init__(self, splitName, split):
+        super(QListWidgetItem, self).__init__(splitName)
+
+        self.setFlags(self.flags() | Qt.ItemIsEditable)
+
+        self.split = split
+
 class chnlModel(QStandardItemModel):
     def __init__(self):
         super().__init__()

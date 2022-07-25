@@ -4,8 +4,8 @@ import matplotlib
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
-from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem, quadWidgetItem
-from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate
+from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from src.utils import colorGenerator
@@ -126,8 +126,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
         self.clearQuadPB.clicked.connect(lambda : self.quadListWidget.clearSelection())
-        self.figOpsPanel.signal_HistTypeSelected.connect(self.handle_ChangedToHist)
-
+        # self.figOpsPanel.signal_HistTypeSelected.connect(self.handle_ChangedToHist)
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -160,11 +159,18 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
+        if isinstance(self.curQuadrantItem, quadWidgetItem):
+            quad_split = self.curQuadrantItem.quad
+        elif isinstance(self.curQuadrantItem, splitWidgetItem):
+            quad_split = self.curQuadrantItem.split
+        else:
+            quad_split = None
+
         smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
                                              chnlNames=self.curChnls, 
                                              axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
-                                             quadrant = self.curQuadrantItem.quad if self.curQuadrantItem else None,
+                                             quad_split = quad_split,
                                              plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
                                              perfModeN = perfModeN
         )
@@ -184,12 +190,13 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_AddGate(self):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+        plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
-        if self.curPlotType == 'Dot plot':
+        if plotType == 'Dot plot':
             self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
-            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, self.curAxScales))
+            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
         
-        elif self.curPlotType == 'Histogram':
+        elif plotType == 'Histogram':
             self.statusbar.showMessage('Left click to draw a line gate, Right click to cancel', 0)
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
 
@@ -199,18 +206,21 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_AddQuad(self):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+        plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
-        if self.curPlotType == 'Dot plot':
+        if plotType == 'Dot plot':
             self.statusbar.showMessage('Left click to confirm, Right click to close the gate and confirm', 0)
-            self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, self.curAxScales))
+            self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
+            self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
+            self.quadEditor.addQuad_connect()
+
+        elif plotType == 'Histogram':
+            self.statusbar.showMessage('Left click to draw a split, Right click to cancel', 0)
+            self.splitEditor = splitEditor(self.mpl_canvas.ax, self.curChnls[0])
+            self.splitEditor.splitConfirmed.connect(self.loadSplit)
+            self.splitEditor.addSplit_connect()
         
-        else:
-            pass
 
-        self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
-        self.quadEditor.addQuad_connect()
-
-                
     def handle_NewSession(self):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
@@ -416,14 +426,6 @@ class mainUi(mainWindowBase, mainWindowUi):
                 self.loadGate(newGate, gateName='{0} ({1})'.format(curSelected[0].text(), suffix))
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
-
-
-    def handle_ChangedToHist(self, flag):
-        if flag:
-            self.tab_GateQuad.setCurrentWidget(self.tabGate)
-        else:
-            pass
-        self.tabQuadrant.setEnabled(not flag)
         
 
     def closeEvent(self, event: QtGui.QCloseEvent):
@@ -534,8 +536,28 @@ class mainUi(mainWindowBase, mainWindowUi):
                     
                 newQItem = quadWidgetItem(quadName, quadrant)
                 self.quadListWidget.addItem(newQItem)
+    
+    def loadSplit(self, split, replace=None, splitName=None):
+        self.set_saveFlag(True)
+        self._disableInputForGate(False)
+        self.mpl_canvas.unsetCursor()
+        self.statusbar.clearMessage()
 
-        pass
+        if replace:
+            pass
+        else:
+            if split is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid split')
+                self.handle_One()
+            else:
+                if not splitName:
+                    splitName, flag = QtWidgets.QInputDialog.getText(self, 'New split', 'Name for the new split')
+                    if not flag:
+                        self.handle_One()
+                        return
+                    
+                newSItem = splitWidgetItem(splitName, split)
+                self.quadListWidget.addItem(newSItem)
 
     def secretCrash(self):
         input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 

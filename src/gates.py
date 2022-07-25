@@ -315,6 +315,8 @@ class lineGateEditor(QtCore.QObject):
                 self.gateConfirmed.emit(newLineGate)
         
         elif event.button == 3:
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
             self.gateConfirmed.emit(None)
             pass
             
@@ -451,6 +453,77 @@ class quadrantEditor(QtCore.QObject):
     def blitDraw(self):
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.hline)
+        self.ax.draw_artist(self.vline)
+
+        self.canvas.blit(self.ax.bbox)
+
+class split:
+    def __init__(self, chnl, splitValue) -> None:
+
+        self.chnl = chnl
+        self.splitValue = splitValue
+        pass
+
+    def cellNs(self, fcsData):
+        flags = fcsData[:, self.chnl] < self.splitValue
+        return [np.sum(Q) for Q in [flags, np.logical_not(flags)]]
+
+class splitEditor(QtCore.QObject):
+    """
+    This class deal with creating and editing split
+    it take, edit, and generate a quadrant instance
+    """
+    splitConfirmed = QtCore.pyqtSignal(object)
+
+    def __init__(self, ax, chnl=None) -> None:
+        super(QtCore.QObject, self).__init__()
+
+        self.ax = ax
+        self.canvas = self.ax.figure.canvas
+        self.background = None
+        self.chnl = chnl
+
+        self.cur_xlim = self.ax.get_xlim()
+        self.vline = self.ax.axvline(np.mean(self.cur_xlim), animated=True, color='r', ls='--')
+
+        self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+
+    def addSplit_on_press(self, event):
+        if event.button == 1:
+
+            finishedSplit = split(self.chnl, event.xdata)
+            self.splitConfirmed.emit(finishedSplit)
+
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
+
+            self.blitDraw()
+
+        elif event.button == 3:
+            # right click recieved, cancel the quadrant
+
+            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.moveCid)
+            
+            self.splitConfirmed.emit(None)
+            
+            self.canvas.restore_region(self.background)
+            self.canvas.blit(self.ax.bbox)
+
+
+    def addSplit_on_motion(self, event):
+
+        vlineLims = self.vline.get_ydata()
+        self.vline.set_data([event.xdata, event.xdata], vlineLims)
+
+        self.blitDraw()
+
+    def addSplit_connect(self):
+        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addSplit_on_press)
+        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addSplit_on_motion)
+
+    def blitDraw(self):
+        self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.vline)
 
         self.canvas.blit(self.ax.bbox)
