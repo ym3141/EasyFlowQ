@@ -56,6 +56,15 @@ class gateWidgetItem(QListWidgetItem):
 
         self.gate = gate
 
+    def data(self, role: int):
+        if role == Qt.DisplayRole:
+            return super().data(role) + ' ({0})'.format(self.gate.__class__.__name__)
+
+        return super().data(role)
+
+    def text(self) -> str:
+        return self.data(Qt.EditRole)
+
 class quadWidgetItem(QListWidgetItem):
     def __init__(self, quadName, quad):
         super(QListWidgetItem, self).__init__(quadName)
@@ -63,6 +72,15 @@ class quadWidgetItem(QListWidgetItem):
         self.setFlags(self.flags() | Qt.ItemIsEditable)
 
         self.quad = quad
+    
+    def data(self, role: int):
+        if role == Qt.DisplayRole:
+            return super().data(role) + ' (quadrant)'
+
+        return super().data(role)
+
+    def text(self) -> str:
+        return self.data(Qt.EditRole)
 
 class splitWidgetItem(QListWidgetItem):
     def __init__(self, splitName, split):
@@ -71,6 +89,15 @@ class splitWidgetItem(QListWidgetItem):
         self.setFlags(self.flags() | Qt.ItemIsEditable)
 
         self.split = split
+    
+    def data(self, role: int):
+        if role == Qt.DisplayRole:
+            return super().data(role) + ' (split)'
+
+        return super().data(role)
+    
+    def text(self) -> str:
+        return self.data(Qt.EditRole)
 
 class chnlModel(QStandardItemModel):
     def __init__(self):

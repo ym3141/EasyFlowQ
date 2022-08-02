@@ -111,6 +111,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.yComboBox.currentIndexChanged.connect(self.handle_One)
 
         self.perfCheck.stateChanged.connect(self.handle_One)
+        self.showLegendCheck.stateChanged.connect(self.handle_One)
 
         self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
 
@@ -171,7 +172,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              quad_split = quad_split,
                                              plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-                                             perfModeN = perfModeN
+                                             perfModeN = perfModeN, legendOps = self.showLegendCheck.state()
         )
 
         self.smplsOnPlot = smplsOnPlot
@@ -420,9 +421,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         curSelected = self.qsListWidget.selectedItems()
         if not len(curSelected) == 0:
             newGates = curSelected[0].quad.generateGates()
-            gateNameSuffixes = ['Right bottom', 'Left bottom', 'Right upper', 'Left upper']
+            gateNameSuffixes = ['|\U0001F857|', '|\U0001F854|', '|\U0001F856|', '|\U0001F855|']
             for newGate, suffix in zip(newGates, gateNameSuffixes):
-                self.loadGate(newGate, gateName='{0} ({1})'.format(curSelected[0].text(), suffix))
+                self.loadGate(newGate, gateName='{0} {1}'.format(curSelected[0].text(), suffix))
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         

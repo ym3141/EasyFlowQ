@@ -114,7 +114,7 @@
                 false,
                 false
             ],
-            "displayName": "jyjy (Right bottom)",
+            "displayName": "jyjy |\ud83e\udc57|",
             "type": "quadrantGate"
         },
         {
@@ -131,7 +131,7 @@
                 false,
                 true
             ],
-            "displayName": "jyjy (Left bottom)",
+            "displayName": "jyjy |\ud83e\udc54|",
             "type": "quadrantGate"
         },
         {
@@ -148,7 +148,7 @@
                 true,
                 false
             ],
-            "displayName": "jyjy (Right upper)",
+            "displayName": "jyjy |\ud83e\udc56|",
             "type": "quadrantGate"
         },
         {
@@ -165,7 +165,7 @@
                 true,
                 true
             ],
-            "displayName": "jyjy (Left upper)",
+            "displayName": "jyjy |\ud83e\udc55|",
             "type": "quadrantGate"
         }
     ],

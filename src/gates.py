@@ -407,9 +407,8 @@ class quadrantEditor(QtCore.QObject):
         else:
             pass
 
-        # self.canvas.mpl_connect('draw_event', self.on_draw)
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
-        # self.cid = self.line.add_callback(self.line_changed)
+
 
     def addQuad_on_press(self, event):
         if event.button == 1:
