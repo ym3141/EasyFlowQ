@@ -163,12 +163,21 @@
           <rect>
            <x>570</x>
            <y>60</y>
-           <width>131</width>
+           <width>211</width>
            <height>20</height>
           </rect>
          </property>
          <property name="text">
-          <string>Show legend</string>
+          <string>Legend (OFF/AUTO/ON)</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="tristate">
+          <bool>true</bool>
          </property>
         </widget>
        </widget>
@@ -183,6 +192,9 @@
         </property>
         <property name="title">
          <string>Plots</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

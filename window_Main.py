@@ -45,6 +45,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = True
         self.gateEditor = None
 
+        self.showLegendCheck.setCheckState(1)
+
         # initiate other windows
         self.renameWindow = None
         self.settingsWindow = None
@@ -172,7 +174,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              quad_split = quad_split,
                                              plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-                                             perfModeN = perfModeN, legendOps = self.showLegendCheck.state()
+                                             perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState()
         )
 
         self.smplsOnPlot = smplsOnPlot
