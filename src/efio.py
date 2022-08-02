@@ -2,7 +2,8 @@ import json
 from os import path
 from copy import deepcopy
 
-from .gates import polygonGate, lineGate, quadrantGate, quadrant
+from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
+from .qtModels import quadWidgetItem, splitWidgetItem
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
@@ -66,10 +67,10 @@ class sessionSave():
             gateItem = mainUiWindow.gateListWidget.item(idx)
             self.gateSaveList.append(_convert_gateItem(gateItem))
 
-        self.quadSaveList = []
-        for idx in range(mainUiWindow.quadListWidget.count()):
-            quadItem = mainUiWindow.quadListWidget.item(idx)
-            self.quadSaveList.append(_convert_quadItem(quadItem))
+        self.qsSaveList = []
+        for idx in range(mainUiWindow.qsListWidget.count()):
+            qsItem = mainUiWindow.qsListWidget.item(idx)
+            self.qsSaveList.append(_convert_qsItem(qsItem))
 
 
         self.figOptions = dict()
@@ -125,8 +126,11 @@ class sessionSave():
 
         if save_ver >= 1.0:
             mainUiWindow.figOpsPanel.set_curSmooth(jDict['figOptions']['curSmooth'])
-            for jQuad in jDict['quadSaveList']:
-                mainUiWindow.loadQuadrant(quadrant(jQuad['chnls'], jQuad['center']), quadName=jQuad['displayName'])
+            for jQS in jDict['qsSaveList']:
+                if jQS['type'] == 'quadrant':
+                    mainUiWindow.loadQuadrant(quadrant(jQS['chnls'], jQS['center']), quadName=jQS['displayName'])
+                elif jQS['type'] == 'split':
+                    mainUiWindow.loadSplit(split(jQS['chnl'], jQS['splitValue']), splitName=jQS['displayName'])
 
         # print(failedFiles)
 
@@ -159,13 +163,17 @@ def _convert_gateItem(gateItem):
 
     return gateSave
 
-def _convert_quadItem(quadItem):
-    quadSave = deepcopy(quadItem.quad.__dict__)
+def _convert_qsItem(qsItem):
+    if isinstance(qsItem, quadWidgetItem):
+        qsSave = deepcopy(qsItem.quad.__dict__)
+        qsSave['type'] = 'quadrant'
+    elif isinstance(qsItem, splitWidgetItem):
+        qsSave = deepcopy(qsItem.split.__dict__)
+        qsSave['type'] = 'split'
 
-    quadSave['displayName'] = quadItem.text()
+    qsSave['displayName'] = qsItem.text()
 
-    return quadSave
-
+    return qsSave
 
 
 def getSysDefaultDir():

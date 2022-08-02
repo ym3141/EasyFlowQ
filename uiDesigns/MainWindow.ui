@@ -205,7 +205,7 @@
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabGate">
          <property name="enabled">
@@ -393,7 +393,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QListWidget" name="quadListWidget">
+           <widget class="QListWidget" name="qsListWidget">
             <property name="contextMenuPolicy">
              <enum>Qt::ActionsContextMenu</enum>
             </property>

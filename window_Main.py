@@ -65,14 +65,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplListWidgetModel = self.smplListWidget.model()
         self.gateListWidgetModel = self.gateListWidget.model()
 
-
         self.chnlListModel = chnlModel()
         self.xComboBox.setModel(self.chnlListModel)
         self.yComboBox.setModel(self.chnlListModel)
 
         # add actions to context memu
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
-        self.quadListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
+        self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
 
         # add the secret testing shortcut
         secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
@@ -103,7 +102,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplListWidget.itemSelectionChanged.connect(self.handle_One)
         self.smplListWidgetModel.rowsMoved.connect(self.handle_One)
 
-        self.quadListWidget.itemSelectionChanged.connect(self.handle_One)
+        self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
 
         self.gateListWidget.itemChanged.connect(self.handle_One)
         self.gateListWidgetModel.rowsMoved.connect(self.handle_One)
@@ -125,7 +124,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
-        self.clearQuadPB.clicked.connect(lambda : self.quadListWidget.clearSelection())
+        self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
         # self.figOpsPanel.signal_HistTypeSelected.connect(self.handle_ChangedToHist)
 
         # load the session if there is a session save file:
@@ -407,18 +406,18 @@ class mainUi(mainWindowBase, mainWindowUi):
             return
 
     def handle_DeleteQuad(self):
-        curSelected = self.quadListWidget.selectedItems()
+        curSelected = self.qsListWidget.selectedItems()
         if len(curSelected) == 0:
             QtWidgets.QMessageBox.warning(self, 'No quadrant selected', 'Please select a gate to delete')
             return
         input = QtWidgets.QMessageBox.question(self, 'Delete quadrant?', 'Are you sure to delete quadrant \"{0}\"'.format(curSelected[0].text()))
 
         if input == QtWidgets.QMessageBox.Yes:
-            self.quadListWidget.takeItem(self.quadListWidget.row(curSelected[0]))
+            self.qsListWidget.takeItem(self.qsListWidget.row(curSelected[0]))
             self.handle_One()
 
     def handle_Quad2Gate(self):
-        curSelected = self.quadListWidget.selectedItems()
+        curSelected = self.qsListWidget.selectedItems()
         if not len(curSelected) == 0:
             newGates = curSelected[0].quad.generateGates()
             gateNameSuffixes = ['Right bottom', 'Left bottom', 'Right upper', 'Left upper']
@@ -535,7 +534,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                         return
                     
                 newQItem = quadWidgetItem(quadName, quadrant)
-                self.quadListWidget.addItem(newQItem)
+                self.qsListWidget.addItem(newQItem)
     
     def loadSplit(self, split, replace=None, splitName=None):
         self.set_saveFlag(True)
@@ -557,7 +556,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                         return
                     
                 newSItem = splitWidgetItem(splitName, split)
-                self.quadListWidget.addItem(newSItem)
+                self.qsListWidget.addItem(newSItem)
 
     def secretCrash(self):
         input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 
@@ -589,7 +588,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     @property
     def curQuadrantItem(self):
-        quadList = self.quadListWidget.selectedItems()
+        quadList = self.qsListWidget.selectedItems()
         if quadList:
             return quadList[0]
         else:

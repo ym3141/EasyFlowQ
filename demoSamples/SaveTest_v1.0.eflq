@@ -15,7 +15,7 @@
             "FL6-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Dot plot",
+        "curPlotType": "Histogram",
         "curSmooth": 24
     },
     "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTest_v1.0.eflq",
@@ -169,7 +169,7 @@
             "type": "quadrantGate"
         }
     ],
-    "quadSaveList": [
+    "qsSaveList": [
         {
             "center": [
                 1721.7209197900083,
@@ -179,7 +179,14 @@
                 "FL10-A",
                 "FL6-A"
             ],
-            "displayName": "jyjy"
+            "displayName": "jyjy",
+            "type": "quadrant"
+        },
+        {
+            "chnl": "FL10-A",
+            "displayName": "rgr",
+            "splitValue": 48.58379352650927,
+            "type": "split"
         }
     ],
     "save_ver": 1.0,
