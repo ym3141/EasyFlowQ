@@ -15,7 +15,7 @@
             "FL6-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Dot plot",
+        "curPlotType": "Histogram",
         "curSmooth": 24
     },
     "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTest_v1.0.eflq",
@@ -114,7 +114,7 @@
                 false,
                 false
             ],
-            "displayName": "jyjy (Right bottom)",
+            "displayName": "jyjy |\ud83e\udc57|",
             "type": "quadrantGate"
         },
         {
@@ -131,7 +131,7 @@
                 false,
                 true
             ],
-            "displayName": "jyjy (Left bottom)",
+            "displayName": "jyjy |\ud83e\udc54|",
             "type": "quadrantGate"
         },
         {
@@ -148,7 +148,7 @@
                 true,
                 false
             ],
-            "displayName": "jyjy (Right upper)",
+            "displayName": "jyjy |\ud83e\udc56|",
             "type": "quadrantGate"
         },
         {
@@ -165,11 +165,11 @@
                 true,
                 true
             ],
-            "displayName": "jyjy (Left upper)",
+            "displayName": "jyjy |\ud83e\udc55|",
             "type": "quadrantGate"
         }
     ],
-    "quadSaveList": [
+    "qsSaveList": [
         {
             "center": [
                 1721.7209197900083,
@@ -179,7 +179,14 @@
                 "FL10-A",
                 "FL6-A"
             ],
-            "displayName": "jyjy"
+            "displayName": "jyjy",
+            "type": "quadrant"
+        },
+        {
+            "chnl": "FL10-A",
+            "displayName": "rgr",
+            "splitValue": 48.58379352650927,
+            "type": "split"
         }
     ],
     "save_ver": 1.0,

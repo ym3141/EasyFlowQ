@@ -47,7 +47,7 @@ class plotCanvas(FigureCanvasQTAgg):
                gateList=[], quad_split=None,
                plotType = 'Dot plot',
                normOption = 'Percentage',
-               perfModeN=None,
+               perfModeN=None, legendOps=1,
                smooth=0):
 
 
@@ -194,8 +194,7 @@ class plotCanvas(FigureCanvasQTAgg):
         else:
             self.ax.set_ylim([ymin, ymax])
     
-        
-        if len(smplItems) < 12:
+        if legendOps == 2 or (legendOps == 1 and len(smplItems) < 12):
             if drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
