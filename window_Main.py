@@ -37,11 +37,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.version = 0.1
         self._saveFlag = False
 
-        self.set_sessionSaveDir(sessionSaveFile)
-
         self.chnlDict = dict()
         self.colorGen = colorGenerator()
-        self.sessionSaveDir = None
+        self.sessionSavePath = None
         self.holdFigureUpdate = True
         self.gateEditor = None
 
@@ -50,10 +48,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         # initiate other windows
         self.renameWindow = None
         self.settingsWindow = None
-        self.statWindow = statWindow(self.sessionSaveDir if self.sessionSaveDir else self.baseDir)
+        self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save)
 
         # add the matplotlib ui
-        matplotlib.rcParams['savefig.directory'] = self.baseDir
+        matplotlib.rcParams['savefig.directory'] = self.dir4Save
 
         self.mpl_canvas = plotCanvas(dpiScale=self.settingDict['plot dpi scale'])
 
@@ -133,6 +131,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         # load the session if there is a session save file:
         if sessionSaveFile:
             sessionSave.loadSessionSave(self, sessionSaveFile)
+            self.saveFlag = False
+            self.set_sessionSavePath(sessionSaveFile)
             self.holdFigureUpdate = False
             self.handle_One()
 
@@ -183,7 +183,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
 
     def handle_LoadData(self):
-        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.baseDir, filter='*.fcs')
+        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.dir4Save, filter='*.fcs')
         newColorList = self.colorGen.giveColors(len(fileNames))
 
         for fileName, newColor in zip(fileNames, newColorList):
@@ -227,7 +227,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
     def handle_OpenSession(self):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Save session', self.baseDir, filter='*.eflq')
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Save session', self.dir4Save, filter='*.eflq')
         if not openFileDir:
             return
         # print(openFileDir)
@@ -236,7 +236,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         #If there is nothing in this current window, update the current window
             self.holdFigureUpdate = True
             sessionSave.loadSessionSave(self, openFileDir)
-            self.set_sessionSaveDir(openFileDir)
+            self.set_sessionSavePath(openFileDir)
             self.holdFigureUpdate = False
             self.handle_One()
 
@@ -245,9 +245,9 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.requestNewWindow.emit(openFileDir, self.pos() + QtCore.QPoint(60, 60))
 
     def handle_Save(self):
-        if self.sessionSaveDir:
+        if self.sessionSavePath:
             # if save exist, replace it at the same dir
-            sessionSaveFile = sessionSave(self, self.sessionSaveDir)
+            sessionSaveFile = sessionSave(self, self.sessionSavePath)
             sessionSaveFile.saveJson()
 
             self.set_saveFlag(False)
@@ -255,11 +255,11 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.handle_SaveAs()
 
     def handle_SaveAs(self):
-        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.baseDir, filter='*.eflq')
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.dir4Save, filter='*.eflq')
         if not saveFileDir:
             return
 
-        self.set_sessionSaveDir(saveFileDir)
+        self.set_sessionSavePath(saveFileDir)
         sessionSaveFile = sessionSave(self, saveFileDir)
         sessionSaveFile.saveJson()
 
@@ -271,7 +271,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
 
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.baseDir, filter='*.xlsx')
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.dir4Save, filter='*.xlsx')
         if not openFileDir:
             return
 
@@ -297,7 +297,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
 
         if len(self.statWindow.cur_Name_RawData_Pairs):
-            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSaveDir)
+            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSavePath)
             if not saveFileDir:
                 return
 
@@ -604,23 +604,27 @@ class mainUi(mainWindowBase, mainWindowUi):
     def set_saveFlag(self, flag: bool):
         if not self._saveFlag == flag:
             self._saveFlag = flag
+            self.updateWinTitle()
 
-            self.set_sessionSaveDir(self.sessionSaveDir)    
-
-    def set_sessionSaveDir(self, sessionSaveDir):
+    def set_sessionSavePath(self, sessionSaveDir):
         # Set the sessionSaveDir, also update the window title
-        self.sessionSaveDir = sessionSaveDir
-        self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1}{2})'.format(self.version, 
-                                                                         ('*' if self.saveFlag else ''), 
-                                                                         (self.sessionSaveDir if self.sessionSaveDir else 'Not saved')))
+        self.sessionSavePath = sessionSaveDir
+        self.statWindow.sessionDir = path.dirname(self.sessionSavePath)
+        matplotlib.rcParams['savefig.directory'] = path.dirname(self.sessionSavePath)
+
+        self.updateWinTitle()
+
+    def updateWinTitle(self):
+        pathStr = self.sessionSavePath if self.sessionSavePath else 'Not saved'
+        self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1}{2})'.format(self.version, ('*' if self.saveFlag else ''), pathStr)) 
 
     def isWindowAlmostNew(self):
         return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
 
     @property
-    def baseDir(self):
-        if self.sessionSaveDir is not None:
-            return path.dirname(self.sessionSaveDir)
+    def dir4Save(self):
+        if self.sessionSavePath is not None:
+            return path.dirname(self.sessionSavePath)
         elif self.smplListWidget.count() > 0:
             return path.dirname(self.smplListWidget.item(0).fileDir)
         elif path.exists(self.settingDict['default dir']):
