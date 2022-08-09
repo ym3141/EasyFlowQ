@@ -11,6 +11,7 @@ from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from src.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
+from window_RenameMap import renameWindow_Map
 from window_Stats import statWindow
 from window_Settings import settingsWindow, localSettings
 
@@ -85,6 +86,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
+        self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
         self.actionExport_data_in_current_gates.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
@@ -267,16 +269,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_RenameForCF(self):
-        if  not self.smplListWidget.count():
+        if not self.smplListWidget.count():
             msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
 
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.dir4Save, filter='*.xlsx')
-        if not openFileDir:
-            return
-
         smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
-        self.renameWindow = renameWindow_CF(openFileDir, smplNameList)
+        self.renameWindow = renameWindow_CF(self.dir4Save, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.renameWindow.renameConfirmed.connect(self.handle_RenameForCF_return)
         self.renameWindow.show()
@@ -291,6 +289,20 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = False
 
         self.handle_One()
+
+    def handle_RenameMap(self):
+        if not self.smplListWidget.count():
+            msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
+            return
+
+        smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
+        self.renameWindow = renameWindow_Map(self.dir4Save, smplNameList)
+        self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.renameWindow.renameConfirmed.connect(self.handle_RenameMap_return)
+        self.renameWindow.show()
+
+    def handle_RenameMap_return(self, renameDict):
+        pass
 
     def handle_ExportDataInGates(self):
 

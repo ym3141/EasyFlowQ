@@ -9,10 +9,9 @@ from src.qtModels import pandasTableModel
 
 import re
 
-wUi, wBase = uic.loadUiType('./uiDesigns/RenameWindow_CF.ui') # Load the .ui file
-re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
+wUi, wBase = uic.loadUiType('./uiDesigns/RenameWindow_Map.ui') # Load the .ui file
 
-class renameWindow_CF(wUi, wBase):
+class renameWindow_Map(wUi, wBase):
     renameConfirmed = QtCore.pyqtSignal(dict)
 
     def __init__(self, dir4Save, smplNameList) -> None:
@@ -23,15 +22,6 @@ class renameWindow_CF(wUi, wBase):
         
         self.smplNameList = smplNameList
         self.fileRoot = path.dirname(dir4Save)
-
-        self.splitNames = []
-        for smplName in smplNameList:
-            reMatch = re_CFName.match(smplName)
-            if not (reMatch is None):
-                self.splitNames.append((int(reMatch.group(1)), reMatch.group(3), int(reMatch.group(4))))
-
-
-        # self.loadRenameFile(renamingFileDir)
 
         self.renamePB.clicked.connect(self.handle_renameConfirm)
         self.reloadPB.clicked.connect(self.handle_reloadXlsx)
@@ -64,60 +54,21 @@ class renameWindow_CF(wUi, wBase):
         self.loadRenameFile(openFileDir)
 
     def loadRenameFile(self, renamingFileDir):
-        maxPlateNumber = max([splitname[0] for splitname in self.splitNames])
 
-        renames = exel2renameTable(renamingFileDir, maxPlateNumber)
-        duplicates = findDups(renames)
-        dupColorMaps = colorByDuplicates(renames, duplicates)
-        smplColorMaps = colorBySmplNames(renames, self.splitNames)
+        renames = pd.read_excel(renamingFileDir, header=None).iloc[:, 0:2]
+        renames.fillna('').astype(str)
+        # duplicates = findDups(renames)
+        # dupColorMaps = colorByDuplicates(renames, duplicates)
+        # smplColorMaps = colorBySmplNames(renames, self.splitNames)
 
-        self.renameTableModel = pandasTableModel(renames[0], foregroundDF=dupColorMaps[0], backgroundDF=smplColorMaps[0])
+        self.renameTableModel = pandasTableModel(renames)
         self.tableView1.setModel(self.renameTableModel)
         pass
 
-def exel2renameTable(renamingFileDir, maxPlatN):
-    names = pd.read_excel(renamingFileDir, sheet_name=None, header=None)
-    
-    # Read all the name tables
-    allNameTable = []
-    plateNumber = 1
-    for idx in range(len(names)):
-        allNameTable.append(names.popitem()[1].fillna('').astype(str))
-        plateNumber = int(np.max([np.ceil(allNameTable[-1].shape[0]/12), plateNumber]))
+def exel2renameTable(renamingFileDir, smplNameList):
+    names = pd.read_excel(renamingFileDir, header=None)
 
-    allNameTable.reverse()
-    # Make sure all the tables are (8xN)x12 shape
-    for nameTable in allNameTable:
-        for colName in range(12):
-            if not (colName in nameTable):
-                nameTable[colName] = [''] * nameTable.shape[0]
-        
-        for idxName in range(8*plateNumber):
-            if not (idxName in nameTable.index):
-                nameTable.loc[idxName] = [''] * 12
-
-    # Concact thing together
-    renames = allNameTable[0]
-    emptyName = '_' * (len(allNameTable) - 1)
-    if len(allNameTable) > 1:
-        for nameTable in allNameTable[1:]:
-            renames = renames + '_' + nameTable
-
-    # Seperate to plates:
-    renamePlates = []
-    for idx in range(plateNumber):
-        renamePlate = renames.iloc[idx * 0: idx * 0 + 8, 0: 12]
-        renamePlate.set_axis(np.arange(1, 13), axis='columns', inplace=True)
-        renamePlate.set_axis(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], axis='index', inplace=True)
-        renamePlate.loc['Legend', [1,2]] = ['Sample exist', 'Duplicated name']
-        renamePlate.fillna('', inplace=True)
-        renamePlate.replace(emptyName, '', inplace=True)
-        renamePlates.append(renamePlate.copy())
-
-    # if len(renamePlate) < maxPlatN:
-    #     for idx in maxPlatN - len(renamePlate)
-
-    return renamePlates
+    return names.iloc[:, 0:2]
 
 def findDups(renamePlates):
     renames = np.vstack([renamePlate.iloc[0:8].to_numpy() for renamePlate in renamePlates])
