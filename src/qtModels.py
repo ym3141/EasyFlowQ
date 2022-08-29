@@ -202,5 +202,9 @@ class pandasTableModel(QAbstractTableModel):
         flags |= Qt.ItemIsEditable
         return flags
 
+    @property
+    def dfData(self):
+        return self._data
+
 if __name__ == '__main__':
     pass

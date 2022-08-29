@@ -22,6 +22,7 @@ class renameWindow_Map(wUi, wBase):
         
         self.smplNameList = smplNameList
         self.fileRoot = path.dirname(dir4Save)
+        self.renameTableModel = pandasTableModel(pd.DataFrame())
 
         self.renamePB.clicked.connect(self.handle_renameConfirm)
         self.reloadPB.clicked.connect(self.handle_reloadXlsx)
@@ -35,12 +36,11 @@ class renameWindow_Map(wUi, wBase):
 
     def handle_renameConfirm(self):
         renameDict = dict()
-        for name, splitName in zip(self.smplNameList, self.splitNames):
-            if name in renameDict:
+        for idx, row in self.renameTableModel.dfData.iterrows():
+            if row['Old names'] in renameDict:
                 pass
-            elif (self.renameTableModel._data.loc[splitName[1], splitName[2]]):
-                renameDict[name] = self.renameTableModel._data.loc[splitName[1], splitName[2]]
             else:
+                renameDict[row['Old names']] = row['New names']
                 pass
 
         self.renameConfirmed.emit(renameDict)
@@ -55,20 +55,23 @@ class renameWindow_Map(wUi, wBase):
 
     def loadRenameFile(self, renamingFileDir):
 
-        renames = pd.read_excel(renamingFileDir, header=None).iloc[:, 0:2]
-        renames.fillna('').astype(str)
-        # duplicates = findDups(renames)
-        # dupColorMaps = colorByDuplicates(renames, duplicates)
-        # smplColorMaps = colorBySmplNames(renames, self.splitNames)
+        renamesInput = pd.read_excel(renamingFileDir, header=None).iloc[:, 0:2]
+        renamesInput.fillna('').astype(str)
+        renamesInput.columns = ['smplName', 'smplRename']
+
+        renames = pd.DataFrame(columns=['Old names', 'New names'])
+
+        for smplName in self.smplNameList:
+            matches = renamesInput.loc[renamesInput['smplName'] == smplName]
+            if matches.shape[0] == 0:
+                renames.loc[renames.shape[0]] = [smplName, smplName]
+            else:
+                renames.loc[renames.shape[0]] = [smplName, matches['smplRename'].iloc[0]]
 
         self.renameTableModel = pandasTableModel(renames)
         self.tableView1.setModel(self.renameTableModel)
         pass
 
-def exel2renameTable(renamingFileDir, smplNameList):
-    names = pd.read_excel(renamingFileDir, header=None)
-
-    return names.iloc[:, 0:2]
 
 def findDups(renamePlates):
     renames = np.vstack([renamePlate.iloc[0:8].to_numpy() for renamePlate in renamePlates])
@@ -78,42 +81,9 @@ def findDups(renamePlates):
 
     return duplicates
 
-
-def colorByDuplicates(renamePlates, duplicats):
-    colorPlates = []
-    for renamePlate in renamePlates:
-        colorPlate = pd.DataFrame().reindex_like(renamePlate)
-        colorPlate.fillna(to_hex('k'), inplace=True)
-
-        dupMap = renamePlate.applymap(lambda x : x in duplicats)
-        colorPlate[dupMap] = to_hex('tab:red')
-        colorPlate.loc['Legend', 2] = to_hex('tab:red')
-
-        colorPlates.append(colorPlate)
-
-    return colorPlates
-
-def colorBySmplNames(renamePlates, splitNames):
-    colorPlates = []
-    for renamePlate in renamePlates:
-        colorPlate = pd.DataFrame().reindex_like(renamePlate)
-        colorPlate.fillna(to_hex('w'), inplace=True)
-
-        colorPlate.loc['Legend', 1] = to_hex('xkcd:very light green')
-        colorPlates.append(colorPlate)
-
-    for splitName in splitNames:
-        plateN, row, col = splitName
-        try:
-            colorPlates[plateN-1].loc[row, col] = to_hex('xkcd:very light green')
-        except KeyError:
-            pass
-
-    return colorPlates
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    window = renameWindow_CF(renamingFileDir='./demoSamples/renamingCF2.xlsx', 
+    window = renameWindow_Map(dir4Save='./demoSamples', 
                              smplNameList=['01-Well-A10', '01-Well-A3', '01-Well-B3', '01-Well-C5', '01-Well-D12', '01-Well-E2','01-Well-H7'])
     window.show()
     sys.exit(app.exec_())

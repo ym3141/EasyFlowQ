@@ -162,7 +162,7 @@ def colorBySmplNames(renamePlates, splitNames):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    window = renameWindow_CF(renamingFileDir='./demoSamples/renamingCF2.xlsx', 
+    window = renameWindow_CF(dir4Save='./demoSamples', 
                              smplNameList=['01-Well-A10', '01-Well-A3', '01-Well-B3', '01-Well-C5', '01-Well-D12', '01-Well-E2','01-Well-H7'])
     window.show()
     sys.exit(app.exec_())

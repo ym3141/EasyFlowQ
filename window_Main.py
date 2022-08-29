@@ -276,19 +276,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
         self.renameWindow = renameWindow_CF(self.dir4Save, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.renameWindow.renameConfirmed.connect(self.handle_RenameForCF_return)
+        self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
         self.renameWindow.show()
-
-    def handle_RenameForCF_return(self, renameDict):
-        self.holdFigureUpdate = True
-        for idx in range(self.smplListWidget.count()):
-            smplItem = self.smplListWidget.item(idx)
-            if smplItem.fcsFileName in renameDict:
-                smplItem.displayName = renameDict[smplItem.fcsFileName]
-        
-        self.holdFigureUpdate = False
-
-        self.handle_One()
 
     def handle_RenameMap(self):
         if not self.smplListWidget.count():
@@ -298,11 +287,19 @@ class mainUi(mainWindowBase, mainWindowUi):
         smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
         self.renameWindow = renameWindow_Map(self.dir4Save, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.renameWindow.renameConfirmed.connect(self.handle_RenameMap_return)
+        self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
         self.renameWindow.show()
 
-    def handle_RenameMap_return(self, renameDict):
-        pass
+    def handle_RenameReturn(self, renameDict):
+        self.holdFigureUpdate = True
+        for idx in range(self.smplListWidget.count()):
+            smplItem = self.smplListWidget.item(idx)
+            if smplItem.fcsFileName in renameDict:
+                smplItem.displayName = renameDict[smplItem.fcsFileName]
+        
+        self.holdFigureUpdate = False
+
+        self.handle_One()
 
     def handle_ExportDataInGates(self):
 
