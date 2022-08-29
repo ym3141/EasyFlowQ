@@ -15,12 +15,14 @@ re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
 class renameWindow_CF(wUi, wBase):
     renameConfirmed = QtCore.pyqtSignal(dict)
 
-    def __init__(self, renamingFileDir, smplNameList) -> None:
+    def __init__(self, dir4Save, smplNameList) -> None:
         wBase.__init__(self)
         self.setupUi(self)
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
         self.smplNameList = smplNameList
-        self.fileRoot = path.dirname(renamingFileDir)
+        self.fileRoot = path.dirname(dir4Save)
 
         self.splitNames = []
         for smplName in smplNameList:
@@ -29,10 +31,17 @@ class renameWindow_CF(wUi, wBase):
                 self.splitNames.append((int(reMatch.group(1)), reMatch.group(3), int(reMatch.group(4))))
 
 
-        self.loadRenameFile(renamingFileDir)
+        # self.loadRenameFile(renamingFileDir)
 
         self.renamePB.clicked.connect(self.handle_renameConfirm)
-        self.reloadPB.clicked.connect(self.handel_reloadXlsx)
+        self.reloadPB.clicked.connect(self.handle_reloadXlsx)
+
+    def showEvent(self, event):
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.fileRoot, filter='*.xlsx')
+        if not openFileDir:
+            return
+
+        self.loadRenameFile(openFileDir)
 
     def handle_renameConfirm(self):
         renameDict = dict()
@@ -47,7 +56,7 @@ class renameWindow_CF(wUi, wBase):
         self.renameConfirmed.emit(renameDict)
         self.close()
 
-    def handel_reloadXlsx(self):
+    def handle_reloadXlsx(self):
         openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.fileRoot, filter='*.xlsx')
         if not openFileDir:
             return
@@ -153,7 +162,7 @@ def colorBySmplNames(renamePlates, splitNames):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    window = renameWindow_CF(renamingFileDir='./demoSamples/renamingCF2.xlsx', 
+    window = renameWindow_CF(dir4Save='./demoSamples', 
                              smplNameList=['01-Well-A10', '01-Well-A3', '01-Well-B3', '01-Well-C5', '01-Well-D12', '01-Well-E2','01-Well-H7'])
     window.show()
     sys.exit(app.exec_())
