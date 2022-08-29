@@ -14,6 +14,7 @@ from window_RenameCF import renameWindow_CF
 from window_RenameMap import renameWindow_Map
 from window_Stats import statWindow
 from window_Settings import settingsWindow, localSettings
+from Window_About import aboutWindow
 
 matplotlib.use('QT5Agg')
 
@@ -50,6 +51,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.renameWindow = None
         self.settingsWindow = None
         self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save)
+        self.aboutWindow = aboutWindow()
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.dir4Save
@@ -92,6 +94,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
         self.actionSettings.triggered.connect(self.handle_Settings)
+
+        self.actionAbout.triggered.connect(lambda : self.aboutWindow.show())
 
         # context menu
         self.actionDelete_Gate.triggered.connect(self.handle_DeleteGate)
@@ -442,6 +446,9 @@ class mainUi(mainWindowBase, mainWindowUi):
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
             self.statWindow.close()
+
+        if self.aboutWindow.isVisible():
+            self.aboutWindow.close()
 
         if self.saveFlag:
             input = QtWidgets.QMessageBox.question(self, 'Close session', 'Save changes to the file?', buttons=
