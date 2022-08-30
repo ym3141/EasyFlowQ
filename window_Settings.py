@@ -3,9 +3,6 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from matplotlib.colors import to_hex
 from os import path
 
-import pandas as pd
-import numpy as np
-from src.qtModels import pandasTableModel
 from src.efio import getSysDefaultDir
 
 import json

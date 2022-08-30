@@ -3,16 +3,21 @@ from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel
 from PyQt5.QtWidgets import QListWidgetItem
 import pandas as pd
 
-from pathlib import Path
 import sys
+import os.path
 
 from FlowCal.io import FCSData
 from FlowCal.transform import to_rfi
 
+def getFileStem(fileDir):
+    basename = os.path.basename(fileDir)
+    return os.path.splitext(basename)[0]
+
+
 class smplPlotItem(QListWidgetItem):
     def __init__(self, fcsFileDir, plotColor):
         self.fileDir = fcsFileDir
-        super(smplPlotItem, self).__init__(Path(self.fileDir).stem)
+        super(smplPlotItem, self).__init__(getFileStem(self.fileDir))
         
         # FCSData class; fcs data is stored here
         self.setFlags(self.flags() | Qt.ItemIsEditable)
@@ -37,7 +42,7 @@ class smplPlotItem(QListWidgetItem):
 
     @property
     def fcsFileName(self):
-        return Path(self.fileDir).stem
+        return getFileStem(self.fileDir)
 
     @displayName.setter
     def displayName(self, displayName):

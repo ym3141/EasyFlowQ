@@ -11,11 +11,11 @@
             "log"
         ],
         "curChnls": [
-            "FL10-A",
-            "FL6-A"
+            "FSC-A",
+            "SSC-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Histogram",
+        "curPlotType": "Dot plot",
         "curSmooth": 24
     },
     "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTest_v1.0.eflq",
@@ -34,24 +34,24 @@
             "type": "polygonGate",
             "verts": [
                 [
-                    140186.8988954532,
-                    1299410.3911834843
+                    24130.836791213085,
+                    1497254.5342468133
                 ],
                 [
-                    91400.91600357213,
-                    103137.77586202549
+                    15733.143425153201,
+                    118841.20952804218
                 ],
                 [
-                    1175795.8368288658,
-                    48822.720771061344
+                    202393.644925879,
+                    56256.314821494765
                 ],
                 [
-                    8154508.579071605,
-                    151053.188266891
+                    1403662.6616647928,
+                    174052.07206250913
                 ],
                 [
-                    1121223.6886572635,
-                    822037.7728003397
+                    328343.2425400812,
+                    2823478.4022042667
                 ]
             ]
         },
@@ -187,6 +187,18 @@
             "displayName": "rgr",
             "splitValue": 48.58379352650927,
             "type": "split"
+        },
+        {
+            "center": [
+                52.87407998919694,
+                458.649434629998
+            ],
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "displayName": "jiji",
+            "type": "quadrant"
         }
     ],
     "save_ver": 1.0,
@@ -228,7 +240,7 @@
                 0.21174944686045624,
                 1.0
             ],
-            "selected": true
+            "selected": false
         },
         {
             "displayName": "01-Well-C3",
@@ -241,7 +253,7 @@
                 0.6841687647821775,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "displayName": "BDLyrics",
