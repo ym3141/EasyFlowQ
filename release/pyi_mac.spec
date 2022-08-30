@@ -4,10 +4,10 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
+a = Analysis(['../main.py'],
              pathex=[],
              binaries=[],
-             datas=[('./uiDesigns/*', 'uiDesigns'), ('./localSettings.default.json', '.')],
+             datas=[('../uiDesigns/*', 'uiDesigns'), ('../localSettings.default.json', '.')],
              hiddenimports=['qt_resource_rc', 'xlsxwritter'],
              hookspath=[],
              hooksconfig={},
