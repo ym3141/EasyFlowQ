@@ -232,7 +232,7 @@
             <property name="minimumSize">
              <size>
               <width>256</width>
-              <height>20</height>
+              <height>32</height>
              </size>
             </property>
             <property name="frameShape">
@@ -344,7 +344,7 @@
             <property name="minimumSize">
              <size>
               <width>256</width>
-              <height>20</height>
+              <height>32</height>
              </size>
             </property>
             <property name="frameShape">
@@ -354,9 +354,6 @@
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
-             <property name="spacing">
-              <number>0</number>
-             </property>
              <property name="leftMargin">
               <number>0</number>
              </property>
