@@ -29,8 +29,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         mainWindowBase.__init__(self)
         self.setupUi(self)
 
-        # show manubar on macos
+        # UI tweaks for macos
         self.menubar.setNativeMenuBar(False)
+        self.tab_GateQuad.tabBar().setTabTextColor(0, QtGui.QColor('black'))
+        self.tab_GateQuad.tabBar().setTabTextColor(1, QtGui.QColor('black'))
 
         # load the seetings:
         self.settingDict = setting.settingDict

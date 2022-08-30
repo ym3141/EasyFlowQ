@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1440</width>
-    <height>1080</height>
+    <height>912</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -216,11 +216,8 @@
           <height>0</height>
          </size>
         </property>
-        <property name="styleSheet">
-         <string notr="true">QTabBar::tab:selected {
-    background: white;
-	color: darkBlue;
-}</string>
+        <property name="autoFillBackground">
+         <bool>true</bool>
         </property>
         <property name="currentIndex">
          <number>0</number>
@@ -481,7 +478,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
