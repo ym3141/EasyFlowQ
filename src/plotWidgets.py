@@ -159,22 +159,23 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
 
             if isinstance(quad_split, split):
-                totSs = np.zeros(2)
-                for gateSmpl in gatedSmpls:
-                    totSs += quad_split.cellNs(gateSmpl)
+                if quad_split.chnl == xChnl:
+                    totSs = np.zeros(2)
+                    for gateSmpl in gatedSmpls:
+                        totSs += quad_split.cellNs(gateSmpl)
 
-                sFracs = totSs / np.sum(totSs)
-                self.ax.axvline(quad_split.splitValue, linestyle = '--', color='k')
-                
-                textingProps = {
-                    'transform': self.ax.transAxes,
-                    'fontsize': 'large',
-                    'bbox': quadrantTextProps
-                }
-                self.ax.text(0.03, 0.97, '{:.2%}'.format(sFracs[0]), **textingProps, va='top')
-                self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[1]), **textingProps, va='top', ha='right')
+                    sFracs = totSs / np.sum(totSs)
+                    self.ax.axvline(quad_split.splitValue, linestyle = '--', color='k')
+                    
+                    textingProps = {
+                        'transform': self.ax.transAxes,
+                        'fontsize': 'large',
+                        'bbox': quadrantTextProps
+                    }
+                    self.ax.text(0.03, 0.97, '{:.2%}'.format(sFracs[0]), **textingProps, va='top')
+                    self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[1]), **textingProps, va='top', ha='right')
 
-                drawnSplit = True
+                    drawnSplit = True
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
