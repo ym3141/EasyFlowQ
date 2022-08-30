@@ -218,8 +218,8 @@
         </property>
         <property name="styleSheet">
          <string notr="true">QTabBar::tab:selected {
-    background: silver;
-	foreground: white;
+    background: white;
+	color: darkBlue;
 }</string>
         </property>
         <property name="currentIndex">
