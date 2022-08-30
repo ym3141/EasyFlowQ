@@ -80,7 +80,7 @@ class quadWidgetItem(QListWidgetItem):
     
     def data(self, role: int):
         if role == Qt.DisplayRole:
-            return super().data(role) + ' (quadrant)'
+            return super().data(role) + ' (Q: x={0}, y={1})'.format(self.quad.chnls[0], self.quad.chnls[1])
 
         return super().data(role)
 
@@ -97,7 +97,7 @@ class splitWidgetItem(QListWidgetItem):
     
     def data(self, role: int):
         if role == Qt.DisplayRole:
-            return super().data(role) + ' (split)'
+            return super().data(role) + ' (S: x={0})'.format(self.split.chnl)
 
         return super().data(role)
     
