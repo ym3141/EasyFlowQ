@@ -3,7 +3,7 @@ __pycache__/
 
 # temp and release files
 _temp/*
-release/EasyFlowQ_release_win/EasyFlowQ_Bundle
+release/EasyFlowQ_release_win/*
 release/EasyFlowQ_release_mac/*
 
 # local stuff
