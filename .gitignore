@@ -3,8 +3,12 @@ __pycache__/
 
 # temp and release files
 _temp/*
-release/EasyFlowQ_release_win/EasyFlowQ_Bundle
-release/EasyFlowQ_release_mac/*
+release/*
+!release/pyi_mac.sh
+!release/pyi_win.ps1
+!release/pyi_mac.spec
+!release/pyi_win.spec
+
 
 # local stuff
 .vscode/
