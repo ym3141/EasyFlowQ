@@ -14,7 +14,10 @@ from window_RenameCF import renameWindow_CF
 from window_RenameMap import renameWindow_Map
 from window_Stats import statWindow
 from window_Settings import settingsWindow, localSettings
-from Window_About import aboutWindow
+from window_About import aboutWindow
+from window_Comp import compWindow
+
+from uiDesigns.MainWindow_FigOptions import mainUI_figOps
 
 matplotlib.use('QT5Agg')
 
@@ -52,6 +55,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # initiate other windows
         self.renameWindow = None
         self.settingsWindow = None
+        self.compWindow = compWindow()
         self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save)
         self.aboutWindow = aboutWindow()
 
@@ -65,6 +69,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.plotLayout.addWidget(self.mpl_canvas)
 
         self.smplsOnPlot = []
+
+        # add the figure property panel
+        self.figOpsLayout = QtWidgets.QVBoxLayout(self.figOpsFrame)
+        self.figOpsLayout.setContentsMargins(0, 0, 0, 0)
+        self.figOpsPanel = mainUI_figOps(self.figOpsFrame)
+        self.figOpsLayout.addWidget(self.figOpsPanel)
+
 
         # init ui models
         self.smplListWidgetModel = self.smplListWidget.model()
@@ -130,6 +141,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         # axes lims
         self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
         self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
+
+        # compensation:
+        self.compEditPB.clicked.connect(self.handle_EditComp)
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
@@ -444,6 +458,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
+    def handle_EditComp(self):
+        self.compWindow.updateChnls(hold=False)
+        self.compWindow.show()
+        self.compWindow.raise_()
+        pass
 
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
@@ -451,6 +470,9 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         if self.aboutWindow.isVisible():
             self.aboutWindow.close()
+
+        if self.compWindow.isVisible():
+            self.compWindow.close()
 
         if self.saveFlag:
             input = QtWidgets.QMessageBox.question(self, 'Close session', 'Save changes to the file?', buttons=
@@ -462,6 +484,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 event.accept()
             elif input == QtWidgets.QMessageBox.Save:
                 self.handle_Save()
+
                 event.accept()
 
         else:
@@ -470,10 +493,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def _disableInputForGate(self, disable=True):
         self.toolBox.setEnabled(not disable)
-        for idx in range(self.leftLayout.count()):
-            self.leftLayout.itemAt(idx).widget().setEnabled(not disable)
-        for idx in range(self.rightLayout.count()):
-            self.rightLayout.itemAt(idx).widget().setEnabled(not disable)
+        self.smplBox.setEnabled(not disable)
+        self.rightFrame.setEnabled(not disable)
 
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         self.set_saveFlag(True)
@@ -489,6 +510,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
         for key in newSmplItem.chnlNameDict:
             self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
+            self.compWindow.updateChnls(self.chnlListModel, hold=True)
 
     def loadGate(self, gate, replace=None, gateName=None, checkState=0):
         self.set_saveFlag(True)
