@@ -1,4 +1,4 @@
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
 from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt
 from PyQt5.QtWidgets import QListWidgetItem
 import pandas as pd
@@ -144,32 +144,38 @@ class gateProxyModel(QSortFilterProxyModel):
 
 class pandasTableModel(QAbstractTableModel):
 
-    def __init__(self, data, foregroundDF = None, backgroundDF = None):
+    def __init__(self, data, foregroundDF = None, backgroundDF = None, editableDF = None, validator=None):
         super(pandasTableModel, self).__init__()
         self._data = data
 
         if foregroundDF is None:
-            self._foreground =  pd.DataFrame().reindex_like(data).fillna('#000000')
+            self._foreground = pd.DataFrame().reindex_like(data).fillna('#000000')
         else:
             self._foreground = foregroundDF
 
         if backgroundDF is None:
-            self._background =  pd.DataFrame().reindex_like(data).fillna('#ffffff')
+            self._background = pd.DataFrame().reindex_like(data).fillna('#ffffff')
         else:
             self._background = backgroundDF
+
+        if editableDF is None:
+            self._editableDF = pd.DataFrame().reindex_like(data).fillna(True)
+        else:
+            self._editableDF = editableDF
+
+        self._validator = validator
 
     def data(self, index, role):
         if role == Qt.DisplayRole or role == Qt.EditRole:
             value = self._data.iloc[index.row(), index.column()]
             return str(value)
+
         elif role == Qt.ForegroundRole:
             value = self._foreground.iloc[index.row(), index.column()]
-
             return QColor(value)
 
         elif role == Qt.BackgroundRole:
             value = self._background.iloc[index.row(), index.column()]
-
             return QColor(value)
 
     def rowCount(self, index):
@@ -198,13 +204,33 @@ class pandasTableModel(QAbstractTableModel):
         column = index.column()
         if column < 0 or column >= self._data.columns.size:
             return False
-        self._data.iloc[row, column] = value
-        self.dataChanged.emit(index, index)
-        return True
+
+        if self._validator is None :
+            self._data.iloc[row, column] = value
+            self.dataChanged.emit(index, index)
+            return True
+
+        elif self._validator.validate(str(value), 0)[0] == 2:
+            if isinstance(self._validator,  QIntValidator):
+                self._data.iloc[row, column] = int(value)
+            elif isinstance(self._validator, QDoubleValidator):
+                self._data.iloc[row, column] = float(value)
+            else:
+                self._data.iloc[row, column] = value
+            self.dataChanged.emit(index, index)
+            return True
+
+        else:
+            return False
 
     def flags(self, index):
         flags = super(self.__class__,self).flags(index)
-        flags |= Qt.ItemIsEditable
+
+        if self._editableDF.iloc[index.row(), index.column()]:
+            flags |= Qt.ItemIsEditable
+        else: 
+            flags &= ~Qt.ItemIsEditable
+
         return flags
 
     @property

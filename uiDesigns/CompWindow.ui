@@ -100,6 +100,9 @@
        </item>
        <item row="2" column="2">
         <widget class="QTableView" name="spillMatTable">
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>125</number>
+         </attribute>
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
