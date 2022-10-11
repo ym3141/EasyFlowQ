@@ -1,7 +1,9 @@
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
-from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt
+from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, pyqtSignal
 from PyQt5.QtWidgets import QListWidgetItem
 import pandas as pd
+
+from PyQt5 import QtCore
 
 import sys
 import os.path
@@ -143,6 +145,7 @@ class gateProxyModel(QSortFilterProxyModel):
     pass
 
 class pandasTableModel(QAbstractTableModel):
+    userInputSignal = pyqtSignal(QtCore.QModelIndex, object)
 
     def __init__(self, data, foregroundDF = None, backgroundDF = None, editableDF = None, validator=None):
         super(pandasTableModel, self).__init__()
@@ -196,30 +199,36 @@ class pandasTableModel(QAbstractTableModel):
     def setData(self, index, value, role):
         if not index.isValid():
             return False
-        if role != Qt.EditRole:
-            return False
+
         row = index.row()
         if row < 0 or row >= len(self._data.values):
             return False
+
         column = index.column()
         if column < 0 or column >= self._data.columns.size:
             return False
 
-        if self._validator is None :
-            self._data.iloc[row, column] = value
-            self.dataChanged.emit(index, index)
-            return True
-
-        elif self._validator.validate(str(value), 0)[0] == 2:
-            if isinstance(self._validator,  QIntValidator):
-                self._data.iloc[row, column] = int(value)
-            elif isinstance(self._validator, QDoubleValidator):
-                self._data.iloc[row, column] = float(value)
-            else:
+        if role == Qt.EditRole or role == 0x100:
+            if self._validator is None :
                 self._data.iloc[row, column] = value
-            self.dataChanged.emit(index, index)
-            return True
+                self.dataChanged.emit(index, index)
+                if role == Qt.EditRole:
+                    self.userInputSignal.emit(index, value)
+                return True
 
+            elif self._validator.validate(str(value), 0)[0] == 2:
+                if isinstance(self._validator,  QIntValidator):
+                    self._data.iloc[row, column] = int(value)
+                elif isinstance(self._validator, QDoubleValidator):
+                    self._data.iloc[row, column] = float(value)
+                else:
+                    self._data.iloc[row, column] = value
+                self.dataChanged.emit(index, index)
+                if role == Qt.EditRole:
+                    self.userInputSignal.emit(index, value)
+                return True
+            else:
+                return False
         else:
             return False
 

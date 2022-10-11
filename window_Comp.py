@@ -64,14 +64,14 @@ class compWindow(wUi, wBase):
                 validator=QtGui.QDoubleValidator(bottom=0., top=100.)
                 )
             self.spillMatTable.setModel(self.spillMatModel)
-            self.spillMatModel.dataChanged.connect(self.spillMatDataChanged)
+            self.spillMatModel.userInputSignal.connect(self.spillMatDataEdited)
 
             self.autoFluoModel = pandasTableModel(
                 pd.DataFrame(index=chnlList, columns=['AutoFluor']).fillna(0),
                 validator=QtGui.QDoubleValidator()
                 )
             self.autoFluoTable.setModel(self.autoFluoModel)
-            self.autoFluoModel.dataChanged.connect(self.autoFluoDataChanged)
+            self.autoFluoModel.userInputSignal.connect(self.autoFluoDataEdited)
 
             self.needUpdatePage.hide()
             self.stackedCenter.setCurrentWidget(self.mainPage)
@@ -79,14 +79,34 @@ class compWindow(wUi, wBase):
     def updateMat(self, newMat):
         pass
 
-    def spillMatDataChanged(self, index1, index2):
-        idx, jdx = (index1.row(), index2.column())
-        if idx == jdx:
-            return
-        diagValue = 100 - np.sum(self.spillMatModel.dfData.iloc[idx, :]) + self.spillMatModel.dfData.iloc[idx, idx]
-        self.spillMatModel.setData(self.spillMatModel.index(idx, idx), diagValue, role=2)
+    def spillMatDataEdited(self, index1, index2):
+        row, col = (index1.row(), index1.column())
 
-    def autoFluoDataChanged(self, index1, index2):
+        diagValue = 100 - np.sum(self.spillMatModel.dfData.iloc[row, :]) + self.spillMatModel.dfData.iloc[row, row]
+        oldValue = self.spillMatModel.dfData.iloc[row, col] + diagValue - self.spillMatModel.dfData.iloc[row, row]
+
+        if diagValue > 0:
+            self.spillMatModel.setData(self.spillMatModel.index(row, row), diagValue, role=0x100)
+        else:
+            input = QtWidgets.QMessageBox.warning(
+                self, 'Invalid spill matrix', 
+                'The total percentage of a single fluorephore cannot exceed 100. \n' \
+                'Click \"Apply\" to aplly re-nomalization accross channels based on entered value; ' \
+                'or click \"Cancel\" to revert the last editing',
+                QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Apply
+                )
+
+            if input == QtWidgets.QMessageBox.Cancel or input == QtWidgets.QMessageBox.Escape:
+                self.spillMatModel.setData(self.spillMatModel.index(row, col), oldValue, role=0x100)
+            elif input == QtWidgets.QMessageBox.Apply:
+                normalized = self.spillMatModel.dfData.iloc[row, :] / np.sum(self.spillMatModel.dfData.iloc[row, :]) *100
+                self.spillMatModel.dfData.iloc[row, :] = normalized
+
+                self.spillMatModel.dataChanged.emit(self.spillMatModel.index(row, 0), self.spillMatModel.index(row, -1))
+                pass
+
+            
+    def autoFluoDataEdited(self, index1, index2):
         print(index1)
         pass
 
