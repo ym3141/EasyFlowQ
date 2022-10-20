@@ -133,6 +133,10 @@ class chnlModel(QStandardItemModel):
     def keyList(self):
         return [self.item(idx).data() for idx in range(self.rowCount())]
 
+    @property
+    def fullNameList(self):
+        return [self.item(idx).text() for idx in range(self.rowCount())]
+
 class gateProxyModel(QSortFilterProxyModel):
     def __init__(self, parent):
         QSortFilterProxyModel.__init__(self, parent)

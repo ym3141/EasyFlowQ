@@ -18,12 +18,12 @@ from xlsxwriter.utility import xl_col_to_name
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWindow.ui') # Load the .ui file
 
 class compWindow(wUi, wBase):
-    def __init__(self, chnlListModel=chnlModel(), compMat:compMatrix=None) -> None:
+    def __init__(self, chnlListModel=None, compMat:compMatrix=None) -> None:
 
         wBase.__init__(self)
         self.setupUi(self)
 
-        # put the vertical lable, and set stack things
+        # Setting up the UIs
         self.ylabelFrame.layout().addWidget(verticalLabel('Signal spill from (fluorophore):'))
         self.stackedCenter.layout().setStackingMode(QtWidgets.QStackedLayout.StackAll)
         self.needUpdatePage.hide()
@@ -57,21 +57,22 @@ class compWindow(wUi, wBase):
             self.stackedCenter.setCurrentWidget(self.needUpdatePage)
         else:
             chnlList = self.chnlListModel.keyList
+            chnlFullNames = self.chnlListModel.fullNameList
             self.spillMatModel = pandasTableModel(
                 pd.DataFrame(np.eye(len(chnlList)) * 100, index=chnlList, columns=chnlList),
                 backgroundDF=getGreyDiagDF(len(chnlList)),
                 editableDF=pd.DataFrame(~np.eye(len(chnlList), dtype=bool), index=chnlList, columns=chnlList),
-                validator=QtGui.QDoubleValidator(bottom=0., top=100.)
+                validator=QtGui.QDoubleValidator(bottom=0.)
                 )
             self.spillMatTable.setModel(self.spillMatModel)
-            self.spillMatModel.userInputSignal.connect(self.spillMatDataEdited)
+            self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
 
             self.autoFluoModel = pandasTableModel(
-                pd.DataFrame(index=chnlList, columns=['AutoFluor']).fillna(0),
+                pd.DataFrame(index=chnlFullNames, columns=['AutoFluor']).fillna(0),
                 validator=QtGui.QDoubleValidator()
                 )
             self.autoFluoTable.setModel(self.autoFluoModel)
-            self.autoFluoModel.userInputSignal.connect(self.autoFluoDataEdited)
+            self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
 
             self.needUpdatePage.hide()
             self.stackedCenter.setCurrentWidget(self.mainPage)
@@ -80,35 +81,28 @@ class compWindow(wUi, wBase):
         pass
 
     def spillMatDataEdited(self, index1, index2):
-        row, col = (index1.row(), index1.column())
-
-        diagValue = 100 - np.sum(self.spillMatModel.dfData.iloc[row, :]) + self.spillMatModel.dfData.iloc[row, row]
-        oldValue = self.spillMatModel.dfData.iloc[row, col] + diagValue - self.spillMatModel.dfData.iloc[row, row]
-
-        if diagValue > 0:
-            self.spillMatModel.setData(self.spillMatModel.index(row, row), diagValue, role=0x100)
-        else:
-            input = QtWidgets.QMessageBox.warning(
-                self, 'Invalid spill matrix', 
-                'The total percentage of a single fluorephore cannot exceed 100. \n' \
-                'Click \"Apply\" to aplly re-nomalization accross channels based on entered value; ' \
-                'or click \"Cancel\" to revert the last editing',
-                QtWidgets.QMessageBox.Cancel | QtWidgets.QMessageBox.Apply
-                )
-
-            if input == QtWidgets.QMessageBox.Cancel or input == QtWidgets.QMessageBox.Escape:
-                self.spillMatModel.setData(self.spillMatModel.index(row, col), oldValue, role=0x100)
-            elif input == QtWidgets.QMessageBox.Apply:
-                normalized = self.spillMatModel.dfData.iloc[row, :] / np.sum(self.spillMatModel.dfData.iloc[row, :]) *100
-                self.spillMatModel.dfData.iloc[row, :] = normalized
-
-                self.spillMatModel.dataChanged.emit(self.spillMatModel.index(row, 0), self.spillMatModel.index(row, -1))
-                pass
-
+        pass
             
     def autoFluoDataEdited(self, index1, index2):
         print(index1)
         pass
+
+    @property
+    def curComp(self):
+        if self.stackedCenter.currentWidget == self.needUpdatePage:
+            self.updateChnls(None, False)
+
+        if self.chnlListModel is None:
+            return (None, None, None)
+        else:
+            if self.autoFluoCheck.isChecked():
+                outputAutoFluo = self.autoFluoModel.data.set_index(self.chnlListModel.keyList, inplace=False)
+            else:
+                outputAutoFluo = None
+            outputSpillMat = self.spillMatModel.data.copy()
+            return (self.chnlListModel.keyList, outputAutoFluo, outputSpillMat)
+
+
 
 class verticalLabel(QtWidgets.QLabel):
 

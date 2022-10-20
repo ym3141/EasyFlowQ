@@ -144,6 +144,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # compensation:
         self.compEditPB.clicked.connect(self.handle_EditComp)
+        self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
@@ -190,9 +191,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             quad_split = None
 
+        compValues = self.compWindow.curComp if self.compApplyCheck.isChecked() else None
+
         smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
                                              chnlNames=self.curChnls, 
                                              axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
+                                             compValues = compValues,
                                              gateList=[gateItem.gate for gateItem in self.curGateItems],
                                              quad_split = quad_split,
                                              plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
@@ -462,6 +466,17 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.compWindow.updateChnls(hold=False)
         self.compWindow.show()
         self.compWindow.raise_()
+        pass
+
+    def handle_ApplyComp(self, state):
+        if state == 2:
+            if self.compWindow.curComp == (None, None, None):
+                QtWidgets.QMessageBox.warning(self, 'No compensation', 'No compensation is set, please check the compensation window.')
+            else:
+                self.handle_One()
+            
+        elif state == 0:
+            self.handle_One()
         pass
 
     def closeEvent(self, event: QtGui.QCloseEvent):
