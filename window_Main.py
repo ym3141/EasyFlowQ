@@ -239,7 +239,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
         if plotType == 'Dot plot':
-            self.statusbar.showMessage('Left click to confirm, Right click to close the gate and confirm', 0)
+            self.statusbar.showMessage('Left click to confirm, Right click to cancel', 0)
             self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
             self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
             self.quadEditor.addQuad_connect()

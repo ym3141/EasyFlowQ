@@ -83,6 +83,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
          <attribute name="horizontalHeaderDefaultSectionSize">
           <number>100</number>
          </attribute>
@@ -103,6 +106,9 @@
        </item>
        <item row="2" column="2">
         <widget class="QTableView" name="spillMatTable">
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
+         </property>
          <attribute name="horizontalHeaderDefaultSectionSize">
           <number>125</number>
          </attribute>
