@@ -133,6 +133,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.showLegendCheck.stateChanged.connect(self.handle_One)
 
         self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
+        self.compWindow.compValueEdited.connect(self.handle_One)
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
@@ -193,14 +194,15 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         compValues = self.compWindow.curComp if self.compApplyCheck.isChecked() else None
 
-        smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
-                                             chnlNames=self.curChnls, 
-                                             axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
-                                             compValues = compValues,
-                                             gateList=[gateItem.gate for gateItem in self.curGateItems],
-                                             quad_split = quad_split,
-                                             plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-                                             perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState()
+        smplsOnPlot = self.mpl_canvas.redraw(
+            selectedSmpls, 
+            chnlNames=self.curChnls, 
+            axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
+            compValues = compValues,
+            gateList=[gateItem.gate for gateItem in self.curGateItems],
+            quad_split = quad_split,
+            plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
+            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState()
         )
 
         self.smplsOnPlot = smplsOnPlot

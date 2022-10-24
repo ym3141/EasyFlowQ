@@ -220,9 +220,19 @@ class plotCanvas(FigureCanvasQTAgg):
 
         return list(zip(smplItems, gatedSmpls, gateFracs))
 
-    def compSmpls(self, smpls, useComp):
+    def compSmpls(self, smpls, compValues):
+        compedSmpls = []
+        compMat = np.linalg.inv(compValues[2] / 100)
+        autoFVector = np.array(compValues[1]).T
 
-        pass
+        for smpl in smpls:
+            # check if comp channels matches smpl channel
+            if compValues[0] == list(smpl.channels):
+                compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
+                compedSmpls.append(compedSmpl)
+            else:
+                compedSmpls.append(smpl)
+        return compedSmpls
 
     def gateSmpls(self, smpls, gateList):
         #gate samples with a list of gate:

@@ -18,6 +18,8 @@ from xlsxwriter.utility import xl_col_to_name
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWindow.ui') # Load the .ui file
 
 class compWindow(wUi, wBase):
+    compValueEdited = QtCore.pyqtSignal()
+
     def __init__(self, chnlListModel=None, compMat:compMatrix=None) -> None:
 
         wBase.__init__(self)
@@ -81,12 +83,15 @@ class compWindow(wUi, wBase):
         pass
 
     def spillMatDataEdited(self, index1, index2):
+        self.compValueEdited.emit()
         pass
             
     def autoFluoDataEdited(self, index1, index2):
+        if self.autoFluoCheck.isChecked():
+            self.compValueEdited.emit()
         print(index1)
         pass
-
+    
     @property
     def curComp(self):
         if self.stackedCenter.currentWidget == self.needUpdatePage:
@@ -96,10 +101,10 @@ class compWindow(wUi, wBase):
             return (None, None, None)
         else:
             if self.autoFluoCheck.isChecked():
-                outputAutoFluo = self.autoFluoModel.data.set_index(self.chnlListModel.keyList, inplace=False)
+                outputAutoFluo = self.autoFluoModel.dfData.set_index(self.chnlListModel.keyList, inplace=False)
             else:
-                outputAutoFluo = None
-            outputSpillMat = self.spillMatModel.data.copy()
+                outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).fillna(0)
+            outputSpillMat = self.spillMatModel.dfData.copy()
             return (self.chnlListModel.keyList, outputAutoFluo, outputSpillMat)
 
 
