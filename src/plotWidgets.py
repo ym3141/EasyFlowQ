@@ -222,16 +222,21 @@ class plotCanvas(FigureCanvasQTAgg):
 
     def compSmpls(self, smpls, compValues):
         compedSmpls = []
-        compMat = np.linalg.inv(compValues[2] / 100)
-        autoFVector = np.array(compValues[1]).T
 
+        # check if comp channels matches smpl channel; if not create a new autoF and compMat based on the required
         for smpl in smpls:
-            # check if comp channels matches smpl channel
             if compValues[0] == list(smpl.channels):
-                compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
-                compedSmpls.append(compedSmpl)
+                compMat = np.linalg.inv(compValues[2] / 100)
+                autoFVector = np.array(compValues[1]).T
+
             else:
-                compedSmpls.append(smpl)
+                tempAutoF = compValues[1].loc[list(smpl.channels)]
+                tempCompM = compValues[2][list(smpl.channels)].loc[list(smpl.channels)]
+                compMat = np.linalg.inv(tempCompM / 100)
+                autoFVector = np.array(tempAutoF).T
+
+            compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
+            compedSmpls.append(compedSmpl)
         return compedSmpls
 
     def gateSmpls(self, smpls, gateList):

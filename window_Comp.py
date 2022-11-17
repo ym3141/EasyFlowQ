@@ -57,30 +57,55 @@ class compWindow(wUi, wBase):
         if hold:
             self.needUpdatePage.show()
             self.stackedCenter.setCurrentWidget(self.needUpdatePage)
+
         else:
             chnlList = self.chnlListModel.keyList
-            chnlFullNames = self.chnlListModel.fullNameList
-            self.spillMatModel = pandasTableModel(
-                pd.DataFrame(np.eye(len(chnlList)) * 100, index=chnlList, columns=chnlList),
-                backgroundDF=getGreyDiagDF(len(chnlList)),
-                editableDF=pd.DataFrame(~np.eye(len(chnlList), dtype=bool), index=chnlList, columns=chnlList),
-                validator=QtGui.QDoubleValidator(bottom=0.)
-                )
-            self.spillMatTable.setModel(self.spillMatModel)
-            self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
+            if chnlList == list(self.spillMatModel.dfData.columns):
+                # no need to update
+                pass
+            
+            elif self.spillMatModel.dfData.shape == (1, 1):
+                # update from no matrix
+                self.createEmpty()
 
-            self.autoFluoModel = pandasTableModel(
-                pd.DataFrame(index=chnlFullNames, columns=['AutoFluor']).fillna(0),
-                validator=QtGui.QDoubleValidator()
-                )
-            self.autoFluoTable.setModel(self.autoFluoModel)
-            self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
+            else:
+                # old matrix exist, need new insert
+                oldAutoFluo = self.autoFluoModel.dfData.copy()
+                oldSpillMat = self.spillMatModel.dfData.copy()
+
+                self.createEmpty()
+
+                for oldRowName in oldAutoFluo.index:
+                    if not oldAutoFluo.loc[oldRowName, 'AutoFluor'] == 0:
+                        self.autoFluoModel.dfData[oldRowName] = oldAutoFluo[oldRowName]
+                self.autoFluoTable.setModel(self.autoFluoModel)
+
+                for oldColName in oldSpillMat:
+                    self.spillMatModel.dfData[oldColName] = oldSpillMat[oldColName]
+                self.spillMatModel.dfData.fillna(0.0, inplace=True)
+                self.spillMatTable.setModel(self.spillMatModel)
 
             self.needUpdatePage.hide()
             self.stackedCenter.setCurrentWidget(self.mainPage)
 
-    def updateMat(self, newMat):
-        pass
+    def createEmpty(self):
+        chnlList = self.chnlListModel.keyList
+        chnlFullNames = self.chnlListModel.fullNameList
+        self.spillMatModel = pandasTableModel(
+            pd.DataFrame(np.eye(len(chnlList)) * 100, index=chnlList, columns=chnlList),
+            backgroundDF=getGreyDiagDF(len(chnlList)),
+            editableDF=pd.DataFrame(~np.eye(len(chnlList), dtype=bool), index=chnlList, columns=chnlList),
+            validator=QtGui.QDoubleValidator(bottom=0.)
+            )
+        self.spillMatTable.setModel(self.spillMatModel)
+        self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
+
+        self.autoFluoModel = pandasTableModel(
+            pd.DataFrame(index=chnlFullNames, columns=['AutoFluor']).fillna(0),
+            validator=QtGui.QDoubleValidator()
+            )
+        self.autoFluoTable.setModel(self.autoFluoModel)
+        self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
 
     def spillMatDataEdited(self, index1, index2):
         self.compValueEdited.emit()
@@ -89,12 +114,11 @@ class compWindow(wUi, wBase):
     def autoFluoDataEdited(self, index1, index2):
         if self.autoFluoCheck.isChecked():
             self.compValueEdited.emit()
-        print(index1)
         pass
     
     @property
     def curComp(self):
-        if self.stackedCenter.currentWidget == self.needUpdatePage:
+        if self.atHold:
             self.updateChnls(None, False)
 
         if self.chnlListModel is None:
@@ -106,6 +130,10 @@ class compWindow(wUi, wBase):
                 outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).fillna(0)
             outputSpillMat = self.spillMatModel.dfData.copy()
             return (self.chnlListModel.keyList, outputAutoFluo, outputSpillMat)
+
+    @property
+    def atHold(self):
+        return self.stackedCenter.currentWidget() == self.needUpdatePage
 
 
 

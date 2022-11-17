@@ -465,7 +465,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
     def handle_EditComp(self):
-        self.compWindow.updateChnls(hold=False)
+        if self.compWindow.atHold:
+            self.compWindow.updateChnls(hold=False)
         self.compWindow.show()
         self.compWindow.raise_()
         pass
