@@ -14,3 +14,6 @@ release/*
 .vscode/
 .DS_store
 localSettings.user.json
+
+# data that is too large
+.demoSamples/CompDemo/*
