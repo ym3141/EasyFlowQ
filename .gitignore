@@ -16,4 +16,4 @@ release/*
 localSettings.user.json
 
 # data that is too large
-.demoSamples/CompDemo/*
+demoSamples/CompDemo/*
