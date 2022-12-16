@@ -45,7 +45,7 @@ class sessionSave():
 
     def __init__(self, mainUiWindow, saveFileDir) -> None:
 
-        self.save_ver = 1.0
+        self.save_ver = 1.2
         
         self.fileDir = saveFileDir
         baseDir = path.dirname(saveFileDir)
@@ -76,6 +76,8 @@ class sessionSave():
         self.figOptions = dict()
         self.figOptions['curPlotType'], self.figOptions['curAxScales'], self.figOptions['curAxLims'], self.figOptions['curNormOption'], self.figOptions['curSmooth'] = mainUiWindow.figOpsPanel.curFigOptions
         self.figOptions['curChnls'] = mainUiWindow.curChnls
+
+        self.curComp = mainUiWindow.compWindow.to_json()
         
     def saveJson(self):
         with open(self.fileDir, 'w+') as f:
@@ -131,6 +133,9 @@ class sessionSave():
                     mainUiWindow.loadQuadrant(quadrant(jQS['chnls'], jQS['center']), quadName=jQS['displayName'])
                 elif jQS['type'] == 'split':
                     mainUiWindow.loadSplit(split(jQS['chnl'], jQS['splitValue']), splitName=jQS['displayName'])
+
+        if save_ver >= 1.2:
+            mainUiWindow.compWindow.load_json(jDict['curComp'])
 
         # print(failedFiles)
 

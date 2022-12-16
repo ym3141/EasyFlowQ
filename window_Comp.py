@@ -11,9 +11,7 @@ import numpy as np
 from src.qtModels import pandasTableModel, chnlModel
 from src.comp import compMatrix
 
-import csv
-import io
-from xlsxwriter.utility import xl_col_to_name
+import json
 
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWindow.ui') # Load the .ui file
 
@@ -38,6 +36,7 @@ class compWindow(wUi, wBase):
 
         # link the triggers
         self.refreshPB.clicked.connect(lambda : self.updateChnls(hold=False))
+        self.autoFluoCheck.clicked.connect(self.compValueEdited)
 
         # set the model
         self.chnlListModel = chnlListModel
@@ -88,6 +87,8 @@ class compWindow(wUi, wBase):
             self.needUpdatePage.hide()
             self.stackedCenter.setCurrentWidget(self.mainPage)
 
+
+    # This function create a model of empty compensation matrix, and set it to the model
     def createEmpty(self):
         chnlList = self.chnlListModel.keyList
         chnlFullNames = self.chnlListModel.fullNameList
@@ -107,10 +108,34 @@ class compWindow(wUi, wBase):
         self.autoFluoTable.setModel(self.autoFluoModel)
         self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
 
+    # This is used to update model loading. It should not change the chennal list. As the chennal list should always be synced to the data in the mainWindow
+    # This will overwrite the info, no checking.
+    def updateModels(self, newAutoFluo: pd.DataFrame, newSpillMat: pd.DataFrame):
+        
+        chnlNumber = newAutoFluo.shape[0]
+        self.spillMatModel = pandasTableModel(
+            newSpillMat,
+            backgroundDF=getGreyDiagDF(chnlNumber),
+            editableDF=pd.DataFrame(~np.eye(chnlNumber, dtype=bool)),
+            validator=QtGui.QDoubleValidator(bottom=0.)
+            )
+        self.spillMatTable.setModel(self.spillMatModel)
+        self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
+
+        self.autoFluoModel = pandasTableModel(
+            newAutoFluo,
+            validator=QtGui.QDoubleValidator()
+            )
+        self.autoFluoTable.setModel(self.autoFluoModel)
+        self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
+        pass
+
+    # indicate if an update is required
     def spillMatDataEdited(self, index1, index2):
         self.compValueEdited.emit()
         pass
-            
+    
+    # indicate if an update is required
     def autoFluoDataEdited(self, index1, index2):
         if self.autoFluoCheck.isChecked():
             self.compValueEdited.emit()
@@ -135,6 +160,45 @@ class compWindow(wUi, wBase):
     def atHold(self):
         return self.stackedCenter.currentWidget() == self.needUpdatePage
 
+    def to_json(self):
+        if self.atHold:
+            self.updateChnls(None, False)
+        
+        keyList, autoFluo, spillMat = self.curComp
+
+        jCompInfo = dict()
+        jCompInfo['keyList'] = keyList
+        jCompInfo['autoFluo'] = autoFluo.to_json() if not (autoFluo is None) else None
+        jCompInfo['spillMat'] = spillMat.to_json() if not (spillMat is None) else None
+
+        return json.dumps(jCompInfo, sort_keys=True, indent=4)
+
+    # this function process JSON 
+    def load_json(self, jString: str):
+        if self.atHold:
+            self.updateChnls(None, False)
+
+        if self.chnlListModel != None and not \
+            (np.allclose(self.autoFluoModel.dfData.to_numpy(), 0) and np.allclose(self.spillMatModel.dfData.to_numpy(), np.eye(len(self.chnlListModel.keyList)) * 100)):
+
+            input = QtWidgets.QMessageBox.question(self, 'Current compensation values are not None/Identity', 
+                'Do you want to overwrite the current one?')
+
+            if input == QtWidgets.QMessageBox.StandardButton.No:
+                return
+        
+        jDict = json.loads(jString)
+        if self.chnlListModel.keyList == jDict['keyList']:
+            self.updateModels(pd.read_json(jDict['autoFluo']), pd.read_json(jDict['spillMat']))
+            pass
+
+        else:
+            input = QtWidgets.QMessageBox.critical(self, 'Warning! Compensation matrix loading error', 
+                'The compensation matrix don\'t have matching channels with the current sample. \
+                Click apply so that we can ateempt to load. Or cancel to skip loading the matrix.',
+                buttons=QtWidgets.QMessageBox.StandardButton.Apply | QtWidgets.QMessageBox.StandardButton.Cancel)
+            
+        pass
 
 
 class verticalLabel(QtWidgets.QLabel):

@@ -146,6 +146,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # compensation:
         self.compEditPB.clicked.connect(self.handle_EditComp)
         self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
+        self.compWindow.compValueEdited.connect(lambda : self.saveFlag(True))
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
