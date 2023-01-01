@@ -16,6 +16,7 @@ from window_Stats import statWindow
 from window_Settings import settingsWindow, localSettings
 from window_About import aboutWindow
 from window_Comp import compWindow
+from wizard_Comp import compWizard
 
 from uiDesigns.MainWindow_FigOptions import mainUI_figOps
 
@@ -106,6 +107,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
+        self.actionWizardComp.triggered.connect(self.handle_CompWizard)
+
         self.actionSettings.triggered.connect(self.handle_Settings)
 
         self.actionAbout.triggered.connect(lambda : self.aboutWindow.show())
@@ -147,6 +150,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.compEditPB.clicked.connect(self.handle_EditComp)
         self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
         self.compWindow.compValueEdited.connect(lambda : self.saveFlag(True))
+
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
@@ -482,6 +486,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         elif state == 0:
             self.handle_One()
         pass
+
+    def handle_CompWizard(self):
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget)
+        compWizDialog.show()
 
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():

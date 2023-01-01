@@ -1,7 +1,5 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from matplotlib.colors import to_hex
-from os import path
 
 from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import Qt
@@ -9,7 +7,6 @@ from PyQt5.QtCore import Qt
 import pandas as pd
 import numpy as np
 from src.qtModels import pandasTableModel, chnlModel
-from src.comp import compMatrix
 
 import json
 
@@ -18,7 +15,7 @@ wUi, wBase = uic.loadUiType('./uiDesigns/CompWindow.ui') # Load the .ui file
 class compWindow(wUi, wBase):
     compValueEdited = QtCore.pyqtSignal()
 
-    def __init__(self, chnlListModel=None, compMat:compMatrix=None) -> None:
+    def __init__(self, chnlListModel=None) -> None:
 
         wBase.__init__(self)
         self.setupUi(self)

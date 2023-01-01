@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Wizard</class>
+ <widget class="QWizard" name="Wizard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Compensation Wizard</string>
+  </property>
+  <property name="wizardStyle">
+   <enum>QWizard::ClassicStyle</enum>
+  </property>
+  <widget class="QWizardPage" name="wPage1">
+   <property name="title">
+    <string>Data for compensation</string>
+   </property>
+   <property name="subTitle">
+    <string>Select chennals need compensations; Single-color control samples; And gates to apply </string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Channel:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Single-color sample:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Gate for the control samples:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QListView" name="chnlListView"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QListView" name="smplListView"/>
+    </item>
+    <item row="1" column="2">
+     <widget class="QListView" name="gateListView"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWizardPage" name="wPage2">
+   <property name="title">
+    <string>Assign samples to channels</string>
+   </property>
+   <property name="subTitle">
+    <string>For each channel, select a single-color control sample to calculate the compensation</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout"/>
+  </widget>
+  <widget class="QWizardPage" name="wPage3">
+   <property name="title">
+    <string>Assign samples to channels</string>
+   </property>
+   <property name="subTitle">
+    <string>Assign </string>
+   </property>
+  </widget>
+  <widget class="QWizardPage" name="wPage4">
+   <property name="title">
+    <string>Assign samples to channels</string>
+   </property>
+   <property name="subTitle">
+    <string>Assign </string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

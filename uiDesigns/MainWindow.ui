@@ -281,7 +281,7 @@
               <string>View/Edit matrix</string>
              </property>
             </widget>
-            <widget class="QPushButton" name="compWizz">
+            <widget class="QPushButton" name="compWizPB">
              <property name="geometry">
               <rect>
                <x>10</x>
@@ -291,7 +291,7 @@
               </rect>
              </property>
              <property name="text">
-              <string>Auto-compensation wizzard</string>
+              <string>Auto-compensation wizard</string>
              </property>
             </widget>
             <widget class="QPushButton" name="compImportPB">
@@ -701,7 +701,7 @@
     </property>
     <addaction name="actionImportComp"/>
     <addaction name="actionExportComp"/>
-    <addaction name="actionWizzardComp"/>
+    <addaction name="actionWizardComp"/>
    </widget>
    <addaction name="menuSession"/>
    <addaction name="menuData"/>
@@ -818,7 +818,7 @@
     <string>Export</string>
    </property>
   </action>
-  <action name="actionWizzardComp">
+  <action name="actionWizardComp">
    <property name="text">
     <string>Wizzard</string>
    </property>
@@ -861,9 +861,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>compWizz</sender>
+   <sender>compWizPB</sender>
    <signal>clicked()</signal>
-   <receiver>actionWizzardComp</receiver>
+   <receiver>actionWizardComp</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
