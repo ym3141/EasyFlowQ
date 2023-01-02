@@ -63,7 +63,36 @@
    <property name="subTitle">
     <string>For each channel, select a single-color control sample to calculate the compensation</string>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout"/>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="wP2Scroll">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>838</width>
+         <height>487</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2"/>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="clearAllPB">
+      <property name="text">
+       <string>Clear all</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QWizardPage" name="wPage3">
    <property name="title">
