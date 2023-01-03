@@ -5,6 +5,9 @@ from copy import copy
 
 from src.qtModels import smplPlotItem, gateWidgetItem
 import numpy as np
+from scipy.stats.mstats import gmean
+
+import warnings
 
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWizard.ui') # Load the .ui file
 
@@ -21,6 +24,10 @@ class compWizard(wUi, wBase):
         self.chnlListView.setModel(self.wizChnlModel)
         self.smplListView.setModel(self.wizSmplModel)
         self.gateListView.setModel(self.wizGateModel)
+
+        self.meanMethodBG = QtWidgets.QButtonGroup(self)
+        for radio in [self.medRadio, self.gMeanRadio, self.meanRadio]:
+            self.meanMethodBG.addButton(radio)
 
         self.clearAllPB.clicked.connect(self.handle_P2ClearAll)
 
@@ -103,6 +110,39 @@ class compWizard(wUi, wBase):
                     
                 return True
 
+        elif self.currentId() == 2:
+            self.progressLabel.setText('Starting...')
+            self.progressBar.setValue(5)
+                        
+            gateList = [item.data(0x100) for item in self.selectedGateItems]
+            self.meanFunc = np.mean
+            if self.meanMethodBG.checkedButton is self.medRadio:
+                self.meanFunc = np.median
+            elif self.meanMethodBG.checkedButton is self.gMeanRadio:
+                self.meanFunc = gmean
+
+            chnlKeyList = [item.data(0x101) for item in self.selectedChnlItems]
+            
+            self.progressLabel.setText('Calculating for auto-fluorescence...')
+            self.progressBar.setValue(10)
+
+            if self.noAutoFCheck.checkState() == 0 and (not self.noAutoF):
+                noColorFCS = self.selectedSmplItems[self.assignedPairs[0][1]].data(role=0x100)
+                inGateFlag = np.ones(noColorFCS.shape[0], dtype=bool)
+
+                for gate in gateList:
+                    if gate.chnls[0] in noColorFCS.channels and gate.chnls[1] in noColorFCS.channels:
+                        newFlag = gate.isInsideGate(noColorFCS)
+                        inGateFlag = np.logical_and(gate.isInsideGate(noColorFCS), inGateFlag)
+
+                    else: 
+                        warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
+                
+                gatedFCS = noColorFCS[inGateFlag, :]
+                self.autoFs = self.meanFunc(gatedFCS, 0)
+
+
+            return True
         else: 
             return True
 
@@ -144,6 +184,21 @@ class compWizard(wUi, wBase):
                 self.wP2Scroll.layout().addWidget(assignUnit)
                 self.p2AssignBoxes.append(assignUnit)
             self.wP2Scroll.layout().addStretch()
+
+        if id == 2:
+            self.assignedPairs = []
+            for p2AssignBox in self.p2AssignBoxes:
+                self.assignedPairs.append((p2AssignBox.chnlName, p2AssignBox.comboBox.currentIndex()))
+
+            if self.assignedPairs[0][1] == -1:
+                self.noAutoFCheck.setDisabled(True)
+                self.noAutoFCheck.setCheckState(2)
+                self.noAutoF = True
+            else:
+                self.noAutoFCheck.setDisabled(False)
+                self.noAutoFCheck.setCheckState(0)
+                self.noAutoF = False
+
 
     def handle_P2ClearAll(self):
         for child in self.wP2Scroll.children():
