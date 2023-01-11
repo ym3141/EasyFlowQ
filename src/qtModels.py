@@ -61,7 +61,7 @@ class gateWidgetItem(QListWidgetItem):
         self.setFlags(self.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEditable)
         self.setCheckState(0)
 
-        self.gate = gate
+        self.setData(0x100, gate)
 
     def data(self, role: int):
         if role == Qt.DisplayRole:
@@ -71,6 +71,10 @@ class gateWidgetItem(QListWidgetItem):
 
     def text(self) -> str:
         return self.data(Qt.EditRole)
+
+    @property
+    def gate(self):
+        return self.data(0x100)
 
 class quadWidgetItem(QListWidgetItem):
     def __init__(self, quadName, quad):

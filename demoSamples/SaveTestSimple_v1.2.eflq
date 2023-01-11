@@ -1,5 +1,5 @@
 {
-    "curComp": "{\n    \"autoFluo\": \"{\\\"AutoFluor\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0}}\",\n    \"keyList\": [\n        \"FSC-H\",\n        \"FSC-A\",\n        \"SSC-H\",\n        \"SSC-A\",\n        \"FL1-H\",\n        \"FL1-A\",\n        \"FL6-H\",\n        \"FL6-A\",\n        \"FL10-H\",\n        \"FL10-A\",\n        \"FL11-H\",\n        \"FL11-A\",\n        \"FSC-Width\",\n        \"Time\"\n    ],\n    \"spillMat\": \"{\\\"FSC-H\\\":{\\\"FSC-H\\\":100,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":78,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FSC-A\\\":{\\\"FSC-H\\\":0.0,\\\"FSC-A\\\":100.0,\\\"SSC-H\\\":0.0,\\\"SSC-A\\\":79.0,\\\"FL1-H\\\":0.0,\\\"FL1-A\\\":0.0,\\\"FL6-H\\\":0.0,\\\"FL6-A\\\":0.0,\\\"FL10-H\\\":0.0,\\\"FL10-A\\\":0.0,\\\"FL11-H\\\":0.0,\\\"FL11-A\\\":0.0,\\\"FSC-Width\\\":0.0,\\\"Time\\\":0.0},\\\"SSC-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":100,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"SSC-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":100,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL1-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":45,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":100,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL1-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":100,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL6-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":100,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL6-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":100,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL10-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":100,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL10-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":100,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL11-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":100,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL11-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":100,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FSC-Width\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":100,\\\"Time\\\":0},\\\"Time\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":100}}\"\n}",
+    "curComp": "{\n    \"autoFluo\": \"{\\\"AutoFluor\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0}}\",\n    \"keyList\": [\n        \"FSC-H\",\n        \"FSC-A\",\n        \"SSC-H\",\n        \"SSC-A\",\n        \"FL1-H\",\n        \"FL1-A\",\n        \"FL6-H\",\n        \"FL6-A\",\n        \"FL10-H\",\n        \"FL10-A\",\n        \"FL11-H\",\n        \"FL11-A\",\n        \"FSC-Width\",\n        \"Time\"\n    ],\n    \"spillMat\": \"{\\\"FSC-H\\\":{\\\"FSC-H\\\":100,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":78,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FSC-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":100,\\\"SSC-H\\\":0,\\\"SSC-A\\\":79,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"SSC-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":100,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"SSC-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":100,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL1-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":45,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":100,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL1-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":100,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL6-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":100,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL6-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":100,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL10-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":100,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL10-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":100,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL11-H\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":100,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FL11-A\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":100,\\\"FSC-Width\\\":0,\\\"Time\\\":0},\\\"FSC-Width\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":100,\\\"Time\\\":0},\\\"Time\\\":{\\\"FSC-H\\\":0,\\\"FSC-A\\\":0,\\\"SSC-H\\\":0,\\\"SSC-A\\\":0,\\\"FL1-H\\\":0,\\\"FL1-A\\\":0,\\\"FL6-H\\\":0,\\\"FL6-A\\\":0,\\\"FL10-H\\\":0,\\\"FL10-A\\\":0,\\\"FL11-H\\\":0,\\\"FL11-A\\\":0,\\\"FSC-Width\\\":0,\\\"Time\\\":100}}\"\n}",
     "figOptions": {
         "curAxLims": [
             "auto",
@@ -19,14 +19,14 @@
         "curPlotType": "Dot plot",
         "curSmooth": 24
     },
-    "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/SaveTestSimple_v1.2.eflq",
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTestSimple_v1.2.eflq",
     "gateSaveList": [
         {
             "axScales": [
                 "log",
                 "log"
             ],
-            "checkState": 0,
+            "checkState": 2,
             "chnls": [
                 "FSC-A",
                 "SSC-A"
@@ -71,7 +71,7 @@
                 "log",
                 "log"
             ],
-            "checkState": 0,
+            "checkState": 2,
             "chnls": [
                 "FL10-A",
                 "FL6-A"
@@ -206,8 +206,8 @@
     "smplSaveList": [
         {
             "displayName": "01-Well-A1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-A1.fcs",
             "plotColor": [
                 0.9705653467612726,
@@ -219,8 +219,8 @@
         },
         {
             "displayName": "01-Well-B1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-B1.fcs",
             "plotColor": [
                 0.8143892576485847,
@@ -232,8 +232,8 @@
         },
         {
             "displayName": "01-Well-C2",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-C2.fcs",
             "plotColor": [
                 0.40616464484626535,
@@ -245,8 +245,8 @@
         },
         {
             "displayName": "01-Well-C3",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
             "fileDir_rel": "01-Well-C3.fcs",
             "plotColor": [
                 0.2301823453116655,

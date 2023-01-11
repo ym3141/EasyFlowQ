@@ -33,7 +33,59 @@ class compWizard(wUi, wBase):
 
         self.p2AssignBoxes = []
 
-    
+
+    def initializePage(self, id):
+        super().initializePage(id)
+
+        if id == 1:
+            # The folloing code delet anything in the page2 scrollArea layout, very hecky
+            layoutItem = self.wP2Scroll.layout().takeAt(0)
+            while not (layoutItem is None):
+                if layoutItem.widget() is None:
+                    #That's probably the spacer, and the last one.
+                    break
+                layoutItem.widget().setParent(None)
+                layoutItem = self.wP2Scroll.layout().takeAt(0)
+            del layoutItem
+
+            # Constract the lists of selected channel/sample/gate
+            self.selectedChnlItems = [self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == 2]
+            self.selectedSmplItems = [self.wizSmplModel.item(idx) for idx in range(self.wizSmplModel.rowCount()) if self.wizSmplModel.item(idx).checkState() == 2]
+            self.selectedGateItems = [self.wizGateModel.item(idx) for idx in range(self.wizGateModel.rowCount()) if self.wizGateModel.item(idx).checkState() == 2]
+
+            # Model for the comboboxes
+            self.selectedSmplModel = QtGui.QStandardItemModel()
+            for smplItem in self.selectedSmplItems:
+                comboItem = smplItem.clone()
+                comboItem.setFlags(comboItem.flags() & (~Qt.ItemIsUserCheckable))
+                comboItem.setData(None, role=Qt.CheckStateRole)
+                self.selectedSmplModel.appendRow(comboItem)
+
+            # Construct the boxes and add them to the scroll area
+            autoFBox = smplAssignBox(self.wP2Scroll, 'temp', self.selectedSmplModel)
+            autoFBox.setTitle('No-color control (for auto-fluorescence)')
+            self.wP2Scroll.layout().addWidget(autoFBox)
+            self.p2AssignBoxes = [autoFBox]
+            for chnlItem in self.selectedChnlItems:
+                assignUnit = smplAssignBox(self.wP2Scroll, chnlItem.text(), self.selectedSmplModel)
+                self.wP2Scroll.layout().addWidget(assignUnit)
+                self.p2AssignBoxes.append(assignUnit)
+            self.wP2Scroll.layout().addStretch()
+
+        if id == 2:
+            self.assignedPairs = []
+            for p2AssignBox in self.p2AssignBoxes:
+                self.assignedPairs.append((p2AssignBox.chnlName, p2AssignBox.comboBox.currentIndex()))
+
+            if self.assignedPairs[0][1] == -1:
+                self.noAutoFCheck.setDisabled(True)
+                self.noAutoFCheck.setCheckState(2)
+                self.noAutoF = True
+            else:
+                self.noAutoFCheck.setDisabled(False)
+                self.noAutoFCheck.setCheckState(0)
+                self.noAutoF = False
+
     def validateCurrentPage(self):
         if self.currentId() == 0:
             chnlN = len([self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == 2])
@@ -121,7 +173,12 @@ class compWizard(wUi, wBase):
             elif self.meanMethodBG.checkedButton is self.gMeanRadio:
                 self.meanFunc = gmean
 
-            chnlKeyList = [item.data(0x101) for item in self.selectedChnlItems]
+            self.chnlKeyList = [item.data(0x101) for item in self.selectedChnlItems]
+
+            if self.percentileCheck.checkState() == 2:
+                self.usePercentile = self.percentileSlider.value()
+            else:
+                self.usePercentile = -1
             
             self.progressLabel.setText('Calculating for auto-fluorescence...')
             self.progressBar.setValue(10)
@@ -139,66 +196,48 @@ class compWizard(wUi, wBase):
                         warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
                 
                 gatedFCS = noColorFCS[inGateFlag, :]
-                self.autoFs = self.meanFunc(gatedFCS, 0)
+                self.autoFs = self.meanFunc(gatedFCS, 0, keepdims=True)
+            else: 
+                self.autoFs = None
+
+            self.progressLabel.setText('Calculating for spill matrix...')
+            self.progressBar.setValue(20)
+
+            smplSpills = []
+            for idx, chnlKey in enumerate(self.chnlKeyList):
+                smplIdx = self.assignedPairs[idx + 1][1]
+                if smplIdx != -1:
+                    smplFCS = self.selectedSmplItems[smplIdx].data(0x100)
+
+                    inGateFlag = np.ones(smplFCS.shape[0], dtype=bool)
+                    for gate in gateList:
+                        if gate.chnls[0] in smplFCS.channels and gate.chnls[1] in smplFCS.channels:
+                            newFlag = gate.isInsideGate(smplFCS)
+                            inGateFlag = np.logical_and(gate.isInsideGate(smplFCS), inGateFlag)
+
+                        else: 
+                            warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
+                    
+                    gatedFCS = smplFCS[inGateFlag, :]
+
+                    if self.usePercentile != -1:
+                        percMask = gatedFCS[:, chnlKey] >= np.percentile(gatedFCS[:, chnlKey], 100 - self.usePercentile / 100)
+                        gatedFCS = gatedFCS[percMask, :]
+
+                    if self.noAutoFCheck.checkState() == 0 and not (self.autoFs is None):
+                        gatedFCS = gatedFCS - self.autoFs
+
+                    meanFCS = self.meanFunc(gatedFCS, 0, keepdims=True)
+                    spills = meanFCS / meanFCS[0, chnlKey]
+                    smplSpills.append(spills)
+                else:
+                    smplSpills.append(None)
+                    
 
 
             return True
         else: 
             return True
-
-
-    def initializePage(self, id):
-        super().initializePage(id)
-
-        if id == 1:
-            # The folloing code delet anything in the page2 scrollArea layout, very hecky
-            layoutItem = self.wP2Scroll.layout().takeAt(0)
-            while not (layoutItem is None):
-                if layoutItem.widget() is None:
-                    #That's probably the spacer, and the last one.
-                    break
-                layoutItem.widget().setParent(None)
-                layoutItem = self.wP2Scroll.layout().takeAt(0)
-            del layoutItem
-
-            # Constract the lists of selected channel/sample/gate
-            self.selectedChnlItems = [self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == 2]
-            self.selectedSmplItems = [self.wizSmplModel.item(idx) for idx in range(self.wizSmplModel.rowCount()) if self.wizSmplModel.item(idx).checkState() == 2]
-            self.selectedGateItems = [self.wizGateModel.item(idx) for idx in range(self.wizGateModel.rowCount()) if self.wizGateModel.item(idx).checkState() == 2]
-
-            # Model for the comboboxes
-            self.selectedSmplModel = QtGui.QStandardItemModel()
-            for smplItem in self.selectedSmplItems:
-                comboItem = smplItem.clone()
-                comboItem.setFlags(comboItem.flags() & (~Qt.ItemIsUserCheckable))
-                comboItem.setData(None, role=Qt.CheckStateRole)
-                self.selectedSmplModel.appendRow(comboItem)
-
-            # Construct the boxes and add them to the scroll area
-            autoFBox = smplAssignBox(self.wP2Scroll, 'temp', self.selectedSmplModel)
-            autoFBox.setTitle('No-color control (for auto-fluorescence)')
-            self.wP2Scroll.layout().addWidget(autoFBox)
-            self.p2AssignBoxes = [autoFBox]
-            for chnlItem in self.selectedChnlItems:
-                assignUnit = smplAssignBox(self.wP2Scroll, chnlItem.text(), self.selectedSmplModel)
-                self.wP2Scroll.layout().addWidget(assignUnit)
-                self.p2AssignBoxes.append(assignUnit)
-            self.wP2Scroll.layout().addStretch()
-
-        if id == 2:
-            self.assignedPairs = []
-            for p2AssignBox in self.p2AssignBoxes:
-                self.assignedPairs.append((p2AssignBox.chnlName, p2AssignBox.comboBox.currentIndex()))
-
-            if self.assignedPairs[0][1] == -1:
-                self.noAutoFCheck.setDisabled(True)
-                self.noAutoFCheck.setCheckState(2)
-                self.noAutoF = True
-            else:
-                self.noAutoFCheck.setDisabled(False)
-                self.noAutoFCheck.setCheckState(0)
-                self.noAutoF = False
-
 
     def handle_P2ClearAll(self):
         for child in self.wP2Scroll.children():
