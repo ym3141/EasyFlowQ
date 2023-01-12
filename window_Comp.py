@@ -165,8 +165,10 @@ class compWindow(wUi, wBase):
 
         jCompInfo = dict()
         jCompInfo['keyList'] = keyList
-        jCompInfo['autoFluo'] = autoFluo.to_json() if not (autoFluo is None) else None
-        jCompInfo['spillMat'] = spillMat.to_json() if not (spillMat is None) else None
+        jCompInfo['autoFluo'] = autoFluo.to_json(orient='split') if not (autoFluo is None) else None
+        jCompInfo['spillMat'] = spillMat.to_json(orient='split') if not (spillMat is None) else None
+
+        return None
 
         return json.dumps(jCompInfo, sort_keys=True, indent=4)
 
@@ -186,7 +188,7 @@ class compWindow(wUi, wBase):
         
         jDict = json.loads(jString)
         if self.chnlListModel.keyList == jDict['keyList']:
-            self.updateModels(pd.read_json(jDict['autoFluo']), pd.read_json(jDict['spillMat']))
+            self.updateModels(pd.read_json(jDict['autoFluo'], orient='split'), pd.read_json(jDict['spillMat'], orient='split'))
             pass
 
         else:

@@ -1,0 +1,193 @@
+{
+    "curComp": null,
+    "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto",
+            "auto",
+            "auto"
+        ],
+        "curAxScales": [
+            "log",
+            "log"
+        ],
+        "curChnls": [
+            "FL11-A",
+            "FL3-A"
+        ],
+        "curNormOption": "Percentage",
+        "curPlotType": "Dot plot",
+        "curSmooth": 0
+    },
+    "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/AutoCompTest_Evan.eflq",
+    "gateSaveList": [
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 2,
+            "chnls": [
+                "FSC-A",
+                "SSC-A"
+            ],
+            "displayName": "live1",
+            "type": "polygonGate",
+            "verts": [
+                [
+                    1000187.2162265814,
+                    2079575.143132938
+                ],
+                [
+                    303496.6544364447,
+                    234811.88662310294
+                ],
+                [
+                    291269.05234770157,
+                    90175.38058915063
+                ],
+                [
+                    836931.376984315,
+                    60409.11262440062
+                ],
+                [
+                    2505791.447228849,
+                    698791.0723052738
+                ],
+                [
+                    1957886.5874924175,
+                    3245576.6539927963
+                ]
+            ]
+        },
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 2,
+            "chnls": [
+                "SSC-H",
+                "SSC-A"
+            ],
+            "displayName": "single",
+            "type": "polygonGate",
+            "verts": [
+                [
+                    82263.54677781761,
+                    154760.83092523649
+                ],
+                [
+                    55216.05643720036,
+                    82879.80484644402
+                ],
+                [
+                    87513.34801376688,
+                    95631.62733694645
+                ],
+                [
+                    747238.2399650506,
+                    751912.4413102942
+                ],
+                [
+                    1136466.8079144845,
+                    1341540.2416713818
+                ],
+                [
+                    931077.2901914332,
+                    1740238.7838411315
+                ],
+                [
+                    603834.122706895,
+                    1385891.8694386592
+                ],
+                [
+                    163579.24375396676,
+                    397470.2983865611
+                ]
+            ]
+        }
+    ],
+    "qsSaveList": [],
+    "save_ver": 1.2,
+    "smplSaveList": [
+        {
+            "displayName": "BFP(PB450)-HEK293T",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "plotColor": [
+                0.9705653467612726,
+                0.5299610894941634,
+                0.6268558785381857,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "Halo646(APC)-HEK293T",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "plotColor": [
+                0.8973678187228199,
+                0.6009460593575952,
+                0.21460288395513846,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "mBeRFP(Violet610)-HEK293T",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "plotColor": [
+                0.6629587243457694,
+                0.6902265964751659,
+                0.21290913252460517,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "mCherry(ECD)-HEK293T",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "plotColor": [
+                0.21565575646601054,
+                0.7562371252002746,
+                0.3843595025558862,
+                1.0
+            ],
+            "selected": true
+        },
+        {
+            "displayName": "mCitrine(FITC)-HEK293T",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "plotColor": [
+                0.2301823453116655,
+                0.7354390783550775,
+                0.6841687647821775,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "WT-HEK293T",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\WT-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\WT-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\WT-HEK293T.fcs",
+            "plotColor": [
+                0.24328984512092774,
+                0.7145952544441901,
+                0.864591439688716,
+                1.0
+            ],
+            "selected": false
+        }
+    ]
+}

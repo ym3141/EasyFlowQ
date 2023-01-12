@@ -23,9 +23,7 @@ _excepthook = sys.excepthook
 def myexcepthook(type, value, traceback):
     except_msg = ''.join(format_exception(type, value, traceback))
     QtWidgets.QMessageBox.critical(None, 'Unexpected exception encountered', 
-                                         '{0} \n\nThis likely won\'t crash EasyFlowQ, \
-                                          but we recommend save a copy of the session, \
-                                          and restart if anything looks off'.format(except_msg))
+        '{0} \n\nThis likely won\'t crash EasyFlowQ, but we recommend save a copy of the session, and restart if anything looks off'.format(except_msg))
     _excepthook(type, value, traceback)
 
 def newWindowFunc(sessionSaveFile=None, pos=None):

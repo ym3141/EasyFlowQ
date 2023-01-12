@@ -88,11 +88,13 @@ class sessionSave():
         with open(saveFileDir) as f:
             jDict = json.load(f)
         
+        # for really early version, that don't have a save_ver
         if not 'save_ver' in jDict:
             save_ver = 0.1
         else:
             save_ver = jDict['save_ver']
 
+        # load the FCS files
         failedFiles = []
         for jSmpl in jDict['smplSaveList']:
 
@@ -102,8 +104,9 @@ class sessionSave():
             if path.exists(_fileDir_rel):
                 confirmedDir = _fileDir_rel
             elif path.exists(jSmpl['fileDir_abs']):
-                confirmedDir = jSmpl['fileDir_rel']
-            else:
+                confirmedDir = jSmpl['fileDir_abs']
+            elif path.exists(jSmpl['fileDir']):
+                confirmedDir = jSmpl['fileDir']
                 pass
             
             if confirmedDir:
@@ -135,7 +138,9 @@ class sessionSave():
                     mainUiWindow.loadSplit(split(jQS['chnl'], jQS['splitValue']), splitName=jQS['displayName'])
 
         if save_ver >= 1.2:
-            mainUiWindow.compWindow.load_json(jDict['curComp'])
+            jString = jDict['curComp']
+            if not (jString is None):
+                mainUiWindow.compWindow.load_json(jString)
 
         # print(failedFiles)
 
@@ -144,7 +149,7 @@ def _convert_smplPlotItem(item, saveDir):
     smplSave = deepcopy(item.__dict__)
 
     smplSave['fileDir_rel'] = path.relpath(smplSave['fileDir'], saveDir)
-    smplSave['fileDir_abs'] = path.abspath(saveDir)
+    smplSave['fileDir_abs'] = path.abspath(smplSave['fileDir'])
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 
