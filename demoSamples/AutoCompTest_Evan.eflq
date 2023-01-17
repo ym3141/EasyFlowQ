@@ -9,14 +9,14 @@
         ],
         "curAxScales": [
             "log",
-            "log"
+            "linear"
         ],
         "curChnls": [
             "FL11-A",
-            "FL3-A"
+            "FL11-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Dot plot",
+        "curPlotType": "Histogram",
         "curSmooth": 0
     },
     "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/AutoCompTest_Evan.eflq",
@@ -113,7 +113,7 @@
     "smplSaveList": [
         {
             "displayName": "BFP(PB450)-HEK293T",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\CompDemo\\BFP(PB450)-HEK293T.fcs",
             "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\BFP(PB450)-HEK293T.fcs",
             "fileDir_rel": "CompDemo\\BFP(PB450)-HEK293T.fcs",
             "plotColor": [
@@ -126,7 +126,7 @@
         },
         {
             "displayName": "Halo646(APC)-HEK293T",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\CompDemo\\Halo646(APC)-HEK293T.fcs",
             "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\Halo646(APC)-HEK293T.fcs",
             "fileDir_rel": "CompDemo\\Halo646(APC)-HEK293T.fcs",
             "plotColor": [
@@ -139,7 +139,7 @@
         },
         {
             "displayName": "mBeRFP(Violet610)-HEK293T",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
             "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
             "fileDir_rel": "CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
             "plotColor": [
@@ -152,7 +152,7 @@
         },
         {
             "displayName": "mCherry(ECD)-HEK293T",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\CompDemo\\mCherry(ECD)-HEK293T.fcs",
             "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mCherry(ECD)-HEK293T.fcs",
             "fileDir_rel": "CompDemo\\mCherry(ECD)-HEK293T.fcs",
             "plotColor": [
@@ -165,7 +165,7 @@
         },
         {
             "displayName": "mCitrine(FITC)-HEK293T",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\CompDemo\\mCitrine(FITC)-HEK293T.fcs",
             "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mCitrine(FITC)-HEK293T.fcs",
             "fileDir_rel": "CompDemo\\mCitrine(FITC)-HEK293T.fcs",
             "plotColor": [
@@ -178,7 +178,7 @@
         },
         {
             "displayName": "WT-HEK293T",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/CompDemo\\WT-HEK293T.fcs",
+            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\CompDemo\\WT-HEK293T.fcs",
             "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\CompDemo\\WT-HEK293T.fcs",
             "fileDir_rel": "CompDemo\\WT-HEK293T.fcs",
             "plotColor": [

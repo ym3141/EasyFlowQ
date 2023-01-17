@@ -242,7 +242,7 @@ class pandasTableModel(QAbstractTableModel):
 
     # give flags that help to decide if an element is editable
     def flags(self, index):
-        flags = super(self.__class__,self).flags(index)
+        flags = super().flags(index)
 
         if self._editableDF.iloc[index.row(), index.column()]:
             flags |= Qt.ItemIsEditable

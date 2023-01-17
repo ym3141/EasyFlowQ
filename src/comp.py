@@ -7,7 +7,8 @@ import itertools
 
 from .qtModels import pandasTableModel
 
-class autoFluoModel(pandasTableModel):
+class autoFluoTbModel(pandasTableModel):
+
     def __init__(self, chnlList, chnlNameList, editable=True):
 
         self.chnlList = chnlList
@@ -57,7 +58,7 @@ class autoFluoModel(pandasTableModel):
     
     # this function package the df to json
     def to_json(self):
-        if self.isIdentity():
+        if self.isZeros():
             return None
         else:
             return self.dfData.to_json(orient='split')
@@ -71,7 +72,7 @@ class autoFluoModel(pandasTableModel):
 
 
 # Table model based class for compensention matrix
-class spillMatModel(pandasTableModel):
+class spillMatTbModel(pandasTableModel):
 
     # this create an empty mat. To load a mat, create one using the below __init__, and then use loadMatDF
     def __init__(self, chnlList, editable=True):
@@ -85,7 +86,7 @@ class spillMatModel(pandasTableModel):
         
         spillmatDF = pd.DataFrame(np.eye(len(chnlList)) * 100, index=chnlList, columns=chnlList)
 
-        super().__init__(spillmatDF, getGreyDiagDF(len(chnlList)), editableDF=editableDF, validator=QtGui.QDoubleValidator(bottom=0.))
+        super().__init__(spillmatDF, backgroundDF=getGreyDiagDF(len(chnlList)), editableDF=editableDF, validator=QtGui.QDoubleValidator(bottom=0.))
 
     def isIdentity(self) -> bool:
         identity = np.eye(len(self.chnlList)) * 100
@@ -133,12 +134,13 @@ class spillMatModel(pandasTableModel):
 
     # this function process JSON 
     def load_json(self, jString: str):
-        spillMatDF = pd.read_json(jString, orient='split')
+        spillMatDF = pd.read_json(jString, orient='split') 
         overwriteFlag, missedChnls = self.loadMatDF(spillMatDF)
 
         return overwriteFlag, missedChnls
 
 def getGreyDiagDF(length):
     greyDiagDF = pd.DataFrame(index=range(length), columns=range(length)).fillna('#ffffff')
-    np.fill_diagonal(greyDiagDF.values, ['#b0b0b0'])
+    if length > 0:
+        np.fill_diagonal(greyDiagDF.values, ['#b0b0b0'])
     return greyDiagDF

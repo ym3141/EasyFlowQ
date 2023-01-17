@@ -470,8 +470,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
     def handle_EditComp(self):
-        if self.compWindow.atHold:
-            self.compWindow.updateChnls(hold=False)
         self.compWindow.show()
         self.compWindow.raise_()
         pass
@@ -535,9 +533,14 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # merging the channel dictionary. 
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
+        newChnlFlag = False
         for key in newSmplItem.chnlNameDict:
-            self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
-            self.compWindow.updateChnls(self.chnlListModel, hold=True)
+            isNew = self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
+            newChnlFlag = newChnlFlag or isNew
+            
+        # update the compensation model if there are new channels added
+        if newChnlFlag:    
+            self.compWindow.updateChnls(self.chnlListModel)
 
     def loadGate(self, gate, replace=None, gateName=None, checkState=0):
         self.set_saveFlag(True)
