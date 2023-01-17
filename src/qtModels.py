@@ -240,6 +240,7 @@ class pandasTableModel(QAbstractTableModel):
         else:
             return False
 
+    # give flags that help to decide if an element is editable
     def flags(self, index):
         flags = super(self.__class__,self).flags(index)
 

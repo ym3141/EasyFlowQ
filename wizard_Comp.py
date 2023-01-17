@@ -203,7 +203,7 @@ class compWizard(wUi, wBase):
             self.progressLabel.setText('Calculating for spill matrix...')
             self.progressBar.setValue(20)
 
-            smplSpills = []
+            smplSpills = dict()
             for idx, chnlKey in enumerate(self.chnlKeyList):
                 smplIdx = self.assignedPairs[idx + 1][1]
                 if smplIdx != -1:
@@ -229,11 +229,9 @@ class compWizard(wUi, wBase):
 
                     meanFCS = self.meanFunc(gatedFCS, 0, keepdims=True)
                     spills = meanFCS / meanFCS[0, chnlKey]
-                    smplSpills.append(spills)
+                    smplSpills[chnlKey] = spills
                 else:
-                    smplSpills.append(None)
-                    
-
+                    smplSpills[chnlKey] = None
 
             return True
         else: 
