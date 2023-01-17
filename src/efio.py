@@ -78,6 +78,7 @@ class sessionSave():
         self.figOptions['curChnls'] = mainUiWindow.curChnls
 
         self.curComp = mainUiWindow.compWindow.to_json()
+        self.applyComp = mainUiWindow.compApplyCheck.isChecked()
         
     def saveJson(self):
         with open(self.fileDir, 'w+') as f:
@@ -141,6 +142,8 @@ class sessionSave():
             jString = jDict['curComp']
             if not (jString is None):
                 mainUiWindow.compWindow.load_json(jString)
+
+            mainUiWindow.compApplyCheck.setChecked(jDict['applyComp'])
 
         # print(failedFiles)
 

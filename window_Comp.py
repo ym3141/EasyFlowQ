@@ -121,7 +121,8 @@ class compWindow(wUi, wBase):
             return (None, None, None)
         else:
             if self.autoFluoCheck.isChecked() and (not self.autoFluoModel.isZeros()):
-                outputAutoFluo = self.autoFluoModel.dfData.set_index(self.chnlListModel.keyList, inplace=False)
+                idxMap = dict(zip(self.autoFluoModel.DFIndices, self.autoFluoModel.chnlList))
+                outputAutoFluo = self.autoFluoModel.dfData.rename(index=idxMap)
             else:
                 outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).fillna(0)
             outputSpillMat = self.spillMatModel.dfData.copy()
@@ -130,14 +131,15 @@ class compWindow(wUi, wBase):
 
     def to_json(self):
         jCompInfo = dict()
+        jCompInfo['useAutoFluo'] = self.autoFluoCheck.isChecked()
         jCompInfo['keyList'] = self.chnlListModel.keyList
         jCompInfo['autoFluo'] = self.autoFluoModel.to_json()
         jCompInfo['spillMat'] = self.spillMatModel.to_json()
 
-        return json.dumps(jCompInfo, sort_keys=True, indent=4)
+        return jCompInfo
 
     # this function process JSON 
-    def load_json(self, jString: str):
+    def load_json(self, jDict: dict):
         if self.chnlListModel != None and not (self.autoFluoModel.isZeros() and self.spillMatModel.isIdentity()):
 
             input = QtWidgets.QMessageBox.question(self, 'Current compensation values are not None/Identity', 
@@ -146,8 +148,6 @@ class compWindow(wUi, wBase):
             if input == QtWidgets.QMessageBox.StandardButton.No:
                 return
         
-        jDict = json.loads(jString)
-
         self.autoFluoModel.load_json(jDict['autoFluo'])
         self.spillMatModel.load_json(jDict['spillMat'])
 

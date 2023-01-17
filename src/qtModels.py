@@ -204,7 +204,7 @@ class pandasTableModel(QAbstractTableModel):
             if orientation == Qt.Vertical:
                 return str(self._data.index[section])
     
-    def setData(self, index, value, role):
+    def setData(self, index, value, role=Qt.EditRole):
         if not index.isValid():
             return False
 

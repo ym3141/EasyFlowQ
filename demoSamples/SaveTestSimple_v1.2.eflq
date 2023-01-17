@@ -1,5 +1,26 @@
 {
-    "curComp": null,
+    "applyComp": true,
+    "curComp": {
+        "autoFluo": "{\"columns\":[\"AutoFluor\"],\"index\":[\"FSC-H: FSC-H\",\"FSC-A: FSC-A\",\"SSC-H: SSC-H\",\"SSC-A: SSC-A\",\"FL1-H: FITC-H\",\"FL1-A: FITC-A\",\"FL6-H: PB450-H\",\"FL6-A: PB450-A\",\"FL10-H: PE-H\",\"FL10-A: PE-A\",\"FL11-H: ECD-H\",\"FL11-A: ECD-A\",\"FSC-Width: FSC-Width\",\"Time: Time\"],\"data\":[[0],[10000],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]]}",
+        "keyList": [
+            "FSC-H",
+            "FSC-A",
+            "SSC-H",
+            "SSC-A",
+            "FL1-H",
+            "FL1-A",
+            "FL6-H",
+            "FL6-A",
+            "FL10-H",
+            "FL10-A",
+            "FL11-H",
+            "FL11-A",
+            "FSC-Width",
+            "Time"
+        ],
+        "spillMat": "{\"columns\":[\"FSC-H\",\"FSC-A\",\"SSC-H\",\"SSC-A\",\"FITC-H\",\"FITC-A\",\"PB450-H\",\"PB450-A\",\"PE-H\",\"PE-A\",\"ECD-H\",\"ECD-A\",\"FSC-Width\",\"Time\"],\"index\":[\"FSC-H\",\"FSC-A\",\"SSC-H\",\"SSC-A\",\"FITC-H\",\"FITC-A\",\"PB450-H\",\"PB450-A\",\"PE-H\",\"PE-A\",\"ECD-H\",\"ECD-A\",\"FSC-Width\",\"Time\"],\"data\":[[100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,100.0,0.0,3.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0]]}",
+        "useAutoFluo": true
+    },
     "figOptions": {
         "curAxLims": [
             "auto",
@@ -19,7 +40,7 @@
         "curPlotType": "Dot plot",
         "curSmooth": 24
     },
-    "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples/SaveTestSimple_v1.2.eflq",
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTestSimple_v1.2.eflq",
     "gateSaveList": [
         {
             "axScales": [
@@ -206,8 +227,8 @@
     "smplSaveList": [
         {
             "displayName": "01-Well-A1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\01-Well-A1.fcs",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\01-Well-A1.fcs",
             "fileDir_rel": "01-Well-A1.fcs",
             "plotColor": [
                 0.9705653467612726,
@@ -219,8 +240,8 @@
         },
         {
             "displayName": "01-Well-B1",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\01-Well-B1.fcs",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\01-Well-B1.fcs",
             "fileDir_rel": "01-Well-B1.fcs",
             "plotColor": [
                 0.8143892576485847,
@@ -232,8 +253,8 @@
         },
         {
             "displayName": "01-Well-C2",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\01-Well-C2.fcs",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\01-Well-C2.fcs",
             "fileDir_rel": "01-Well-C2.fcs",
             "plotColor": [
                 0.40616464484626535,
@@ -245,8 +266,8 @@
         },
         {
             "displayName": "01-Well-C3",
-            "fileDir": "C:/Users/yma2/Documents/PythonCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
-            "fileDir_abs": "C:\\Users\\yma2\\Documents\\PythonCodes\\EasyFlowQ\\demoSamples\\01-Well-C3.fcs",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\01-Well-C3.fcs",
             "fileDir_rel": "01-Well-C3.fcs",
             "plotColor": [
                 0.2301823453116655,

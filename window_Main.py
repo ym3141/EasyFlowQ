@@ -693,11 +693,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     @property
     def dir4Save(self):
-        if self.sessionSavePath is not None:
+        if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
             return path.dirname(self.sessionSavePath)
         elif self.smplListWidget.count() > 0:
             return path.dirname(self.smplListWidget.item(0).fileDir)
-        elif path.exists(self.settingDict['default dir']):
+        elif hasattr(self, 'settingDict') and path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
             return path.abspath(getSysDefaultDir())
