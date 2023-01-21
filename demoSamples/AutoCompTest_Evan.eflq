@@ -1,5 +1,6 @@
 {
     "curComp": null,
+    "applyComp": false,
     "figOptions": {
         "curAxLims": [
             "auto",

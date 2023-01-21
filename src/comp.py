@@ -1,4 +1,5 @@
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
 import numpy as np
 import pandas as pd
 import json
@@ -27,6 +28,12 @@ class autoFluoTbModel(pandasTableModel):
 
         super().__init__(autoFluoDF, editableDF=editableDF, validator=QtGui.QDoubleValidator())
 
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            number = float(super().data(index, role))
+            return '{0:.5g}'.format(number)
+        return super().data(index, role)
+    
     def isZeros(self) -> bool:
         return np.allclose(0, self.dfData.to_numpy(dtype=np.double, copy=True))
 
@@ -92,6 +99,12 @@ class spillMatTbModel(pandasTableModel):
 
         super().__init__(spillmatDF, backgroundDF=getGreyDiagDF(len(chnlList)), editableDF=editableDF, validator=QtGui.QDoubleValidator(bottom=0.))
 
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            number = float(super().data(index, role))
+            return '{0:.4g}'.format(number)
+        return super().data(index, role)
+    
     def isIdentity(self) -> bool:
         identity = np.eye(len(self.chnlList)) * 100
         flag = np.allclose(identity, self.dfData.to_numpy(dtype=np.double, copy=True), atol=1e-6, rtol=0)
@@ -110,7 +123,7 @@ class spillMatTbModel(pandasTableModel):
             else:
                 missedChnls.append(chnl)
 
-        for chnlFrom, chnlTo in itertools.combinations(commonChnls, 2):
+        for chnlFrom, chnlTo in itertools.permutations(commonChnls, 2):
             if not chnlFrom == chnlTo:
                 if not np.isclose(self.dfData.loc[chnlFrom, chnlTo], 0):
                     overwriteFlag = True

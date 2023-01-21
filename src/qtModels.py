@@ -113,12 +113,14 @@ class splitWidgetItem(QListWidgetItem):
 class chnlModel(QStandardItemModel):
     def __init__(self):
         super().__init__()
+        self.chnlNameDict = dict()
 
     def addChnl(self, chnlKey, chnlName):
         if not (chnlKey in self.keyList):
             newChnlItem = QStandardItem('{0}: {1}'.format(chnlKey, chnlName))
             newChnlItem.setData(chnlKey)
             self.appendRow(newChnlItem)
+            self.chnlNameDict[chnlKey] = chnlName
             return 1
         else:
             return 0
