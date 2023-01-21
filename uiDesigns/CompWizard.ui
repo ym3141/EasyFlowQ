@@ -298,14 +298,14 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="load2MainPB">
          <property name="text">
           <string>Load into compensation</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="exportPB">
          <property name="text">
           <string>Export</string>
          </property>

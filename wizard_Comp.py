@@ -104,6 +104,8 @@ class compWizard(wUi, wBase):
             self.autoFluoTable.setModel(self.preAutoFluoModel)
             self.spillMatTable.setModel(self.preSpillMatModel)
 
+            self.spillMatTable.selectionModel.selectionChanged.connect(self.handle_SelectAutoFluo)
+
     def validateCurrentPage(self):
         if self.currentId() == 0:
             chnlN = len([self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == 2])
@@ -286,6 +288,10 @@ class compWizard(wUi, wBase):
         for child in self.wP2Scroll.children():
             if isinstance(child, wAssignBox):
                 child.handle_Clear()
+
+    def handle_SelectAutoFluo(self, selected):
+        index = selected.indexes()[0]
+        self.autoFluoTable.selectRow(index.row())
 
 wAssignBox, wBaseAssignBox = uic.loadUiType('./uiDesigns/CompWizard_SmplAssignBox.ui')
 class smplAssignBox(wAssignBox, wBaseAssignBox):

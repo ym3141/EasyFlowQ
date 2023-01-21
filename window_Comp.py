@@ -43,6 +43,10 @@ class compWindow(wUi, wBase):
         self.spillMatModel = spillMatTbModel([])
         self.spillMatTable.setModel(self.spillMatModel)
 
+        # link the selection from spillMat to autoFluo:
+        spillMatSelectionModel = self.spillMatTable.selectionModel()
+        spillMatSelectionModel.selectionChanged.connect(self.handle_SelectAutoFluo)
+
     # Update according to the new channel list. 
     def updateChnls(self, newChnlListModel:chnlModel):
         self.chnlListModel = newChnlListModel
@@ -81,27 +85,7 @@ class compWindow(wUi, wBase):
         self.spillMatTable.setModel(self.spillMatModel)
         self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
 
-    # # This is used to update model loading. It should not change the chennal list. As the chennal list should always be synced to the data in the mainWindow
-    # # This will overwrite the info, no checking.
-    # def updateModels(self, newAutoFluo: pd.DataFrame, newSpillMat: pd.DataFrame):
-        
-    #     chnlNumber = newAutoFluo.shape[0]
-    #     self.spillMatModel = pandasTableModel(
-    #         newSpillMat,
-    #         backgroundDF=getGreyDiagDF(chnlNumber),
-    #         editableDF=pd.DataFrame(~np.eye(chnlNumber, dtype=bool)),
-    #         validator=QtGui.QDoubleValidator(bottom=0.)
-    #         )
-    #     self.spillMatTable.setModel(self.spillMatModel)
-    #     self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
-
-    #     self.autoFluoModel = pandasTableModel(
-    #         newAutoFluo,
-    #         validator=QtGui.QDoubleValidator()
-    #         )
-    #     self.autoFluoTable.setModel(self.autoFluoModel)
-    #     self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
-    #     pass
+        self.spillMatTable.selectionModel().selectionChanged.connect(self.handle_SelectAutoFluo)
 
     # indicate if an update is required
     def autoFluoDataEdited(self, index1, index2):
@@ -151,17 +135,9 @@ class compWindow(wUi, wBase):
         self.autoFluoModel.load_json(jDict['autoFluo'])
         self.spillMatModel.load_json(jDict['spillMat'])
 
-        # if self.chnlListModel.keyList == jDict['keyList']:
-        #     self.updateModels(pd.read_json(jDict['autoFluo'], orient='split'), pd.read_json(jDict['spillMat'], orient='split'))
-        #     pass
-
-        # else:
-        #     input = QtWidgets.QMessageBox.critical(self, 'Warning! Compensation matrix loading error', 
-        #         'The compensation matrix don\'t have matching channels with the current sample. \
-        #         Click apply so that we can ateempt to load. Or cancel to skip loading the matrix.',
-        #         buttons=QtWidgets.QMessageBox.StandardButton.Apply | QtWidgets.QMessageBox.StandardButton.Cancel)
-            
-        # pass
+    def handle_SelectAutoFluo(self, selected):
+        index = selected.indexes()[0]
+        self.autoFluoTable.selectRow(index.row())
 
 
 class verticalLabel(QtWidgets.QLabel):
