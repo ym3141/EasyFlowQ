@@ -42,7 +42,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingDict = setting.settingDict
         
         # other init
-        self.version = 0.1
+        self.version = self.settingDict['version']
         self._saveFlag = False
 
         self.chnlDict = dict()
@@ -164,6 +164,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.set_sessionSavePath(sessionSaveFile)
             self.holdFigureUpdate = False
             self.handle_One()
+
+        self.updateWinTitle()
 
         if pos:
             self.move(pos)

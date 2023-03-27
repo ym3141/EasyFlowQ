@@ -45,7 +45,7 @@ class sessionSave():
 
     def __init__(self, mainUiWindow, saveFileDir) -> None:
 
-        self.save_ver = 1.2
+        self.save_ver = mainUiWindow.version
         
         self.fileDir = saveFileDir
         baseDir = path.dirname(saveFileDir)
