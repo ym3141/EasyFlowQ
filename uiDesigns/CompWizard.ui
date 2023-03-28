@@ -77,8 +77,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>846</width>
-         <height>524</height>
+         <width>838</width>
+         <height>487</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2"/>
@@ -243,7 +243,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="1" column="0">
-     <widget class="QTableView" name="autoFTable">
+     <widget class="QTableView" name="autoFluoTable">
       <property name="maximumSize">
        <size>
         <width>300</width>
@@ -253,7 +253,14 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QTableView" name="spillMatTable"/>
+     <widget class="QTableView" name="spillMatTable">
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>100</number>
+      </attribute>
+      <attribute name="verticalHeaderVisible">
+       <bool>false</bool>
+      </attribute>
+     </widget>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_4">
@@ -291,14 +298,14 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="load2MainPB">
          <property name="text">
           <string>Load into compensation</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="exportPB">
          <property name="text">
           <string>Export</string>
          </property>

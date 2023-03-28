@@ -1,4 +1,5 @@
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
 import numpy as np
 import pandas as pd
 import json
@@ -27,32 +28,40 @@ class autoFluoTbModel(pandasTableModel):
 
         super().__init__(autoFluoDF, editableDF=editableDF, validator=QtGui.QDoubleValidator())
 
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            number = float(super().data(index, role))
+            return '{0:.5g}'.format(number)
+        return super().data(index, role)
+    
     def isZeros(self) -> bool:
         return np.allclose(0, self.dfData.to_numpy(dtype=np.double, copy=True))
 
     # load a DF into the model. The matching is purely based on chnlKey (e.g. 'FL1-A'), and will ignore the name.
-    def loadDF(self, autoFluoDF: pd.DataFrame, forceOverwrite=True):
+    def loadDF(self, inputDF: pd.DataFrame, forceOverwrite=True):
         commonChnls = []
         missedChnls = []
         overwriteFlag = False
 
-        loadingChnlFullNames = autoFluoDF.index
-        loadingChnlKeys = [full.split(':', 1)[0] for full in loadingChnlFullNames]
+        inputChnlFullNames = inputDF.index
+        inputChnlKeys = [full.split(':', 1)[0] for full in inputChnlFullNames]
+        inputChnlDict = dict(zip(inputChnlKeys, inputChnlFullNames))
 
 
-        for chnlKey in loadingChnlKeys:
+        for chnlKey in inputChnlKeys:
             if chnlKey in self.chnlList:
                 commonChnls.append(chnlKey)
             else:
                 missedChnls.append(chnlKey)
 
         for chnl in commonChnls:
-            if not np.isclose(self.dfData.loc[chnl, 'AutoFluor'], 0):
+            idx = self.chnlList.index(chnl)
+            if not np.isclose(self.dfData.loc[self.DFIndices[idx], 'AutoFluor'], 0):
                 overwriteFlag = True
                 if ~forceOverwrite:
                     return (overwriteFlag, missedChnls)
-            idx = self.chnlList.index(chnl)
-            self.setData(self.index(idx, 0), autoFluoDF.loc[chnl, 0])
+            
+            self.setData(self.index(idx, 0), inputDF.loc[inputChnlDict[chnl]][0])
                  
         return (overwriteFlag, missedChnls)
     
@@ -65,8 +74,10 @@ class autoFluoTbModel(pandasTableModel):
 
     # this function process JSON 
     def load_json(self, jString: str):
+        if jString is None:
+            return False, []
         spillMatDF = pd.read_json(jString, orient='split')
-        overwriteFlag, missedChnls = self.loadMatDF(spillMatDF)
+        overwriteFlag, missedChnls = self.loadDF(spillMatDF)
 
         return overwriteFlag, missedChnls
 
@@ -88,6 +99,12 @@ class spillMatTbModel(pandasTableModel):
 
         super().__init__(spillmatDF, backgroundDF=getGreyDiagDF(len(chnlList)), editableDF=editableDF, validator=QtGui.QDoubleValidator(bottom=0.))
 
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            number = float(super().data(index, role))
+            return '{0:.4g}'.format(number)
+        return super().data(index, role)
+    
     def isIdentity(self) -> bool:
         identity = np.eye(len(self.chnlList)) * 100
         flag = np.allclose(identity, self.dfData.to_numpy(dtype=np.double, copy=True), atol=1e-6, rtol=0)
@@ -106,7 +123,7 @@ class spillMatTbModel(pandasTableModel):
             else:
                 missedChnls.append(chnl)
 
-        for chnlFrom, chnlTo in itertools.combinations(commonChnls, 2):
+        for chnlFrom, chnlTo in itertools.permutations(commonChnls, 2):
             if not chnlFrom == chnlTo:
                 if not np.isclose(self.dfData.loc[chnlFrom, chnlTo], 0):
                     overwriteFlag = True
@@ -134,6 +151,8 @@ class spillMatTbModel(pandasTableModel):
 
     # this function process JSON 
     def load_json(self, jString: str):
+        if jString is None: # Represent an empty matrix
+            return False, []
         spillMatDF = pd.read_json(jString, orient='split') 
         overwriteFlag, missedChnls = self.loadMatDF(spillMatDF)
 

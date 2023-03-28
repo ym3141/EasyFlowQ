@@ -42,7 +42,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingDict = setting.settingDict
         
         # other init
-        self.version = 0.1
+        self.version = self.settingDict['version']
         self._saveFlag = False
 
         self.chnlDict = dict()
@@ -164,6 +164,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.set_sessionSavePath(sessionSaveFile)
             self.holdFigureUpdate = False
             self.handle_One()
+
+        self.updateWinTitle()
 
         if pos:
             self.move(pos)
@@ -693,11 +695,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     @property
     def dir4Save(self):
-        if self.sessionSavePath is not None:
+        if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
             return path.dirname(self.sessionSavePath)
         elif self.smplListWidget.count() > 0:
             return path.dirname(self.smplListWidget.item(0).fileDir)
-        elif path.exists(self.settingDict['default dir']):
+        elif hasattr(self, 'settingDict') and path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
             return path.abspath(getSysDefaultDir())

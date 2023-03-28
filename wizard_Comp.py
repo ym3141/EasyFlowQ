@@ -4,8 +4,10 @@ from PyQt5.QtCore import Qt
 from copy import copy
 
 from src.qtModels import smplPlotItem, gateWidgetItem
+from src.comp import autoFluoTbModel, spillMatTbModel
 import numpy as np
 from scipy.stats.mstats import gmean
+import pandas as pd
 
 import warnings
 
@@ -16,6 +18,14 @@ class compWizard(wUi, wBase):
         wBase.__init__(self, parent)
         self.setupUi(self)
 
+        # link the vertical scrollbars on page4
+        self.spillMatTable.verticalScrollBar().valueChanged.connect(self.autoFluoTable.verticalScrollBar().setValue)
+        self.autoFluoTable.verticalScrollBar().valueChanged.connect(self.spillMatTable.verticalScrollBar().setValue)
+
+        # visual tweak for page4
+        self.autoFluoTable.verticalHeader().setMaximumSize(125, 16777215)
+        self.autoFluoTable.horizontalHeader().setMaximumSectionSize(125)
+
         # setting up all the model for the page1
         self.wizChnlModel = wPage1Model(itemModel=chnlModel)
         self.wizSmplModel = wPage1Model(listWidget=smplWidget)
@@ -25,9 +35,13 @@ class compWizard(wUi, wBase):
         self.smplListView.setModel(self.wizSmplModel)
         self.gateListView.setModel(self.wizGateModel)
 
+        # Manage the button group at page3
         self.meanMethodBG = QtWidgets.QButtonGroup(self)
         for radio in [self.medRadio, self.gMeanRadio, self.meanRadio]:
             self.meanMethodBG.addButton(radio)
+
+        # Save a copy of the channel name dict
+        self.chnlNameDict = chnlModel.chnlNameDict
 
         self.clearAllPB.clicked.connect(self.handle_P2ClearAll)
 
@@ -85,6 +99,12 @@ class compWizard(wUi, wBase):
                 self.noAutoFCheck.setDisabled(False)
                 self.noAutoFCheck.setCheckState(0)
                 self.noAutoF = False
+
+        if id == 3:
+            self.autoFluoTable.setModel(self.preAutoFluoModel)
+            self.spillMatTable.setModel(self.preSpillMatModel)
+
+            self.spillMatTable.selectionModel.selectionChanged.connect(self.handle_SelectAutoFluo)
 
     def validateCurrentPage(self):
         if self.currentId() == 0:
@@ -233,6 +253,33 @@ class compWizard(wUi, wBase):
                 else:
                     smplSpills[chnlKey] = None
 
+                self.progressLabel.setText('Finishing calculation on spill matrix: ({0}/{1})'.format(idx, len(self.chnlKeyList)))
+                self.progressBar.setValue(10 + 70 * ((idx + 1) / len(self.chnlKeyList)))
+
+            self.progressLabel.setText('Preparing autofluorescence matrix for preview')
+            self.progressBar.setValue(80)
+
+            self.preAutoFluoModel = autoFluoTbModel(self.chnlKeyList, [self.chnlNameDict[chnl] for chnl in self.chnlKeyList], editable=False)
+            self.preSpillMatModel = spillMatTbModel(self.chnlKeyList, editable=False)
+
+            if not (self.autoFs is None):
+                autoDF = pd.DataFrame(self.autoFs.T, index=(self.autoFs.channels))
+                self.preAutoFluoModel.loadDF(autoDF)
+
+            self.progressLabel.setText('Preparing spill matrix for preview')
+            self.progressBar.setValue(90)
+            
+            spillDF = pd.DataFrame(columns=self.chnlKeyList)
+            for idx, chnlKey in enumerate(self.chnlKeyList):
+                if smplSpills[chnlKey] is None:
+                    spillDF.loc[chnlKey] = [0] * idx + [1] + [0] * (len(self.chnlKeyList) - idx - 1)
+                else:
+                    spillDF.loc[chnlKey] = smplSpills[chnlKey][0, (self.chnlKeyList)]
+            self.preSpillMatModel.loadMatDF(spillDF * 100)
+
+            self.progressLabel.setText('Done!')
+            self.progressBar.setValue(100)
+
             return True
         else: 
             return True
@@ -241,6 +288,10 @@ class compWizard(wUi, wBase):
         for child in self.wP2Scroll.children():
             if isinstance(child, wAssignBox):
                 child.handle_Clear()
+
+    def handle_SelectAutoFluo(self, selected):
+        index = selected.indexes()[0]
+        self.autoFluoTable.selectRow(index.row())
 
 wAssignBox, wBaseAssignBox = uic.loadUiType('./uiDesigns/CompWizard_SmplAssignBox.ui')
 class smplAssignBox(wAssignBox, wBaseAssignBox):
