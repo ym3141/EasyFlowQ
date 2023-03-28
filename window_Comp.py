@@ -147,22 +147,12 @@ class compWindow(wUi, wBase):
                 return
         
         jDict = json.loads(jString)
+        
+        if not (jDict['autoFluo'] is None):
+            self.autoFluoModel.load_json(jDict['autoFluo'])
 
-        self.autoFluoModel.load_json(jDict['autoFluo'])
-        self.spillMatModel.load_json(jDict['spillMat'])
-
-        # if self.chnlListModel.keyList == jDict['keyList']:
-        #     self.updateModels(pd.read_json(jDict['autoFluo'], orient='split'), pd.read_json(jDict['spillMat'], orient='split'))
-        #     pass
-
-        # else:
-        #     input = QtWidgets.QMessageBox.critical(self, 'Warning! Compensation matrix loading error', 
-        #         'The compensation matrix don\'t have matching channels with the current sample. \
-        #         Click apply so that we can ateempt to load. Or cancel to skip loading the matrix.',
-        #         buttons=QtWidgets.QMessageBox.StandardButton.Apply | QtWidgets.QMessageBox.StandardButton.Cancel)
-            
-        # pass
-
+        if not (jDict['spillMat'] is None):
+            self.spillMatModel.load_json(jDict['spillMat'])
 
 class verticalLabel(QtWidgets.QLabel):
 
