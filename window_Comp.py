@@ -131,9 +131,7 @@ class compWindow(wUi, wBase):
 
             if input == QtWidgets.QMessageBox.StandardButton.No:
                 return
-        
-        jDict = json.loads(jString)
-        
+                
         if not (jDict['autoFluo'] is None):
             self.autoFluoModel.load_json(jDict['autoFluo'])
 

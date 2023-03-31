@@ -311,8 +311,8 @@ class compWizard(wUi, wBase):
     def handle_load2MainComp(self):
         if not (self.curMainSpillMatModel.isIdentity() and self.curMainAutoFluoModel.isZeros()):
             input = QtWidgets.QMessageBox.warning(self, 
-                    'The current compensation numbers (autofluorescence or spill matrix) are likely not none. ' +
-                      'This action will overwrite some part of the current one.', 
+                    'Overwrite current compensation?',
+                    'The current compensation is not zero/identity! This action will overwrite some part of the current one.' +
                     'Yes to proceed.',
                     buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel
                     )
