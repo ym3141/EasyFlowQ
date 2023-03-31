@@ -132,13 +132,17 @@ class compWindow(wUi, wBase):
             if input == QtWidgets.QMessageBox.StandardButton.No:
                 return
         
-        self.autoFluoModel.load_json(jDict['autoFluo'])
-        self.spillMatModel.load_json(jDict['spillMat'])
+        jDict = json.loads(jString)
+        
+        if not (jDict['autoFluo'] is None):
+            self.autoFluoModel.load_json(jDict['autoFluo'])
+
+        if not (jDict['spillMat'] is None):
+            self.spillMatModel.load_json(jDict['spillMat'])
 
     def handle_SelectAutoFluo(self, selected):
         index = selected.indexes()[0]
         self.autoFluoTable.selectRow(index.row())
-
 
 class verticalLabel(QtWidgets.QLabel):
 
