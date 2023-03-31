@@ -81,7 +81,7 @@ class compWindow(wUi, wBase):
         self.autoFluoTable.setModel(self.autoFluoModel)
         self.autoFluoModel.dataChanged.connect(self.autoFluoDataEdited)
 
-        self.spillMatModel = spillMatTbModel(chnlNames)
+        self.spillMatModel = spillMatTbModel(chnlList)
         self.spillMatTable.setModel(self.spillMatModel)
         self.spillMatModel.dataChanged.connect(self.spillMatDataEdited)
 

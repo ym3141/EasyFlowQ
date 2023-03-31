@@ -58,7 +58,7 @@ class autoFluoTbModel(pandasTableModel):
             idx = self.chnlList.index(chnl)
             if not np.isclose(self.dfData.loc[self.DFIndices[idx], 'AutoFluor'], 0):
                 overwriteFlag = True
-                if ~forceOverwrite:
+                if not forceOverwrite:
                     return (overwriteFlag, missedChnls)
             
             self.setData(self.index(idx, 0), inputDF.loc[inputChnlDict[chnl]][0])
@@ -91,7 +91,7 @@ class spillMatTbModel(pandasTableModel):
         self.chnlList = chnlList
 
         if editable:
-            editableDF = pd.DataFrame(~np.eye(len(chnlList), dtype=bool), index=chnlList, columns=chnlList)
+            editableDF = pd.DataFrame(np.logical_not(np.eye(len(chnlList), dtype=bool)), index=chnlList, columns=chnlList)
         else:
             editableDF = pd.DataFrame(np.zeros((len(chnlList), len(chnlList)), dtype=bool), index=chnlList, columns=chnlList)
         
@@ -127,7 +127,7 @@ class spillMatTbModel(pandasTableModel):
             if not chnlFrom == chnlTo:
                 if not np.isclose(self.dfData.loc[chnlFrom, chnlTo], 0):
                     overwriteFlag = True
-                    if ~forceOverwrite:
+                    if not forceOverwrite:
                         return (overwriteFlag, missedChnls)
 
                 idx = self.chnlList.index(chnlFrom)

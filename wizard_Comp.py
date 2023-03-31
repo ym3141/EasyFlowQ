@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from copy import copy
 
 from src.qtModels import smplPlotItem, gateWidgetItem
@@ -14,7 +14,10 @@ import warnings
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWizard.ui') # Load the .ui file
 
 class compWizard(wUi, wBase):
-    def __init__(self, parent, chnlModel, smplWidget, gateWidget) -> None:
+    mainCompValueEdited = pyqtSignal()
+
+    def __init__(self, parent, chnlModel, smplWidget, gateWidget, 
+                 curMainAutoFluoModel:autoFluoTbModel, curMainSpillMatModel:spillMatTbModel) -> None:
         wBase.__init__(self, parent)
         self.setupUi(self)
 
@@ -27,13 +30,16 @@ class compWizard(wUi, wBase):
         self.autoFluoTable.horizontalHeader().setMaximumSectionSize(125)
 
         # setting up all the model for the page1
-        self.wizChnlModel = wPage1Model(itemModel=chnlModel)
-        self.wizSmplModel = wPage1Model(listWidget=smplWidget)
-        self.wizGateModel = wPage1Model(listWidget=gateWidget)
+        self.wizChnlModel = wPage1Model(chnlItemModel=chnlModel)
+        self.wizSmplModel = wPage1Model(smplListWidget=smplWidget)
+        self.wizGateModel = wPage1Model(gateListWidget=gateWidget)
 
         self.chnlListView.setModel(self.wizChnlModel)
         self.smplListView.setModel(self.wizSmplModel)
         self.gateListView.setModel(self.wizGateModel)
+
+        # UI boxed from page2
+        self.p2AssignBoxes = []
 
         # Manage the button group at page3
         self.meanMethodBG = QtWidgets.QButtonGroup(self)
@@ -43,9 +49,16 @@ class compWizard(wUi, wBase):
         # Save a copy of the channel name dict
         self.chnlNameDict = chnlModel.chnlNameDict
 
+        # connect buttuns on several pages
         self.clearAllPB.clicked.connect(self.handle_P2ClearAll)
+        self.load2MainPB.clicked.connect(self.handle_load2MainComp)
+        self.exportPB.clicked.connect(self.handle_ExportMat)
+        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.handle_WizFinish)
 
-        self.p2AssignBoxes = []
+        # other
+        self.newCompFlag = False
+        self.curMainAutoFluoModel = curMainAutoFluoModel
+        self.curMainSpillMatModel = curMainSpillMatModel
 
 
     def initializePage(self, id):
@@ -104,7 +117,7 @@ class compWizard(wUi, wBase):
             self.autoFluoTable.setModel(self.preAutoFluoModel)
             self.spillMatTable.setModel(self.preSpillMatModel)
 
-            self.spillMatTable.selectionModel.selectionChanged.connect(self.handle_SelectAutoFluo)
+            self.autoFluoTable.selectionModel().selectionChanged.connect(self.handle_SelectSpillMat)
 
     def validateCurrentPage(self):
         if self.currentId() == 0:
@@ -279,6 +292,7 @@ class compWizard(wUi, wBase):
 
             self.progressLabel.setText('Done!')
             self.progressBar.setValue(100)
+            self.newCompFlag = True
 
             return True
         else: 
@@ -289,10 +303,35 @@ class compWizard(wUi, wBase):
             if isinstance(child, wAssignBox):
                 child.handle_Clear()
 
-    def handle_SelectAutoFluo(self, selected):
+    def handle_SelectSpillMat(self, selected):
         index = selected.indexes()[0]
-        self.autoFluoTable.selectRow(index.row())
+        print(selected.indexes())
+        self.spillMatTable.selectRow(index.row())
+    
+    def handle_load2MainComp(self):
+        if not (self.curMainSpillMatModel.isIdentity() and self.curMainAutoFluoModel.isZeros()):
+            input = QtWidgets.QMessageBox.warning(self, 
+                    'The current compensation numbers (autofluorescence or spill matrix) are likely not none. ' +
+                      'This action will overwrite some part of the current one.', 
+                    'Yes to proceed.',
+                    buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel
+                    )
+            if input == QtWidgets.QMessageBox.Cancel:
+                return
+            
+        self.curMainAutoFluoModel.loadDF(self.preAutoFluoModel.dfData)
+        self.curMainSpillMatModel.loadMatDF(self.preSpillMatModel.dfData)
+        self.newCompFlag = False
+        pass
 
+    def handle_ExportMat(self):
+        pass
+
+    def handle_WizFinish(self):
+        pass
+
+
+# UI box on page2
 wAssignBox, wBaseAssignBox = uic.loadUiType('./uiDesigns/CompWizard_SmplAssignBox.ui')
 class smplAssignBox(wAssignBox, wBaseAssignBox):
 
@@ -312,28 +351,40 @@ class smplAssignBox(wAssignBox, wBaseAssignBox):
 
 
 class wPage1Model(QtGui.QStandardItemModel):
-    def __init__(self, listWidget=None, itemModel=None):
+    def __init__(self, smplListWidget=None, gateListWidget=None, chnlItemModel=None):
         super().__init__()
 
         items = []
-        if not (listWidget is None):
-            # Copying items fror listWidget
-            for idx in range(listWidget.count()):
-                newItem = QtGui.QStandardItem(listWidget.item(idx).data(Qt.DisplayRole))
-                newItem.setData(listWidget.item(idx).data(0x100), 0x100)
-                newItem.setData(listWidget.item(idx).data(1), 1)
+        if smplListWidget is not None:
+            # Copying items fror smplListWidget
+            for idx in range(smplListWidget.count()):
+                newItem = QtGui.QStandardItem(smplListWidget.item(idx).data(Qt.DisplayRole))
+                newItem.setData(smplListWidget.item(idx).data(0x100), 0x100)
+                newItem.setData(smplListWidget.item(idx).data(1), 1)
+                newItem.setCheckState(2)
                 items.append(newItem)
-        elif not (itemModel is None):
-            # Copying items from standardItemModel
-            for idx in range(itemModel.rowCount()):
-                items.append(itemModel.item(idx).clone())
+
+        elif gateListWidget is not None:
+            # Copying items fror gatelListWidget
+            for idx in range(gateListWidget.count()):
+                newItem = QtGui.QStandardItem(gateListWidget.item(idx).data(Qt.DisplayRole))
+                newItem.setData(gateListWidget.item(idx).data(0x100), 0x100)
+                newItem.setData(gateListWidget.item(idx).data(1), 1)
+                newItem.setCheckState(gateListWidget.item(idx).checkState())
+                items.append(newItem)
+            
+        elif chnlItemModel is not None:
+            # Copying items from standardItemModel / (channels)
+            for idx in range(chnlItemModel.rowCount()):
+                items.append(chnlItemModel.item(idx).clone())
+                items[-1].setCheckState(0)
         else:
             return
 
         for newItem in items:
             newItem.setFlags(newItem.flags() | Qt.ItemIsUserCheckable)
             newItem.setFlags(newItem.flags() & (~Qt.ItemIsEditable))
-            newItem.setCheckState(0)
+            # newItem.setCheckState(0)
             self.appendRow(newItem)
 
 

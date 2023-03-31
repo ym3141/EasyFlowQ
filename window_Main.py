@@ -488,7 +488,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_CompWizard(self):
-        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget)
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget,
+                                   self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
         compWizDialog.show()
 
     def closeEvent(self, event: QtGui.QCloseEvent):

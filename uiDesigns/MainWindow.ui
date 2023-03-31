@@ -294,7 +294,7 @@
               <string>Auto-compensation wizard</string>
              </property>
             </widget>
-            <widget class="QPushButton" name="compImportPB">
+            <widget class="QPushButton" name="compExportPB">
              <property name="geometry">
               <rect>
                <x>190</x>
@@ -307,7 +307,7 @@
               <string>Export</string>
              </property>
             </widget>
-            <widget class="QPushButton" name="compExportPB">
+            <widget class="QPushButton" name="compImportPB">
              <property name="geometry">
               <rect>
                <x>190</x>
@@ -829,7 +829,7 @@
  </resources>
  <connections>
   <connection>
-   <sender>compImportPB</sender>
+   <sender>compExportPB</sender>
    <signal>clicked()</signal>
    <receiver>actionImportComp</receiver>
    <slot>trigger()</slot>
@@ -845,7 +845,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>compExportPB</sender>
+   <sender>compImportPB</sender>
    <signal>clicked()</signal>
    <receiver>actionExportComp</receiver>
    <slot>trigger()</slot>
