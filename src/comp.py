@@ -110,6 +110,7 @@ class spillMatTbModel(pandasTableModel):
         flag = np.allclose(identity, self.dfData.to_numpy(dtype=np.double, copy=True), atol=1e-6, rtol=0)
         return flag
 
+    # the effeciency here can be improved!
     def loadMatDF(self, spillMatDF: pd.DataFrame, forceOverwrite=True):
         commonChnls = []
         missedChnls = []
@@ -129,6 +130,9 @@ class spillMatTbModel(pandasTableModel):
                     overwriteFlag = True
                     if not forceOverwrite:
                         return (overwriteFlag, missedChnls)
+                
+                if np.isclose(spillMatDF.loc[chnlFrom, chnlTo], 0):
+                    continue
 
                 idx = self.chnlList.index(chnlFrom)
                 jdx = self.chnlList.index(chnlTo)

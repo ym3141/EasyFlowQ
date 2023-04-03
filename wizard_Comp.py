@@ -10,13 +10,15 @@ from scipy.stats.mstats import gmean
 import pandas as pd
 
 import warnings
+import json
+from src.efio import getSysDefaultDir
 
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWizard.ui') # Load the .ui file
 
 class compWizard(wUi, wBase):
     mainCompValueEdited = pyqtSignal()
 
-    def __init__(self, parent, chnlModel, smplWidget, gateWidget, 
+    def __init__(self, parent, chnlModel, smplWidget, gateWidget, dir4Save,
                  curMainAutoFluoModel:autoFluoTbModel, curMainSpillMatModel:spillMatTbModel) -> None:
         wBase.__init__(self, parent)
         self.setupUi(self)
@@ -53,9 +55,13 @@ class compWizard(wUi, wBase):
         self.clearAllPB.clicked.connect(self.handle_P2ClearAll)
         self.load2MainPB.clicked.connect(self.handle_load2MainComp)
         self.exportPB.clicked.connect(self.handle_ExportMat)
-        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.handle_WizFinish)
+
+        finish_button = self.button(QtWidgets.QWizard.FinishButton)
+        finish_button.disconnect()
+        finish_button.clicked.connect(self.handle_WizFinish)
 
         # other
+        self.dir4Save = dir4Save
         self.newCompFlag = False
         self.curMainAutoFluoModel = curMainAutoFluoModel
         self.curMainSpillMatModel = curMainSpillMatModel
@@ -322,14 +328,34 @@ class compWizard(wUi, wBase):
         self.curMainAutoFluoModel.loadDF(self.preAutoFluoModel.dfData)
         self.curMainSpillMatModel.loadMatDF(self.preSpillMatModel.dfData)
         self.newCompFlag = False
-        pass
 
     def handle_ExportMat(self):
-        pass
+        jDict = dict()
+        jDict['useAutoFluo'] = None
+        
+        jDict['keyList'] = self.chnlKeyList
+        jDict['autoFluo'] = self.preAutoFluoModel.to_json()
+        jDict['spillMat'] = self.preSpillMatModel.to_json()
+
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.dir4Save, filter='*.efComp')
+        if not saveFileDir:
+            return
+
+        with open(saveFileDir, 'w+') as f:
+            json.dump(jDict, f, sort_keys=True, indent=4)
+        self.newCompFlag = False
 
     def handle_WizFinish(self):
-        pass
+        if self.newCompFlag:
+            input = QtWidgets.QMessageBox.warning(self, 'Compenation not used or save!',
+                                                  'The new compensation has not been applied into the main window or exported. You will lose it if you exit now. Yes to exist',
+                                                  QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+        
+            if input == QtWidgets.QMessageBox.Yes:
+                self.accept()
 
+        else:
+            self.accept()
 
 # UI box on page2
 wAssignBox, wBaseAssignBox = uic.loadUiType('./uiDesigns/CompWizard_SmplAssignBox.ui')

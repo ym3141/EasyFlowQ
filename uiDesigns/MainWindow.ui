@@ -831,7 +831,7 @@
   <connection>
    <sender>compExportPB</sender>
    <signal>clicked()</signal>
-   <receiver>actionImportComp</receiver>
+   <receiver>actionExportComp</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -847,7 +847,7 @@
   <connection>
    <sender>compImportPB</sender>
    <signal>clicked()</signal>
-   <receiver>actionExportComp</receiver>
+   <receiver>actionImportComp</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">

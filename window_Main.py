@@ -1,5 +1,6 @@
 import sys
 import matplotlib
+import json
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
@@ -108,6 +109,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
         self.actionWizardComp.triggered.connect(self.handle_CompWizard)
+        self.actionImportComp.triggered.connect(self.handle_ImportComp)
+        self.actionExportComp.triggered.connect(self.handle_ExportComp)
 
         self.actionSettings.triggered.connect(self.handle_Settings)
 
@@ -150,7 +153,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.compEditPB.clicked.connect(self.handle_EditComp)
         self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
         self.compWindow.compValueEdited.connect(lambda : self.set_saveFlag(True))
-
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
@@ -262,7 +264,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
     def handle_OpenSession(self):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Save session', self.dir4Save, filter='*.eflq')
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.dir4Save, filter='*.eflq')
         if not openFileDir:
             return
         # print(openFileDir)
@@ -488,9 +490,32 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_CompWizard(self):
-        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget,
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget, self.dir4Save,
                                    self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
         compWizDialog.show()
+
+    def handle_ExportComp(self):
+        jDict = self.compWindow.to_json()
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.dir4Save, filter='*.efComp')
+        if not saveFileDir:
+            return
+
+        with open(saveFileDir, 'w+') as f:
+            json.dump(jDict, f, sort_keys=True, indent=4)
+
+    def handle_ImportComp(self):        
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Import compensation', self.dir4Save, filter='*.efComp')
+        if not openFileDir:
+            return 
+        
+        self.statusbar.clearMessage()
+        self.statusbar.showMessage('Loading compensation (may take some time)')
+
+        with open(openFileDir, 'r') as f:
+            jDict = json.load(f)
+            self.compWindow.load_json(jDict)
+
+        self.statusbar.removeWidget(self.progBar)
 
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():

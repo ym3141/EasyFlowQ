@@ -10,8 +10,6 @@ from src.qtModels import pandasTableModel, chnlModel
 from src.comp import autoFluoTbModel, spillMatTbModel
 
 
-import json
-
 wUi, wBase = uic.loadUiType('./uiDesigns/CompWindow.ui') # Load the .ui file
 
 class compWindow(wUi, wBase):
@@ -116,7 +114,8 @@ class compWindow(wUi, wBase):
     def to_json(self):
         jCompInfo = dict()
         jCompInfo['useAutoFluo'] = self.autoFluoCheck.isChecked()
-        jCompInfo['keyList'] = self.chnlListModel.keyList
+        
+        jCompInfo['keyList'] = self.chnlListModel.keyList if self.chnlListModel else None
         jCompInfo['autoFluo'] = self.autoFluoModel.to_json()
         jCompInfo['spillMat'] = self.spillMatModel.to_json()
 
