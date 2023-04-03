@@ -137,6 +137,9 @@ class compWindow(wUi, wBase):
         if not (jDict['spillMat'] is None):
             self.spillMatModel.load_json(jDict['spillMat'])
 
+        if jDict['useAutoFluo'] is not None:
+            self.autoFluoCheck.setChecked(jDict['useAutoFluo'])
+
     def handle_SelectAutoFluo(self, selected):
         index = selected.indexes()[0]
         self.autoFluoTable.selectRow(index.row())
