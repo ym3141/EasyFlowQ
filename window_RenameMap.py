@@ -21,7 +21,7 @@ class renameWindow_Map(wUi, wBase):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
         self.smplNameList = smplNameList
-        self.fileRoot = path.dirname(dir4Save)
+        self.fileRoot = dir4Save
         self.renameTableModel = pandasTableModel(pd.DataFrame())
 
         self.renamePB.clicked.connect(self.handle_renameConfirm)
