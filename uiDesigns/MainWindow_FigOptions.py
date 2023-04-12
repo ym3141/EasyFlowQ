@@ -95,10 +95,6 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         return rangeEdits
 
     @property
-    def curFigOptions(self):
-        return self.curPlotType, self.curAxScales, self.curAxLims, self.curNormOption, self.smoothSlider.value()
-
-    @property
     def curAxScales(self):
         return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
 
@@ -111,6 +107,10 @@ class mainUI_figOps(figOpsBase, figOpsUi):
             if yRadio.text() == AxScales[1]:
                 yRadio.setChecked(True)
                 continue
+
+    @property
+    def curFigOptions(self):
+        return self.curPlotType, self.curAxScales, self.curAxLims, self.curNormOption, self.smoothSlider.value()
 
     @property
     def curNormOption(self):

@@ -50,6 +50,9 @@
      <property name="styleSheet">
       <string notr="true">QHeaderView::section { background-color:lightGray }</string>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <attribute name="horizontalHeaderDefaultSectionSize">
       <number>120</number>
      </attribute>

@@ -22,7 +22,7 @@ class renameWindow_CF(wUi, wBase):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
         self.smplNameList = smplNameList
-        self.fileRoot = path.dirname(dir4Save)
+        self.fileRoot = dir4Save
 
         self.splitNames = []
         for smplName in smplNameList:

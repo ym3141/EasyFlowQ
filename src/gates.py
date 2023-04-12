@@ -60,7 +60,8 @@ class polygonGate():
 
         for idx, scale in enumerate(self.axScales):
             if scale == 'log':
-                points[:, idx] = np.log10(points[:, idx])
+                with np.errstate(invalid='ignore', divide='ignore'):
+                    points[:, idx] = np.log10(points[:, idx])
 
         insideFlags = self.prebuiltPath.contains_points(points)
 

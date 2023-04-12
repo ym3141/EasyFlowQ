@@ -13,6 +13,7 @@ from .gates import quadrant, split
 
 import warnings
 
+# Macros
 quadrantTextProps = dict(boxstyle='square', facecolor='w', alpha=0.8)
 
 class plotCanvas(FigureCanvasQTAgg):
@@ -43,12 +44,14 @@ class plotCanvas(FigureCanvasQTAgg):
         self.draw()
 
     # the function that draw
-    def redraw(self, smplItems, chnlNames, axisNames, axScales, axRanges,
-               gateList=[], quad_split=None,
-               plotType = 'Dot plot',
-               normOption = 'Percentage',
-               perfModeN=None, legendOps=1,
-               smooth=0):
+    def redraw(
+        self, smplItems, chnlNames, axisNames, axScales, axRanges,
+        compValues,
+        gateList=[], quad_split=None,
+        plotType = 'Dot plot',
+        normOption = 'Percentage',
+        perfModeN=None, legendOps=1, smooth=0
+        ):
 
 
         self.curPlotType = plotType
@@ -61,6 +64,8 @@ class plotCanvas(FigureCanvasQTAgg):
 
         # only draw samples that has the specified channels
         smplItems = [a for a in smplItems if (chnlNames[0] in a.fcsSmpl.channels and chnlNames[1] in a.fcsSmpl.channels)] 
+        smpls = [smpl.fcsSmpl for smpl in smplItems]
+        
 
         # return if no sample to draw, call redraw to show blank
         if len(smplItems) == 0:
@@ -69,8 +74,14 @@ class plotCanvas(FigureCanvasQTAgg):
 
         xChnl, yChnl = chnlNames
 
+        # apply the comp
+        if not compValues is None:
+            compedSmpls = self.compSmpls(smpls, compValues)
+        else:
+            compedSmpls = smpls
+
         # gate the samples
-        gatedSmpls, gateFracs = self.gateSmpls(smplItems, gateList)
+        gatedSmpls, gateFracs = self.gateSmpls(compedSmpls, gateList)
                 
         # Plot dots or histogram
         if plotType == 'Dot plot':
@@ -122,7 +133,6 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
 
-            
         elif plotType == 'Histogram':
             # plot histograme
             # record possible xlims for later use, if xlim is auto
@@ -194,7 +204,8 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.autoscale(True, 'y')
         else:
             self.ax.set_ylim([ymin, ymax])
-    
+
+        # draw legends
         if legendOps == 2 or (legendOps == 1 and len(smplItems) < 12):
             if drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
@@ -209,16 +220,33 @@ class plotCanvas(FigureCanvasQTAgg):
 
         return list(zip(smplItems, gatedSmpls, gateFracs))
 
-    def gateSmpls(self, smplItems, gateList):
+    def compSmpls(self, smpls, compValues):
+        compedSmpls = []
+
+        # check if comp channels matches smpl channel; if not create a new autoF and compMat based on the required
+        for smpl in smpls:
+            if compValues[0] == list(smpl.channels):
+                compMat = np.linalg.inv(compValues[2] / 100)
+                autoFVector = np.array(compValues[1]).T
+
+            else:
+                tempAutoF = compValues[1].loc[list(smpl.channels)]
+                tempCompM = compValues[2][list(smpl.channels)].loc[list(smpl.channels)]
+                compMat = np.linalg.inv(tempCompM / 100)
+                autoFVector = np.array(tempAutoF).T
+
+            compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
+            compedSmpls.append(compedSmpl)
+        return compedSmpls
+
+    def gateSmpls(self, smpls, gateList):
         #gate samples with a list of gate:
 
         gatedSmpls = []
         gateFracs = []
-        for idx, smplItem in enumerate(smplItems):
+        for idx, fcsData in enumerate(smpls):
             
-            fcsData = smplItem.fcsSmpl
             inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
-
             fracInEachGate = []
 
             for gate in gateList:

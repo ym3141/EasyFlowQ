@@ -1,0 +1,259 @@
+{
+    "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto",
+            "auto",
+            "auto"
+        ],
+        "curAxScales": [
+            "log",
+            "log"
+        ],
+        "curChnls": [
+            "FSC-A",
+            "SSC-A"
+        ],
+        "curNormOption": "Percentage",
+        "curPlotType": "Dot plot",
+        "curSmooth": 24
+    },
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/SaveTest_v1.0.eflq",
+    "gateSaveList": [
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FSC-A",
+                "SSC-A"
+            ],
+            "displayName": "rft",
+            "type": "polygonGate",
+            "verts": [
+                [
+                    24130.836791213085,
+                    1497254.5342468133
+                ],
+                [
+                    15733.143425153201,
+                    118841.20952804218
+                ],
+                [
+                    202393.644925879,
+                    56256.314821494765
+                ],
+                [
+                    1403662.6616647928,
+                    174052.07206250913
+                ],
+                [
+                    328343.2425400812,
+                    2823478.4022042667
+                ]
+            ]
+        },
+        {
+            "checkState": 0,
+            "chnl": "FL10-A",
+            "displayName": "ling",
+            "ends": [
+                261.84979595645416,
+                10662.311781343662
+            ],
+            "type": "lineGate"
+        },
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "displayName": "gate2",
+            "type": "polygonGate",
+            "verts": [
+                [
+                    277.2922470067457,
+                    2236.9405617707557
+                ],
+                [
+                    226.4042945536348,
+                    131.54912913477227
+                ],
+                [
+                    775.3406684388281,
+                    50.138545747588665
+                ],
+                [
+                    4159.825524697407,
+                    318.4890713272057
+                ],
+                [
+                    1197.2303199694736,
+                    3276.992578479848
+                ]
+            ]
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                false,
+                false
+            ],
+            "displayName": "jyjy |\ud83e\udc57|",
+            "type": "quadrantGate"
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                false,
+                true
+            ],
+            "displayName": "jyjy |\ud83e\udc54|",
+            "type": "quadrantGate"
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                true,
+                false
+            ],
+            "displayName": "jyjy |\ud83e\udc56|",
+            "type": "quadrantGate"
+        },
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "corner": [
+                true,
+                true
+            ],
+            "displayName": "jyjy |\ud83e\udc55|",
+            "type": "quadrantGate"
+        }
+    ],
+    "qsSaveList": [
+        {
+            "center": [
+                1721.7209197900083,
+                386.8036262260388
+            ],
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "displayName": "jyjy",
+            "type": "quadrant"
+        },
+        {
+            "chnl": "FL10-A",
+            "displayName": "rgr",
+            "splitValue": 48.58379352650927,
+            "type": "split"
+        },
+        {
+            "center": [
+                52.87407998919694,
+                458.649434629998
+            ],
+            "chnls": [
+                "FL10-A",
+                "FL6-A"
+            ],
+            "displayName": "jiji",
+            "type": "quadrant"
+        }
+    ],
+    "save_ver": 1.0,
+    "smplSaveList": [
+        {
+            "displayName": "01-Well-A1",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-A1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
+            "fileDir_rel": "01-Well-A1.fcs",
+            "plotColor": [
+                0.9705653467612726,
+                0.5299610894941634,
+                0.6268558785381857,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "01-Well-B1",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-B1.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
+            "fileDir_rel": "01-Well-B1.fcs",
+            "plotColor": [
+                0.8143892576485847,
+                0.6385137712672617,
+                0.21393148699168382,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "01-Well-C2",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C2.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
+            "fileDir_rel": "01-Well-C2.fcs",
+            "plotColor": [
+                0.40616464484626535,
+                0.7428549629968719,
+                0.21174944686045624,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "01-Well-C3",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\01-Well-C3.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples",
+            "fileDir_rel": "01-Well-C3.fcs",
+            "plotColor": [
+                0.2301823453116655,
+                0.7354390783550775,
+                0.6841687647821775,
+                1.0
+            ],
+            "selected": true
+        }
+    ]
+}

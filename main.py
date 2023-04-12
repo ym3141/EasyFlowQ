@@ -17,15 +17,15 @@ from window_Settings import localSettings
 from multiprocessing import Process
 from traceback import format_exception
 
+# setup the version number. Remember to also change in the "localSettings.default.json" file.
+curVer = 1.2
 
 # set up the excepthook so unhandled exception won't crash the program
 _excepthook = sys.excepthook
 def myexcepthook(type, value, traceback):
     except_msg = ''.join(format_exception(type, value, traceback))
     QtWidgets.QMessageBox.critical(None, 'Unexpected exception encountered', 
-                                         '{0} \n\nThis likely won\'t crash EasyFlowQ, \
-                                          but we recommend save a copy of the session, \
-                                          and restart if anything looks off'.format(except_msg))
+        '{0} \n\nThis likely won\'t crash EasyFlowQ, but we recommend save a copy of the session, and restart if anything looks off'.format(except_msg))
     _excepthook(type, value, traceback)
 
 def newWindowFunc(sessionSaveFile=None, pos=None):
@@ -36,6 +36,11 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     if path.exists('./localSettings.user.json'):
         # there is a user setting, load it
         setting = localSettings('./localSettings.user.json')
+
+        if setting.settingDict['version'] < curVer:
+            setting.settingDict['version'] = curVer
+            setting.saveToUserJson()
+
         mainW = mainUi(setting, sessionSaveFile=sessionSaveFile, pos=pos)
 
     else:

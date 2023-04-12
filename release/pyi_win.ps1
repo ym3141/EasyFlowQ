@@ -1,2 +1,1 @@
 pyinstaller --noconfirm --distpath .\release\EasyFlowQ_release_win\ --workpath .\_temp\ .\release\pyi_win.spec
-"@cd EasyFlowQ_Bundle`r`n@EasyFlowQ_v1.0.exe`r`n@PAUSE" | Out-File -Encoding Ascii -FilePath .\release\EasyFlowQ_release_win\EasyFlowQ.bat

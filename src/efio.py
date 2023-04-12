@@ -1,4 +1,5 @@
 import json
+import traceback
 from os import path
 from copy import deepcopy
 
@@ -6,6 +7,7 @@ from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem
 
 from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtWidgets import QMessageBox
 
 from FlowCal.io import FCSData
 from typing import List
@@ -45,7 +47,7 @@ class sessionSave():
 
     def __init__(self, mainUiWindow, saveFileDir) -> None:
 
-        self.save_ver = 1.0
+        self.save_ver = mainUiWindow.version
         
         self.fileDir = saveFileDir
         baseDir = path.dirname(saveFileDir)
@@ -76,6 +78,9 @@ class sessionSave():
         self.figOptions = dict()
         self.figOptions['curPlotType'], self.figOptions['curAxScales'], self.figOptions['curAxLims'], self.figOptions['curNormOption'], self.figOptions['curSmooth'] = mainUiWindow.figOpsPanel.curFigOptions
         self.figOptions['curChnls'] = mainUiWindow.curChnls
+
+        self.curComp = mainUiWindow.compWindow.to_json()
+        self.applyComp = mainUiWindow.compApplyCheck.isChecked()
         
     def saveJson(self):
         with open(self.fileDir, 'w+') as f:
@@ -83,63 +88,122 @@ class sessionSave():
 
     @classmethod
     def loadSessionSave(cls, mainUiWindow, saveFileDir):
+        
+        failedFiles = []
+        gateLoadFlag = False
+        figSettingFlag = False
+        compFlag = False
+
         with open(saveFileDir) as f:
             jDict = json.load(f)
         
+        # for really early version, that don't have a save_ver
         if not 'save_ver' in jDict:
             save_ver = 0.1
         else:
             save_ver = jDict['save_ver']
 
-        failedFiles = []
-        for jSmpl in jDict['smplSaveList']:
+        # load the FCS files
+        
+        for jSmpl in jDict.get('smplSaveList', []):
 
-            _fileDir_rel = path.join(path.dirname(saveFileDir), jSmpl['fileDir_rel'])
-
-            confirmedDir = None
-            if path.exists(_fileDir_rel):
-                confirmedDir = _fileDir_rel
-            elif path.exists(jSmpl['fileDir_abs']):
-                confirmedDir = jSmpl['fileDir_rel']
-            else:
-                pass
+            try:
+                _fileDir_rel = path.join(path.dirname(saveFileDir), jSmpl['fileDir_rel'])
+                confirmedDir = None
+                if path.exists(_fileDir_rel):
+                    confirmedDir = _fileDir_rel
+                elif path.exists(jSmpl['fileDir_abs']):
+                    confirmedDir = jSmpl['fileDir_abs']
+                elif path.exists(jSmpl['fileDir']):
+                    confirmedDir = jSmpl['fileDir']
             
-            if confirmedDir:
-                mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], displayName = jSmpl['displayName'], selected=jSmpl['selected'])
-            else:
-                failedFiles.append(jSmpl)
+                if confirmedDir:
+                    try:
+                        mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], displayName = jSmpl['displayName'], selected=jSmpl['selected'])
+                    except Exception as e:
+                        failedFiles.append(path.basename(jSmpl['fileDir_rel']))
+                        traceback.print_tb(e.__traceback__)
+                else:
+                    failedFiles.append(path.basename(jSmpl['fileDir_rel']))
 
-        for jGate in jDict['gateSaveList']:
-            if jGate['type'] == 'polygonGate':
-                mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
-            elif jGate['type'] == 'lineGate':
-                mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
-            elif jGate['type'] == 'quadrantGate':
-                mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+            except KeyError as e:
+                failedFiles.append('Unknown FCS')
+                traceback.print_tb(e.__traceback__)
+
+        for jGate in jDict.get('gateSaveList', []):
+            try:
+                if jGate['type'] == 'polygonGate':
+                    mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                elif jGate['type'] == 'lineGate':
+                    mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                elif jGate['type'] == 'quadrantGate':
+                    mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=jGate['checkState'])
             
+            except Exception as e:
+                gateLoadFlag = True
+                traceback.print_tb(e.__traceback__)
 
-        mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
-        mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])
-        mainUiWindow.figOpsPanel.set_curPlotType(jDict['figOptions']['curPlotType'])
+        try: 
+            mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
+            mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])
+            mainUiWindow.figOpsPanel.set_curPlotType(jDict['figOptions']['curPlotType'])
 
-        mainUiWindow.set_curChnls(jDict['figOptions']['curChnls'])
+            mainUiWindow.set_curChnls(jDict['figOptions']['curChnls'])
+        except Exception as e:
+            figSettingFlag = True
+            traceback.print_tb(e.__traceback__)
+
 
         if save_ver >= 1.0:
-            mainUiWindow.figOpsPanel.set_curSmooth(jDict['figOptions']['curSmooth'])
-            for jQS in jDict['qsSaveList']:
-                if jQS['type'] == 'quadrant':
-                    mainUiWindow.loadQuadrant(quadrant(jQS['chnls'], jQS['center']), quadName=jQS['displayName'])
-                elif jQS['type'] == 'split':
-                    mainUiWindow.loadSplit(split(jQS['chnl'], jQS['splitValue']), splitName=jQS['displayName'])
+            try:
+                mainUiWindow.figOpsPanel.set_curSmooth(jDict['figOptions']['curSmooth'])
+            except Exception as e:
+                figSettingFlag = True
+                traceback.print_tb(e.__traceback__)
 
-        # print(failedFiles)
+            for jQS in jDict.get('qsSaveList', []):
+                try: 
+                    if jQS['type'] == 'quadrant':
+                        mainUiWindow.loadQuadrant(quadrant(jQS['chnls'], jQS['center']), quadName=jQS['displayName'])
+                    elif jQS['type'] == 'split':
+                        mainUiWindow.loadSplit(split(jQS['chnl'], jQS['splitValue']), splitName=jQS['displayName'])
+                except Exception as e:
+                    gateLoadFlag = True
+                    traceback.print_tb(e.__traceback__)
+
+        if save_ver >= 1.2:
+            jString = jDict.get('curComp', None)
+
+            try:
+                if not (jString is None):
+                    mainUiWindow.compWindow.load_json(jString)
+                mainUiWindow.compApplyCheck.setChecked(jDict.get('applyComp', False))
+            except Exception as e:
+                compFlag = True
+                traceback.print_tb(e.__traceback__)
+            
+        # report the potential errors:
+        if any([len(failedFiles), gateLoadFlag, figSettingFlag, compFlag]):
+            errorMsg = 'The following things are not loaded succesfully:\n'
+            if len(failedFiles) > 0:
+                errorMsg += 'FCS file: ' + ' ;'.join(failedFiles) + '\n'
+            if gateLoadFlag:
+                errorMsg += 'We may failed to load some gates.\n'
+            if figSettingFlag:
+                errorMsg += 'We may failed to load some figure settings.\n'
+            if compFlag:
+                errorMsg += 'We may failed to load compensation settings or data.\n'
+            errorMsg += 'We have loaded everything else, but please double check the data and settings.'
+
+            QMessageBox.warning(mainUiWindow, 'Something went wrong.', errorMsg)
+        
 
 
 def _convert_smplPlotItem(item, saveDir):
     smplSave = deepcopy(item.__dict__)
 
     smplSave['fileDir_rel'] = path.relpath(smplSave['fileDir'], saveDir)
-    smplSave['fileDir_abs'] = path.abspath(saveDir)
+    smplSave['fileDir_abs'] = path.abspath(smplSave['fileDir'])
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 

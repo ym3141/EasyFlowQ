@@ -1,7 +1,9 @@
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor
-from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt
+from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
+from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, pyqtSignal
 from PyQt5.QtWidgets import QListWidgetItem
 import pandas as pd
+
+from PyQt5 import QtCore
 
 import sys
 import os.path
@@ -59,7 +61,7 @@ class gateWidgetItem(QListWidgetItem):
         self.setFlags(self.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEditable)
         self.setCheckState(0)
 
-        self.gate = gate
+        self.setData(0x100, gate)
 
     def data(self, role: int):
         if role == Qt.DisplayRole:
@@ -69,6 +71,10 @@ class gateWidgetItem(QListWidgetItem):
 
     def text(self) -> str:
         return self.data(Qt.EditRole)
+
+    @property
+    def gate(self):
+        return self.data(0x100)
 
 class quadWidgetItem(QListWidgetItem):
     def __init__(self, quadName, quad):
@@ -107,12 +113,14 @@ class splitWidgetItem(QListWidgetItem):
 class chnlModel(QStandardItemModel):
     def __init__(self):
         super().__init__()
+        self.chnlNameDict = dict()
 
     def addChnl(self, chnlKey, chnlName):
         if not (chnlKey in self.keyList):
             newChnlItem = QStandardItem('{0}: {1}'.format(chnlKey, chnlName))
             newChnlItem.setData(chnlKey)
             self.appendRow(newChnlItem)
+            self.chnlNameDict[chnlKey] = chnlName
             return 1
         else:
             return 0
@@ -131,6 +139,10 @@ class chnlModel(QStandardItemModel):
     def keyList(self):
         return [self.item(idx).data() for idx in range(self.rowCount())]
 
+    @property
+    def fullNameList(self):
+        return [self.item(idx).text() for idx in range(self.rowCount())]
+
 class gateProxyModel(QSortFilterProxyModel):
     def __init__(self, parent):
         QSortFilterProxyModel.__init__(self, parent)
@@ -143,33 +155,40 @@ class gateProxyModel(QSortFilterProxyModel):
     pass
 
 class pandasTableModel(QAbstractTableModel):
+    userInputSignal = pyqtSignal(QtCore.QModelIndex, object)
 
-    def __init__(self, data, foregroundDF = None, backgroundDF = None):
+    def __init__(self, data, foregroundDF = None, backgroundDF = None, editableDF = None, validator=None):
         super(pandasTableModel, self).__init__()
         self._data = data
 
         if foregroundDF is None:
-            self._foreground =  pd.DataFrame().reindex_like(data).fillna('#000000')
+            self._foreground = pd.DataFrame().reindex_like(data).fillna('#000000')
         else:
             self._foreground = foregroundDF
 
         if backgroundDF is None:
-            self._background =  pd.DataFrame().reindex_like(data).fillna('#ffffff')
+            self._background = pd.DataFrame().reindex_like(data).fillna('#ffffff')
         else:
             self._background = backgroundDF
+
+        if editableDF is None:
+            self._editableDF = pd.DataFrame().reindex_like(data).fillna(True)
+        else:
+            self._editableDF = editableDF
+
+        self._validator = validator
 
     def data(self, index, role):
         if role == Qt.DisplayRole or role == Qt.EditRole:
             value = self._data.iloc[index.row(), index.column()]
             return str(value)
+
         elif role == Qt.ForegroundRole:
             value = self._foreground.iloc[index.row(), index.column()]
-
             return QColor(value)
 
         elif role == Qt.BackgroundRole:
             value = self._background.iloc[index.row(), index.column()]
-
             return QColor(value)
 
     def rowCount(self, index):
@@ -187,24 +206,51 @@ class pandasTableModel(QAbstractTableModel):
             if orientation == Qt.Vertical:
                 return str(self._data.index[section])
     
-    def setData(self, index, value, role):
+    def setData(self, index, value, role=Qt.EditRole):
         if not index.isValid():
             return False
-        if role != Qt.EditRole:
-            return False
+
         row = index.row()
         if row < 0 or row >= len(self._data.values):
             return False
+
         column = index.column()
         if column < 0 or column >= self._data.columns.size:
             return False
-        self._data.iloc[row, column] = value
-        self.dataChanged.emit(index, index)
-        return True
 
+        if role == Qt.EditRole or role == 0x100:
+            if self._validator is None :
+                self._data.iloc[row, column] = value
+                self.dataChanged.emit(index, index)
+                if role == Qt.EditRole:
+                    self.userInputSignal.emit(index, value)
+                return True
+
+            elif self._validator.validate(str(value), 0)[0] == 2:
+                if isinstance(self._validator,  QIntValidator):
+                    self._data.iloc[row, column] = int(value)
+                elif isinstance(self._validator, QDoubleValidator):
+                    self._data.iloc[row, column] = float(value)
+                else:
+                    self._data.iloc[row, column] = value
+                self.dataChanged.emit(index, index)
+                if role == Qt.EditRole:
+                    self.userInputSignal.emit(index, value)
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    # give flags that help to decide if an element is editable
     def flags(self, index):
-        flags = super(self.__class__,self).flags(index)
-        flags |= Qt.ItemIsEditable
+        flags = super().flags(index)
+
+        if self._editableDF.iloc[index.row(), index.column()]:
+            flags |= Qt.ItemIsEditable
+        else: 
+            flags &= ~Qt.ItemIsEditable
+
         return flags
 
     @property

@@ -43,6 +43,6 @@ coll = COLLECT(exe,
                upx_exclude=[],
                name='main')
 app = BUNDLE(coll,
-             name='EasyFlowQ_mac.app',
+             name='EasyFlowQ_MACOS.app',
              icon=None,
              bundle_identifier=None)

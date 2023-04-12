@@ -1,0 +1,216 @@
+{
+    "applyComp": false,
+    "curComp": {
+        "autoFluo": "{\"columns\":[\"AutoFluor\"],\"index\":[\"FSC-H: FSC-H\",\"FSC-A: FSC-A\",\"SSC-H: SSC-H\",\"SSC-A: SSC-A\",\"FL1-H: FITC-H\",\"FL1-A: FITC-A\",\"FL3-H: APC-H\",\"FL3-A: APC-A\",\"FL6-H: PB450-H\",\"FL6-A: PB450-A\",\"FL8-H: Violet610-H\",\"FL8-A: Violet610-A\",\"FL11-H: ECD-H\",\"FL11-A: ECD-A\",\"FSC-Width: FSC-Width\",\"Time: Time\"],\"data\":[[0.0],[0.0],[0.0],[0.0],[0.0],[232.1651969364],[0.0],[73.3053505014],[0.0],[227.851869887],[0.0],[958.8307469764],[0.0],[117.4817642711],[0.0],[0.0]]}",
+        "keyList": [
+            "FSC-H",
+            "FSC-A",
+            "SSC-H",
+            "SSC-A",
+            "FL1-H",
+            "FL1-A",
+            "FL3-H",
+            "FL3-A",
+            "FL6-H",
+            "FL6-A",
+            "FL8-H",
+            "FL8-A",
+            "FL11-H",
+            "FL11-A",
+            "FSC-Width",
+            "Time"
+        ],
+        "spillMat": "{\"columns\":[\"FSC-H\",\"FSC-A\",\"SSC-H\",\"SSC-A\",\"FL1-H\",\"FL1-A\",\"FL3-H\",\"FL3-A\",\"FL6-H\",\"FL6-A\",\"FL8-H\",\"FL8-A\",\"FL11-H\",\"FL11-A\",\"FSC-Width\",\"Time\"],\"index\":[\"FSC-H\",\"FSC-A\",\"SSC-H\",\"SSC-A\",\"FL1-H\",\"FL1-A\",\"FL3-H\",\"FL3-A\",\"FL6-H\",\"FL6-A\",\"FL8-H\",\"FL8-A\",\"FL11-H\",\"FL11-A\",\"FSC-Width\",\"Time\"],\"data\":[[100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0127749854,0.0,0.018531047,0.0,0.4145162612,0.0,0.0626222799,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0029859937,0.0,100.0,0.0,0.0023527917,0.0,0.0425753822,0.0,0.0370106708,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.033538381,0.0,0.0069218753,0.0,100.0,0.0,12.353001799,0.0,0.0071699066,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.2046845518,0.0,0.6297381197,0.0,1.0285421757,0.0,100.0,0.0,8.4896646882,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0309200737,0.0,0.6246757395,0.0,0.1514107146,0.0,3.5579015765,0.0,100.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0],[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0]]}",
+        "useAutoFluo": false
+    },
+    "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto",
+            "auto",
+            "auto"
+        ],
+        "curAxScales": [
+            "log",
+            "linear"
+        ],
+        "curChnls": [
+            "FL11-A",
+            "FL11-A"
+        ],
+        "curNormOption": "Percentage",
+        "curPlotType": "Histogram",
+        "curSmooth": 0
+    },
+    "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples/AutoCompTest_Evan.eflq",
+    "gateSaveList": [
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 2,
+            "chnls": [
+                "FSC-A",
+                "SSC-A"
+            ],
+            "displayName": "live1",
+            "type": "polygonGate",
+            "verts": [
+                [
+                    1000187.2162265814,
+                    2079575.143132938
+                ],
+                [
+                    303496.6544364447,
+                    234811.88662310294
+                ],
+                [
+                    291269.05234770157,
+                    90175.38058915063
+                ],
+                [
+                    836931.376984315,
+                    60409.11262440062
+                ],
+                [
+                    2505791.447228849,
+                    698791.0723052738
+                ],
+                [
+                    1957886.5874924175,
+                    3245576.6539927963
+                ]
+            ]
+        },
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 2,
+            "chnls": [
+                "SSC-H",
+                "SSC-A"
+            ],
+            "displayName": "single",
+            "type": "polygonGate",
+            "verts": [
+                [
+                    82263.54677781761,
+                    154760.83092523649
+                ],
+                [
+                    55216.05643720036,
+                    82879.80484644402
+                ],
+                [
+                    87513.34801376688,
+                    95631.62733694645
+                ],
+                [
+                    747238.2399650506,
+                    751912.4413102942
+                ],
+                [
+                    1136466.8079144845,
+                    1341540.2416713818
+                ],
+                [
+                    931077.2901914332,
+                    1740238.7838411315
+                ],
+                [
+                    603834.122706895,
+                    1385891.8694386592
+                ],
+                [
+                    163579.24375396676,
+                    397470.2983865611
+                ]
+            ]
+        }
+    ],
+    "qsSaveList": [],
+    "save_ver": 1.2,
+    "smplSaveList": [
+        {
+            "displayName": "BFP(PB450)-HEK293T",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\BFP(PB450)-HEK293T.fcs",
+            "plotColor": [
+                0.9705653467612726,
+                0.5299610894941634,
+                0.6268558785381857,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "Halo646(APC)-HEK293T",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\Halo646(APC)-HEK293T.fcs",
+            "plotColor": [
+                0.8973678187228199,
+                0.6009460593575952,
+                0.21460288395513846,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "mBeRFP(Violet610)-HEK293T",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\mBeRFP(Violet610)-HEK293T.fcs",
+            "plotColor": [
+                0.6629587243457694,
+                0.6902265964751659,
+                0.21290913252460517,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "mCherry(ECD)-HEK293T",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\mCherry(ECD)-HEK293T.fcs",
+            "plotColor": [
+                0.21565575646601054,
+                0.7562371252002746,
+                0.3843595025558862,
+                1.0
+            ],
+            "selected": true
+        },
+        {
+            "displayName": "mCitrine(FITC)-HEK293T",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\mCitrine(FITC)-HEK293T.fcs",
+            "plotColor": [
+                0.2301823453116655,
+                0.7354390783550775,
+                0.6841687647821775,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "displayName": "WT-HEK293T",
+            "fileDir": "C:/Users/yiton/Documents/PyCodes/EasyFlowQ/demoSamples\\CompDemo\\WT-HEK293T.fcs",
+            "fileDir_abs": "C:\\Users\\yiton\\Documents\\PyCodes\\EasyFlowQ\\demoSamples\\CompDemo\\WT-HEK293T.fcs",
+            "fileDir_rel": "CompDemo\\WT-HEK293T.fcs",
+            "plotColor": [
+                0.24328984512092774,
+                0.7145952544441901,
+                0.864591439688716,
+                1.0
+            ],
+            "selected": false
+        }
+    ]
+}

@@ -8,9 +8,13 @@ release/*
 !release/pyi_win.ps1
 !release/pyi_mac.spec
 !release/pyi_win.spec
+!release/IF_win.ifp
 
 
 # local stuff
 .vscode/
 .DS_store
 localSettings.user.json
+
+# data that is too large
+demoSamples/CompDemo/*

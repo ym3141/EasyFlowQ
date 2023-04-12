@@ -1,0 +1,837 @@
+﻿
+[Header]
+ProjectFileVersion = 1.1
+[General]
+Program name = EasyFlowQ
+Program version = 1.2
+Windows 2000 = 0
+Windows XP = 0
+Windows Server 2003 = 0
+Windows Vista = 0
+Windows Server 2008 = 0
+Windows 7 = 1
+Windows 8 = 1
+Windows 10 = 1
+Windows Server 2016 = 0
+DoNotCheckOS = 0
+Company name = 
+Website = https://github.com/ym3141/EasyFlowQ
+SFA = 1
+DFA = 1
+Comp = 1
+[Graphics]
+Wizard image = <main>
+Header image = <main>
+Show Label = 1
+VisualStylesEnabled = 1
+[Files]
+Installation path = <ProgramFiles>\<Company>\<AppName>\
+Autcip = 1
+[Uninstall]
+Vwau = 0
+Website = https://
+Include uninstaller = 1
+Uninstaller filename = Uninstall
+UseCustomDisplayIcon = 0
+CustomDisplayIcon = <InstallPath>\
+[Licence]
+Licence dialog = 0
+[Finish]
+Sart program = 1
+Reboot computer = 0
+Program = <InstallPath>\EasyFlowQ_v1.2.exe
+ProgramArguments = 
+[Shortcuts]
+Allowtc = 0
+Shortcut path = <Company>\<AppName>\
+[Serialoptions]
+Allows = 0
+Number = 1000
+Mask = #####-#####-#####-#####
+[SplashScreen]
+Image = 
+Sound = 
+Time = 2
+PlaySound = 0
+Allow = 0
+[Build]
+File = C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Setup.exe
+SetupIconPath = ..\icons\ancient.ico
+UninstallIconPath = ..\icons\ancient.ico
+CompressionMethod = 0
+CompressionLevel = 1
+[Updater]
+Allow = 0
+1 = <AppName>
+2 = <AppVersion>
+3 = http://
+4 = http://
+5 = http://
+6 = Update
+Language = 0
+RunProg = 
+RunProgs = 0
+Execdlls = 0
+[Languages]
+1
+[Files/Dirs]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libifcoremd.dll
+1.6 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libimalloc.dll
+12 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libiomp5md.dll
+1.9 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libiomp5md.pdb
+4.1 MB
+pdb
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libiompstubs5md.dll
+38.9 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libjpeg.dll
+265 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libmmd.dll
+4.1 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libomp-fallback-cstring.spv
+348 Byte
+spv
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libpng16.dll
+188 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libsodium.dll
+300.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libssl-1_1-x64.dll
+669 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libssl-1_1-x64.pdb
+2.2 MB
+pdb
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libxml2.dll
+1.2 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libxslt.dll
+213.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libzmq-mt-4_3_4.dll
+460.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\localSettings.default.json
+111 Byte
+json
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mfc140u.dll
+5.8 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_avx.1.dll
+43.5 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_avx2.1.dll
+41.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_avx512.1.dll
+55.8 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_ilp64.1.dll
+548 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_intelmpi_ilp64.1.dll
+130.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_intelmpi_lp64.1.dll
+130.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_lp64.1.dll
+306.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_mpich2_ilp64.1.dll
+130.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_mpich2_lp64.1.dll
+130.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_msmpi_ilp64.1.dll
+130.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_blacs_msmpi_lp64.1.dll
+130.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_cdft_core.1.dll
+383 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_core.1.dll
+74.7 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_def.1.dll
+37.3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_intel_thread.1.dll
+52.2 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_mc.1.dll
+41 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_mc3.1.dll
+42.2 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_msg.dll
+188 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_pgi_thread.1.dll
+51 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_rt.1.dll
+19.5 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_scalapack_ilp64.1.dll
+7.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_scalapack_lp64.1.dll
+7.3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_sequential.1.dll
+24.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_tbb_thread.1.dll
+30 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_avx.1.dll
+15.8 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_avx2.1.dll
+14.8 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_avx512.1.dll
+14 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_cmpt.1.dll
+7.6 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_def.1.dll
+8.5 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_mc.1.dll
+14.9 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_mc2.1.dll
+14.6 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl_vml_mc3.1.dll
+14.7 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\MSVCP140.dll
+576.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\msvcp140_1.dll
+30.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\msvcp140_2.dll
+189.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\msvcp140_codecvt_ids.dll
+27.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\omptarget.dll
+655.9 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\omptarget.rtl.level0.dll
+1.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\omptarget.rtl.opencl.dll
+1.5 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\opengl32sw.dll
+20 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\openssl.exe
+532 KB
+exe
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\openssl.pdb
+2.4 MB
+pdb
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pvectorc.cp39-win_amd64.pyd
+32 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pyexpat.pyd
+189.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\python3.dll
+51 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\python39.dll
+4.2 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pythoncom39.dll
+526 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pywintypes39.dll
+130 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Core.dll
+4.9 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Gui.dll
+5.6 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Network.dll
+1.2 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Qml.dll
+3.3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Quick.dll
+3.3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Svg.dll
+322 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Qt5Widgets.dll
+5.3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\select.pyd
+20.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\sip.pyd
+105 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\sqlite3.dll
+1.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\sqlite3.exe
+1.7 MB
+exe
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tbb12.dll
+194.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tcl86t.dll
+1.6 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tiff.dll
+685 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tk86t.dll
+1.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\ucrtbase.dll
+992.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\unicodedata.pyd
+1.1 MB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\vccorlib140.dll
+329.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\VCOMP140.DLL
+180.3 KB
+DLL
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\VCRUNTIME140.dll
+99.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\VCRUNTIME140_1.dll
+43.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32api.pyd
+124 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32clipboard.pyd
+23.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32console.pyd
+56 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32event.pyd
+24.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32evtlog.pyd
+70.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32file.pyd
+142 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32gui.pyd
+216 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32pdh.pyd
+31 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32pipe.pyd
+24 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32process.pyd
+49 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32security.pyd
+131.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32trace.pyd
+20 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32ui.pyd
+1021.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\winpty.dll
+2.4 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\yaml.dll
+101.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\zlib.dll
+85.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\zstd.dll
+479.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_argon2_cffi_bindings
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\alabaster
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\babel
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\bcrypt
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\botocore
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\brotli
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\certifi
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\cffi-1.15.1.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\cryptography
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\cryptography-37.0.1.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Cython
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\docutils
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\etc
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\gevent
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\gevent-21.8.0.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\greenlet
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\greenlet-1.1.1.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\importlib_metadata-4.11.3.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\IPython
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\jedi
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\jsonschema
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\jsonschema-4.4.0.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\kiwisolver
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\lib2to3
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\llvmlite
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\lxml
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\lz4
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\lz4-3.1.3.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\markupsafe
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\matplotlib
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\mkl
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\nacl
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\nbconvert
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\nbconvert-6.4.4.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\nbformat
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\notebook
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\numba
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\numexpr
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\numpy
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\openpyxl
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pandas
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\parso
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\PIL
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\psutil
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pycparser-2.21.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\PyQt5
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\pytz
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\scipy
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\setuptools-63.4.1-py3.9.egg-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\share
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\sphinx
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\sqlalchemy
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\statsmodels
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tables
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tcl
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tcl8
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tk
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\tornado
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\typed_ast
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\uiDesigns
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\wheel-0.37.1-py3.9.egg-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\win32com
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\winpty
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\yaml
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\zmq
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\zope
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\zope.event-4.5.0-py3.9.egg-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\zope.interface-5.4.0.dist-info
+N/A
+[Folder]
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_asyncio.pyd
+55.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_bz2.pyd
+75 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_cffi_backend.cp39-win_amd64.pyd
+160.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_ctypes.pyd
+126.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_decimal.pyd
+257.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_elementtree.pyd
+174 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_hashlib.pyd
+55 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_lzma.pyd
+151.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_multiprocessing.pyd
+21.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_overlapped.pyd
+37 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_queue.pyd
+21 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_socket.pyd
+71 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_sqlite3.pyd
+80.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_ssl.pyd
+142.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_tkinter.pyd
+56 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_uuid.pyd
+15 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\_win32sysloader.pyd
+10.5 KB
+pyd
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-console-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-datetime-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-debug-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-errorhandling-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-file-l1-1-0.dll
+21.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-file-l1-2-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-file-l2-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-handle-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-heap-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-interlocked-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-libraryloader-l1-1-0.dll
+19.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-localization-l1-2-0.dll
+20.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-memory-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-namedpipe-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-processenvironment-l1-1-0.dll
+19.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-processthreads-l1-1-0.dll
+20.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-processthreads-l1-1-1.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-profile-l1-1-0.dll
+17.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-rtlsupport-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-string-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-synch-l1-1-0.dll
+20.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-synch-l1-2-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-sysinfo-l1-1-0.dll
+19.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-timezone-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-core-util-l1-1-0.dll
+18.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-conio-l1-1-0.dll
+19.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-convert-l1-1-0.dll
+22.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-environment-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-filesystem-l1-1-0.dll
+20.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-heap-l1-1-0.dll
+19.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-locale-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-math-l1-1-0.dll
+27.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-multibyte-l1-1-0.dll
+26.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-private-l1-1-0.dll
+69.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-process-l1-1-0.dll
+19.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-runtime-l1-1-0.dll
+22.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-stdio-l1-1-0.dll
+24.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-string-l1-1-0.dll
+24.3 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-time-l1-1-0.dll
+20.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\api-ms-win-crt-utility-l1-1-0.dll
+18.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\base_library.zip
+781.2 KB
+zip
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\blosc.dll
+109.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\c_rehash.pl
+6.9 KB
+pl
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\charset.dll
+10.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\concrt140.dll
+309.8 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\EasyFlowQ_v1.2.exe
+26.4 MB
+exe
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\freetype.dll
+619.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\hdf5.dll
+3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\iconv.dll
+916 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\icudt58.dll
+25 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\icuin58.dll
+2.5 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\icuuc58.dll
+1.8 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\Lerc.dll
+376 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\LIBBZ2.dll
+183.5 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libcrypto-1_1-x64.dll
+3.3 MB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libcrypto-1_1-x64.pdb
+9.7 MB
+pdb
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libdeflate.dll
+51 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libexslt.dll
+81 KB
+dll
+C:\Users\yiton\Documents\PyCodes\EasyFlowQ\release\EasyFlowQ_release_win\EasyFlowQ_Bundle\libffi-8.dll
+34.2 KB
+dll
+[Licence_Begin]
+114
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+\viewkind4\uc1\pard\fs20\par
+}
+ [Licence_End]
+[Registry]
+[Variables]
+[SCs]
+Startmenu
+EasyFlowQ
+<InstallPath>\EasyFlowQ_v1.2.exe
+
+
+0
+[IFP_End]
+[Serials]
+[Serials_End]
+[Commands]

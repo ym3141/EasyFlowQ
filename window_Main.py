@@ -1,5 +1,6 @@
 import sys
 import matplotlib
+import json
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
@@ -14,7 +15,11 @@ from window_RenameCF import renameWindow_CF
 from window_RenameMap import renameWindow_Map
 from window_Stats import statWindow
 from window_Settings import settingsWindow, localSettings
-from Window_About import aboutWindow
+from window_About import aboutWindow
+from window_Comp import compWindow
+from wizard_Comp import compWizard
+
+from uiDesigns.MainWindow_FigOptions import mainUI_figOps
 
 matplotlib.use('QT5Agg')
 
@@ -38,7 +43,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.settingDict = setting.settingDict
         
         # other init
-        self.version = 0.1
+        self.version = self.settingDict['version']
         self._saveFlag = False
 
         self.chnlDict = dict()
@@ -52,6 +57,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # initiate other windows
         self.renameWindow = None
         self.settingsWindow = None
+        self.compWindow = compWindow()
         self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save)
         self.aboutWindow = aboutWindow()
 
@@ -65,6 +71,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.plotLayout.addWidget(self.mpl_canvas)
 
         self.smplsOnPlot = []
+
+        # add the figure property panel
+        self.figOpsLayout = QtWidgets.QVBoxLayout(self.figOpsFrame)
+        self.figOpsLayout.setContentsMargins(0, 0, 0, 0)
+        self.figOpsPanel = mainUI_figOps(self.figOpsFrame)
+        self.figOpsLayout.addWidget(self.figOpsPanel)
+
 
         # init ui models
         self.smplListWidgetModel = self.smplListWidget.model()
@@ -95,6 +108,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
+        self.actionWizardComp.triggered.connect(self.handle_CompWizard)
+        self.actionImportComp.triggered.connect(self.handle_ImportComp)
+        self.actionExportComp.triggered.connect(self.handle_ExportComp)
+
         self.actionSettings.triggered.connect(self.handle_Settings)
 
         self.actionAbout.triggered.connect(lambda : self.aboutWindow.show())
@@ -122,6 +139,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.showLegendCheck.stateChanged.connect(self.handle_One)
 
         self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
+        self.compWindow.compValueEdited.connect(self.handle_One)
 
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
@@ -130,6 +148,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         # axes lims
         self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
         self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
+
+        # compensation:
+        self.compEditPB.clicked.connect(self.handle_EditComp)
+        self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
+        self.compWindow.compValueEdited.connect(lambda : self.set_saveFlag(True))
 
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
@@ -143,6 +166,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.set_sessionSavePath(sessionSaveFile)
             self.holdFigureUpdate = False
             self.handle_One()
+
+        self.updateWinTitle()
 
         if pos:
             self.move(pos)
@@ -176,13 +201,17 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             quad_split = None
 
-        smplsOnPlot = self.mpl_canvas.redraw(selectedSmpls, 
-                                             chnlNames=self.curChnls, 
-                                             axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
-                                             gateList=[gateItem.gate for gateItem in self.curGateItems],
-                                             quad_split = quad_split,
-                                             plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-                                             perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState()
+        compValues = self.compWindow.curComp if self.compApplyCheck.isChecked() else None
+
+        smplsOnPlot = self.mpl_canvas.redraw(
+            selectedSmpls, 
+            chnlNames=self.curChnls, 
+            axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
+            compValues = compValues,
+            gateList=[gateItem.gate for gateItem in self.curGateItems],
+            quad_split = quad_split,
+            plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
+            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState()
         )
 
         self.smplsOnPlot = smplsOnPlot
@@ -219,7 +248,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
         if plotType == 'Dot plot':
-            self.statusbar.showMessage('Left click to confirm, Right click to close the gate and confirm', 0)
+            self.statusbar.showMessage('Left click to confirm, Right click to cancel', 0)
             self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
             self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
             self.quadEditor.addQuad_connect()
@@ -235,7 +264,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
     def handle_OpenSession(self):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Save session', self.dir4Save, filter='*.eflq')
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.dir4Save, filter='*.eflq')
         if not openFileDir:
             return
         # print(openFileDir)
@@ -444,6 +473,49 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
+    def handle_EditComp(self):
+        self.compWindow.show()
+        self.compWindow.raise_()
+        pass
+
+    def handle_ApplyComp(self, state):
+        if state == 2:
+            if self.compWindow.curComp == (None, None, None):
+                QtWidgets.QMessageBox.warning(self, 'No compensation', 'No compensation is set, please check the compensation window.')
+            else:
+                self.handle_One()
+            
+        elif state == 0:
+            self.handle_One()
+        pass
+
+    def handle_CompWizard(self):
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget, self.dir4Save,
+                                   self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
+        compWizDialog.show()
+
+    def handle_ExportComp(self):
+        jDict = self.compWindow.to_json()
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.dir4Save, filter='*.efComp')
+        if not saveFileDir:
+            return
+
+        with open(saveFileDir, 'w+') as f:
+            json.dump(jDict, f, sort_keys=True, indent=4)
+
+    def handle_ImportComp(self):        
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Import compensation', self.dir4Save, filter='*.efComp')
+        if not openFileDir:
+            return 
+        
+        self.statusbar.clearMessage()
+        self.statusbar.showMessage('Loading compensation (may take some time)')
+
+        with open(openFileDir, 'r') as f:
+            jDict = json.load(f)
+            self.compWindow.load_json(jDict)
+
+        self.statusbar.removeWidget(self.progBar)
 
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
@@ -451,6 +523,9 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         if self.aboutWindow.isVisible():
             self.aboutWindow.close()
+
+        if self.compWindow.isVisible():
+            self.compWindow.close()
 
         if self.saveFlag:
             input = QtWidgets.QMessageBox.question(self, 'Close session', 'Save changes to the file?', buttons=
@@ -462,6 +537,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 event.accept()
             elif input == QtWidgets.QMessageBox.Save:
                 self.handle_Save()
+
                 event.accept()
 
         else:
@@ -470,10 +546,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def _disableInputForGate(self, disable=True):
         self.toolBox.setEnabled(not disable)
-        for idx in range(self.leftLayout.count()):
-            self.leftLayout.itemAt(idx).widget().setEnabled(not disable)
-        for idx in range(self.rightLayout.count()):
-            self.rightLayout.itemAt(idx).widget().setEnabled(not disable)
+        self.smplBox.setEnabled(not disable)
+        self.rightFrame.setEnabled(not disable)
 
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         self.set_saveFlag(True)
@@ -487,8 +561,14 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # merging the channel dictionary. 
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
+        newChnlFlag = False
         for key in newSmplItem.chnlNameDict:
-            self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
+            isNew = self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
+            newChnlFlag = newChnlFlag or isNew
+            
+        # update the compensation model if there are new channels added
+        if newChnlFlag:    
+            self.compWindow.updateChnls(self.chnlListModel)
 
     def loadGate(self, gate, replace=None, gateName=None, checkState=0):
         self.set_saveFlag(True)
@@ -641,11 +721,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     @property
     def dir4Save(self):
-        if self.sessionSavePath is not None:
+        if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
             return path.dirname(self.sessionSavePath)
         elif self.smplListWidget.count() > 0:
             return path.dirname(self.smplListWidget.item(0).fileDir)
-        elif path.exists(self.settingDict['default dir']):
+        elif hasattr(self, 'settingDict') and path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
             return path.abspath(getSysDefaultDir())
