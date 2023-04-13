@@ -20,4 +20,4 @@ localSettings.user.json
 demoSamples/CompDemo/*
 
 # mkdocs's compiled sites
-sites/
+site/
