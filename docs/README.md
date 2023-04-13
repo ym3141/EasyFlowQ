@@ -1,4 +1,6 @@
-# EasyFlowQ
+# Welcome to EasyFlowQ!
+
+## Overview
 A user friendly GUI interface for analyzing flowcytometry data. The program is implemented by Qt/Python, and its UI logics are hugely influenced by the original matlab version of [EasyFlow (by @ayaron)](https://github.com/AntebiLab/easyflow). The basal fcs parsing are based on the [FlowCal package](https://github.com/taborlab/FlowCal), with slight modification for implementing into the GUI. The standalone packages are packaged by [PyInstaller](https://pyinstaller.org/en/stable/).
 
 ## Download and usage
@@ -8,7 +10,6 @@ A user friendly GUI interface for analyzing flowcytometry data. The program is i
 ```
 Path/To/Folder$ python ./main.py
 ```
-
 
 
 For more info please contact yma2@caltech.edu
