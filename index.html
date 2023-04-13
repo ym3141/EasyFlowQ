@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="img/favicon.ico">
-        <title>My Docs</title>
+        <title>EasyFLowQ</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/font-awesome.min.css" rel="stylesheet">
         <link href="css/base.css" rel="stylesheet">
@@ -23,10 +23,29 @@
     <body class="homepage">
         <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
             <div class="container">
-                <a class="navbar-brand" href=".">My Docs</a>
+                <a class="navbar-brand" href=".">EasyFLowQ</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
                 <!-- Expanded navigation -->
                 <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem active">
+                                <a href="." class="nav-link">Home</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="Basic%20Usage/" class="nav-link">Basic Usage</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="Tutorial/" class="nav-link">Tutorial</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="LICENSE/" class="nav-link">LICENSE</a>
+                            </li>
+                        </ul>
 
                     <ul class="nav navbar-nav ml-auto">
                         <li class="nav-item">
@@ -34,6 +53,19 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="Basic%20Usage/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/README.md" class="nav-link"><i class="fa fa-github"></i> Edit on GitHub</a>
+                            </li>
                     </ul>
                 </div>
             </div>
@@ -52,13 +84,17 @@
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
             
-            <li class="nav-item" data-level="1"><a href="#welcome-to-mkdocs" class="nav-link">Welcome to MkDocs</a>
+            <li class="nav-item" data-level="1"><a href="#welcome-to-easyflowq" class="nav-link">Welcome to EasyFlowQ</a>
               <ul class="nav flex-column">
-            <li class="nav-item" data-level="2"><a href="#commands" class="nav-link">Commands</a>
+            <li class="nav-item" data-level="2"><a href="#overview" class="nav-link">Overview</a>
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#project-layout" class="nav-link">Project layout</a>
+            <li class="nav-item" data-level="2"><a href="#download-and-usage" class="nav-link">Download and usage</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#contact" class="nav-link">Contact</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -69,21 +105,18 @@
 </div></div>
                     <div class="col-md-9" role="main">
 
-<h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre></div>
+<h1 id="welcome-to-easyflowq">Welcome to EasyFlowQ</h1>
+<p>EasyFlowQ is an open-sourced, user-friendly flowcytometry analyzer with graphic user interface (GUI).
+For full documentation and tutuorials, visit <a href="https://ym3141.github.io/EasyFlowQ/">EasyFlowQ's Documentation Site</a>.</p>
+<h2 id="overview">Overview</h2>
+<p>A user friendly GUI interface for analyzing flowcytometry data. The program is implemented by Qt/Python, and its UI logics are hugely influenced by the original matlab version of <a href="https://github.com/AntebiLab/easyflow">EasyFlow (by @ayaron)</a>. The basal fcs parsing are based on the <a href="https://github.com/taborlab/FlowCal">FlowCal package</a>, with slight modification for implementing into the GUI. The standalone packages are packaged by <a href="https://pyinstaller.org/en/stable/">PyInstaller</a>.</p>
+<h2 id="download-and-usage">Download and usage</h2>
+<p><strong>Method #1:</strong> Please refer to <a href="https://github.com/ym3141/EasyFlowQ/releases/">release page</a> to download standalone packages that can run on either MACOS or Windows. In most case, you should be able to run it without other dependency.</p>
+<p><strong>Method #2:</strong> For running the progam from the source, download the whole code and run the commend below. Standard Anaconda should be suffecient for running the whole code.</p>
+<pre><code>Path/To/Folder$ python ./main.py
+</code></pre>
+<h2 id="contact">Contact</h2>
+<p>For more info please contact <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#109;&#97;&#50;&#64;&#99;&#97;&#108;&#116;&#101;&#99;&#104;&#46;&#101;&#100;&#117;">&#121;&#109;&#97;&#50;&#64;&#99;&#97;&#108;&#116;&#101;&#99;&#104;&#46;&#101;&#100;&#117;</a></p></div>
             </div>
         </div>
 
@@ -164,5 +197,5 @@ docs/
 
 <!--
 MkDocs version : 1.4.2
-Build Date UTC : 2023-04-13 05:44:37.504542+00:00
+Build Date UTC : 2023-04-13 06:33:25.793124+00:00
 -->
