@@ -1,2 +1,8 @@
-site_name: "EasyFLowQ: An open-source, user-friendly flowcytometry analyzer"
+site_name: "EasyFLowQ"
 repo_url: https://github.com/ym3141/EasyFlowQ
+
+nav: 
+  - Home: "README.md"
+  - "Basic Usage.md"
+  - "Tutorial.md"
+  - "LICENSE.md"
