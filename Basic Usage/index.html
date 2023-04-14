@@ -8,7 +8,7 @@
         
         
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Basic Usage - EasyFLowQ</title>
+        <title>Basic usage - EasyFLowQ</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
@@ -37,13 +37,10 @@
                                 <a href=".." class="nav-link">Home</a>
                             </li>
                             <li class="navitem active">
-                                <a href="./" class="nav-link">Basic Usage</a>
+                                <a href="./" class="nav-link">Basic usage</a>
                             </li>
                             <li class="navitem">
-                                <a href="../Tutorial/" class="nav-link">Tutorial</a>
-                            </li>
-                            <li class="navitem">
-                                <a href="../LICENSE/" class="nav-link">LICENSE</a>
+                                <a href="../Tutorial/" class="nav-link">Examples</a>
                             </li>
                         </ul>
 
@@ -83,12 +80,33 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
         <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#basic-usage" class="nav-link">Basic usage</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#first-time-setup" class="nav-link">First time setup</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
         </ul>
     </div>
 </div></div>
                     <div class="col-md-9" role="main">
 
-</div>
+<h1 id="basic-usage">Basic usage</h1>
+<p>This page will describe the basics of using EasyFlowQ, including basic settings, loading sessions and FCS files, as well as basic analysis method. For more examples, please visit our <a href="../Tutorial/">Tutorial</a> page.</p>
+<h2 id="first-time-setup">First time setup</h2>
+<p>Upon the first time start, EasyFlowQ will greet you with the setting window (see below). If this is your first time using EasyFlowQ, we recommend you only change the first setting (<strong>Default fcs directory</strong>). Click browse and select the top-most folder that you normally keep your flow cytometry data. The EasyFlowQ will always open this directory when you load sessions or fcs files, and it will speed up your analysis workflow. </p>
+<p><img alt="Startup Setting" src="../img/StartUpSettings.png" /></p>
+<p>The other settings you can change in this page include:</p>
+<ul>
+<li><strong>Limit total number of dots</strong>: Decrease the number if refreshing of dot plot is slow. </li>
+<li><strong>Plot DPI scaling</strong>: Tweak this if your plots' font and marks are unreasonably small or large. Generally tweak this number up will make font larger. <em>This is only applied to the plotting region!</em></li>
+</ul>
+<p>Click the "Default" button if you want to reset all settings to default.</p>
+<p>If you encounter a "Permission Error" pop up after clicking "OK". That suggest you likely do not have the permission to write in the installed directory. The settings are not saved but you can continue to use the program and do analysis. To correct this, run the program as administrator.</p>
+<p>Don't worry if you missed this. This setting window is always available in the <strong>settings</strong> menu.</p></div>
             </div>
         </div>
 
