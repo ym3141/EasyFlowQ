@@ -92,7 +92,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Number of dots in &quot;limit dots&quot; mode:</string>
+     <string>Limit total number of dots to:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

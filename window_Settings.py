@@ -24,7 +24,7 @@ class localSettings:
             with open(userSettingDir, 'w+') as f:
                 json.dump(self.settingDict, f, sort_keys=True, indent=4)
                 pass
-        except PermissionError:
+        except Exception:
             QtWidgets.QMessageBox.warning(self, 'Permission Error', 
                                           'Can not write settings to the directory. Please ensure you have writing permission to the directory. \n \
                                            Settings that does not require restart are applied, but will lost on when you restart')

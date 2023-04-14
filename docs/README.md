@@ -9,11 +9,15 @@ A user friendly GUI interface for analyzing flow cytometry data. The program is 
 
 You can either install EasyFlowQ via the provided installers, or run it directly with python ([Anaconda](https://www.anaconda.com/) installation required).
 
-**Method #1: Use the provided installer (Windows or MacOS)**
+#### **Method #1:** Use the provided installer (Windows or MacOS)
 
-Please refer to [release page](https://github.com/ym3141/EasyFlowQ/releases/) to download the latest standalone packages that can run on either MacOS or Windows. In most case, you should be able to run it without other dependency.
+Please refer to [release page](https://github.com/ym3141/EasyFlowQ/releases/) (see below) to download the latest standalone packages for your operating system (MacOS or Windows) and install EasyFlowQ. In most case, you should be able to run it without other dependency.
 
-**Method #2: Run from python (a python installation is needed)**
+*Special note for MacOS users: you will need to ctrl/right-click the app and select open for the first time after you put the app into the "Application" folder. The system will remember it as an exception for later time (see [here](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac)).*
+
+![Download page](img/ReleasePage.jpg)
+
+#### **Method #2:** Run from python (a python installation is needed)
 
 For running the program from the source, download the whole code and run the command below. Standard Anaconda should be sufficient for running the program.
 ```
