@@ -5,6 +5,7 @@ rm -r release/EasyFlowQ_release_mac/*
 mkdir release/EasyFlowQ_release_mac/dmg
 
 # package with pyinstaller and codesign
+conda activate easyflow_env
 pyinstaller --noconfirm --windowed --distpath ./release/EasyFlowQ_release_mac/ --workpath ./_temp/ ./release/pyi_mac.spec
 codesign -f -s EasyFlowQ_YMa release/EasyFlowQ_release_mac/EasyFlowQ_MACOS.app
 
