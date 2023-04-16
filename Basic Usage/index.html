@@ -87,6 +87,14 @@
               <ul class="nav flex-column">
               </ul>
             </li>
+            <li class="nav-item" data-level="2"><a href="#simple-analysis-workflow" class="nav-link">Simple analysis workflow</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#batch-rename-with-xlsx" class="nav-link">Batch rename with xlsx</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
               </ul>
             </li>
         </ul>
@@ -106,7 +114,23 @@
 </ul>
 <p>Click the "Default" button if you want to reset all settings to default.</p>
 <p>If you encounter a "Permission Error" pop up after clicking "OK". That suggest you likely do not have the permission to write in the installed directory. The settings are not saved but you can continue to use the program and do analysis. To correct this, run the program as administrator.</p>
-<p>Don't worry if you missed this. This setting window is always available in the <strong>settings</strong> menu.</p></div>
+<p>Don't worry if you missed this. This setting window is always available in the "settings" menu.</p>
+<h2 id="simple-analysis-workflow">Simple analysis workflow</h2>
+<p>Here we list some of the basic operations for a simple analysis:</p>
+<ol>
+<li><strong>Load sample:</strong> To load samples, on the click Data -&gt; Load data files (or simply Ctrl+L). You can load multiple files, and a list of data will be shown on the left.</li>
+<li><strong>Change sample names:</strong> Double click on the samples to change the sample's name.</li>
+<li><strong>Plotting:</strong> Select the samples you want to plot on the main plotting region. Yes, it support multi-selection.</li>
+<li><strong>Change color:</strong> To change colors of your sample, click the "Sample color" button on the top panel. Note that all the samples that are currently selected will be affected by your color change.</li>
+<li><strong>Tweak plot properties:</strong> You can change how the figures are plotted in the plotting option panel in the lower-right conner. EasyFlowQ support bot dot plots, and histograms, as well as customizable plotting ranges, axes scales, normalization and smoothing. More plot types like stacked histogram and density plots are on our developing road map. </li>
+<li><strong>Choose plot axises:</strong> You can choose what channel(s) are plotted in the top panel. Note that the y-axis option is ignored in histogram mode.</li>
+<li><strong>Save the plot:</strong> The plot can be save by clicking on the "Save" icon on top of the plot. Several types of image formats (png, jpg, pdf...) are supported. </li>
+<li><strong>Save the session</strong>: You can save the analysis session by using the "Save session" function in the menu (or simple Ctrl+S). We recommend put the session file in the same directory as your fcs files, or one level up.</li>
+</ol>
+<p>Below you can see an annotated screenshot about the operations mentioned above.</p>
+<p><img alt="BasicOperations" src="../img/BasicOps.jpg" /></p>
+<h2 id="batch-rename-with-xlsx">Batch rename with xlsx</h2>
+<p>Renaming samples from a high throughput experiment setup can be time consuming. EasyflowQ provides two methods to batch</p></div>
             </div>
         </div>
 
