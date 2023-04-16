@@ -23,6 +23,8 @@ For running the program from the source, download the whole code and run the com
 ```
 Path/To/Folder$ python ./main.py
 ```
+## First time startup
+For first time startup settings, please goto our [usage page](Basic Usage.md#first-time-setup).
 
 ## Contact
 For more info please contact <yma2@caltech.edu>

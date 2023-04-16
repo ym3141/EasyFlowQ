@@ -9,7 +9,8 @@ release/*
 !release/pyi_mac.spec
 !release/pyi_win.spec
 !release/IF_win.ifp
-
+!release/environment_win.yml
+!release/environment_mac.yml
 
 # local stuff
 .vscode/
@@ -19,5 +20,6 @@ localSettings.user.json
 # data that is too large
 demoSamples/CompDemo/*
 
-# mkdocs's compiled sites
+# mkdocs related
 site/
+docs/img/DocImages.afdesign
