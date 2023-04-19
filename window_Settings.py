@@ -19,18 +19,18 @@ class localSettings:
 
         self.settingDict = jSettings
     
-    def saveToUserJson(self):
+    def saveToUserJson(self, parentWedget=None):
         try:
             with open(userSettingDir, 'w+') as f:
                 json.dump(self.settingDict, f, sort_keys=True, indent=4)
                 pass
         except PermissionError:
-            QtWidgets.QMessageBox.warning(self, 'Permission Error', 
+            QtWidgets.QMessageBox.warning(parentWedget, 'Permission Error', 
                                           'Cannot write settings to the directory. It is likely you do not have permission to write to the directory. \n \
                                            Settings that does not require restart are applied, but will lost on when you restart')
         
         except Exception:
-            QtWidgets.QMessageBox.warning(self, 'Unknown Error', 
+            QtWidgets.QMessageBox.warning(parentWedget, 'Unknown Error', 
                                           'Unknown error encountered while writting the settings. It is likely you do not have permission to write to the directory. \n \
                                            Settings that does not require restart are applied, but will lost on when you restart')
 
@@ -90,7 +90,7 @@ class settingsWindow(wUi, wBase):
         self.settings.settingDict['dot N in perf mode'] = int(self.dotNEdit.text())
         self.settings.settingDict['plot dpi scale'] = self.dpiSpinBox.value()
 
-        self.settings.saveToUserJson()
+        self.settings.saveToUserJson(parentWedget = self)
 
         self.newLocalSettingConfimed.emit(self.settings)
         self.close()
