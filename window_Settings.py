@@ -26,13 +26,13 @@ class localSettings:
                 pass
         except PermissionError:
             QtWidgets.QMessageBox.warning(parentWedget, 'Permission Error', 
-                                          'Cannot write settings to the directory. It is likely you do not have permission to write to the directory. \n \
-                                           Settings that does not require restart are applied, but will lost on when you restart')
+                                          'Cannot write settings to the directory. It is likely you do not have permission to write to the directory. \n' +
+                                          'Settings that does not require restart are applied, but will lost on when you restart')
         
         except Exception:
             QtWidgets.QMessageBox.warning(parentWedget, 'Unknown Error', 
-                                          'Unknown error encountered while writting the settings. It is likely you do not have permission to write to the directory. \n \
-                                           Settings that does not require restart are applied, but will lost on when you restart')
+                                          'Unknown error encountered while writting the settings. It is likely you do not have permission to write to the directory. \n' + 
+                                          'Settings that does not require restart are applied, but will lost on when you restart')
 
 
 class settingsWindow(wUi, wBase):
