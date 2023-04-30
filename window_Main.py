@@ -371,7 +371,12 @@ class mainUi(mainWindowBase, mainWindowUi):
 
 
     def handle_ChangeSmplColor(self):
-        color = QtWidgets.QColorDialog.getColor()
+        colorDiag = QtWidgets.QColorDialog()
+        cstmColors = self.colorGen.giveColors_div(colorDiag.customCount())
+        for idx, cstmColor in enumerate(cstmColors):
+            colorDiag.setCustomColor(idx, QtGui.QColor.fromRgbF(*cstmColor))
+
+        color = colorDiag.getColor(initial=QtGui.QColor('black'))
 
         if color.isValid():
             for item in self.smplListWidget.selectedItems():

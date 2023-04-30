@@ -4,25 +4,45 @@ import numpy as np
 
 class colorGenerator:
     allColors = np.vstack([
-        sns.husl_palette(8, h=0, s=.9, l=.7),
-        sns.husl_palette(5, h=0.0625, s=.6, l=.5),
-        sns.husl_palette(2, h=0.2, s=.5, l=.3),
-        sns.husl_palette(5, h=-0.1, s=.8, l=.8)
+        sns.color_palette('Dark2'),
+        sns.color_palette('Set1'),
+        sns.color_palette('cool', 4),
+        sns.color_palette('autumn', 4)
     ])
+
+    divColors = np.vstack([
+        sns.color_palette('winter_d', 4),
+        sns.color_palette('autumn_d', 4),
+    ])
+
 
     def __init__(self) -> None:
         self.count = 0
         pass
 
-    def giveColors(self, n=1):
-        colorLibLength = len(colorGenerator.allColors)
-        if self.count + n < colorLibLength:
-            returnColors =  colorGenerator.allColors[self.count : self.count + n]
-        else:
-            cycledColors = np.vstack([colorGenerator.allColors] * int(np.ceil(n / colorLibLength)))
-            returnColors = cycledColors[self.count : self.count + n]
+    def giveColors(self, n=1, startCount=None):
+        if startCount is None:
+            startCount = self.count
+            self.count += n
+            self.count = self.count % self.colorLibLength
 
-        self.count += n
-        self.count = self.count % colorLibLength
+
+        if startCount + n < self.colorLibLength:
+            returnColors =  colorGenerator.allColors[startCount: startCount + n]
+        else:
+            cycledColors = np.vstack([colorGenerator.allColors] * int(np.ceil(n / self.colorLibLength)))
+            returnColors = cycledColors[startCount: startCount + n]
 
         return returnColors
+    
+    def giveColors_div(self, n=1):
+        if n <= len(colorGenerator.divColors):
+            return colorGenerator.divColors[0: n]
+        else:
+            extraColorN = n - len(colorGenerator.divColors)
+            return np.vstack([colorGenerator.divColors, self.giveColors(extraColorN, startCount=0)])
+        
+    
+    @property
+    def colorLibLength(self):
+        return len(colorGenerator.allColors)
