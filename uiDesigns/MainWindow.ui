@@ -84,10 +84,16 @@
        </property>
        <item>
         <widget class="QFrame" name="midTopFrame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>100</height>
+           <height>160</height>
           </size>
          </property>
          <property name="frameShape">
@@ -111,16 +117,10 @@
           </property>
           <item>
            <widget class="QGroupBox" name="toolBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize">
              <size>
               <width>560</width>
-              <height>150</height>
+              <height>0</height>
              </size>
             </property>
             <property name="title">
@@ -240,12 +240,6 @@
           </item>
           <item>
            <widget class="QGroupBox" name="groupBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize">
              <size>
               <width>270</width>
@@ -648,7 +642,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
