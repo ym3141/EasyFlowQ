@@ -17,8 +17,14 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QGroupBox" name="smplBox">
+      <property name="minimumSize">
+       <size>
+        <width>258</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="title">
-       <string>Sample List</string>
+       <string>Samples</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -33,6 +39,92 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item>
+        <widget class="QFrame" name="frame_3">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>85</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QPushButton" name="colorPB">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>40</y>
+            <width>121</width>
+            <height>34</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Color</string>
+          </property>
+          <property name="icon">
+           <iconset resource="resource/qt_resource.qrc">
+            <normaloff>:/icons/PelatteIcon2.tif</normaloff>:/icons/PelatteIcon2.tif</iconset>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="loadDataPB">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>251</width>
+            <height>34</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Load data (.fcs)</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="lineTypePB">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>40</y>
+            <width>121</width>
+            <height>34</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Line type</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTreeWidget" name="smplTreeWidget">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="inputMethodHints">
+          <set>Qt::ImhNone</set>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectItems</enum>
+         </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string notr="true">1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
        <item>
         <widget class="QListWidget" name="smplListWidget">
          <property name="sizePolicy">
@@ -195,23 +287,6 @@
              </property>
              <property name="checked">
               <bool>true</bool>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="colorPB">
-             <property name="geometry">
-              <rect>
-               <x>410</x>
-               <y>100</y>
-               <width>131</width>
-               <height>41</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>Sample color</string>
-             </property>
-             <property name="icon">
-              <iconset resource="resource/qt_resource.qrc">
-               <normaloff>:/icons/PelatteIcon2.tif</normaloff>:/icons/PelatteIcon2.tif</iconset>
              </property>
             </widget>
             <widget class="QCheckBox" name="showLegendCheck">
@@ -642,7 +717,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
@@ -863,6 +938,22 @@
     <hint type="sourcelabel">
      <x>976</x>
      <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>loadDataPB</sender>
+   <signal>clicked()</signal>
+   <receiver>actionLoad_Data_Files</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>69</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

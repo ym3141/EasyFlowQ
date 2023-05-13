@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
 from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, pyqtSignal
-from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtWidgets import QListWidgetItem, QTreeWidgetItem
 import pandas as pd
 
 from PyQt5 import QtCore
@@ -53,6 +53,49 @@ class smplPlotItem(QListWidgetItem):
     @plotColor.setter
     def plotColor(self, plotColor):
         self.setData(1, plotColor) 
+
+
+class smplItem(QTreeWidgetItem):
+    def __init__(self, parent, fcsFileDir, plotColor):
+        
+        super(smplItem, self).__init__(parent)
+
+        self.fileDir = fcsFileDir
+        self.setText(0, getFileStem(self.fileDir))
+        
+        # FCSData class; fcs data is stored here
+        fcsData = to_rfi(FCSData(self.fileDir))
+        self.setData(0, 0x100, fcsData)
+
+        self.setFlags(self.flags() | Qt.ItemIsEditable)
+        self.chnlNameDict = dict(zip(fcsData.channels, fcsData.channel_labels()))
+
+        self.setData(0, 1, plotColor)
+    
+    @property
+    def displayName(self):
+        return self.data(0, 0)
+
+    @property
+    def plotColor(self):
+        return self.data(0, 1)
+
+    @property
+    def fcsSmpl(self):
+        return self.data(0, 0x100)
+
+    @property
+    def fcsFileName(self):
+        return getFileStem(self.fileDir)
+
+    @displayName.setter
+    def displayName(self, displayName):
+        self.setData(0, 0, displayName) 
+
+    @plotColor.setter
+    def plotColor(self, plotColor):
+        self.setData(0, 1, plotColor) 
+
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):

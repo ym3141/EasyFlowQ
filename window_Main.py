@@ -5,7 +5,7 @@ import json
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
-from src.qtModels import smplPlotItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from src.qtModels import smplPlotItem, smplItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
@@ -80,7 +80,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
 
         # init ui models
-        self.smplListWidgetModel = self.smplListWidget.model()
+        # self.smplListWidgetModel = self.smplListWidget.model()
         self.gateListWidgetModel = self.gateListWidget.model()
 
         self.chnlListModel = chnlModel()
@@ -123,9 +123,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
 
         # everything update figure
-        self.smplListWidget.itemChanged.connect(self.handle_One)
-        self.smplListWidget.itemSelectionChanged.connect(self.handle_One)
-        self.smplListWidgetModel.rowsMoved.connect(self.handle_One)
+        self.smplTreeWidget.itemChanged.connect(self.handle_One)
+        self.smplTreeWidget.itemSelectionChanged.connect(self.handle_One)
+        # self.smplListWidgetModel.rowsMoved.connect(self.handle_One)
 
         self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
 
@@ -182,7 +182,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             return
 
         self.set_saveFlag(True)
-        selectedSmpls = self.smplListWidget.selectedItems()
+        selectedSmpls = self.smplTreeWidget.selectedItems()
 
         if self.perfCheck.isChecked():
             try:
@@ -304,22 +304,22 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_RenameForCF(self):
-        if not self.smplListWidget.count():
+        if not self.smplTreeWidget.topLevelItemCount():
             msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
 
-        smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
+        smplNameList = [self.smplTreeWidget.topLevelItem(idx).fcsFileName for idx in range(self.smplTreeWidget.topLevelItemCount())]
         self.renameWindow = renameWindow_CF(self.dir4Save, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
         self.renameWindow.show()
 
     def handle_RenameMap(self):
-        if not self.smplListWidget.count():
+        if not self.smplTreeWidget.topLevelItemCount():
             msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
 
-        smplNameList = [self.smplListWidget.item(idx).fcsFileName for idx in range(self.smplListWidget.count())]
+        smplNameList = [self.smplTreeWidget.topLevelItem(idx).fcsFileName for idx in range(self.smplTreeWidget.topLevelItemCount())]
         self.renameWindow = renameWindow_Map(self.dir4Save, smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
@@ -327,13 +327,12 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_RenameReturn(self, renameDict):
         self.holdFigureUpdate = True
-        for idx in range(self.smplListWidget.count()):
-            smplItem = self.smplListWidget.item(idx)
+        for idx in range(self.smplTreeWidget.topLevelItemCount()):
+            smplItem = self.smplTreeWidget.topLevelItem(idx)
             if smplItem.fcsFileName in renameDict:
                 smplItem.displayName = renameDict[smplItem.fcsFileName]
         
         self.holdFigureUpdate = False
-
         self.handle_One()
 
     def handle_ExportDataInGates(self):
@@ -554,21 +553,28 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplBox.setEnabled(not disable)
         self.rightFrame.setEnabled(not disable)
 
+    # load fcs file, as well as change check if the current channel is compatible and change accordingly
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         self.set_saveFlag(True)
+
         newSmplItem = smplPlotItem(fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
+        newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
+
         self.smplListWidget.addItem(newSmplItem)
+        self.smplTreeWidget.addTopLevelItem(newRootSmplItem)
         if displayName:
             newSmplItem.displayName = displayName
+            newRootSmplItem.displayName = displayName
 
         if selected:
             newSmplItem.setSelected(True)
+            newRootSmplItem.setSelected(True)
 
         # merging the channel dictionary. 
         # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
         newChnlFlag = False
-        for key in newSmplItem.chnlNameDict:
-            isNew = self.chnlListModel.addChnl(key, newSmplItem.chnlNameDict[key])
+        for key in newRootSmplItem.chnlNameDict:
+            isNew = self.chnlListModel.addChnl(key, newRootSmplItem.chnlNameDict[key])
             newChnlFlag = newChnlFlag or isNew
             
         # update the compensation model if there are new channels added
