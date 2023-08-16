@@ -7,7 +7,7 @@ from src.efio import getSysDefaultDir
 
 import json
 
-wUi, wBase = uic.loadUiType('./uiDesigns/settingsWindow.ui') # Load the .ui file
+wUi, wBase = uic.loadUiType('./uiDesigns/SettingsWindow.ui') # Load the .ui file
 
 userSettingDir = './localSettings.user.json'
 defaultSettingDir = './localSettings.default.json'
