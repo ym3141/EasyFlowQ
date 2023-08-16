@@ -12,12 +12,9 @@
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/font-awesome.min.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css">
-
-        <script src="../js/jquery-1.10.2.min.js" defer></script>
-        <script src="../js/bootstrap.min.js" defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-        <script>hljs.initHighlightingOnLoad();</script> 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
     </head>
 
     <body>
@@ -41,6 +38,9 @@
                             </li>
                             <li class="navitem">
                                 <a href="../Tutorial/" class="nav-link">Examples</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../LICENSE/" class="nav-link">LICENSE(MIT)</a>
                             </li>
                         </ul>
 
@@ -91,7 +91,7 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-level="2"><a href="#batch-rename-with-xlsx" class="nav-link">Batch rename with xlsx</a>
+            <li class="nav-item" data-level="2"><a href="#batch-rename-samples-with-xlsx" class="nav-link">Batch rename samples with xlsx</a>
               <ul class="nav flex-column">
               </ul>
             </li>
@@ -129,7 +129,7 @@
 </ol>
 <p>Below you can see an annotated screenshot about the operations mentioned above.</p>
 <p><img alt="BasicOperations" src="../img/BasicOps.jpg" /></p>
-<h2 id="batch-rename-with-xlsx">Batch rename with xlsx</h2>
+<h2 id="batch-rename-samples-with-xlsx">Batch rename samples with xlsx</h2>
 <p>Renaming samples from a high throughput experiment setup can be time consuming. EasyflowQ provides two methods to batch</p></div>
             </div>
         </div>
@@ -138,12 +138,14 @@
             <hr>
             <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
         <script>
             var base_url = "..",
                 shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
         </script>
-        <script src="../js/base.js" defer></script>
-        <script src="../search/main.js" defer></script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
