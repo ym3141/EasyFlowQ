@@ -106,6 +106,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::ActionsContextMenu</enum>
+         </property>
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
          <property name="inputMethodHints">
           <set>Qt::ImhNone</set>
          </property>
@@ -717,7 +723,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
@@ -728,6 +734,7 @@
     <addaction name="actionOpen_Session"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
+    <addaction name="actionShow_in_folder"/>
    </widget>
    <widget class="QMenu" name="menuData">
     <property name="title">
@@ -890,6 +897,16 @@
   <action name="actionWizardComp">
    <property name="text">
     <string>Wizzard</string>
+   </property>
+  </action>
+  <action name="actionShow_in_folder">
+   <property name="text">
+    <string>Show in folder...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Sub_pops_Current_Gating">
+   <property name="text">
+    <string>Add Sub-pops (Current Gating) </string>
    </property>
   </action>
  </widget>

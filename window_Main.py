@@ -90,6 +90,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # add actions to context memu
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
         self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
+        self.smplTreeWidget.addActions([self.actionAdd_Sub_pops_Current_Gating])
 
         # add the secret testing shortcut
         secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
@@ -121,6 +122,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
         self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
         self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
+        self.actionAdd_Sub_pops_Current_Gating.triggered.connect(self.handle_AddSubPops)
 
         # everything update figure
         self.smplTreeWidget.itemChanged.connect(self.handle_One)
@@ -225,7 +227,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         for fileName, newColor in zip(fileNames, newColorList):
             self.loadFcsFile(fileName, newColor)
-    
+
+    def handle_AddSubPops(self):
+        print('Try to gen subpops')
+        pass
+
     def handle_AddGate(self):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
