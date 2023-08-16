@@ -5,3 +5,4 @@ nav:
   - Home: "README.md"
   - "Basic Usage.md"
   - "Tutorial.md"
+  - LICENSE(MIT): "LICENSE.md"
