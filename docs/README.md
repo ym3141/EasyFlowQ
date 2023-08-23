@@ -27,4 +27,5 @@ Path/To/Folder$ python ./main.py
 For first time startup settings, please goto our [usage page](https://ym3141.github.io/EasyFlowQ/Basic%20Usage/#first-time-setup).
 
 ## Contact
-For more info please contact <yma2@caltech.edu>
+For more info please contact <yitongma7@gmail.com>. If you use *EasyFlowQ* in your research, we would appreciate citation to the following preprint:
+> Ma, Y., & Antebi, Y. (2023). EasyFlow: An open source, user friendly cytometry analyzer with graphic user interface (GUI). bioRxiv, 2023-08.
