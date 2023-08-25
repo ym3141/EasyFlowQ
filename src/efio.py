@@ -208,6 +208,7 @@ def _convert_smplPlotItem(item, saveDir):
     smplSave['plotColor'] = item.plotColor.getRgbF()
 
     del smplSave['chnlNameDict']
+    del smplSave['curInGateFlag']
 
     return smplSave
 

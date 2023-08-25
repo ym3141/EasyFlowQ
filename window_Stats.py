@@ -60,7 +60,7 @@ class statWindow(wUi, wBase):
         self.cur_Name_RawData_Pairs = []
 
         for originItem, gatedFCS, gateFracs in smplsOnPlot:
-            N_Perc = [gatedFCS.shape[0], gatedFCS.shape[0]/originItem.fcsSmpl.shape[0]]
+            N_Perc = [gatedFCS.shape[0], gatedFCS.shape[0] / originItem.fcsSmpl.shape[0]]
 
             med_avg1 = [np.median(gatedFCS[:,chnls[0]]), np.mean(gatedFCS[:,chnls[0]])]
             med_avg2 = [np.median(gatedFCS[:,chnls[1]]), np.mean(gatedFCS[:,chnls[1]])]

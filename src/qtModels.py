@@ -71,6 +71,8 @@ class smplItem(QTreeWidgetItem):
         self.chnlNameDict = dict(zip(fcsData.channels, fcsData.channel_labels()))
 
         self.setData(0, 1, plotColor)
+
+        self.curInGateFlag = None
     
     @property
     def displayName(self):

@@ -81,7 +81,11 @@ class plotCanvas(FigureCanvasQTAgg):
             compedSmpls = smpls
 
         # gate the samples
-        gatedSmpls, gateFracs = self.gateSmpls(compedSmpls, gateList)
+        gatedSmpls, gateFracs, inGateFlags = self.gateSmpls(compedSmpls, gateList)
+
+        # Temperolly store the gating flages
+        for smplItem, curInGateFlag in zip(smplItems, inGateFlags):
+            smplItem.curInGateFlag = curInGateFlag
                 
         # Plot dots or histogram
         if plotType == 'Dot plot':
@@ -244,6 +248,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
         gatedSmpls = []
         gateFracs = []
+        inGateFlags = []
         for idx, fcsData in enumerate(smpls):
             
             inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
@@ -268,8 +273,9 @@ class plotCanvas(FigureCanvasQTAgg):
 
             gatedSmpl = fcsData[inGateFlag, :]
             gatedSmpls.append(gatedSmpl)
+            inGateFlags.append(inGateFlag)
         
-        return gatedSmpls, gateFracs
+        return gatedSmpls, gateFracs, inGateFlags
 
     def updateAxLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
         # self.ax.autoscale()
