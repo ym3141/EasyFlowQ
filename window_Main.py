@@ -229,9 +229,27 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.loadFcsFile(fileName, newColor)
 
     def handle_AddSubPops(self):
-        print('Try to gen subpops')
-        pass
+        selectedSmpls = self.smplTreeWidget.selectedItems()
 
+        if len(self.curGateItems) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No gate selected', 'You need to at least have one gate to create sub-populations')
+
+        inputStr, flag = QtWidgets.QInputDialog.getText(self, 'Name for subpopulation', 
+                                                        'Name (\"$\" will be replaced by parent name):', text='$_')
+        
+        if flag == False:
+            return
+
+        for selectedSmpl in selectedSmpls:
+            if not (selectedSmpl.curInGateFlag is None):
+                subpopColor = self.colorGen.giveColors(1)[0]
+                newSubSmplItem = selectedSmpl.getSubpopFromCurGateFlag(QtGui.QColor.fromRgbF(*subpopColor))
+                newSubSmplItem.displayName = inputStr.replace('$', selectedSmpl.displayName)
+                selectedSmpl.addChild(newSubSmplItem)
+
+                selectedSmpl.setExpanded(True)
+
+        
     def handle_AddGate(self):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)

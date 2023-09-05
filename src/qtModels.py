@@ -12,6 +12,9 @@ from FlowCal.io import FCSData
 from FlowCal.transform import to_rfi
 
 def getFileStem(fileDir):
+    if fileDir is None:
+        return None
+
     basename = os.path.basename(fileDir)
     return os.path.splitext(basename)[0]
 
@@ -56,22 +59,31 @@ class smplPlotItem(QListWidgetItem):
 
 
 class smplItem(QTreeWidgetItem):
-    def __init__(self, parent, fcsFileDir, plotColor):
+    def __init__(self, parent, fcsFileDir, plotColor, fcsData_in=None, genFlag=None, displayName=None):
         
         super(smplItem, self).__init__(parent)
 
         self.fileDir = fcsFileDir
-        self.setText(0, getFileStem(self.fileDir))
         
-        # FCSData class; fcs data is stored here
-        fcsData = to_rfi(FCSData(self.fileDir))
-        self.setData(0, 0x100, fcsData)
+        # Creating a sub-sample
+        if self.fcsFileName is None:
+            if not ((fcsData_in is None) and (genFlag is None)):
+                self.setData(0, 0x100, fcsData_in)
+                self.setText(0, displayName)
+        
+        # A new sample from fcsFile
+        else:
+            # FCSData class; fcs data is stored here
+            fcsData = to_rfi(FCSData(self.fileDir))
+            self.setData(0, 0x100, fcsData)
+            self.setText(0, getFileStem(self.fileDir))
 
         self.setFlags(self.flags() | Qt.ItemIsEditable)
-        self.chnlNameDict = dict(zip(fcsData.channels, fcsData.channel_labels()))
+        self.chnlNameDict = dict(zip(self.fcsSmpl.channels, self.fcsSmpl.channel_labels()))
 
         self.setData(0, 1, plotColor)
 
+        #Used to temperorily store gating flags, for creating sub-pops
         self.curInGateFlag = None
     
     @property
@@ -83,7 +95,7 @@ class smplItem(QTreeWidgetItem):
         return self.data(0, 1)
 
     @property
-    def fcsSmpl(self):
+    def fcsSmpl(self) -> FCSData:
         return self.data(0, 0x100)
 
     @property
@@ -98,6 +110,14 @@ class smplItem(QTreeWidgetItem):
     def plotColor(self, plotColor):
         self.setData(0, 1, plotColor) 
 
+    def getSubpopFromCurGateFlag(self, plotColor = None):
+        if plotColor is None:
+            plotColor = self.plotColor
+        newSmplItem = smplItem(self.parent(), None, plotColor, 
+                               self.fcsSmpl[self.curInGateFlag, :], self.curInGateFlag, 'TempPopName')
+
+        return newSmplItem
+        
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):

@@ -1,5 +1,5 @@
 import sys
-from os import path, chdir, getcwd
+from os import path, chdir
 
 # detect what mode this program is running
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -9,7 +9,6 @@ else:
     print('running in a normal Python process')
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QPoint
 from window_Main import mainUi
 
 from window_Settings import localSettings
