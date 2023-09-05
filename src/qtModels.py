@@ -141,6 +141,10 @@ class gateWidgetItem(QListWidgetItem):
     def gate(self):
         return self.data(0x100)
 
+    @gate.setter
+    def gate(self, newGate):
+        self.setData(0x100, newGate)
+
 class quadWidgetItem(QListWidgetItem):
     def __init__(self, quadName, quad):
         super(QListWidgetItem, self).__init__(quadName)

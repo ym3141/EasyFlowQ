@@ -1,5 +1,5 @@
 import sys
-from os import path, chdir
+from os import path, chdir, environ
 
 # detect what mode this program is running
 if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -8,7 +8,7 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
 else:
     print('running in a normal Python process')
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from window_Main import mainUi
 
 from window_Settings import localSettings
@@ -31,6 +31,7 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setAttribute(QtCore.Qt.AA_DisableHighDpiScaling, True)
 
     if path.exists('./localSettings.user.json'):
         # there is a user setting, load it

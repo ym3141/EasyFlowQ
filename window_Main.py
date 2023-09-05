@@ -618,7 +618,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 qBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 
                                              'Polygon gate edited', 'Do you want to save to overwrite, or to save as a new gate?', 
                                              buttons=QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard)
-                newGateButton = qBox.addButton('As New Gate', QtWidgets.QMessageBox.ActionRole)
+                newGateButton = qBox.addButton('As new gate', QtWidgets.QMessageBox.ActionRole)
                 
                 input = qBox.exec()
 
