@@ -264,7 +264,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
 
         self.gateEditor.gateConfirmed.connect(self.loadGate)
-        self.gateEditor.addGate_connect()
+        self.gateEditor.connect(add_or_edit='add')
 
     def handle_AddQuad(self):
         self._disableInputForGate(True)
@@ -458,7 +458,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 if input == QtWidgets.QMessageBox.Yes:
                     self.holdFigureUpdate = True
                     self.set_curChnls(curSelectedGate.chnls)
-                    self.figOpsPanel.set_curPlotType('dot')
+                    self.figOpsPanel.set_curPlotType('Dot plot')
                     self.figOpsPanel.set_curAxScales(curSelectedGate.axScales)
 
                     self.holdFigureUpdate = False
@@ -474,10 +474,35 @@ class mainUi(mainWindowBase, mainWindowUi):
 
             self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
             self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
+            self.gateEditor.connect(add_or_edit='edit')
+        
+        elif isinstance(curSelectedGate, lineGate):
+            if not (plotType == 'Histogram' and self.curChnls[0] == curSelectedGate.chnl):
+                input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
+                                                                              Switch to them (current plot will be lost)?')
+                if input == QtWidgets.QMessageBox.Yes:
+                    self.holdFigureUpdate = True
+                    self.set_curChnls(curSelectedGate.chnls)
+                    self.figOpsPanel.set_curPlotType('Histogram')
+
+                    self.holdFigureUpdate = False
+                    self.handle_One()
+                else:
+                    return
+
+            self.figOpsPanel.set_axAuto(True, True)
+
+            self.statusbar.showMessage('Left click to drag gate/point; ENTER to confirm edit; ESC to exit', 0)
+            self._disableInputForGate(True)
+            self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
+
+            self.gateEditor = lineGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
+            self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
             self.gateEditor.editGate_connect()
+            pass
 
         else:
-            QtWidgets.QMessageBox.warning(self, 'Only polygon gate can be edited', 'Sorry you cannot edit gate types that are not polygon gate!')
+            QtWidgets.QMessageBox.warning(self, 'Editing of this gate type not supported', 'Sorry you cannot edit this type of gates right now!')
             return
 
     def handle_DeleteQuad(self):
