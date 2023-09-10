@@ -68,9 +68,11 @@ class polygonGate():
         return insideFlags
 
 class lineGate:
-    def __init__(self, chnl, ends) -> None:
+    def __init__(self, chnl, ends:list) -> None:
 
         self.chnl = chnl
+        if ends[0] > ends[1]:
+            ends.reverse()
         self.ends = ends
 
     def isInsideGate(self, fcsData):
@@ -104,6 +106,8 @@ class baseGateEditor(QtCore.QObject):
         self.mouseOverPoint = -1
         self.lastPos = None
 
+        self.pressCid, self.releaseCid, self.moveCid, self.keyPressCid = (0 ,0, 0, 0)
+
         self.trans_axis2data = self.ax.transAxes + self.ax.transData.inverted()
         self.trans_data2axis = self.trans_axis2data.inverted()
 
@@ -121,6 +125,13 @@ class baseGateEditor(QtCore.QObject):
             self.releaseCid = self.canvas.mpl_connect('button_release_event', self.editGate_on_release)
             self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.editGate_on_keyInput)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.editGate_on_motion)
+
+    def disconnect(self):
+        self.canvas.mpl_disconnect(self.pressCid)
+        self.canvas.mpl_disconnect(self.moveCid)
+        self.canvas.mpl_disconnect(self.releaseCid)
+        self.canvas.mpl_disconnect(self.keyPressCid)
+        
 
     def blitDraw(self):
         self.canvas.restore_region(self.background)
@@ -190,8 +201,7 @@ class polygonGateEditor(baseGateEditor):
             xydata = np.vstack((xydata[0:-1], xydata[0]))
             self.line.set_data(xydata.T)
 
-            self.canvas.mpl_disconnect(self.pressCid)
-            self.canvas.mpl_disconnect(self.moveCid)
+            self.disconnect()
             
             self.blitDraw()
 
@@ -278,9 +288,7 @@ class polygonGateEditor(baseGateEditor):
             self.blitDraw()
 
         else:
-            moveVector_Axes = curPos_Axes - self.trans_data2axis.transform(self.lastPos)
-            
-            if self.mouseOverPoint == 0 or self.mouseOverPoint == len(xydata_Axes):
+            if self.mouseOverPoint == 0 or self.mouseOverPoint == len(xydata_Axes) - 1:
                 xydata_Axes[0] = curPos_Axes
                 xydata_Axes[-1] = curPos_Axes
             else:
@@ -296,21 +304,19 @@ class polygonGateEditor(baseGateEditor):
     def editGate_on_keyInput(self, event):
         if event.key == 'enter':
             # enter key recieved
-            self.canvas.mpl_disconnect(self.pressCid)
-            self.canvas.mpl_disconnect(self.moveCid)
-            self.canvas.mpl_disconnect(self.releaseCid)
-            self.canvas.mpl_disconnect(self.keyPressCid)
+            self.disconnect()
 
             finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
             self.gateConfirmed.emit(finishedNewGate)
 
-        elif event.key == 'esc':
+        elif event.key == 'escape':
+            self.disconnect()
             self.gateConfirmed.emit(None)
 
 
 class lineGateEditor(baseGateEditor):
 
-    def __init__(self, ax, chnl=None, gate=None) -> None:
+    def __init__(self, ax, chnl=None, gate:lineGate=None) -> None:
         lineParam = {
             'marker':'|', 
             'markerfacecolor':'w',
@@ -325,12 +331,16 @@ class lineGateEditor(baseGateEditor):
         self.chnl = chnl
 
         if not gate:
-            self.line = Line2D([], [], animated=True,
-                            marker='|', markerfacecolor='w', markersize=5, color='r')
+            self.line.set_data([], [])
         else:
-            pass
+            self.gate = gate
+            self.chnl = gate.chnl
+            ydata = self.trans_axis2data.transform([0.5, 0.5])[1]
+            self.line.set_data(gate.ends, [ydata, ydata])
+
         self.ax.add_line(self.line)
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+        self.blitDraw()
 
     def addGate_on_press(self, event):
         if event.button == 1:
@@ -343,8 +353,7 @@ class lineGateEditor(baseGateEditor):
 
                 self.blitDraw()
             else:
-                self.canvas.mpl_disconnect(self.pressCid)
-                self.canvas.mpl_disconnect(self.moveCid)
+                self.disconnect()
 
                 xydata = np.vstack((xydata[0:-1], [vert[0], xydata[0, 1]]))
                 self.line.set_data(xydata.T)
@@ -358,8 +367,7 @@ class lineGateEditor(baseGateEditor):
                 self.gateConfirmed.emit(newLineGate)
         
         elif event.button == 3:
-            self.canvas.mpl_disconnect(self.pressCid)
-            self.canvas.mpl_disconnect(self.moveCid)
+            self.disconnect()
             self.gateConfirmed.emit(None)
             pass
             
@@ -386,34 +394,7 @@ class lineGateEditor(baseGateEditor):
                 self.canvas.setCursor(QtCore.Qt.ClosedHandCursor)
             else:
                 self.mouseholdOnPoint = True
-            self.lastPos = np.array([event.xdata, event.ydata])
-        
-        if event.button == 3: 
-            xydata = self.line.get_xydata()
-            if self.mouseOverPoint != -1:
-                if len(xydata) > 4:
-                    if self.mouseOverPoint > 0 and self.mouseOverPoint != len(xydata):
-                        xydata = np.delete(xydata, self.mouseOverPoint, axis=0)
-                    if self.mouseOverPoint == 0  or self.mouseOverPoint == len(xydata):
-                        xydata = np.delete(xydata, [0,-1], axis=0)
-                        xydata = np.vstack([xydata, xydata[0,:]])
-                    self.line.set_data(xydata.T)
-                    self.blitDraw()
-            else:
-                xydata_Axes = self.trans_data2axis.transform(xydata)
-                newXY_Axes = self.trans_data2axis.transform(np.array([event.xdata, event.ydata]))
-                allDist_Axes = []
-                for idx in range(len(xydata) - 1):
-                    dist = dist_point_to_segment(newXY_Axes, xydata_Axes[idx, :], xydata_Axes[idx+1, :])
-                    allDist_Axes.append(dist)
-                
-                addIdx = np.argmin(allDist_Axes)
-                xydata_Axes = np.insert(xydata_Axes, addIdx+1, newXY_Axes, axis=0)
-                new_xydata = self.trans_axis2data.transform(xydata_Axes)
-                self.line.set_data(new_xydata.T)
-                self.blitDraw()
-                pass
-        
+            self.lastPos = np.array([event.xdata, event.ydata])     
 
     def editGate_on_release(self, event):
         self.mouseholdAll = False
@@ -423,6 +404,8 @@ class lineGateEditor(baseGateEditor):
 
     def editGate_on_motion(self, event):
         curPos = np.array([event.xdata, event.ydata])
+        if not curPos.any():
+            return
         curPos_Axes = self.trans_data2axis.transform(curPos)
         xydata_Axes = self.trans_data2axis.transform(self.line.get_xydata())
 
@@ -436,9 +419,10 @@ class lineGateEditor(baseGateEditor):
             self.mouseOverPoint = -1
 
         elif self.mouseholdAll:
-            moveVector_Axes = curPos_Axes - self.trans_data2axis.transform(self.lastPos)
+            moveDist_Axes = curPos_Axes[0] - self.trans_data2axis.transform(self.lastPos)[0]
+            moveVector_Axes = np.array([moveDist_Axes, 0])
 
-            new_xydata_Axes = xydata_Axes + np.repeat(moveVector_Axes[np.newaxis], repeats=xydata_Axes.shape[0], axis=0)
+            new_xydata_Axes = xydata_Axes + np.repeat(moveVector_Axes[np.newaxis], repeats=2, axis=0)
             new_xydata = self.trans_axis2data.transform(new_xydata_Axes).T
             self.line.set_data(new_xydata)
 
@@ -446,13 +430,8 @@ class lineGateEditor(baseGateEditor):
             self.blitDraw()
 
         else:
-            moveVector_Axes = curPos_Axes - self.trans_data2axis.transform(self.lastPos)
-            
-            if self.mouseOverPoint == 0 or self.mouseOverPoint == len(xydata_Axes):
-                xydata_Axes[0] = curPos_Axes
-                xydata_Axes[-1] = curPos_Axes
-            else:
-                xydata_Axes[self.mouseOverPoint] = curPos_Axes
+        # Mouse holding onto an point
+            xydata_Axes[self.mouseOverPoint][0] = curPos_Axes[0]
 
             new_xydata = self.trans_axis2data.transform(xydata_Axes).T
 
@@ -464,25 +443,15 @@ class lineGateEditor(baseGateEditor):
     def editGate_on_keyInput(self, event):
         if event.key == 'enter':
             # enter key recieved
-            self.canvas.mpl_disconnect(self.pressCid)
-            self.canvas.mpl_disconnect(self.moveCid)
-            self.canvas.mpl_disconnect(self.releaseCid)
-            self.canvas.mpl_disconnect(self.keyPressCid)
-
-            finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
+            self.disconnect()
+            xydata = self.line.get_xydata()
+            finishedNewGate = lineGate(self.chnl, ends=[xydata[0, 0], xydata[1, 0]])
             self.gateConfirmed.emit(finishedNewGate)
 
-        elif event.key == 'esc':
+        elif event.key == 'escape':
+            self.disconnect()
             self.gateConfirmed.emit(None)
 
-
-    def editGate_connect(self):
-        self.lastPos = None
-        self.pressCid = self.canvas.mpl_connect('button_press_event', self.editGate_on_press)
-        self.releaseCid = self.canvas.mpl_connect('button_release_event', self.editGate_on_release)
-        self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.editGate_on_keyInput)
-
-        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.editGate_on_motion)
 
     def blitDraw(self):
         self.canvas.restore_region(self.background)

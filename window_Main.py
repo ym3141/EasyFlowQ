@@ -498,7 +498,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
             self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
-            self.gateEditor.editGate_connect()
+            self.gateEditor.connect(add_or_edit='edit')
             pass
 
         else:
@@ -637,6 +637,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statusbar.clearMessage()
 
         if not (replace is None):
+        # trying to replace a gate
             if gate is None:
                 self.handle_One()
             else:
@@ -659,11 +660,13 @@ class mainUi(mainWindowBase, mainWindowUi):
                     replace.gate = gate
 
         else:
+        # this is a new gate, or loading from a save file.
             if gate is None:
                 QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
                 self.handle_One()
             else:
                 if not gateName:
+                # no name. likely a new gate
                     gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
                     if not flag:
                         self.handle_One()

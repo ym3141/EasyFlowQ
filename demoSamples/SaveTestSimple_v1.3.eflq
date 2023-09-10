@@ -30,14 +30,14 @@
         ],
         "curAxScales": [
             "log",
-            "log"
+            "linear"
         ],
         "curChnls": [
-            "FSC-A",
+            "FL10-A",
             "SSC-A"
         ],
         "curNormOption": "Percentage",
-        "curPlotType": "Dot plot",
+        "curPlotType": "Histogram",
         "curSmooth": 24
     },
     "fileDir": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/SaveTestSimple_v1.3.eflq",
@@ -189,6 +189,16 @@
             ],
             "displayName": "jyjy |\ud83e\udc55|",
             "type": "quadrantGate"
+        },
+        {
+            "checkState": 2,
+            "chnl": "FL10-A",
+            "displayName": "linePE-A",
+            "ends": [
+                683.7073738710784,
+                2520.4766453803263
+            ],
+            "type": "lineGate"
         }
     ],
     "qsSaveList": [
