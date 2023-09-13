@@ -1,6 +1,7 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.ticker import PercentFormatter
+import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -182,10 +183,14 @@ class plotCanvas(FigureCanvasQTAgg):
             # plot histograme
             # record possible xlims for later use, if xlim is auto
             xlim_auto = [np.inf, -np.inf]
+            ymax_histo = 0
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
 
                 n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
                                             color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)
+                
+                # Find the proper ylims and xlims
+                ymax_histo = max([max(n), ymax_histo])
 
                 nonZeros = np.nonzero(n)
                 if np.min(nonZeros) > 0:
@@ -231,6 +236,25 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[1]), **textingProps, va='top', ha='right')
 
                     self.drawnSplit = True
+            
+            if (not selectedGateItem is None) and isinstance(selectedGateItem.gate, lineGate):
+            # draw gate if selected
+                selectedGate = selectedGateItem.gate
+                if selectedGate.chnl == chnls[0]:
+                    self.ax.plot(selectedGate.ends, [0.5 * ymax_histo, 0.5 * ymax_histo], **lineGateStyle)
+                    self.drawnGates = True
+
+                    if len(gatedSmpls) == 1:
+                        _, _fracs, _ = self.gateSmpls(gatedSmpls, [selectedGate])
+                        inGateFracText = '{:.2%}'.format(_fracs[0][0])
+                    else:
+                        inGateFracText = 'N/A'
+
+                    self.ax.annotate('Gate:{0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
+                                     xy=[np.mean(selectedGate.ends), 0.5 * ymax_histo], textcoords='offset points', xytext=(0, 30), 
+                                     bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
+                                     horizontalalignment='left', verticalalignment='top', annotation_clip=True)
+                pass
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
