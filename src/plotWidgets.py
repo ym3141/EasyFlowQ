@@ -185,6 +185,8 @@ class plotCanvas(FigureCanvasQTAgg):
             xlim_auto = [np.inf, -np.inf]
             ymax_histo = 0
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+                if gatedSmpl.shape[0] < 1:
+                    continue
 
                 n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
                                             color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)

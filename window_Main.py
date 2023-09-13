@@ -549,9 +549,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         if not len(curSelected) == 0:
             newGates = curSelected[0].quad.generateGates()
-            gateNameSuffixes = ['|\U0001F857|', '|\U0001F854|', '|\U0001F856|', '|\U0001F855|']
+            gateNameSuffixes = ['|LL', '|UL', '|LR', '|UR']
             for newGate, suffix in zip(newGates, gateNameSuffixes):
-                self.loadGate(newGate, gateName='{0} {1}'.format(curSelected[0].text(), suffix))
+                self.loadGate(newGate, gateName='{0}{1}'.format(curSelected[0].text(), suffix))
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
