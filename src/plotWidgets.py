@@ -9,12 +9,27 @@ from scipy.ndimage import gaussian_filter1d
 from PyQt5 import QtCore, QtGui
 
 from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
-from .gates import quadrant, split
+from .gates import quadrant, split, polygonGate, lineGate
 
 import warnings
 
 # Macros
 quadrantTextProps = dict(boxstyle='square', facecolor='w', alpha=0.8)
+
+polygonGateStyle = {
+    'marker': 's',
+    'ls': '-.',
+    'markerfacecolor': 'w',
+    'markersize': 5,
+    'color': 'gray'
+}
+
+lineGateStyle = {
+    'marker':'|', 
+    'markerfacecolor':'w',
+    'markersize':5,
+    'color':'r'
+}
 
 class plotCanvas(FigureCanvasQTAgg):
 
@@ -41,38 +56,42 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.curPlotType = 'Dot plot'
 
+        # varables to indicate if there is an anotation drawn
+        self.drawnQuadrant = False
+        self.drawnSplit = False
+        self.drawnGates = False
+
         self.draw()
 
     # the function that draw
     def redraw(
-        self, smplItems, chnlNames, axisNames, axScales, axRanges,
+        self, smplItems, chnls, axisNames, axScales, axRanges,
         compValues,
         gateList=[], quad_split=None,
         plotType = 'Dot plot',
         normOption = 'Percentage',
-        perfModeN=None, legendOps=1, smooth=0
+        perfModeN=None, legendOps=1, smooth=0,
+        selectedGateItem=None
         ):
-
 
         self.curPlotType = plotType
         self.ax.clear()
         self.ax.autoscale(False)
         self.navigationBar.update()
 
-        drawnQuadrant = False
-        drawnSplit = False
+        self.drawnQuadrant = False
+        self.drawnSplit = False
+        self.drawnGates = False
 
         # only draw samples that has the specified channels
-        smplItems = [a for a in smplItems if (chnlNames[0] in a.fcsSmpl.channels and chnlNames[1] in a.fcsSmpl.channels)] 
+        xChnl, yChnl = chnls
+        smplItems = [a for a in smplItems if (xChnl in a.fcsSmpl.channels and yChnl in a.fcsSmpl.channels)] 
         smpls = [smpl.fcsSmpl for smpl in smplItems]
         
-
         # return if no sample to draw, call redraw to show blank
         if len(smplItems) == 0:
             self.draw()
             return []
-
-        xChnl, yChnl = chnlNames
 
         # apply the comp
         if not compValues is None:
@@ -110,6 +129,7 @@ class plotCanvas(FigureCanvasQTAgg):
                             color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
 
             if isinstance(quad_split, quadrant):
+            # Draw quadrant if selected
                 if quad_split.chnls[0] == xChnl and quad_split.chnls[1] == yChnl:
                 # Only draw quadrant if requested, and the chnls match
 
@@ -132,7 +152,28 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.ax.text(0.97, 0.03, '{:.2%}'.format(qFracs[2]), **textingProps, ha='right')
                     self.ax.text(0.97, 0.97, '{:.2%}'.format(qFracs[3]), **textingProps, va='top', ha='right')
 
-                    drawnQuadrant = True
+                    self.drawnQuadrant = True
+            
+            if (not selectedGateItem is None) and isinstance(selectedGateItem.gate, polygonGate):
+            # draw gate if selected
+                selectedGate = selectedGateItem.gate
+                if selectedGate.chnls == chnls:
+                    xydata = np.vstack([selectedGate.verts, selectedGate.verts[0, :]])
+                    self.ax.plot(xydata[:, 0], xydata[:, 1], **polygonGateStyle)
+                    self.drawnGates = True
+
+                    if len(gatedSmpls) == 1:
+                        _, _fracs, _ = self.gateSmpls(gatedSmpls, [selectedGate])
+                        inGateFracText = '{:.2%}'.format(_fracs[0][0])
+                    else:
+                        inGateFracText = 'N/A'
+
+                    UR_point = np.max(selectedGate.verts, axis=0)
+                    self.ax.annotate('Gate:{0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
+                                     xy=UR_point, textcoords='offset points', xytext=(-20, -10), 
+                                     bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
+                                     horizontalalignment='right', verticalalignment='top', annotation_clip=True)
+                pass
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
@@ -189,7 +230,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.ax.text(0.03, 0.97, '{:.2%}'.format(sFracs[0]), **textingProps, va='top')
                     self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[1]), **textingProps, va='top', ha='right')
 
-                    drawnSplit = True
+                    self.drawnSplit = True
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
@@ -211,10 +252,10 @@ class plotCanvas(FigureCanvasQTAgg):
 
         # draw legends
         if legendOps == 2 or (legendOps == 1 and len(smplItems) < 12):
-            if drawnQuadrant:
+            if self.drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
-            elif drawnSplit:
+            elif self.drawnSplit:
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0, 1, 0.9))
             else:
                 self.ax.legend(markerscale=5)

@@ -127,7 +127,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         # everything update figure
         self.smplTreeWidget.itemChanged.connect(self.handle_One)
         self.smplTreeWidget.itemSelectionChanged.connect(self.handle_One)
-        # self.smplListWidgetModel.rowsMoved.connect(self.handle_One)
 
         self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
 
@@ -146,6 +145,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
         self.addQuadButton.clicked.connect(self.handle_AddQuad)
+
+        self.gateListWidget.itemSelectionChanged.connect(self.handle_GateSelectionChanged)
 
         # axes lims
         self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
@@ -186,6 +187,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.set_saveFlag(True)
         selectedSmpls = self.smplTreeWidget.selectedItems()
 
+        if len(self.gateListWidget.selectedItems()) > 0:
+            selectedGateItem = self.gateListWidget.selectedItems()[0]
+        else:
+            selectedGateItem = None
+
         if self.perfCheck.isChecked():
             try:
                 perfModeN = self.settingDict['dot N in perf mode']
@@ -206,14 +212,15 @@ class mainUi(mainWindowBase, mainWindowUi):
         compValues = self.compWindow.curComp if self.compApplyCheck.isChecked() else None
 
         smplsOnPlot = self.mpl_canvas.redraw(
-            selectedSmpls, 
-            chnlNames=self.curChnls, 
+            selectedSmpls,
+            chnls=self.curChnls, 
             axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
             compValues = compValues,
             gateList=[gateItem.gate for gateItem in self.curGateItems],
             quad_split = quad_split,
             plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState()
+            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(),
+            selectedGateItem=selectedGateItem
         )
 
         self.smplsOnPlot = smplsOnPlot
@@ -505,6 +512,23 @@ class mainUi(mainWindowBase, mainWindowUi):
             QtWidgets.QMessageBox.warning(self, 'Editing of this gate type not supported', 'Sorry you cannot edit this type of gates right now!')
             return
 
+    def handle_GateSelectionChanged(self):
+        if self.mpl_canvas.drawnGates:
+            self.handle_One()
+            return
+
+        selectedGate = self.gateListWidget.selectedItems()[0].gate
+        if isinstance(selectedGate, polygonGate):
+            if selectedGate.chnls == self.curChnls and self.figOpsPanel.curPlotType == 'Dot plot':
+                self.handle_One()
+            else:
+                return
+        elif isinstance(selectedGate, lineGate):
+            if selectedGate.chnl == self.curChnls[0] and self.figOpsPanel.curPlotType == 'Histogram':
+                self.handle_One()
+            else:
+                return
+    
     def handle_DeleteQuad(self):
         curSelected = self.qsListWidget.selectedItems()
         if len(curSelected) == 0:
@@ -518,6 +542,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_Quad2Gate(self):
         curSelected = self.qsListWidget.selectedItems()
+        if isinstance(curSelected, split):
+            QtWidgets.QMessageBox.warning(self, 'This is a split (1D)', 
+                                          'Cannot create gates from 1D split. Please consider using a 1D gate in the \"gate tab\" instead')
+            return
+        
         if not len(curSelected) == 0:
             newGates = curSelected[0].quad.generateGates()
             gateNameSuffixes = ['|\U0001F857|', '|\U0001F854|', '|\U0001F856|', '|\U0001F855|']
@@ -792,7 +821,6 @@ class mainUi(mainWindowBase, mainWindowUi):
             return self.settingDict['default dir']
         else:
             return path.abspath(getSysDefaultDir())
-        pass
 
 
 if __name__ == '__main__':

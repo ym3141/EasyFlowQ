@@ -163,14 +163,15 @@ class polygonGateEditor(baseGateEditor):
     it take, edit, and generate a plygonGate instance
     """
 
+    lineParam = {
+        'marker': 's',
+        'markerfacecolor': 'w',
+        'markersize': 5,
+        'color': 'r'
+    }
+
     def __init__(self, ax, canvasParam=None, gate:polygonGate=None) -> None:
-        lineParam = {
-            'marker': 's',
-            'markerfacecolor': 'w',
-            'markersize': 5,
-            'color': 'r'
-        }
-        super().__init__(ax, lineParam)
+        super().__init__(ax, polygonGateEditor.lineParam)
 
         if not gate:
             self.line.set_data([], [])
@@ -316,14 +317,15 @@ class polygonGateEditor(baseGateEditor):
 
 class lineGateEditor(baseGateEditor):
 
+    lineParam = {
+        'marker':'|', 
+        'markerfacecolor':'w',
+        'markersize':5,
+        'color':'r'
+    }
+
     def __init__(self, ax, chnl=None, gate:lineGate=None) -> None:
-        lineParam = {
-            'marker':'|', 
-            'markerfacecolor':'w',
-            'markersize':5,
-            'color':'r'
-        }
-        super().__init__(ax, lineParam)
+        super().__init__(ax, lineGateEditor.lineParam)
 
         self.ax = ax
         self.canvas = self.ax.figure.canvas
