@@ -7,9 +7,13 @@ from PyQt5 import QtCore
 
 import sys
 import os.path
+import secrets
+import string
 
 from FlowCal.io import FCSData
 from FlowCal.transform import to_rfi
+
+from .plotWidgets import gateSmpls
 
 def getFileStem(fileDir):
     if fileDir is None:
@@ -17,6 +21,10 @@ def getFileStem(fileDir):
 
     basename = os.path.basename(fileDir)
     return os.path.splitext(basename)[0]
+
+def genShortUID(n=8):
+    alphabet = string.ascii_lowercase + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(n))
 
 
 class smplPlotItem(QListWidgetItem):
@@ -59,32 +67,29 @@ class smplPlotItem(QListWidgetItem):
 
 
 class smplItem(QTreeWidgetItem):
-    def __init__(self, parent, fcsFileDir, plotColor, fcsData_in=None, genFlag=None, displayName=None):
-        
+    def __init__(self, parent, fcsFileDir, plotColor, fcsDataInput=None, displayName=None):
         super(smplItem, self).__init__(parent)
 
         self.fileDir = fcsFileDir
         
-        # Creating a sub-sample
-        if self.fcsFileName is None:
-            if not ((fcsData_in is None) and (genFlag is None)):
-                self.setData(0, 0x100, fcsData_in)
-                self.setText(0, displayName)
-        
-        # A new sample from fcsFile
-        else:
-            # FCSData class; fcs data is stored here
+        # From a fcs file
+        if not (fcsFileDir is None):
             fcsData = to_rfi(FCSData(self.fileDir))
-            self.setData(0, 0x100, fcsData)
             self.setText(0, getFileStem(self.fileDir))
+        # From name and fcs data
+        else:
+            fcsData = fcsDataInput
+            if not (displayName is None):
+                self.setText(0, displayName)
+            else:
+                self.setText(0, '(no name)')
+
+        self.setData(0, 0x100, fcsData)
 
         self.setFlags(self.flags() | Qt.ItemIsEditable)
         self.chnlNameDict = dict(zip(self.fcsSmpl.channels, self.fcsSmpl.channel_labels()))
 
         self.setData(0, 1, plotColor)
-
-        #Used to temperorily store gating flags, for creating sub-pops
-        self.curInGateFlag = None
     
     @property
     def displayName(self):
@@ -118,6 +123,17 @@ class smplItem(QTreeWidgetItem):
 
         return newSmplItem
         
+class subpopItem(smplItem):
+    def __init__(self, parent:smplItem, plotColor, displayName, gateItems):
+        self.gateIDs = [gateItem.uuid for gateItem in gateItems]
+        fcsData = parent.fcsSmpl
+
+        smpls, _, _ = gateSmpls([fcsData], [gateItem.gate for gateItem in gateItems])
+        fcsData = smpls[0]
+
+        # addChild after init improves perf
+        super().__init__(None, None, plotColor, fcsDataInput=fcsData, displayName=displayName)
+        parent.addChild(self)
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):
@@ -127,6 +143,8 @@ class gateWidgetItem(QListWidgetItem):
         self.setCheckState(0)
 
         self.setData(0x100, gate)
+
+        self._uuid = genShortUID()
 
     def data(self, role: int):
         if role == Qt.DisplayRole:
@@ -140,6 +158,10 @@ class gateWidgetItem(QListWidgetItem):
     @property
     def gate(self):
         return self.data(0x100)
+    
+    @property
+    def uuid(self):
+        return self._uuid
 
     @gate.setter
     def gate(self, newGate):

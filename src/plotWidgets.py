@@ -101,7 +101,7 @@ class plotCanvas(FigureCanvasQTAgg):
             compedSmpls = smpls
 
         # gate the samples
-        gatedSmpls, gateFracs, inGateFlags = self.gateSmpls(compedSmpls, gateList)
+        gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, gateList)
 
         # Temperolly store the gating flages
         for smplItem, curInGateFlag in zip(smplItems, inGateFlags):
@@ -164,7 +164,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.drawnGates = True
 
                     if len(gatedSmpls) == 1:
-                        _, _fracs, _ = self.gateSmpls(gatedSmpls, [selectedGate])
+                        _, _fracs, _ = gateSmpls(gatedSmpls, [selectedGate])
                         inGateFracText = '{:.2%}'.format(_fracs[0][0])
                     else:
                         inGateFracText = 'N/A'
@@ -247,7 +247,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.drawnGates = True
 
                     if len(gatedSmpls) == 1:
-                        _, _fracs, _ = self.gateSmpls(gatedSmpls, [selectedGate])
+                        _, _fracs, _ = gateSmpls(gatedSmpls, [selectedGate])
                         inGateFracText = '{:.2%}'.format(_fracs[0][0])
                     else:
                         inGateFracText = 'N/A'
@@ -310,40 +310,6 @@ class plotCanvas(FigureCanvasQTAgg):
             compedSmpls.append(compedSmpl)
         return compedSmpls
 
-    def gateSmpls(self, smpls, gateList):
-        #gate samples with a list of gate:
-
-        gatedSmpls = []
-        gateFracs = []
-        inGateFlags = []
-        for idx, fcsData in enumerate(smpls):
-            
-            inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
-            fracInEachGate = []
-
-            for gate in gateList:
-
-                if gate.chnls[0] in fcsData.channels and gate.chnls[1] in fcsData.channels:
-
-                    newFlag = gate.isInsideGate(fcsData)
-
-                    fracInParent = np.sum(np.logical_and(newFlag, inGateFlag)) / np.sum(inGateFlag)
-                    fracInEachGate.append(fracInParent)
-
-                    inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
-
-                else: 
-                    warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
-                    fracInEachGate.append(1.0)
-            
-            gateFracs.append(fracInEachGate)
-
-            gatedSmpl = fcsData[inGateFlag, :]
-            gatedSmpls.append(gatedSmpl)
-            inGateFlags.append(inGateFlag)
-        
-        return gatedSmpls, gateFracs, inGateFlags
-
     def updateAxLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
         # self.ax.autoscale()
 
@@ -362,7 +328,41 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.set_ylim([ymin, ymax])
 
         self.draw()
+
+
+def gateSmpls(smpls, gateList):
+    #gate samples with a list of gate:
+
+    gatedSmpls = []
+    gateFracs = []
+    inGateFlags = []
+    for idx, fcsData in enumerate(smpls):
+        
+        inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
+        fracInEachGate = []
+
+        for gate in gateList:
+
+            if gate.chnls[0] in fcsData.channels and gate.chnls[1] in fcsData.channels:
+
+                newFlag = gate.isInsideGate(fcsData)
+
+                fracInParent = np.sum(np.logical_and(newFlag, inGateFlag)) / np.sum(inGateFlag)
+                fracInEachGate.append(fracInParent)
+
+                inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
+
+            else: 
+                warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
+                fracInEachGate.append(1.0)
+        
+        gateFracs.append(fracInEachGate)
+
+        gatedSmpl = fcsData[inGateFlag, :]
+        gatedSmpls.append(gatedSmpl)
+        inGateFlags.append(inGateFlag)
     
+    return gatedSmpls, gateFracs, inGateFlags
 
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,

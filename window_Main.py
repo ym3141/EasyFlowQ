@@ -5,7 +5,7 @@ import json
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
-from src.qtModels import smplPlotItem, smplItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from src.qtModels import smplPlotItem, smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
@@ -122,7 +122,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
         self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
         self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
-        self.actionAdd_Sub_pops_Current_Gating.triggered.connect(self.handle_AddSubPops)
+        self.actionAdd_Sub_pops_Current_Gating.triggered.connect(self.handle_AddSubpops)
 
         # everything update figure
         self.smplTreeWidget.itemChanged.connect(self.handle_One)
@@ -235,7 +235,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         for fileName, newColor in zip(fileNames, newColorList):
             self.loadFcsFile(fileName, newColor)
 
-    def handle_AddSubPops(self):
+    def handle_AddSubpops(self):
         selectedSmpls = self.smplTreeWidget.selectedItems()
 
         if len(self.curGateItems) == 0:
@@ -248,14 +248,11 @@ class mainUi(mainWindowBase, mainWindowUi):
             return
 
         for selectedSmpl in selectedSmpls:
-            if not (selectedSmpl.curInGateFlag is None):
-                subpopColor = self.colorGen.giveColors(1)[0]
-                newSubSmplItem = selectedSmpl.getSubpopFromCurGateFlag(QtGui.QColor.fromRgbF(*subpopColor))
-                newSubSmplItem.displayName = inputStr.replace('$', selectedSmpl.displayName)
-                selectedSmpl.addChild(newSubSmplItem)
-
-                selectedSmpl.setExpanded(True)
-
+            subpopColor = self.colorGen.giveColors(1)[0]
+            subpopName = inputStr.replace('$', selectedSmpl.displayName)
+            newSubpopItem = subpopItem(selectedSmpl, QtGui.QColor.fromRgbF(*subpopColor), subpopName, self.curGateItems)
+          
+            selectedSmpl.setExpanded(True)
         
     def handle_AddGate(self):
         self._disableInputForGate(True)
