@@ -235,6 +235,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         for fileName, newColor in zip(fileNames, newColorList):
             self.loadFcsFile(fileName, newColor)
 
+        self.smplTreeWidget.resizeColumnToContents(0)
+
     def handle_AddSubpops(self):
         selectedSmpls = self.smplTreeWidget.selectedItems()
 
@@ -253,6 +255,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             newSubpopItem = subpopItem(selectedSmpl, QtGui.QColor.fromRgbF(*subpopColor), subpopName, self.curGateItems)
           
             selectedSmpl.setExpanded(True)
+        
+        self.smplTreeWidget.resizeColumnToContents(0)
         
     def handle_AddGate(self):
         self._disableInputForGate(True)
@@ -622,7 +626,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             event.accept()
 
-
     def _disableInputForGate(self, disable=True):
         self.toolBox.setEnabled(not disable)
         self.smplBox.setEnabled(not disable)
@@ -668,9 +671,11 @@ class mainUi(mainWindowBase, mainWindowUi):
                 self.handle_One()
             else:
                 qBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 
-                                             'Polygon gate edited', 'Do you want to save to overwrite, or to save as a new gate?', 
-                                             buttons=QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard)
-                newGateButton = qBox.addButton('As new gate', QtWidgets.QMessageBox.ActionRole)
+                                             'Gate edited', 'Do you want to overwrite, or to save as a new gate?', 
+                                             QtWidgets.QMessageBox.Discard)
+                newGateButton = qBox.addButton('New gate', QtWidgets.QMessageBox.YesRole)
+                overwriteButton = qBox.addButton('Overwrite', QtWidgets.QMessageBox.DestructiveRole)
+                
                 
                 input = qBox.exec()
 
@@ -682,8 +687,22 @@ class mainUi(mainWindowBase, mainWindowUi):
                     newQItem = gateWidgetItem(gateName, gate)
                     self.gateListWidget.addItem(newQItem)
 
-                elif input == QtWidgets.QMessageBox.Save:
+                elif qBox.clickedButton() == overwriteButton:
+                    input = QtWidgets.QMessageBox.warning(self, 'Refresh subpopulations?', 
+                                                          'Do you want to also regenerate all the affected subpopulations? \n' +
+                                                          'Proceeding without regeneration may cause unexpected inconsistence in the future!',
+                                                          QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+                    
                     replace.gate = gate
+
+                    if input == QtWidgets.QMessageBox.Yes:
+                        treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
+                        while treeIterator.value():
+                            treeItem = treeIterator.value()
+                            if isinstance(treeItem, subpopItem):
+                                allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
+                                treeItem.gateUpdated(replace, allGateItems)
+                            treeIterator += 1
 
         else:
         # this is a new gate, or loading from a save file.

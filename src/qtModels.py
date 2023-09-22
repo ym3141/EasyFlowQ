@@ -114,14 +114,6 @@ class smplItem(QTreeWidgetItem):
     @plotColor.setter
     def plotColor(self, plotColor):
         self.setData(0, 1, plotColor) 
-
-    def getSubpopFromCurGateFlag(self, plotColor = None):
-        if plotColor is None:
-            plotColor = self.plotColor
-        newSmplItem = smplItem(self.parent(), None, plotColor, 
-                               self.fcsSmpl[self.curInGateFlag, :], self.curInGateFlag, 'TempPopName')
-
-        return newSmplItem
         
 class subpopItem(smplItem):
     def __init__(self, parent:smplItem, plotColor, displayName, gateItems):
@@ -134,6 +126,18 @@ class subpopItem(smplItem):
         # addChild after init improves perf
         super().__init__(None, None, plotColor, fcsDataInput=fcsData, displayName=displayName)
         parent.addChild(self)
+
+    def gateUpdated(self, updatedGateItem, allGateItems):
+        if not (updatedGateItem.uuid in self.gateIDs):
+            return
+        
+        useGates = [gateItem.gate for gateItem in allGateItems if gateItem.uuid in self.gateIDs]
+        newFcss, _, _ = gateSmpls([self.parent().fcsSmpl], useGates)
+
+        self.setData(0, 0x100, newFcss[0])
+
+    
+
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):
@@ -234,16 +238,6 @@ class chnlModel(QStandardItemModel):
     def fullNameList(self):
         return [self.item(idx).text() for idx in range(self.rowCount())]
 
-class gateProxyModel(QSortFilterProxyModel):
-    def __init__(self, parent):
-        QSortFilterProxyModel.__init__(self, parent)
-
-    def lessThan(self, left: QModelIndex, right: QModelIndex) -> bool:
-        # leftData = self.sourceModel().data(left)
-        # rightData = self.sourceModel().data(right)
-
-        return super().lessThan(left, right)
-    pass
 
 class pandasTableModel(QAbstractTableModel):
     userInputSignal = pyqtSignal(QtCore.QModelIndex, object)

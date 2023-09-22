@@ -218,6 +218,7 @@ def _convert_gateItem(gateItem):
     gateSave['type'] = gateItem.gate.__class__.__name__
     gateSave['displayName'] = gateItem.text()
     gateSave['checkState'] = gateItem.checkState()
+    gateSave['uuid'] = gateItem.uuid
 
     if gateSave['type'] == 'polygonGate':
         gateSave['verts'] = gateSave['verts'].tolist()
