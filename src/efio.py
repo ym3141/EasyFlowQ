@@ -1,10 +1,11 @@
 import json
 import traceback
 from os import path
+from pathlib import Path as plPath
 from copy import deepcopy
 
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
-from .qtModels import quadWidgetItem, splitWidgetItem
+from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
 
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
@@ -55,10 +56,10 @@ class sessionSave():
         self.smplSaveList = []
         selectedSmplItems = mainUiWindow.smplTreeWidget.selectedItems()
         for idx in range(mainUiWindow.smplTreeWidget.topLevelItemCount()):
-            plotItem = mainUiWindow.smplTreeWidget.topLevelItem(idx)
-            self.smplSaveList.append(_convert_smplPlotItem(plotItem, baseDir))
+            smplItem = mainUiWindow.smplTreeWidget.topLevelItem(idx)
+            self.smplSaveList.append(_convert_smplItem(smplItem, baseDir))
 
-            if plotItem in selectedSmplItems:
+            if smplItem in selectedSmplItems:
                 self.smplSaveList[-1]['selected'] = True
             else:
                 self.smplSaveList[-1]['selected'] = False
@@ -197,20 +198,39 @@ class sessionSave():
 
             QMessageBox.warning(mainUiWindow, 'Something went wrong.', errorMsg)
         
-
-
-def _convert_smplPlotItem(item, saveDir):
+def _convert_smplItem(item, saveDir):
     smplSave = deepcopy(item.__dict__)
 
-    smplSave['fileDir_rel'] = path.relpath(smplSave['fileDir'], saveDir)
-    smplSave['fileDir_abs'] = path.abspath(smplSave['fileDir'])
+    filePathObj = plPath(smplSave['fileDir'])
+    smplSave['fileDir'] = filePathObj.as_posix()
+    smplSave['fileDir_rel'] = filePathObj.relative_to(saveDir).as_posix()
+    smplSave['fileDir_abs'] = filePathObj.absolute().as_posix()
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 
     del smplSave['chnlNameDict']
-    del smplSave['curInGateFlag']
+
+    smplSave['Subpops'] = []
+    if item.childCount() > 0:
+        for idx in range(item.childCount()):
+           iterSubpop_recursive(item.child(idx), smplSave)
+           pass       
 
     return smplSave
+
+def iterSubpop_recursive(subpop:subpopItem, parentSmplSave:dict):
+    subpopSave = dict()
+    subpopSave['gateIDs'] = subpop.gateIDs
+    subpopSave['displayName'] = subpop.displayName
+    subpopSave['plotColor'] = subpop.plotColor.getRgbF()
+    subpopSave['Subpops'] = []
+
+    parentSmplSave['Subpops'].append(subpopSave)
+
+    if subpop.childCount() > 0:
+        for idx in range(subpop.childCount()):
+            iterSubpop_recursive(subpop.child(idx), subpopSave)
+
 
 def _convert_gateItem(gateItem):
     gateSave = deepcopy(gateItem.gate.__dict__)
@@ -240,7 +260,6 @@ def _convert_qsItem(qsItem):
     qsSave['displayName'] = qsItem.text()
 
     return qsSave
-
 
 def getSysDefaultDir():
     if path.exists(path.expanduser('~/Desktop')):

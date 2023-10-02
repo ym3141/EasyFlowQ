@@ -102,10 +102,6 @@ class plotCanvas(FigureCanvasQTAgg):
 
         # gate the samples
         gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, gateList)
-
-        # Temperolly store the gating flages
-        for smplItem, curInGateFlag in zip(smplItems, inGateFlags):
-            smplItem.curInGateFlag = curInGateFlag
                 
         # Plot dots or histogram
         if plotType == 'Dot plot':
