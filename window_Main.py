@@ -80,7 +80,6 @@ class mainUi(mainWindowBase, mainWindowUi):
 
 
         # init ui models
-        # self.smplListWidgetModel = self.smplListWidget.model()
         self.gateListWidgetModel = self.gateListWidget.model()
 
         self.chnlListModel = chnlModel()
@@ -410,7 +409,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         color = colorDiag.getColor(initial=QtGui.QColor('black'))
 
         if color.isValid():
-            for item in self.smplListWidget.selectedItems():
+            for item in self.smplTreeWidget.selectedItems():
                 item.plotColor = color
 
     def handle_Settings(self, firstTime=False):
@@ -573,7 +572,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_CompWizard(self):
-        compWizDialog = compWizard(self, self.chnlListModel, self.smplListWidget, self.gateListWidget, self.dir4Save,
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.dir4Save,
                                    self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
         compWizDialog.show()
 
@@ -635,17 +634,13 @@ class mainUi(mainWindowBase, mainWindowUi):
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         self.set_saveFlag(True)
 
-        newSmplItem = smplPlotItem(fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
         newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
 
-        self.smplListWidget.addItem(newSmplItem)
         self.smplTreeWidget.addTopLevelItem(newRootSmplItem)
         if displayName:
-            newSmplItem.displayName = displayName
             newRootSmplItem.displayName = displayName
 
         if selected:
-            newSmplItem.setSelected(True)
             newRootSmplItem.setSelected(True)
 
         # merging the channel dictionary. 
@@ -829,14 +824,14 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1}{2})'.format(self.version, ('*' if self.saveFlag else ''), pathStr)) 
 
     def isWindowAlmostNew(self):
-        return not (len(self.chnlListModel.keyList) and self.smplListWidget.count() and self.gateListWidget.count())
+        return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemount() and self.gateListWidget.count())
 
     @property
     def dir4Save(self):
         if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
             return path.dirname(self.sessionSavePath)
-        elif self.smplListWidget.count() > 0:
-            return path.dirname(self.smplListWidget.item(0).fileDir)
+        elif self.smplTreeWidget.topLevelItemCount() > 0:
+            return path.dirname(self.smplTreeWidget.topLevelItem(0).fileDir)
         elif hasattr(self, 'settingDict') and path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:

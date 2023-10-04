@@ -58,13 +58,7 @@ class sessionSave():
         selectedSmplItems = mainUiWindow.smplTreeWidget.selectedItems()
         for idx in range(mainUiWindow.smplTreeWidget.topLevelItemCount()):
             smplItem = mainUiWindow.smplTreeWidget.topLevelItem(idx)
-            self.smplSaveList.append(_convert_smplItem(smplItem, baseDir))
-
-            if smplItem in selectedSmplItems:
-                self.smplSaveList[-1]['selected'] = True
-            else:
-                self.smplSaveList[-1]['selected'] = False
-
+            self.smplSaveList.append(_convert_smplItem(smplItem, baseDir, selectedSmplItems))
 
         self.gateSaveList = []
         for idx in range(mainUiWindow.gateListWidget.count()):
@@ -237,7 +231,7 @@ class sessionSave():
 
             QMessageBox.warning(mainUiWindow, 'Something went wrong.', errorMsg)
         
-def _convert_smplItem(item, saveDir):
+def _convert_smplItem(item, saveDir, selectedSmplItems=[]):
     smplSave = deepcopy(item.__dict__)
 
     filePathObj = plPath(smplSave['fileDir'])
@@ -247,32 +241,36 @@ def _convert_smplItem(item, saveDir):
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 
+    smplSave['selected'] = item in selectedSmplItems
+
     del smplSave['chnlNameDict']
 
     smplSave['Subpops'] = []
     if item.childCount() > 0:
         for idx in range(item.childCount()):
-           iterSubpop_recursive(item.child(idx), smplSave)
+           iterSubpop_recursive(item.child(idx), smplSave, selectedSmplItems)
            pass       
 
     return smplSave
 
-def iterSubpop_recursive(subpop:subpopItem, parentSmplSave:dict):
+def iterSubpop_recursive(subpop:subpopItem, parentSmplSave:dict, selectedSmplItems:list=[]):
     subpopSave = dict()
     subpopSave['gateIDs'] = subpop.gateIDs
     subpopSave['displayName'] = subpop.displayName
     subpopSave['plotColor'] = subpop.plotColor.getRgbF()
+    subpopSave['selected'] = subpop in selectedSmplItems
     subpopSave['Subpops'] = []
 
     parentSmplSave['Subpops'].append(subpopSave)
 
     if subpop.childCount() > 0:
         for idx in range(subpop.childCount()):
-            iterSubpop_recursive(subpop.child(idx), subpopSave)
+            iterSubpop_recursive(subpop.child(idx), subpopSave, selectedSmplItems)
 
 def loadSubpop_recursive(subpopDict:dict, parentItem:subpopItem, gateItemDict:dict):
     gates = [gateItemDict[uuid] for uuid in subpopDict['gateIDs']]
     newSubpopItem = subpopItem(parentItem, QColor.fromRgbF(*(subpopDict['plotColor'])), subpopDict['displayName'], gates)
+    newSubpopItem.setSelected(subpopDict.get('selected', False))
     parentItem.setExpanded(True)
 
     for subpopDict_nextLevel in subpopDict['Subpops']:

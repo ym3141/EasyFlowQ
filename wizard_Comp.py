@@ -377,16 +377,16 @@ class smplAssignBox(wAssignBox, wBaseAssignBox):
 
 
 class wPage1Model(QtGui.QStandardItemModel):
-    def __init__(self, smplListWidget=None, gateListWidget=None, chnlItemModel=None):
+    def __init__(self, smplTreeWidget=None, gateListWidget=None, chnlItemModel=None):
         super().__init__()
 
         items = []
-        if smplListWidget is not None:
+        if smplTreeWidget is not None:
             # Copying items fror smplListWidget
-            for idx in range(smplListWidget.count()):
-                newItem = QtGui.QStandardItem(smplListWidget.item(idx).data(Qt.DisplayRole))
-                newItem.setData(smplListWidget.item(idx).data(0x100), 0x100)
-                newItem.setData(smplListWidget.item(idx).data(1), 1)
+            for idx in range(smplTreeWidget.topLevelItemCount()):
+                newItem = QtGui.QStandardItem(smplTreeWidget.topLevelItem(idx).data(Qt.DisplayRole))
+                newItem.setData(smplTreeWidget.topLevelItem(idx).data(0x100), 0x100)
+                newItem.setData(smplTreeWidget.topLevelItem(idx).data(1), 1)
                 newItem.setCheckState(2)
                 items.append(newItem)
 

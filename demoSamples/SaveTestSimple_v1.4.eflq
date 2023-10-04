@@ -288,7 +288,7 @@
                                 0.00784313725490196,
                                 1.0
                             ],
-                            "selected": false
+                            "selected": true
                         }
                     ],
                     "displayName": "01-Well-B1_uy",
@@ -314,7 +314,7 @@
                 0.21393148699168382,
                 1.0
             ],
-            "selected": true
+            "selected": false
         },
         {
             "Subpops": [
@@ -378,7 +378,7 @@
                                         0.11764705882352941,
                                         1.0
                                     ],
-                                    "selected": true
+                                    "selected": false
                                 }
                             ],
                             "displayName": "01-Well-C3_er_uy",
@@ -391,7 +391,7 @@
                                 0.4666666666666667,
                                 1.0
                             ],
-                            "selected": false
+                            "selected": true
                         }
                     ],
                     "displayName": "01-Well-C3_er",

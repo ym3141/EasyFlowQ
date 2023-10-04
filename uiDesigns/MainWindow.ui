@@ -56,8 +56,8 @@
          <widget class="QPushButton" name="colorPB">
           <property name="geometry">
            <rect>
-            <x>0</x>
-            <y>40</y>
+            <x>190</x>
+            <y>0</y>
             <width>121</width>
             <height>34</height>
            </rect>
@@ -75,7 +75,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>251</width>
+            <width>181</width>
             <height>34</height>
            </rect>
           </property>
@@ -83,17 +83,30 @@
            <string>Load data (.fcs)</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="lineTypePB">
+         <widget class="QPushButton" name="pushButton">
           <property name="geometry">
            <rect>
-            <x>130</x>
+            <x>0</x>
             <y>40</y>
-            <width>121</width>
-            <height>34</height>
+            <width>91</width>
+            <height>31</height>
            </rect>
           </property>
           <property name="text">
-           <string>Line type</string>
+           <string>Expand all</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>40</y>
+            <width>91</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Collapse all</string>
           </property>
          </widget>
         </widget>
@@ -129,31 +142,6 @@
            <string notr="true">1</string>
           </property>
          </column>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListWidget" name="smplListWidget">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="acceptDrops">
-          <bool>true</bool>
-         </property>
-         <property name="dragEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::InternalMove</enum>
-         </property>
-         <property name="defaultDropAction">
-          <enum>Qt::MoveAction</enum>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
         </widget>
        </item>
       </layout>
