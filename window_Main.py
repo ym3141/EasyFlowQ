@@ -659,6 +659,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         if newChnlFlag:    
             self.compWindow.updateChnls(self.chnlListModel)
 
+        return newRootSmplItem
+
     def loadGate(self, gate, replace=None, gateName=None, checkState=0):
         self.set_saveFlag(True)
         self._disableInputForGate(False)
@@ -690,7 +692,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                 elif qBox.clickedButton() == overwriteButton:
                     input = QtWidgets.QMessageBox.warning(self, 'Refresh subpopulations?', 
                                                           'Do you want to also regenerate all the affected subpopulations? \n' +
-                                                          'Proceeding without regeneration may cause unexpected inconsistence in the future!',
+                                                          'Proceeding without regeneration may cause unexpected inconsistency in the future!',
                                                           QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
                     
                     replace.gate = gate
@@ -703,6 +705,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                                 allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
                                 treeItem.gateUpdated(replace, allGateItems)
                             treeIterator += 1
+                return replace
 
         else:
         # this is a new gate, or loading from a save file.
@@ -722,6 +725,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                     newQItem.setCheckState(checkState)
 
                 self.gateListWidget.addItem(newQItem)
+                return newQItem
 
     def loadQuadrant(self, quadrant, replace=None, quadName=None):
         self.set_saveFlag(True)

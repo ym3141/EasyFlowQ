@@ -166,6 +166,10 @@ class gateWidgetItem(QListWidgetItem):
     @property
     def uuid(self):
         return self._uuid
+    
+    @uuid.setter
+    def uuid(self, newUuid):
+        self._uuid = newUuid
 
     @gate.setter
     def gate(self, newGate):

@@ -7,8 +7,9 @@ from copy import deepcopy
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
 
-from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtWidgets import QMessageBox, QProgressDialog
+from PyQt5.QtGui import QColor
 
 from FlowCal.io import FCSData
 from typing import List
@@ -89,6 +90,12 @@ class sessionSave():
 
     @classmethod
     def loadSessionSave(cls, mainUiWindow, saveFileDir):
+
+        loadingBarDiag = QProgressDialog('Initializing...', None, 0, 7, mainUiWindow)
+        loadingBarDiag.setMinimumDuration(1000)
+        loadingBarDiag.setWindowTitle('Loading session...')
+        loadingBarDiag.setWindowModality(Qt.WindowModal)
+        loadingBarDiag.setValue(0)
         
         failedFiles = []
         gateLoadFlag = False
@@ -105,7 +112,10 @@ class sessionSave():
             save_ver = jDict['save_ver']
 
         # load the FCS files
-        
+        loadingBarDiag.setValue(1)
+        loadingBarDiag.setLabelText('Loading fcs files...')
+
+        smpl_subpops = []
         for jSmpl in jDict.get('smplSaveList', []):
 
             try:
@@ -120,7 +130,10 @@ class sessionSave():
             
                 if confirmedDir:
                     try:
-                        mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], displayName = jSmpl['displayName'], selected=jSmpl['selected'])
+                        newSmplItem = mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], 
+                                                               displayName = jSmpl['displayName'], selected=jSmpl['selected'])
+                        smpl_subpops.append((newSmplItem, jSmpl.get('Subpops', [])))
+
                     except Exception as e:
                         failedFiles.append(path.basename(jSmpl['fileDir_rel']))
                         traceback.print_tb(e.__traceback__)
@@ -131,19 +144,30 @@ class sessionSave():
                 failedFiles.append('Unknown FCS')
                 traceback.print_tb(e.__traceback__)
 
+        loadingBarDiag.setValue(2)
+        loadingBarDiag.setLabelText('Loading gates...')
+        gateDict = dict()
         for jGate in jDict.get('gateSaveList', []):
             try:
                 if jGate['type'] == 'polygonGate':
-                    mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                    newGateItem = mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
                 elif jGate['type'] == 'lineGate':
-                    mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                    newGateItem = mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
                 elif jGate['type'] == 'quadrantGate':
-                    mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=jGate['checkState'])
-            
+                    newGateItem = mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+
+                # Should only get uuid for 1.4 and above
+                gateUuid = jGate.get('uuid')
+                if gateUuid:
+                    newGateItem.uuid = gateUuid
+                    gateDict[gateUuid] = newGateItem
+
             except Exception as e:
                 gateLoadFlag = True
                 traceback.print_tb(e.__traceback__)
 
+        loadingBarDiag.setValue(3)
+        loadingBarDiag.setLabelText('Loading ploting settings...')
         try: 
             mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
             mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])
@@ -156,6 +180,8 @@ class sessionSave():
 
 
         if save_ver >= 1.0:
+            loadingBarDiag.setValue(4)
+            loadingBarDiag.setLabelText('Loading quadrants and splits...')
             try:
                 mainUiWindow.figOpsPanel.set_curSmooth(jDict['figOptions']['curSmooth'])
             except Exception as e:
@@ -173,6 +199,8 @@ class sessionSave():
                     traceback.print_tb(e.__traceback__)
 
         if save_ver >= 1.2:
+            loadingBarDiag.setValue(5)
+            loadingBarDiag.setLabelText('Loading compensations and settings...')
             jString = jDict.get('curComp', None)
 
             try:
@@ -182,6 +210,17 @@ class sessionSave():
             except Exception as e:
                 compFlag = True
                 traceback.print_tb(e.__traceback__)
+
+        if save_ver >= 1.4:
+            loadingBarDiag.setValue(6)
+            loadingBarDiag.setLabelText('Loading and reconstructing subpops...')
+
+            for rootSmpl, subpops in smpl_subpops:
+                for subpop in subpops:
+                    loadSubpop_recursive(subpop, rootSmpl, gateDict)
+
+        loadingBarDiag.setValue(7)
+        loadingBarDiag.setLabelText('Finished')
             
         # report the potential errors:
         if any([len(failedFiles), gateLoadFlag, figSettingFlag, compFlag]):
@@ -230,6 +269,14 @@ def iterSubpop_recursive(subpop:subpopItem, parentSmplSave:dict):
     if subpop.childCount() > 0:
         for idx in range(subpop.childCount()):
             iterSubpop_recursive(subpop.child(idx), subpopSave)
+
+def loadSubpop_recursive(subpopDict:dict, parentItem:subpopItem, gateItemDict:dict):
+    gates = [gateItemDict[uuid] for uuid in subpopDict['gateIDs']]
+    newSubpopItem = subpopItem(parentItem, QColor.fromRgbF(*(subpopDict['plotColor'])), subpopDict['displayName'], gates)
+    parentItem.setExpanded(True)
+
+    for subpopDict_nextLevel in subpopDict['Subpops']:
+        loadSubpop_recursive(subpopDict_nextLevel, newSubpopItem, gateItemDict)
 
 
 def _convert_gateItem(gateItem):

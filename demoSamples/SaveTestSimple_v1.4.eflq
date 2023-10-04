@@ -47,7 +47,7 @@
                 "log",
                 "log"
             ],
-            "checkState": 2,
+            "checkState": 0,
             "chnls": [
                 "FSC-A",
                 "SSC-A"
@@ -244,7 +244,21 @@
     "save_ver": 1.4,
     "smplSaveList": [
         {
-            "Subpops": [],
+            "Subpops": [
+                {
+                    "Subpops": [],
+                    "displayName": "01-Well-A1_iii",
+                    "gateIDs": [
+                        "f39ias7y"
+                    ],
+                    "plotColor": [
+                        0.6509803921568628,
+                        0.4627450980392157,
+                        0.11372549019607843,
+                        1.0
+                    ]
+                }
+            ],
             "displayName": "01-Well-A1",
             "fileDir": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/01-Well-A1.fcs",
             "fileDir_abs": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/01-Well-A1.fcs",
@@ -258,7 +272,35 @@
             "selected": false
         },
         {
-            "Subpops": [],
+            "Subpops": [
+                {
+                    "Subpops": [
+                        {
+                            "Subpops": [],
+                            "displayName": "01-Well-B1_uy_iii",
+                            "gateIDs": [
+                                "f39ias7y"
+                            ],
+                            "plotColor": [
+                                0.9019607843137255,
+                                0.6705882352941176,
+                                0.00784313725490196,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "displayName": "01-Well-B1_uy",
+                    "gateIDs": [
+                        "ztqkg0q6"
+                    ],
+                    "plotColor": [
+                        0.4588235294117647,
+                        0.4392156862745098,
+                        0.7019607843137254,
+                        1.0
+                    ]
+                }
+            ],
             "displayName": "01-Well-B1",
             "fileDir": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/01-Well-B1.fcs",
             "fileDir_abs": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/01-Well-B1.fcs",
@@ -272,7 +314,35 @@
             "selected": false
         },
         {
-            "Subpops": [],
+            "Subpops": [
+                {
+                    "Subpops": [
+                        {
+                            "Subpops": [],
+                            "displayName": "01-Well-C2_uy_iii",
+                            "gateIDs": [
+                                "f39ias7y"
+                            ],
+                            "plotColor": [
+                                0.9058823529411765,
+                                0.1607843137254902,
+                                0.5411764705882353,
+                                1.0
+                            ]
+                        }
+                    ],
+                    "displayName": "01-Well-C2_uy",
+                    "gateIDs": [
+                        "ztqkg0q6"
+                    ],
+                    "plotColor": [
+                        0.8509803921568627,
+                        0.37254901960784315,
+                        0.00784313725490196,
+                        1.0
+                    ]
+                }
+            ],
             "displayName": "01-Well-C2",
             "fileDir": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/01-Well-C2.fcs",
             "fileDir_abs": "C:/Users/yitongma/Documents/CodingProjects/EasyFlowQ/demoSamples/01-Well-C2.fcs",
@@ -288,7 +358,35 @@
         {
             "Subpops": [
                 {
-                    "Subpops": [],
+                    "Subpops": [
+                        {
+                            "Subpops": [
+                                {
+                                    "Subpops": [],
+                                    "displayName": "01-Well-C3_er_uy_iii",
+                                    "gateIDs": [
+                                        "f39ias7y"
+                                    ],
+                                    "plotColor": [
+                                        0.4,
+                                        0.6509803921568628,
+                                        0.11764705882352941,
+                                        1.0
+                                    ]
+                                }
+                            ],
+                            "displayName": "01-Well-C3_er_uy",
+                            "gateIDs": [
+                                "ztqkg0q6"
+                            ],
+                            "plotColor": [
+                                0.10588235294117647,
+                                0.6196078431372549,
+                                0.4666666666666667,
+                                1.0
+                            ]
+                        }
+                    ],
                     "displayName": "01-Well-C3_er",
                     "gateIDs": [
                         "w5tpy542",
@@ -312,7 +410,7 @@
                 0.6841687647821775,
                 1.0
             ],
-            "selected": true
+            "selected": false
         }
     ]
 }
