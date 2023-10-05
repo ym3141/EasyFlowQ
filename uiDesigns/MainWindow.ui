@@ -44,7 +44,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>85</height>
+           <height>120</height>
           </size>
          </property>
          <property name="frameShape">
@@ -107,6 +107,45 @@
           </property>
           <property name="text">
            <string>Collapse all</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_3">
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>40</y>
+            <width>111</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select all roots</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>85</y>
+            <width>131</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select by keyword:</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="lineEdit">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>80</y>
+            <width>171</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="placeholderText">
+           <string>Keyword</string>
           </property>
          </widget>
         </widget>
