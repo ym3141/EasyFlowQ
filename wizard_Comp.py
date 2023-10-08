@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtCore import Qt, pyqtSignal
 from copy import copy
 
-from src.qtModels import smplPlotItem, gateWidgetItem
+from src.qtModels import gateWidgetItem
 from src.comp import autoFluoTbModel, spillMatTbModel
 import numpy as np
 from scipy.stats.mstats import gmean

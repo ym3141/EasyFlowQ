@@ -5,7 +5,7 @@ import json
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path
 
-from src.qtModels import smplPlotItem, smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from src.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
 from src.plotWidgets import plotCanvas
 from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
@@ -122,6 +122,12 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
         self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
         self.actionAdd_Sub_pops_Current_Gating.triggered.connect(self.handle_AddSubpops)
+
+        # Sample manager
+        self.expandAllPB.clicked.connect(lambda : self.handle_ExpandCollapseSmplTree(expand=True))
+        self.collapseAllPB.clicked.connect(lambda : self.handle_ExpandCollapseSmplTree(expand=False))
+        self.selectRootsPB.clicked.connect(self.handle_SelectAllRoots)
+        self.searchSmplEdit.returnPressed.connect(self.handle_searchSmplTree)
 
         # everything update figure
         self.smplTreeWidget.itemChanged.connect(self.handle_One)
@@ -599,6 +605,38 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.statusbar.removeWidget(self.progBar)
 
+    def handle_ExpandCollapseSmplTree(self, expand=True):
+        treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
+        while treeIterator.value():
+            if expand:
+                treeIterator.value().setExpanded(True)
+            else:
+                treeIterator.value().setExpanded(False)
+            treeIterator += 1
+
+    def handle_SelectAllRoots(self):
+        self.holdFigureUpdate = True
+        self.smplTreeWidget.clearSelection()
+        for idx in range(self.smplTreeWidget.topLevelItemCount()):
+            self.smplTreeWidget.topLevelItem(idx).setSelected(True)
+        self.holdFigureUpdate = False
+        self.handle_One()
+
+    def handle_searchSmplTree(self):
+        self.holdFigureUpdate = True
+        self.smplTreeWidget.clearSelection()
+
+        keyword = self.searchSmplEdit.text()
+        treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
+        while treeIterator.value():
+            smplItem = treeIterator.value()
+            if keyword in smplItem.text(0):
+                smplItem.setSelected(True)
+            treeIterator += 1
+        
+        self.holdFigureUpdate = False
+        self.handle_One()
+        
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
             self.statWindow.close()

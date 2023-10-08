@@ -14,6 +14,7 @@ from FlowCal.io import FCSData
 from FlowCal.transform import to_rfi
 
 from .plotWidgets import gateSmpls
+from .gates import polygonGate, lineGate, quadrantGate
 
 def getFileStem(fileDir):
     if fileDir is None:
@@ -25,45 +26,6 @@ def getFileStem(fileDir):
 def genShortUID(n=8):
     alphabet = string.ascii_lowercase + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(n))
-
-
-class smplPlotItem(QListWidgetItem):
-    def __init__(self, fcsFileDir, plotColor):
-        self.fileDir = fcsFileDir
-        super(smplPlotItem, self).__init__(getFileStem(self.fileDir))
-        
-        # FCSData class; fcs data is stored here
-        self.setFlags(self.flags() | Qt.ItemIsEditable)
-        fcsData = to_rfi(FCSData(self.fileDir))
-        self.setData(0x100, fcsData)
-
-        self.chnlNameDict = dict(zip(fcsData.channels, fcsData.channel_labels()))
-
-        self.setData(1, plotColor)
-    
-    @property
-    def displayName(self):
-        return self.data(0)
-
-    @property
-    def plotColor(self):
-        return self.data(1)
-
-    @property
-    def fcsSmpl(self):
-        return self.data(0x100)
-
-    @property
-    def fcsFileName(self):
-        return getFileStem(self.fileDir)
-
-    @displayName.setter
-    def displayName(self, displayName):
-        self.setData(0, displayName) 
-
-    @plotColor.setter
-    def plotColor(self, plotColor):
-        self.setData(1, plotColor) 
 
 
 class smplItem(QTreeWidgetItem):
@@ -136,8 +98,6 @@ class subpopItem(smplItem):
 
         self.setData(0, 0x100, newFcss[0])
 
-    
-
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):
@@ -152,7 +112,12 @@ class gateWidgetItem(QListWidgetItem):
 
     def data(self, role: int):
         if role == Qt.DisplayRole:
-            return super().data(role) + ' ({0})'.format(self.gate.__class__.__name__)
+            if isinstance(self.gate, (polygonGate, quadrantGate)):
+                propStr = '2D: x={0}, y={1}'.format(*self.gate.chnls)
+            elif isinstance(self.gate, lineGate):
+                propStr = '1D: x={0}'.format(self.gate.chnls[0])
+
+            return super().data(role) + ' ({0})'.format(propStr)
 
         return super().data(role)
 
