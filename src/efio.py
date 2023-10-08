@@ -236,8 +236,12 @@ def _convert_smplItem(item, saveDir, selectedSmplItems=[]):
 
     filePathObj = plPath(smplSave['fileDir'])
     smplSave['fileDir'] = filePathObj.as_posix()
-    smplSave['fileDir_rel'] = filePathObj.relative_to(saveDir).as_posix()
-    smplSave['fileDir_abs'] = filePathObj.absolute().as_posix()
+    try:
+        relPath = path.relpath(filePathObj, saveDir)
+        smplSave['fileDir_rel'] = plPath(relPath).as_posix()
+    except Exception as e:
+        smplSave['fileDir_rel'] = None
+    smplSave['fileDir_abs'] = filePathObj.resolve().as_posix()
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 
