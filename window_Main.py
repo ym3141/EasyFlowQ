@@ -3,7 +3,7 @@ import matplotlib
 import json
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from os import path
+from os import path, startfile
 
 from src.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
@@ -100,6 +100,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionSave.triggered.connect(self.handle_Save)
         self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
         self.actionSave_as.triggered.connect(self.handle_SaveAs)
+        self.actionShow_in_folder.triggered.connect(self.handle_ShowInFolder)
 
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
@@ -339,6 +340,15 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.set_saveFlag(False)
         pass
+
+    def handle_ShowInFolder(self):
+        if not (self.sessionSavePath is None):
+            qUrl = QtCore.QUrl.fromLocalFile(path.dirname(self.sessionSavePath))
+            successFlag = QtGui.QDesktopServices.openUrl(qUrl)
+            if successFlag:
+                return
+        
+        QtWidgets.QMessageBox.critical(self, 'Not a proper location', 'Cannot open folder here, or session file not saved yet.')
 
     def handle_RenameForCF(self):
         if not self.smplTreeWidget.topLevelItemCount():
