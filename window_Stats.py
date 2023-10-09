@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 from src.qtModels import pandasTableModel
 from src.efio import writeRawFcs
+from src.plotWidgets import cachedStats
 
 import csv
 import io
@@ -35,9 +36,12 @@ class statWindow(wUi, wBase):
 
         self.tableView.installEventFilter(self)
 
-    def updateStat(self, smplsOnPlot, chnls, curGateItems):
+    def updateStat(self, cachedPlotStats:cachedStats, forceUpdate=False):
 
-        if len(smplsOnPlot) == 0:
+        if (not self.isVisible()) and (not forceUpdate):
+            return
+
+        if cachedPlotStats.smplNumber == 0:
             self.cur_Name_RawData_Pairs = []
             self.dataDF = pd.DataFrame()
             self.displayDF = pd.DataFrame()
@@ -47,31 +51,57 @@ class statWindow(wUi, wBase):
 
             return
 
-        firstItem = smplsOnPlot[0][0]
+        firstItem = cachedPlotStats.smplItems[0]
+        chnls = cachedPlotStats.chnls
 
-        columns = ['Cell number', '% of total'] + \
-                  ['% of parent in: \n{0}'.format(gateItem.text()) for gateItem in curGateItems] + \
-                  ['Median of \n{0}:{1}'.format(chnls[0], firstItem.chnlNameDict[chnls[0]]), 
-                   'Mean of \n{0}:{1}'.format(chnls[0], firstItem.chnlNameDict[chnls[0]]),
-                   'Median of \n{0}:{1}'.format(chnls[1], firstItem.chnlNameDict[chnls[1]]), 
-                   'Mean of \n{0}:{1}'.format(chnls[1], firstItem.chnlNameDict[chnls[1]])]
+        columns = ['Cell number', '% of total']
+
+        if not (cachedPlotStats.selectedGateItem is None):
+            columns += ['% of parent in: \n{0}'.format(cachedPlotStats.selectedGateItem.text())]
+        elif len(cachedPlotStats.gatedFracs[0]) > 0:
+            columns += ['% of parent in: \nlast gate']
+        
+        for chnl in chnls:
+            columns += ['Median of \n{0}:{1}'.format(chnl, firstItem.chnlNameDict[chnl]), 
+                        'Mean of \n{0}:{1}'.format(chnl, firstItem.chnlNameDict[chnl])]
+            
+        if len(cachedPlotStats.splitFracs) > 0:
+            columns += ['% of cells in split: left', '% of cells in split: right']
+
+        elif len(cachedPlotStats.quadFracs) > 0:
+            columns += ['% of cells in quad: \nlower left', '% of cells in split: \nupper left', 
+                        '% of cells in split: \nlower right', '% of cells in split: \nupper right']
+
 
         newDF = pd.DataFrame(columns=columns)
         self.cur_Name_RawData_Pairs = []
 
-        for originItem, gatedFCS, gateFracs in smplsOnPlot:
-            N_Perc = [gatedFCS.shape[0], gatedFCS.shape[0] / originItem.fcsSmpl.shape[0]]
+        for idx in range(cachedPlotStats.smplNumber):
+            N_Perc = [cachedPlotStats.gatedSmpls[idx].shape[0], cachedPlotStats.gatedSmpls[idx].shape[0] / cachedPlotStats.smplItems[idx].fcsSmpl.shape[0]]
 
-            med_avg1 = [np.median(gatedFCS[:,chnls[0]]), np.mean(gatedFCS[:,chnls[0]])]
-            med_avg2 = [np.median(gatedFCS[:,chnls[1]]), np.mean(gatedFCS[:,chnls[1]])]
+            selectedFrac = []
+            if len(cachedPlotStats.gatedFracs[idx]) > 0:
+                selectedFrac = [cachedPlotStats.gatedFracs[idx][-1]]                
+            
+            med_avgs = []
+            for chnl in chnls:
+                med_avgs += [np.median(cachedPlotStats.gatedSmpls[idx][:, chnl]), np.mean(cachedPlotStats.gatedSmpls[idx][:,chnl])]
 
-            newDF.loc[originItem.displayName] = N_Perc + gateFracs + med_avg1 + med_avg2
+            split_perc = []
+            quad_perc = []
+            if len(cachedPlotStats.splitFracs) > 0:
+                split_perc = cachedPlotStats.splitFracs[idx]
+                
+            elif len(cachedPlotStats.quadFracs) > 0:
+                quad_perc = cachedPlotStats.quadFracs[idx]
 
-            self.cur_Name_RawData_Pairs.append((originItem.displayName, gatedFCS))
+            newDF.loc[cachedPlotStats.smplItems[idx].displayName] = N_Perc + selectedFrac + med_avgs + list(split_perc) + list(quad_perc)
+
+            self.cur_Name_RawData_Pairs.append((cachedPlotStats.smplItems[idx].displayName, cachedPlotStats.gatedSmpls[idx]))
 
         self.dataDF = newDF
 
-        formatters = ['{:.0f}', '{:.2%}'] + ['{:.2%}'] * len(curGateItems) + ['{:.4e}'] * 4
+        formatters = ['{:.0f}', '{:.2%}'] + ['{:.2%}'] * len(selectedFrac) + ['{:.4e}'] * 2 * len(cachedPlotStats.chnls) + ['{:.2%}'] * len(list(split_perc) + list(quad_perc))
         self.displayDF = pd.DataFrame()
         for idx, col in enumerate(newDF.columns):
             self.displayDF[col] = newDF.iloc[:, idx].apply(formatters[idx].format)

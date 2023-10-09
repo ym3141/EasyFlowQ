@@ -69,6 +69,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.plotLayout = QtWidgets.QVBoxLayout(self.plotBox)
         self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
         self.plotLayout.addWidget(self.mpl_canvas)
+        self.mpl_canvas.signal_PlotUpdated.connect(self.statWindow.updateStat)
 
         self.smplsOnPlot = []
 
@@ -230,9 +231,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         )
 
         self.smplsOnPlot = smplsOnPlot
-
-        if self.statWindow.isVisible() and len(self.smplsOnPlot):
-            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
 
     def handle_LoadData(self):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.dir4Save, filter='*.fcs')
@@ -409,7 +407,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_StatWindow(self):
         if not self.statWindow.isVisible():
-            self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
+            self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
             self.statWindow.show()
         self.statWindow.raise_()
         self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))

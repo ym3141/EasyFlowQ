@@ -29,12 +29,28 @@ lineGateStyle = {
     'marker':'|', 
     'markerfacecolor':'w',
     'markersize':5,
-    'color':'r'
+    'color':'gray'
 }
+
+class cachedStats():
+    def __init__(self) -> None:
+        self.smplItems = []
+        self.gatedSmpls = []
+        self.gatedFracs = [[]]
+        self.selectedGateItem = None
+
+        self.quadFracs = []
+        self.splitFracs = []
+        self.chnls = []
+
+    @property
+    def smplNumber(self):
+        return len(self.smplItems)
 
 class plotCanvas(FigureCanvasQTAgg):
 
     signal_AxLimsUpdated = QtCore.pyqtSignal(float, float, float, float)
+    signal_PlotUpdated = QtCore.pyqtSignal(cachedStats)
 
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()
@@ -62,6 +78,7 @@ class plotCanvas(FigureCanvasQTAgg):
         self.drawnSplit = False
         self.drawnGates = False
 
+        self.cachedPlotStats = cachedStats()
         self.draw()
 
     # the function that draw
@@ -84,6 +101,9 @@ class plotCanvas(FigureCanvasQTAgg):
         self.drawnSplit = False
         self.drawnGates = False
 
+        qFracs = []
+        sFracs = []
+
         # only draw samples that has the specified channels
         xChnl, yChnl = chnls
         smplItems = [a for a in smplItems if (xChnl in a.fcsSmpl.channels and yChnl in a.fcsSmpl.channels)] 
@@ -101,11 +121,17 @@ class plotCanvas(FigureCanvasQTAgg):
             compedSmpls = smpls
 
         # gate the samples
-        gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, gateList)
+        if selectedGateItem is None:
+            _gateList = gateList
+            gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, _gateList)
+        else:
+            _gateList = gateList + [selectedGateItem.gate]
+            gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, _gateList, lastGateStatOnly=True)
                 
         # Plot dots or histogram
         if plotType == 'Dot plot':
             # plot dots
+            self.cachedPlotStats.chnls = chnls
             if perfModeN:
                 NperSmpl = int(perfModeN / len(gatedSmpls))
                 for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -129,13 +155,11 @@ class plotCanvas(FigureCanvasQTAgg):
             # Draw quadrant if selected
                 if quad_split.chnls[0] == xChnl and quad_split.chnls[1] == yChnl:
                 # Only draw quadrant if requested, and the chnls match
+                    qFracs = np.zeros((len(gatedSmpls), 4))
 
-                    totQs = np.zeros(4)
-                    for gateSmpl in gatedSmpls:
-                        totQs += quad_split.cellNs(gateSmpl)
+                    for idx, gatedSmpl in enumerate(gatedSmpls):
+                        qFracs[idx] = np.array(quad_split.cellNs(gatedSmpl)) / gatedSmpl.shape[0]
 
-                    qFracs = totQs / np.sum(totQs)
-                    
                     self.ax.axvline(quad_split.center[0], linestyle = '--', color='k')
                     self.ax.axhline(quad_split.center[1], linestyle = '--', color='k')
                     
@@ -144,10 +168,10 @@ class plotCanvas(FigureCanvasQTAgg):
                         'fontsize': 'large',
                         'bbox': quadrantTextProps
                     }
-                    self.ax.text(0.03, 0.03, '{:.2%}'.format(qFracs[0]), **textingProps)
-                    self.ax.text(0.03, 0.97, '{:.2%}'.format(qFracs[1]), **textingProps, va='top')
-                    self.ax.text(0.97, 0.03, '{:.2%}'.format(qFracs[2]), **textingProps, ha='right')
-                    self.ax.text(0.97, 0.97, '{:.2%}'.format(qFracs[3]), **textingProps, va='top', ha='right')
+                    self.ax.text(0.03, 0.03, '{:.2%}'.format(qFracs[:, 0].mean()), **textingProps)
+                    self.ax.text(0.03, 0.97, '{:.2%}'.format(qFracs[:, 1].mean()), **textingProps, va='top')
+                    self.ax.text(0.97, 0.03, '{:.2%}'.format(qFracs[:, 2].mean()), **textingProps, ha='right')
+                    self.ax.text(0.97, 0.97, '{:.2%}'.format(qFracs[:, 3].mean()), **textingProps, va='top', ha='right')
 
                     self.drawnQuadrant = True
             
@@ -160,8 +184,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.drawnGates = True
 
                     if len(gatedSmpls) == 1:
-                        _, _fracs, _ = gateSmpls(gatedSmpls, [selectedGate])
-                        inGateFracText = '{:.2%}'.format(_fracs[0][0])
+                        inGateFracText = '{:.2%}'.format(gateFracs[0][-1])
                     else:
                         inGateFracText = 'N/A'
 
@@ -178,6 +201,8 @@ class plotCanvas(FigureCanvasQTAgg):
         elif plotType == 'Histogram':
             # plot histograme
             # record possible xlims for later use, if xlim is auto
+            self.cachedPlotStats.chnls = [xChnl]
+
             xlim_auto = [np.inf, -np.inf]
             ymax_histo = 0
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -218,11 +243,10 @@ class plotCanvas(FigureCanvasQTAgg):
 
             if isinstance(quad_split, split):
                 if quad_split.chnl == xChnl:
-                    totSs = np.zeros(2)
-                    for gateSmpl in gatedSmpls:
-                        totSs += quad_split.cellNs(gateSmpl)
+                    sFracs = np.zeros((len(gatedSmpls),2))
+                    for idx, gatedSmpl in enumerate(gatedSmpls):
+                        sFracs[idx] = np.array(quad_split.cellNs(gatedSmpl)) / gatedSmpl.shape[0]
 
-                    sFracs = totSs / np.sum(totSs)
                     self.ax.axvline(quad_split.splitValue, linestyle = '--', color='k')
                     
                     textingProps = {
@@ -230,8 +254,8 @@ class plotCanvas(FigureCanvasQTAgg):
                         'fontsize': 'large',
                         'bbox': quadrantTextProps
                     }
-                    self.ax.text(0.03, 0.97, '{:.2%}'.format(sFracs[0]), **textingProps, va='top')
-                    self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[1]), **textingProps, va='top', ha='right')
+                    self.ax.text(0.03, 0.97, '{:.2%}'.format(sFracs[:, 0].mean()), **textingProps, va='top')
+                    self.ax.text(0.97, 0.97, '{:.2%}'.format(sFracs[:, 1].mean()), **textingProps, va='top', ha='right')
 
                     self.drawnSplit = True
             
@@ -243,8 +267,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.drawnGates = True
 
                     if len(gatedSmpls) == 1:
-                        _, _fracs, _ = gateSmpls(gatedSmpls, [selectedGate])
-                        inGateFracText = '{:.2%}'.format(_fracs[0][0])
+                        inGateFracText = '{:.2%}'.format(gateFracs[0][-1])
                     else:
                         inGateFracText = 'N/A'
 
@@ -285,7 +308,14 @@ class plotCanvas(FigureCanvasQTAgg):
         self.draw()
         self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
 
-        return list(zip(smplItems, gatedSmpls, gateFracs))
+        # Update the cached stats, and evoke the signal
+        self.cachedPlotStats.smplItems = smplItems
+        self.cachedPlotStats.gatedSmpls = gatedSmpls
+        self.cachedPlotStats.gatedFracs = gateFracs
+        self.cachedPlotStats.quadFracs = qFracs
+        self.cachedPlotStats.splitFracs = sFracs
+        self.cachedPlotStats.selectedGateItem = selectedGateItem
+        self.signal_PlotUpdated.emit(self.cachedPlotStats)
 
     def compSmpls(self, smpls, compValues):
         compedSmpls = []
@@ -326,7 +356,7 @@ class plotCanvas(FigureCanvasQTAgg):
         self.draw()
 
 
-def gateSmpls(smpls, gateList):
+def gateSmpls(smpls, gateList, lastGateStatOnly=False):
     #gate samples with a list of gate:
 
     gatedSmpls = []
@@ -337,7 +367,7 @@ def gateSmpls(smpls, gateList):
         inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
         fracInEachGate = []
 
-        for gate in gateList:
+        for idx, gate in enumerate(gateList):
 
             if gate.chnls[0] in fcsData.channels and gate.chnls[1] in fcsData.channels:
 
@@ -346,7 +376,10 @@ def gateSmpls(smpls, gateList):
                 fracInParent = np.sum(np.logical_and(newFlag, inGateFlag)) / np.sum(inGateFlag)
                 fracInEachGate.append(fracInParent)
 
-                inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
+                if lastGateStatOnly and idx == len(gateList) - 1:
+                    pass
+                else:
+                    inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
 
             else: 
                 warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
