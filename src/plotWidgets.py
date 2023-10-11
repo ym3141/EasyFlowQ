@@ -373,7 +373,10 @@ def gateSmpls(smpls, gateList, lastGateStatOnly=False):
 
                 newFlag = gate.isInsideGate(fcsData)
 
-                fracInParent = np.sum(np.logical_and(newFlag, inGateFlag)) / np.sum(inGateFlag)
+                if np.sum(inGateFlag) > 0:
+                    fracInParent = np.sum(np.logical_and(newFlag, inGateFlag)) / np.sum(inGateFlag)
+                else:
+                    fracInParent = float('nan')
                 fracInEachGate.append(fracInParent)
 
                 if lastGateStatOnly and idx == len(gateList) - 1:

@@ -15,8 +15,12 @@ from xlsxwriter.utility import xl_col_to_name
 
 wUi, wBase = uic.loadUiType('./uiDesigns/StatWindow.ui') # Load the .ui file
 
+intFormater = '{:.0f}'.format
+percFormater = '{:.2%}'.format
+valFormater = '{:.4e}'.format
+
 class statWindow(wUi, wBase):
-    def __init__(self, sessionDir) -> None:
+    def __init__(self, sessionDir, curGateItems_func, curQSItem_func) -> None:
 
         wBase.__init__(self)
         self.setupUi(self)
@@ -25,6 +29,10 @@ class statWindow(wUi, wBase):
         self.dataDF = pd.DataFrame()
         self.displayDF = pd.DataFrame()
         self.cur_Name_RawData_Pairs = []
+
+        self.curGateItems = curGateItems_func
+        self.curQSItem = curQSItem_func
+        self.curFormaterList = []
 
         self.statTabelModel = pandasTableModel(self.displayDF)
         self.tableView.setModel(self.statTabelModel)
@@ -54,57 +62,58 @@ class statWindow(wUi, wBase):
         firstItem = cachedPlotStats.smplItems[0]
         chnls = cachedPlotStats.chnls
 
-        columns = ['Cell number', '% of total']
+        formaterList = [intFormater, percFormater]
+        newDF = pd.DataFrame(columns=['Cell number', '% of total'], 
+                             index=[smplItem.displayName for smplItem in cachedPlotStats.smplItems])
+
+        newDF['Cell number'] = [gatedSmpl.shape[0] for gatedSmpl in cachedPlotStats.gatedSmpls]
+
+        percs = []
+        for idx in range(cachedPlotStats.smplNumber):
+            percs.append(cachedPlotStats.gatedSmpls[idx].shape[0] / cachedPlotStats.smplItems[idx].fcsSmpl.shape[0])
+        newDF['% of total'] = percs
+        
+        for idx, gateItem in enumerate(self.curGateItems()):
+            newDF['% of parent in: \n{0}'.format(gateItem.text())] =  [gatedFrac[idx] for gatedFrac in cachedPlotStats.gatedFracs]
+            formaterList.append(percFormater)
 
         if not (cachedPlotStats.selectedGateItem is None):
-            columns += ['% of parent in: \n{0}'.format(cachedPlotStats.selectedGateItem.text())]
-        elif len(cachedPlotStats.gatedFracs[0]) > 0:
-            columns += ['% of parent in: \nlast gate']
-        
+            newDF['% of parent in: \n{0} (selected)'.format(cachedPlotStats.selectedGateItem.text())] = [gatedFrac[-1] for gatedFrac in cachedPlotStats.gatedFracs]
+            formaterList.append(percFormater)
+                
         for chnl in chnls:
-            columns += ['Median of \n{0}:{1}'.format(chnl, firstItem.chnlNameDict[chnl]), 
-                        'Mean of \n{0}:{1}'.format(chnl, firstItem.chnlNameDict[chnl])]
+            newDF['Median of \n{0}:{1}'.format(chnl, firstItem.chnlNameDict[chnl])] = [np.median(gatedSmpl[:, chnl]) for gatedSmpl in cachedPlotStats.gatedSmpls]
+            newDF['Mean of \n{0}:{1}'.format(chnl, firstItem.chnlNameDict[chnl])] = [np.mean(gatedSmpl[:, chnl]) for gatedSmpl in cachedPlotStats.gatedSmpls]
+
+            formaterList += [valFormater] * 2
             
         if len(cachedPlotStats.splitFracs) > 0:
-            columns += ['% of cells in split: left', '% of cells in split: right']
+            newDF['% of cells in split: \nleft'] = [splitFrac[0] for splitFrac in cachedPlotStats.splitFracs]
+            newDF['% of cells in split: \nright'] = [splitFrac[1] for splitFrac in cachedPlotStats.splitFracs]
+            
+            formaterList += [percFormater] * 2
 
         elif len(cachedPlotStats.quadFracs) > 0:
-            columns += ['% of cells in quad: \nlower left', '% of cells in split: \nupper left', 
-                        '% of cells in split: \nlower right', '% of cells in split: \nupper right']
+            newDF['% of cells in quad: \nlower left'] = [quadFrac[0] for quadFrac in cachedPlotStats.quadFracs]
+            newDF['% of cells in quad: \nupper left'] = [quadFrac[1] for quadFrac in cachedPlotStats.quadFracs]
+            newDF['% of cells in quad: \nlower right'] = [quadFrac[2] for quadFrac in cachedPlotStats.quadFracs]
+            newDF['% of cells in quad: \nupper right'] = [quadFrac[3] for quadFrac in cachedPlotStats.quadFracs]
 
-
-        newDF = pd.DataFrame(columns=columns)
-        self.cur_Name_RawData_Pairs = []
-
-        for idx in range(cachedPlotStats.smplNumber):
-            N_Perc = [cachedPlotStats.gatedSmpls[idx].shape[0], cachedPlotStats.gatedSmpls[idx].shape[0] / cachedPlotStats.smplItems[idx].fcsSmpl.shape[0]]
-
-            selectedFrac = []
-            if len(cachedPlotStats.gatedFracs[idx]) > 0:
-                selectedFrac = [cachedPlotStats.gatedFracs[idx][-1]]                
+            formaterList += [percFormater] * 4
             
-            med_avgs = []
-            for chnl in chnls:
-                med_avgs += [np.median(cachedPlotStats.gatedSmpls[idx][:, chnl]), np.mean(cachedPlotStats.gatedSmpls[idx][:,chnl])]
-
-            split_perc = []
-            quad_perc = []
-            if len(cachedPlotStats.splitFracs) > 0:
-                split_perc = cachedPlotStats.splitFracs[idx]
-                
-            elif len(cachedPlotStats.quadFracs) > 0:
-                quad_perc = cachedPlotStats.quadFracs[idx]
-
-            newDF.loc[cachedPlotStats.smplItems[idx].displayName] = N_Perc + selectedFrac + med_avgs + list(split_perc) + list(quad_perc)
-
+        # Save this value for furture faster raw export
+        self.cur_Name_RawData_Pairs = []
+        for idx in range(cachedPlotStats.smplNumber):
             self.cur_Name_RawData_Pairs.append((cachedPlotStats.smplItems[idx].displayName, cachedPlotStats.gatedSmpls[idx]))
 
+        # save the origin DF (number before conversion to str), and formatter
         self.dataDF = newDF
+        self.curFormaterList = formaterList
 
-        formatters = ['{:.0f}', '{:.2%}'] + ['{:.2%}'] * len(selectedFrac) + ['{:.4e}'] * 2 * len(cachedPlotStats.chnls) + ['{:.2%}'] * len(list(split_perc) + list(quad_perc))
+        # Create the displayDF for display, numbers are convereted to strings
         self.displayDF = pd.DataFrame()
         for idx, col in enumerate(newDF.columns):
-            self.displayDF[col] = newDF.iloc[:, idx].apply(formatters[idx].format)
+            self.displayDF[col] = newDF.iloc[:, idx].apply(formaterList[idx])
         
         self.statTabelModel = pandasTableModel(self.displayDF)
         self.tableView.setModel(self.statTabelModel)
@@ -120,10 +129,13 @@ class statWindow(wUi, wBase):
                 self.dataDF.to_excel(excel_writer=writer, sheet_name='stats')
                 #format the fractions as percentage in excel
                 percFmt = writer.book.add_format({'num_format': '0.00%'})
-                fmtRange = '{0}:{1}'.format(xl_col_to_name(2), xl_col_to_name(len(self.dataDF.columns)-4))
-                writer.sheets['stats'].set_column(fmtRange, None, cell_format=percFmt)
 
-                writer.save()
+                for idx, formater in enumerate(self.curFormaterList):
+                    if formater is percFormater:
+                        # +1 because excel's first column is index (sample names)
+                        writer.sheets['stats'].set_column(idx + 1, idx + 1, cell_format=percFmt)
+
+                writer.close()
         
         except PermissionError:
             QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')

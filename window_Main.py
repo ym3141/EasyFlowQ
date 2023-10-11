@@ -58,7 +58,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.renameWindow = None
         self.settingsWindow = None
         self.compWindow = compWindow()
-        self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save)
+        self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save,
+                                     lambda : self.curGateItems, 
+                                     lambda : self.curQuadSplitItem)
         self.aboutWindow = aboutWindow()
 
         # add the matplotlib ui
@@ -209,10 +211,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         plotType, axScales, axRanges, normOption, smooth = self.figOpsPanel.curFigOptions
 
-        if isinstance(self.curQuadrantItem, quadWidgetItem):
-            quad_split = self.curQuadrantItem.quad
-        elif isinstance(self.curQuadrantItem, splitWidgetItem):
-            quad_split = self.curQuadrantItem.split
+        if isinstance(self.curQuadSplitItem, quadWidgetItem):
+            quad_split = self.curQuadSplitItem.quad
+        elif isinstance(self.curQuadSplitItem, splitWidgetItem):
+            quad_split = self.curQuadSplitItem.split
         else:
             quad_split = None
 
@@ -526,6 +528,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             QtWidgets.QMessageBox.warning(self, 'Editing of this gate type not supported', 'Sorry you cannot edit this type of gates right now!')
             return
 
+    # This function decide if a redraw is recalled when the selection of gate changes.
     def handle_GateSelectionChanged(self):
         if self.mpl_canvas.drawnGates:
             self.handle_One()
@@ -841,10 +844,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         return [gateItem for gateItem in allGateItems if (gateItem.checkState() == 2)]
 
     @property
-    def curQuadrantItem(self):
-        quadList = self.qsListWidget.selectedItems()
-        if quadList:
-            return quadList[0]
+    def curQuadSplitItem(self):
+        qsList = self.qsListWidget.selectedItems()
+        if qsList:
+            return qsList[0]
         else:
             return None
 
