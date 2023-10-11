@@ -5,7 +5,7 @@ import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 
 import numpy as np
-from scipy.ndimage import gaussian_filter1d
+from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 
 from PyQt5 import QtCore, QtGui
 
@@ -424,6 +424,8 @@ def hist1d_line(data, ax, channel, xscale, color,
     n, edges = np.histogram(data[:, channel], bins=bins, weights=weights)
 
     if smooth:
+        uniformFilterSize = int(smooth / 8) * 2 + 1 # make sure it's a ood intiger. Does not kick in till smooth = 16
+        n = uniform_filter1d(n, size=uniformFilterSize, mode='nearest')
         n = gaussian_filter1d(n, sigma=smooth/16)
 
     line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color, label=label)
