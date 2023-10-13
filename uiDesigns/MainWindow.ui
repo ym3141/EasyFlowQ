@@ -606,6 +606,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="clearGatePB">
+             <property name="text">
+              <string>Clear selection</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="tabQuadrant">
@@ -776,6 +783,8 @@
      <addaction name="actionFor_Cytoflex"/>
     </widget>
     <addaction name="actionLoad_Data_Files"/>
+    <addaction name="actionDelete_sample"/>
+    <addaction name="actionAdd_Sub_pops_Current_Gating"/>
     <addaction name="separator"/>
     <addaction name="menuRename_with_file"/>
     <addaction name="separator"/>
@@ -856,7 +865,7 @@
   </action>
   <action name="actionLoad_Data_Files">
    <property name="text">
-    <string>Load data files</string>
+    <string>Add sample (from .fcs)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -935,6 +944,11 @@
   <action name="actionAdd_Sub_pops_Current_Gating">
    <property name="text">
     <string>Add Subpops (Checked Gates) </string>
+   </property>
+  </action>
+  <action name="actionDelete_sample">
+   <property name="text">
+    <string>Delete selected sample(s)</string>
    </property>
   </action>
  </widget>

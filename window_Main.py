@@ -93,6 +93,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
         self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
         self.smplTreeWidget.addActions([self.actionAdd_Sub_pops_Current_Gating])
+        self.smplTreeWidget.addActions([self.actionDelete_sample])
 
         # add the secret testing shortcut
         secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
@@ -109,6 +110,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
         self.actionExport_data_in_current_gates.triggered.connect(self.handle_ExportDataInGates)
+        self.actionDelete_sample.triggered.connect(self.handle_DeleteSmpls)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
@@ -169,7 +171,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         # others
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
         self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
-        # self.figOpsPanel.signal_HistTypeSelected.connect(self.handle_ChangedToHist)
+        self.clearGatePB.clicked.connect(lambda : self.gateListWidget.clearSelection())
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -533,6 +535,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         if self.mpl_canvas.drawnGates:
             self.handle_One()
             return
+        
+        if len(self.gateListWidget.selectedItems()) == 0:
+            return 
 
         selectedGate = self.gateListWidget.selectedItems()[0].gate
         if isinstance(selectedGate, polygonGate):
@@ -647,6 +652,29 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.holdFigureUpdate = False
         self.handle_One()
+
+    def handle_DeleteSmpls(self):
+        curSelected = self.smplTreeWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No sample selected', 'Please select sample(s) to delete')
+            return
+        delSmplNameList = [smpl.text(0) for smpl in curSelected]
+        delSmplNameList_str = '\n' + '\n'.join(delSmplNameList)
+        input = QtWidgets.QMessageBox.question(self, 'Delete samples or subpops?', 
+                                               'Are you sure to delete the following samples or subpops?' + delSmplNameList_str)
+
+        if input == QtWidgets.QMessageBox.Yes:
+            for item in curSelected:
+                if isinstance(item, subpopItem):
+                    parentItem = item.parent()
+                    parentItem.removeChild(item)
+                    del item
+                elif isinstance(item, smplItem):
+                    deleteIdx = self.smplTreeWidget.indexOfTopLevelItem(item)
+                    deletedItem = self.smplTreeWidget.takeTopLevelItem(deleteIdx)
+                    del deletedItem
+            self.handle_One()
+        pass
         
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
