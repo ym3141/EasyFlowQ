@@ -33,7 +33,7 @@ class compWizard(wUi, wBase):
 
         # setting up all the model for the page1
         self.wizChnlModel = wPage1Model(chnlItemModel=chnlModel)
-        self.wizSmplModel = wPage1Model(smplListWidget=smplWidget)
+        self.wizSmplModel = wPage1Model(smplTreeWidget=smplWidget)
         self.wizGateModel = wPage1Model(gateListWidget=gateWidget)
 
         self.chnlListView.setModel(self.wizChnlModel)
@@ -384,9 +384,9 @@ class wPage1Model(QtGui.QStandardItemModel):
         if smplTreeWidget is not None:
             # Copying items fror smplListWidget
             for idx in range(smplTreeWidget.topLevelItemCount()):
-                newItem = QtGui.QStandardItem(smplTreeWidget.topLevelItem(idx).data(Qt.DisplayRole))
-                newItem.setData(smplTreeWidget.topLevelItem(idx).data(0x100), 0x100)
-                newItem.setData(smplTreeWidget.topLevelItem(idx).data(1), 1)
+                newItem = QtGui.QStandardItem(smplTreeWidget.topLevelItem(idx).data(0, Qt.DisplayRole))
+                newItem.setData(smplTreeWidget.topLevelItem(idx).data(0, 0x100), 0x100)
+                newItem.setData(smplTreeWidget.topLevelItem(idx).data(0, 1), 1)
                 newItem.setCheckState(2)
                 items.append(newItem)
 

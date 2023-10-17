@@ -229,6 +229,10 @@ class plotCanvas(FigureCanvasQTAgg):
                 xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
                 xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
 
+            # likely no data drawn
+            if xlim_auto == [np.inf, -np.inf]:
+                xlim_auto = [1, 1e7]
+
             if axScales[0] == 'log':
                 if xlim_auto[0] <= 0:
                     xlim_auto[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
