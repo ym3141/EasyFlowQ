@@ -28,7 +28,7 @@ mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesigns/MainWindow.ui') # Loa
 class mainUi(mainWindowBase, mainWindowUi):
     requestNewWindow = QtCore.pyqtSignal(str, QtCore.QPoint)
 
-    def __init__(self, setting: localSettings, sessionSaveFile=None, pos=None):
+    def __init__(self, settings: localSettings, sessionSaveFile=None, pos=None):
 
         # init and setup UI
         mainWindowBase.__init__(self)
@@ -40,7 +40,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.tab_GateQuad.tabBar().setTabTextColor(1, QtGui.QColor('black'))
 
         # load the seetings:
-        self.settingDict = setting.settingDict
+        self.settingDict = settings
         
         # other init
         self.version = self.settingDict['version']
@@ -438,8 +438,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.settingsWindow.show()
 
-    def handle_NewSetting(self, newNetting):
-        self.settingDict = newNetting.settingDict
+    def handle_NewSetting(self, newSetting):
+        self.settingDict = newSetting
 
     def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
         self.statusbar.showMessage(prefixText + curName)
@@ -909,7 +909,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             return path.dirname(self.sessionSavePath)
         elif self.smplTreeWidget.topLevelItemCount() > 0:
             return path.dirname(self.smplTreeWidget.topLevelItem(0).fileDir)
-        elif hasattr(self, 'settingDict') and path.exists(self.settingDict['default dir']):
+        elif path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
             return path.abspath(getSysDefaultDir())
@@ -925,9 +925,7 @@ if __name__ == '__main__':
 
     app = QtWidgets.QApplication(sys.argv)
 
-    testSettings = localSettings('./localSettings.default.json')
-    testSettings.settingDict["default dir"] = './demoSamples'
-
+    testSettings = localSettings(testMode=True)
     window = mainUi(testSettings)
     window.show()
     sys.exit(app.exec_())

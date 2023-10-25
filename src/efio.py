@@ -310,12 +310,15 @@ def _convert_qsItem(qsItem):
 
     return qsSave
 
-def getSysDefaultDir():
-    if path.exists(path.expanduser('~/Desktop')):
-        return path.expanduser('~/Desktop')
+def _expand_norm_path(filePath: str):
+    return path.normpath(path.expanduser(filePath))
 
-    elif path.exists(path.expanduser('./Documents')):
-        return path.expanduser('~/Documents')
+def getSysDefaultDir():
+    if path.exists(_expand_norm_path('~/Desktop')):
+        return _expand_norm_path('~/Desktop')
+
+    elif path.exists(_expand_norm_path('./Documents')):
+        return _expand_norm_path('~/Documents')
         
     else:
-        return path.expanduser('~/')
+        return _expand_norm_path('~/')

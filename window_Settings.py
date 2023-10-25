@@ -9,31 +9,38 @@ import json
 
 wUi, wBase = uic.loadUiType('./uiDesigns/settingsWindow.ui') # Load the .ui file
 
-userSettingDir = './localSettings.user.json'
-defaultSettingDir = './localSettings.default.json'
 
-class localSettings:
-    def __init__(self, jsonDir) -> None:
-        with open(jsonDir) as jFile:
-            jSettings = json.load(jFile)
+class localSettings(QtCore.QSettings):
 
-        self.settingDict = jSettings
+    with open('./localSettings.default.json') as jFile:
+        default_jSetting = json.load(jFile)
+
+    def __init__(self, testMode=False) -> None:
+        super().__init__(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,'EasyFlowQ', 'EasyFlowQ_v1')
+        # print(self.format(), self.fileName(), sep='\t')
+        self.testMode = testMode
     
-    def saveToUserJson(self, parentWedget=None):
-        try:
-            with open(userSettingDir, 'w+') as f:
-                json.dump(self.settingDict, f, sort_keys=True, indent=4)
-                pass
-        except PermissionError:
-            QtWidgets.QMessageBox.warning(parentWedget, 'Permission Error', 
-                                          'Cannot write settings to the directory. It is likely you do not have permission to write to the directory. \n' +
-                                          'Settings that does not require restart are applied, but will lost on when you restart')
-        
-        except Exception:
-            QtWidgets.QMessageBox.warning(parentWedget, 'Unknown Error', 
-                                          'Unknown error encountered while writting the settings. It is likely you do not have permission to write to the directory. \n' + 
-                                          'Settings that does not require restart are applied, but will lost on when you restart')
+    def __getitem__(self, key):
+        qValue = self.value(key, defaultValue=self.default_jSetting[key])
 
+        if self.testMode and (key == 'default dir'):
+            return path.abspath('./demoSamples')
+
+        if key in ["dot N in perf mode"]:
+            return int(qValue)
+        elif key in ["plot dpi scale", "version"]:
+            return float(qValue)
+        else:
+            return qValue
+
+    def __setitem__(self, key, value):
+        self.setValue(key, value)
+
+    def verEntryExists(self):
+        if not self.contains('version'):
+            self.setValue('version', self.default_jSetting['version'])
+            return False
+        return True
 
 class settingsWindow(wUi, wBase):
     newLocalSettingConfimed = QtCore.pyqtSignal(localSettings)
@@ -53,32 +60,27 @@ class settingsWindow(wUi, wBase):
 
         self.dotNEdit.setValidator(QtGui.QIntValidator(100, 1e6, self.dotNEdit))
 
-        if path.exists(userSettingDir):
-            self.settings = localSettings(userSettingDir)
-        else:
-            self.settings = localSettings(defaultSettingDir)
+        self.settings = localSettings()
 
-        self.jsonLoadSettings()
+        self.loadSettings()
 
         self.browsePB.clicked.connect(self.handle_Browse)
         self.OKPB.clicked.connect(self.handle_return)
         self.defaultPB.clicked.connect(self.handle_restoreDefault)
 
-    def jsonLoadSettings(self):
-        jSettings = self.settings.settingDict
+    def loadSettings(self):
 
-        if path.isdir(jSettings['default dir']):
-            self.dirEdit.setText(path.abspath(jSettings['default dir']))
+        if path.isdir(self.settings['default dir']):
+            self.dirEdit.setText(path.abspath(self.settings['default dir']))
         else:
             self.dirEdit.setText(getSysDefaultDir())
 
-        self.dotNEdit.setText('{0:d}'.format(jSettings['dot N in perf mode']))
-        self.dpiSpinBox.setValue(jSettings['plot dpi scale'])
+        self.dotNEdit.setText('{0:d}'.format(self.settings['dot N in perf mode']))
+        self.dpiSpinBox.setValue(self.settings['plot dpi scale'])
 
 
     def handle_Browse(self):
         defaultDir = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select the default directory', './')
-
         if not defaultDir:
             return
 
@@ -86,19 +88,26 @@ class settingsWindow(wUi, wBase):
 
     def handle_return(self):
 
-        self.settings.settingDict['default dir'] = self.dirEdit.text()
-        self.settings.settingDict['dot N in perf mode'] = int(self.dotNEdit.text())
-        self.settings.settingDict['plot dpi scale'] = self.dpiSpinBox.value()
-
-        self.settings.saveToUserJson(parentWedget = self)
+        self.settings['default dir'] = self.dirEdit.text()
+        self.settings['dot N in perf mode'] = int(self.dotNEdit.text())
+        self.settings['plot dpi scale'] = self.dpiSpinBox.value()
 
         self.newLocalSettingConfimed.emit(self.settings)
         self.close()
 
     def handle_restoreDefault(self):
-        self.settings = localSettings(defaultSettingDir)
-        self.jsonLoadSettings()
-        pass
+        if path.isdir(self.settings.default_jSetting['default dir']):
+            self.dirEdit.setText(path.abspath(self.settings.default_jSetting['default dir']))
+        else:
+            self.dirEdit.setText(getSysDefaultDir())
+
+        self.dotNEdit.setText('{0:d}'.format(self.settings.default_jSetting['dot N in perf mode']))
+        self.dpiSpinBox.setValue(self.settings.default_jSetting['plot dpi scale'])
 
 if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    settings = localSettings()
+    sWindow = settingsWindow()
+    sWindow.show()
+    sys.exit(app.exec_())
     pass

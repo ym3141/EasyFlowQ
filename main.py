@@ -16,9 +16,6 @@ from window_Settings import localSettings
 from multiprocessing import Process
 from traceback import format_exception
 
-# setup the version number. Remember to also change in the "localSettings.default.json" file.
-curVer = 1.2
-
 # set up the excepthook so unhandled exception won't crash the program
 _excepthook = sys.excepthook
 def myexcepthook(type, value, traceback):
@@ -31,26 +28,16 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
 
     app = QtWidgets.QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_DisableHighDpiScaling, True)
+    # app.setAttribute(QtCore.Qt.AA_DisableHighDpiScaling, True)
 
-    if path.exists('./localSettings.user.json'):
-        # there is a user setting, load it
-        setting = localSettings('./localSettings.user.json')
+    settings = localSettings()
+    mainW = mainUi(settings, sessionSaveFile=sessionSaveFile, pos=pos)
+    mainW.requestNewWindow.connect(newWindowProc)
+    mainW.show()
 
-        if setting.settingDict['version'] < curVer:
-            setting.settingDict['version'] = curVer
-            setting.saveToUserJson()
-
-        mainW = mainUi(setting, sessionSaveFile=sessionSaveFile, pos=pos)
-
-    else:
-        setting = localSettings('./localSettings.default.json')
-        mainW = mainUi(setting, sessionSaveFile=sessionSaveFile, pos=pos)
+    if not settings.verEntryExists():
         mainW.handle_Settings(firstTime=True)
 
-    mainW.requestNewWindow.connect(newWindowProc)
-
-    mainW.show()
     sys.exit(app.exec_())
 
 def newWindowProc(sessionSaveFile, pos):
