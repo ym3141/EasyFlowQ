@@ -176,10 +176,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         # load the session if there is a session save file:
         if sessionSaveFile:
             sessionSave.loadSessionSave(self, sessionSaveFile)
-            self.saveFlag = False
             self.set_sessionSavePath(sessionSaveFile)
             self.holdFigureUpdate = False
             self.handle_One()
+            self.set_saveFlag(False)
 
         self.updateWinTitle()
 
@@ -901,7 +901,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1}{2})'.format(self.version, ('*' if self.saveFlag else ''), pathStr)) 
 
     def isWindowAlmostNew(self):
-        return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemount() and self.gateListWidget.count())
+        return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())
 
     @property
     def dir4Save(self):
