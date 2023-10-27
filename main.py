@@ -20,8 +20,12 @@ from traceback import format_exception
 _excepthook = sys.excepthook
 def myexcepthook(type, value, traceback):
     except_msg = ''.join(format_exception(type, value, traceback))
-    QtWidgets.QMessageBox.critical(None, 'Unexpected exception encountered', 
-        '{0} \n\nThis likely won\'t crash EasyFlowQ, but we recommend save a copy of the session, and restart if anything looks off'.format(except_msg))
+    msgBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Unexpected exception',
+                                   'A unexpected exception cncountered! \n\nThis likely won\'t crash EasyFlowQ, but we recommend save a copy of the session, and restart if anything looks off',
+                                   QtWidgets.QMessageBox.Ok, None)
+    msgBox.setDetailedText(except_msg)
+    msgBox.exec_()
+
     _excepthook(type, value, traceback)
 
 def newWindowFunc(sessionSaveFile=None, pos=None):
