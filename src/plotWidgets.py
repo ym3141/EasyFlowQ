@@ -275,7 +275,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     else:
                         inGateFracText = 'N/A'
 
-                    self.ax.annotate('Gate:{0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
+                    self.ax.annotate('Gate: {0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
                                      xy=[np.mean(selectedGate.ends), 0.5 * ymax_histo], textcoords='offset points', xytext=(0, 30), 
                                      bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
                                      horizontalalignment='left', verticalalignment='top', annotation_clip=True)
