@@ -13,7 +13,7 @@ from window_Main import mainUi
 
 from window_Settings import localSettings
 
-from multiprocessing import Process
+from multiprocessing import Process, freeze_support
 from traceback import format_exception
 
 # set up the excepthook so unhandled exception won't crash the program
@@ -53,4 +53,5 @@ def newWindowProc(sessionSaveFile, pos):
     newProcess.start()
 
 if __name__ == "__main__":
+    freeze_support()
     newWindowFunc()
