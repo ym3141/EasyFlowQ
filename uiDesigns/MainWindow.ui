@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1600</width>
-    <height>1080</height>
+    <width>1151</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,12 +15,27 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QGroupBox" name="smplBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimumSize">
        <size>
-        <width>320</width>
+        <width>235</width>
         <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>235</width>
+        <height>16777215</height>
        </size>
       </property>
       <property name="title">
@@ -44,7 +59,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>120</height>
+           <height>80</height>
           </size>
          </property>
          <property name="frameShape">
@@ -56,10 +71,10 @@
          <widget class="QPushButton" name="colorPB">
           <property name="geometry">
            <rect>
-            <x>190</x>
+            <x>160</x>
             <y>0</y>
-            <width>121</width>
-            <height>34</height>
+            <width>71</width>
+            <height>21</height>
            </rect>
           </property>
           <property name="text">
@@ -75,8 +90,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>181</width>
-            <height>34</height>
+            <width>101</width>
+            <height>21</height>
            </rect>
           </property>
           <property name="text">
@@ -87,9 +102,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>40</y>
-            <width>91</width>
-            <height>31</height>
+            <y>25</y>
+            <width>71</width>
+            <height>21</height>
            </rect>
           </property>
           <property name="text">
@@ -99,10 +114,10 @@
          <widget class="QPushButton" name="collapseAllPB">
           <property name="geometry">
            <rect>
-            <x>90</x>
-            <y>40</y>
-            <width>91</width>
-            <height>31</height>
+            <x>70</x>
+            <y>25</y>
+            <width>71</width>
+            <height>21</height>
            </rect>
           </property>
           <property name="text">
@@ -112,10 +127,10 @@
          <widget class="QPushButton" name="selectRootsPB">
           <property name="geometry">
            <rect>
-            <x>190</x>
-            <y>40</y>
-            <width>121</width>
-            <height>31</height>
+            <x>140</x>
+            <y>25</y>
+            <width>91</width>
+            <height>21</height>
            </rect>
           </property>
           <property name="text">
@@ -126,8 +141,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>85</y>
-            <width>131</width>
+            <y>50</y>
+            <width>121</width>
             <height>21</height>
            </rect>
           </property>
@@ -138,10 +153,10 @@
          <widget class="QLineEdit" name="searchSmplEdit">
           <property name="geometry">
            <rect>
-            <x>140</x>
-            <y>80</y>
-            <width>171</width>
-            <height>31</height>
+            <x>120</x>
+            <y>50</y>
+            <width>111</width>
+            <height>21</height>
            </rect>
           </property>
           <property name="placeholderText">
@@ -188,6 +203,12 @@
     </item>
     <item>
      <widget class="QFrame" name="midFrame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -218,7 +239,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>160</height>
+           <height>115</height>
           </size>
          </property>
          <property name="frameShape">
@@ -244,7 +265,7 @@
            <widget class="QGroupBox" name="toolBox">
             <property name="minimumSize">
              <size>
-              <width>560</width>
+              <width>420</width>
               <height>0</height>
              </size>
             </property>
@@ -254,28 +275,28 @@
             <widget class="QComboBox" name="yComboBox">
              <property name="geometry">
               <rect>
-               <x>290</x>
-               <y>50</y>
-               <width>251</width>
-               <height>25</height>
+               <x>210</x>
+               <y>40</y>
+               <width>191</width>
+               <height>21</height>
               </rect>
              </property>
             </widget>
             <widget class="QComboBox" name="xComboBox">
              <property name="geometry">
               <rect>
-               <x>20</x>
-               <y>50</y>
-               <width>251</width>
-               <height>25</height>
+               <x>10</x>
+               <y>40</y>
+               <width>191</width>
+               <height>21</height>
               </rect>
              </property>
             </widget>
             <widget class="QLabel" name="label_4">
              <property name="geometry">
               <rect>
-               <x>20</x>
-               <y>30</y>
+               <x>10</x>
+               <y>20</y>
                <width>68</width>
                <height>19</height>
               </rect>
@@ -287,8 +308,8 @@
             <widget class="QLabel" name="label_5">
              <property name="geometry">
               <rect>
-               <x>290</x>
-               <y>30</y>
+               <x>210</x>
+               <y>20</y>
                <width>68</width>
                <height>19</height>
               </rect>
@@ -300,9 +321,9 @@
             <widget class="QCheckBox" name="perfCheck">
              <property name="geometry">
               <rect>
-               <x>20</x>
-               <y>90</y>
-               <width>261</width>
+               <x>10</x>
+               <y>60</y>
+               <width>291</width>
                <height>20</height>
               </rect>
              </property>
@@ -325,9 +346,9 @@
             <widget class="QCheckBox" name="showLegendCheck">
              <property name="geometry">
               <rect>
-               <x>20</x>
-               <y>120</y>
-               <width>211</width>
+               <x>10</x>
+               <y>80</y>
+               <width>301</width>
                <height>20</height>
               </rect>
              </property>
@@ -350,7 +371,7 @@
            <widget class="QGroupBox" name="groupBox">
             <property name="minimumSize">
              <size>
-              <width>270</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
@@ -361,9 +382,9 @@
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>30</y>
+               <y>20</y>
                <width>81</width>
-               <height>31</height>
+               <height>21</height>
               </rect>
              </property>
              <property name="text">
@@ -374,9 +395,9 @@
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>70</y>
-               <width>141</width>
-               <height>34</height>
+               <y>50</y>
+               <width>111</width>
+               <height>21</height>
               </rect>
              </property>
              <property name="text">
@@ -387,9 +408,9 @@
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>110</y>
-               <width>221</width>
-               <height>34</height>
+               <y>75</y>
+               <width>171</width>
+               <height>21</height>
               </rect>
              </property>
              <property name="text">
@@ -399,10 +420,10 @@
             <widget class="QPushButton" name="compExportPB">
              <property name="geometry">
               <rect>
-               <x>190</x>
-               <y>60</y>
-               <width>71</width>
-               <height>34</height>
+               <x>130</x>
+               <y>45</y>
+               <width>51</width>
+               <height>21</height>
               </rect>
              </property>
              <property name="text">
@@ -412,10 +433,10 @@
             <widget class="QPushButton" name="compImportPB">
              <property name="geometry">
               <rect>
-               <x>190</x>
+               <x>130</x>
                <y>20</y>
-               <width>71</width>
-               <height>34</height>
+               <width>51</width>
+               <height>21</height>
               </rect>
              </property>
              <property name="text">
@@ -423,6 +444,19 @@
              </property>
             </widget>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -448,6 +482,18 @@
     </item>
     <item>
      <widget class="QFrame" name="rightFrame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>250</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -477,7 +523,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>320</width>
+           <width>250</width>
            <height>0</height>
           </size>
          </property>
@@ -499,8 +545,8 @@
             <widget class="QFrame" name="frame">
              <property name="minimumSize">
               <size>
-               <width>256</width>
-               <height>32</height>
+               <width>0</width>
+               <height>0</height>
               </size>
              </property>
              <property name="maximumSize">
@@ -539,7 +585,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>30</height>
+                  <height>25</height>
                  </size>
                 </property>
                 <property name="text">
@@ -557,8 +603,8 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>40</width>
-                  <height>30</height>
+                  <width>30</width>
+                  <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -624,8 +670,8 @@
             <widget class="QFrame" name="frame_2">
              <property name="minimumSize">
               <size>
-               <width>256</width>
-               <height>32</height>
+               <width>0</width>
+               <height>0</height>
               </size>
              </property>
              <property name="maximumSize">
@@ -664,7 +710,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>30</height>
+                  <height>25</height>
                  </size>
                 </property>
                 <property name="text">
@@ -683,7 +729,7 @@
                 <property name="minimumSize">
                  <size>
                   <width>40</width>
-                  <height>30</height>
+                  <height>25</height>
                  </size>
                 </property>
                 <property name="maximumSize">
@@ -734,8 +780,8 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>530</height>
+           <width>250</width>
+           <height>350</height>
           </size>
          </property>
          <property name="frameShape">
@@ -756,7 +802,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1600</width>
+     <width>1151</width>
      <height>21</height>
     </rect>
    </property>

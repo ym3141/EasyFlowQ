@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>560</height>
+    <width>252</width>
+    <height>347</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -50,6 +50,12 @@
       <bool>true</bool>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
       <item>
        <widget class="QRadioButton" name="dotRadio">
         <property name="text">
@@ -85,6 +91,9 @@
       <bool>true</bool>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <property name="topMargin">
+       <number>3</number>
+      </property>
       <property name="bottomMargin">
        <number>3</number>
       </property>
@@ -98,13 +107,13 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <property name="spacing">
-          <number>2</number>
+          <number>1</number>
          </property>
          <property name="topMargin">
-          <number>5</number>
+          <number>3</number>
          </property>
          <property name="bottomMargin">
-          <number>5</number>
+          <number>3</number>
          </property>
          <item>
           <widget class="QRadioButton" name="xLinRadio">
@@ -143,13 +152,13 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
-          <number>2</number>
+          <number>1</number>
          </property>
          <property name="topMargin">
-          <number>5</number>
+          <number>3</number>
          </property>
          <property name="bottomMargin">
-          <number>5</number>
+          <number>3</number>
          </property>
          <item>
           <widget class="QRadioButton" name="yLinRadio">
@@ -186,7 +195,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>61</height>
+       <height>50</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -205,8 +214,8 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>30</y>
-        <width>71</width>
+        <y>20</y>
+        <width>51</width>
         <height>20</height>
        </rect>
       </property>
@@ -223,9 +232,9 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>40</y>
-        <width>71</width>
+        <x>80</x>
+        <y>20</y>
+        <width>61</width>
         <height>22</height>
        </rect>
       </property>
@@ -233,11 +242,27 @@
        <string notr="true">0</string>
       </property>
      </widget>
+     <widget class="QLineEdit" name="xlimMaxEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>20</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </widget>
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>20</y>
+        <x>80</x>
+        <y>10</y>
         <width>31</width>
         <height>16</height>
        </rect>
@@ -249,30 +274,14 @@
      <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>190</x>
-        <y>20</y>
+        <x>160</x>
+        <y>10</y>
         <width>41</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
        <string>max:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="xlimMaxEdit">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>40</y>
-        <width>71</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string notr="true">1</string>
       </property>
      </widget>
     </widget>
@@ -282,7 +291,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>61</height>
+       <height>50</height>
       </size>
      </property>
      <property name="maximumSize">
@@ -304,8 +313,8 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>30</y>
-        <width>71</width>
+        <y>20</y>
+        <width>51</width>
         <height>20</height>
        </rect>
       </property>
@@ -316,15 +325,31 @@
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="QLineEdit" name="ylimMaxEdit">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>20</y>
+        <width>61</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </widget>
      <widget class="QLineEdit" name="ylimMinEdit">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>40</y>
-        <width>71</width>
+        <x>80</x>
+        <y>20</y>
+        <width>61</width>
         <height>22</height>
        </rect>
       </property>
@@ -335,8 +360,8 @@
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
-        <x>110</x>
-        <y>20</y>
+        <x>80</x>
+        <y>10</y>
         <width>31</width>
         <height>16</height>
        </rect>
@@ -348,30 +373,14 @@
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>190</x>
-        <y>20</y>
+        <x>160</x>
+        <y>10</y>
         <width>41</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
        <string>max:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="ylimMaxEdit">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>200</x>
-        <y>40</y>
-        <width>71</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string notr="true">1</string>
       </property>
      </widget>
     </widget>
@@ -390,7 +399,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>95</height>
+       <height>60</height>
       </size>
      </property>
      <property name="title">
@@ -403,7 +412,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>30</y>
+        <y>15</y>
         <width>110</width>
         <height>23</height>
        </rect>
@@ -419,7 +428,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>60</y>
+        <y>35</y>
         <width>165</width>
         <height>23</height>
        </rect>
@@ -431,8 +440,8 @@
      <widget class="QRadioButton" name="norm2CountRadio">
       <property name="geometry">
        <rect>
-        <x>160</x>
-        <y>30</y>
+        <x>150</x>
+        <y>15</y>
         <width>103</width>
         <height>23</height>
        </rect>
@@ -461,6 +470,9 @@
       <bool>true</bool>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
       <item>
        <widget class="QSlider" name="smoothSlider">
         <property name="sizePolicy">

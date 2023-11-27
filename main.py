@@ -31,8 +31,9 @@ def myexcepthook(type, value, traceback):
 def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
 
+    environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
     app = QtWidgets.QApplication(sys.argv)
-    # app.setAttribute(QtCore.Qt.AA_DisableHighDpiScaling, True)
+    app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     settings = localSettings()
     mainW = mainUi(settings, sessionSaveFile=sessionSaveFile, pos=pos)
