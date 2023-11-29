@@ -22,8 +22,8 @@ class compWindow(wUi, wBase):
 
         # Setting up the UIs
         self.ylabelFrame.layout().addWidget(verticalLabel('Signal spill from (fluorophore):'))
-        self.autoFluoTable.verticalHeader().setMaximumSize(125, 16777215)
-        self.autoFluoTable.horizontalHeader().setMaximumSectionSize(125)
+        self.autoFluoTable.verticalHeader().setMaximumSize(120, 16777215)
+        self.autoFluoTable.horizontalHeader().setMaximumSectionSize(80)
 
         # link the vertical scrollbars
         self.spillMatTable.verticalScrollBar().valueChanged.connect(self.autoFluoTable.verticalScrollBar().setValue)

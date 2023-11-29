@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1530</width>
-    <height>800</height>
+    <width>960</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,15 +80,20 @@
     <widget class="QTableView" name="autoFluoTable">
      <property name="maximumSize">
       <size>
-       <width>300</width>
+       <width>200</width>
        <height>16777215</height>
       </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
      </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOn</enum>
      </property>
      <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>100</number>
+      <number>80</number>
      </attribute>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
@@ -97,11 +102,16 @@
    </item>
    <item row="1" column="2">
     <widget class="QTableView" name="spillMatTable">
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOn</enum>
      </property>
      <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>100</number>
+      <number>60</number>
      </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>

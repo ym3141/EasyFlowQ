@@ -32,8 +32,9 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
 
     environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     settings = localSettings()
     mainW = mainUi(settings, sessionSaveFile=sessionSaveFile, pos=pos)

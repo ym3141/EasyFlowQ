@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
+    <width>960</width>
     <height>650</height>
    </rect>
   </property>
@@ -72,7 +72,7 @@
           <bool>true</bool>
          </property>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>170</number>
+          <number>125</number>
          </attribute>
         </widget>
        </item>
