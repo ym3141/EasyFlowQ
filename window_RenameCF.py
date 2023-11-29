@@ -30,6 +30,9 @@ class renameWindow_CF(wUi, wBase):
             if not (reMatch is None):
                 self.splitNames.append((int(reMatch.group(1)), reMatch.group(3), int(reMatch.group(4))))
 
+        if len(self.splitNames) == 0:
+            raise RuntimeError('Cannot detect any samples with the Cytoflex naming format.')
+
         self.renames = None
 
         # Determine the max plate number

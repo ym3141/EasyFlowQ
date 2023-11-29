@@ -354,14 +354,20 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_RenameForCF(self):
         if not self.smplTreeWidget.topLevelItemCount():
-            msgBox = QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
+            QtWidgets.QMessageBox.warning(self, 'Error', 'No samples to rename')
             return
 
         smplNameList = [self.smplTreeWidget.topLevelItem(idx).fcsFileName for idx in range(self.smplTreeWidget.topLevelItemCount())]
-        self.renameWindow = renameWindow_CF(self.dir4Save, smplNameList)
-        self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
-        self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
-        self.renameWindow.show()
+
+        try:
+            self.renameWindow = renameWindow_CF(self.dir4Save, smplNameList)
+            self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
+            self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
+            self.renameWindow.show()
+
+        except RuntimeError as e:
+            QtWidgets.QMessageBox.warning(self, 'Error', e.args[0])
+            return
 
     def handle_RenameMap(self):
         if not self.smplTreeWidget.topLevelItemCount():
