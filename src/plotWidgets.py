@@ -189,7 +189,7 @@ class plotCanvas(FigureCanvasQTAgg):
                         inGateFracText = 'N/A'
 
                     UR_point = np.max(selectedGate.verts, axis=0)
-                    self.ax.annotate('Gate:{0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
+                    self.ax.annotate('Gate: {0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
                                      xy=UR_point, textcoords='offset points', xytext=(-20, -10), 
                                      bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
                                      horizontalalignment='right', verticalalignment='top', annotation_clip=True)

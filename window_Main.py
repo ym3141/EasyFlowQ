@@ -172,6 +172,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
         self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
         self.clearGatePB.clicked.connect(lambda : self.gateListWidget.clearSelection())
+        self.axisSwapPB.clicked.connect(self.handle_SwapAxis)
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -238,12 +239,22 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_LoadData(self):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.dir4Save, filter='*.fcs')
+
+        loadingBarDiag = QtWidgets.QProgressDialog('Initializing...', None, 0, len(fileNames) + 1, self)
+        loadingBarDiag.setMinimumDuration(500)
+        loadingBarDiag.setWindowTitle('Loading FCS files...')
+        loadingBarDiag.setWindowModality(QtCore.Qt.WindowModal)
+        loadingBarDiag.setValue(0)
+        
         newColorList = self.colorGen.giveColors(len(fileNames))
 
-        for fileName, newColor in zip(fileNames, newColorList):
-            self.loadFcsFile(fileName, newColor)
+        for idx in range(len(fileNames)):
+            loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
+            loadingBarDiag.setValue(idx + 1)
+            self.loadFcsFile(fileNames[idx], newColorList[idx])
 
         self.smplTreeWidget.resizeColumnToContents(0)
+        loadingBarDiag.setValue(idx + 2)
 
     def handle_AddSubpops(self):
         selectedSmpls = self.smplTreeWidget.selectedItems()
@@ -446,6 +457,15 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def handle_NewSetting(self, newSetting):
         self.settingDict = newSetting
+
+    def handle_SwapAxis(self):
+        self.holdFigureUpdate = True
+        xAxisTempIndex = self.xComboBox.currentIndex()
+        self.xComboBox.setCurrentIndex(self.yComboBox.currentIndex())
+        self.yComboBox.setCurrentIndex(xAxisTempIndex)
+
+        self.holdFigureUpdate = False
+        self.handle_One()
 
     def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
         self.statusbar.showMessage(prefixText + curName)
