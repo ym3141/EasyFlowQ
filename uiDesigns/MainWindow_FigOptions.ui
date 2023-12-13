@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>252</width>
-    <height>347</height>
+    <width>220</width>
+    <height>325</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -15,6 +15,11 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>7</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -232,7 +237,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>70</x>
         <y>20</y>
         <width>61</width>
         <height>22</height>
@@ -248,7 +253,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>140</x>
         <y>20</y>
         <width>61</width>
         <height>22</height>
@@ -261,7 +266,7 @@
      <widget class="QLabel" name="label_3">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>70</x>
         <y>10</y>
         <width>31</width>
         <height>16</height>
@@ -274,7 +279,7 @@
      <widget class="QLabel" name="label_6">
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>140</x>
         <y>10</y>
         <width>41</width>
         <height>16</height>
@@ -331,7 +336,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>140</x>
         <y>20</y>
         <width>61</width>
         <height>22</height>
@@ -347,7 +352,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>70</x>
         <y>20</y>
         <width>61</width>
         <height>22</height>
@@ -360,7 +365,7 @@
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
-        <x>80</x>
+        <x>70</x>
         <y>10</y>
         <width>31</width>
         <height>16</height>
@@ -373,7 +378,7 @@
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>160</x>
+        <x>140</x>
         <y>10</y>
         <width>41</width>
         <height>16</height>
@@ -413,7 +418,7 @@
        <rect>
         <x>20</x>
         <y>15</y>
-        <width>110</width>
+        <width>91</width>
         <height>23</height>
        </rect>
       </property>
@@ -440,9 +445,9 @@
      <widget class="QRadioButton" name="norm2CountRadio">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>130</x>
         <y>15</y>
-        <width>103</width>
+        <width>81</width>
         <height>23</height>
        </rect>
       </property>
