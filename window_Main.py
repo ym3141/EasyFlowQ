@@ -3,7 +3,7 @@ import matplotlib
 import json
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from os import path, startfile
+from os import path, startfile, environ
 
 from src.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
@@ -20,6 +20,7 @@ from window_Comp import compWindow
 from wizard_Comp import compWizard
 
 from uiDesigns.MainWindow_FigOptions import mainUI_figOps
+from uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
 
 matplotlib.use('QT5Agg')
 
@@ -58,13 +59,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.renameWindow = None
         self.settingsWindow = None
         self.compWindow = compWindow()
-        self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.dir4Save,
+        self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.get_dir4Save(),
                                      lambda : self.curGateItems, 
                                      lambda : self.curQuadSplitItem)
         self.aboutWindow = aboutWindow()
 
         # add the matplotlib ui
-        matplotlib.rcParams['savefig.directory'] = self.dir4Save
+        matplotlib.rcParams['savefig.directory'] = self.get_dir4Save()
 
         self.mpl_canvas = plotCanvas(dpiScale=self.settingDict['plot dpi scale'])
 
@@ -81,6 +82,17 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.figOpsPanel = mainUI_figOps(self.figOpsFrame)
         self.figOpsLayout.addWidget(self.figOpsPanel)
 
+        # add the sample section
+        self.smplSect = mainUi_SmplSect(self, self.colorGen)
+        self.smplBox.layout().addWidget(self.smplSect)
+
+        self.smplSect.to_handle_One.connect(self.handle_One)
+        self.smplSect.holdFigure.connect(self.handle_HoldFigure)
+
+        self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
+        self.smplSect.actionAdd_subpops_Current_gating.triggered.connect(self.handle_AddSubpops)
+        self.smplSect.actionDelete_sample.triggered.connect(self.handle_DeleteSmpls)
+        self.smplTreeWidget = self.smplSect.smplTreeWidget
 
         # init ui models
         self.gateListWidgetModel = self.gateListWidget.model()
@@ -92,8 +104,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         # add actions to context memu
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
         self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
-        self.smplTreeWidget.addActions([self.actionAdd_Sub_pops_Current_Gating])
-        self.smplTreeWidget.addActions([self.actionDelete_sample])
 
         # add the secret testing shortcut
         secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
@@ -110,7 +120,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
         self.actionExport_data_in_current_gates.triggered.connect(self.handle_ExportDataInGates)
-        self.actionDelete_sample.triggered.connect(self.handle_DeleteSmpls)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
@@ -127,18 +136,8 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
         self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
         self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
-        self.actionAdd_Sub_pops_Current_Gating.triggered.connect(self.handle_AddSubpops)
-
-        # Sample manager
-        self.expandAllPB.clicked.connect(lambda : self.handle_ExpandCollapseSmplTree(expand=True))
-        self.collapseAllPB.clicked.connect(lambda : self.handle_ExpandCollapseSmplTree(expand=False))
-        self.selectRootsPB.clicked.connect(self.handle_SelectAllRoots)
-        self.searchSmplEdit.returnPressed.connect(self.handle_searchSmplTree)
 
         # everything update figure
-        self.smplTreeWidget.itemChanged.connect(self.handle_One)
-        self.smplTreeWidget.itemSelectionChanged.connect(self.handle_One)
-
         self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
 
         self.gateListWidget.itemChanged.connect(self.handle_One)
@@ -169,7 +168,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.compWindow.compValueEdited.connect(lambda : self.set_saveFlag(True))
 
         # others
-        self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
         self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
         self.clearGatePB.clicked.connect(lambda : self.gateListWidget.clearSelection())
         self.axisSwapPB.clicked.connect(self.handle_SwapAxis)
@@ -238,7 +236,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplsOnPlot = smplsOnPlot
 
     def handle_LoadData(self):
-        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.dir4Save, filter='*.fcs')
+        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
 
         loadingBarDiag = QtWidgets.QProgressDialog('Initializing...', None, 0, len(fileNames) + 1, self)
         loadingBarDiag.setMinimumDuration(500)
@@ -248,6 +246,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         newColorList = self.colorGen.giveColors(len(fileNames))
 
+        idx = 0
         for idx in range(len(fileNames)):
             loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
             loadingBarDiag.setValue(idx + 1)
@@ -315,7 +314,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
     def handle_OpenSession(self):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.dir4Save, filter='*.eflq')
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.get_dir4Save(), filter='*.eflq')
         if not openFileDir:
             return
         # print(openFileDir)
@@ -343,7 +342,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.handle_SaveAs()
 
     def handle_SaveAs(self):
-        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.dir4Save, filter='*.eflq')
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.get_dir4Save(), filter='*.eflq')
         if not saveFileDir:
             return
 
@@ -371,7 +370,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         smplNameList = [self.smplTreeWidget.topLevelItem(idx).fcsFileName for idx in range(self.smplTreeWidget.topLevelItemCount())]
 
         try:
-            self.renameWindow = renameWindow_CF(self.dir4Save, smplNameList)
+            self.renameWindow = renameWindow_CF(self.get_dir4Save(), smplNameList)
             self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
             self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
             self.renameWindow.show()
@@ -386,7 +385,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             return
 
         smplNameList = [self.smplTreeWidget.topLevelItem(idx).fcsFileName for idx in range(self.smplTreeWidget.topLevelItemCount())]
-        self.renameWindow = renameWindow_Map(self.dir4Save, smplNameList)
+        self.renameWindow = renameWindow_Map(self.get_dir4Save(), smplNameList)
         self.renameWindow.setWindowModality(QtCore.Qt.ApplicationModal)
         self.renameWindow.renameConfirmed.connect(self.handle_RenameReturn)
         self.renameWindow.show()
@@ -433,19 +432,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statWindow.raise_()
         self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
         pass
-
-
-    def handle_ChangeSmplColor(self):
-        colorDiag = QtWidgets.QColorDialog()
-        cstmColors = self.colorGen.giveColors_div(colorDiag.customCount())
-        for idx, cstmColor in enumerate(cstmColors):
-            colorDiag.setCustomColor(idx, QtGui.QColor.fromRgbF(*cstmColor))
-
-        color = colorDiag.getColor(initial=QtGui.QColor('black'))
-
-        if color.isValid():
-            for item in self.smplTreeWidget.selectedItems():
-                item.plotColor = color
 
     def handle_Settings(self, firstTime=False):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
@@ -620,13 +606,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         pass
 
     def handle_CompWizard(self):
-        compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.dir4Save,
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.get_dir4Save(),
                                    self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
         compWizDialog.show()
 
     def handle_ExportComp(self):
         jDict = self.compWindow.to_json()
-        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.dir4Save, filter='*.efComp')
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.get_dir4Save(), filter='*.efComp')
         if not saveFileDir:
             return
 
@@ -634,7 +620,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             json.dump(jDict, f, sort_keys=True, indent=4)
 
     def handle_ImportComp(self):        
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Import compensation', self.dir4Save, filter='*.efComp')
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Import compensation', self.get_dir4Save(), filter='*.efComp')
         if not openFileDir:
             return 
         
@@ -646,38 +632,6 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.compWindow.load_json(jDict)
 
         self.statusbar.removeWidget(self.progBar)
-
-    def handle_ExpandCollapseSmplTree(self, expand=True):
-        treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
-        while treeIterator.value():
-            if expand:
-                treeIterator.value().setExpanded(True)
-            else:
-                treeIterator.value().setExpanded(False)
-            treeIterator += 1
-
-    def handle_SelectAllRoots(self):
-        self.holdFigureUpdate = True
-        self.smplTreeWidget.clearSelection()
-        for idx in range(self.smplTreeWidget.topLevelItemCount()):
-            self.smplTreeWidget.topLevelItem(idx).setSelected(True)
-        self.holdFigureUpdate = False
-        self.handle_One()
-
-    def handle_searchSmplTree(self):
-        self.holdFigureUpdate = True
-        self.smplTreeWidget.clearSelection()
-
-        keyword = self.searchSmplEdit.text()
-        treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
-        while treeIterator.value():
-            smplItem = treeIterator.value()
-            if keyword in smplItem.text(0):
-                smplItem.setSelected(True)
-            treeIterator += 1
-        
-        self.holdFigureUpdate = False
-        self.handle_One()
 
     def handle_DeleteSmpls(self):
         curSelected = self.smplTreeWidget.selectedItems()
@@ -700,7 +654,9 @@ class mainUi(mainWindowBase, mainWindowUi):
                     deletedItem = self.smplTreeWidget.takeTopLevelItem(deleteIdx)
                     del deletedItem
             self.handle_One()
-        pass
+
+    def handle_HoldFigure(self, holdFlag):
+        self.holdFigureUpdate = holdFlag
         
     def closeEvent(self, event: QtGui.QCloseEvent):
         if self.statWindow.isVisible():
@@ -929,17 +885,15 @@ class mainUi(mainWindowBase, mainWindowUi):
     def isWindowAlmostNew(self):
         return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())
 
-    @property
-    def dir4Save(self):
+    def get_dir4Save(self):
         if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
             return path.dirname(self.sessionSavePath)
-        elif self.smplTreeWidget.topLevelItemCount() > 0:
+        elif hasattr(self, 'smplTreeWidget') and self.smplTreeWidget.topLevelItemCount() > 0:
             return path.dirname(self.smplTreeWidget.topLevelItem(0).fileDir)
         elif path.exists(self.settingDict['default dir']):
             return self.settingDict['default dir']
         else:
             return path.abspath(getSysDefaultDir())
-
 
 if __name__ == '__main__':
 
@@ -949,7 +903,14 @@ if __name__ == '__main__':
 
     sys.excepthook = myexcepthook
 
+    environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
+    appFont = app.font()
+    print(appFont.pointSize())
+    appFont.setPointSize(7)
+    app.setFont(appFont)
 
     testSettings = localSettings(testMode=True)
     window = mainUi(testSettings)

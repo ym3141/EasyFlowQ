@@ -33,7 +33,7 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>215</width>
+        <width>205</width>
         <height>0</height>
        </size>
       </property>
@@ -62,150 +62,6 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QFrame" name="frame_3">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>80</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QPushButton" name="colorPB">
-          <property name="geometry">
-           <rect>
-            <x>140</x>
-            <y>0</y>
-            <width>71</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Color</string>
-          </property>
-          <property name="icon">
-           <iconset resource="resource/qt_resource.qrc">
-            <normaloff>:/icons/PelatteIcon2.tif</normaloff>:/icons/PelatteIcon2.tif</iconset>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="loadDataPB">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>101</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Load data (.fcs)</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="expandAllPB">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>25</y>
-            <width>61</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Expand all</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="collapseAllPB">
-          <property name="geometry">
-           <rect>
-            <x>65</x>
-            <y>25</y>
-            <width>61</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Collapse all</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="selectRootsPB">
-          <property name="geometry">
-           <rect>
-            <x>130</x>
-            <y>25</y>
-            <width>81</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Select all roots</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>50</y>
-            <width>111</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Select by keyword:</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="searchSmplEdit">
-          <property name="geometry">
-           <rect>
-            <x>110</x>
-            <y>50</y>
-            <width>101</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="placeholderText">
-           <string>Keyword</string>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QTreeWidget" name="smplTreeWidget">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="contextMenuPolicy">
-          <enum>Qt::ActionsContextMenu</enum>
-         </property>
-         <property name="acceptDrops">
-          <bool>true</bool>
-         </property>
-         <property name="inputMethodHints">
-          <set>Qt::ImhNone</set>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::ExtendedSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectItems</enum>
-         </property>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
@@ -852,8 +708,6 @@
      <addaction name="actionFor_Cytoflex"/>
     </widget>
     <addaction name="actionLoad_Data_Files"/>
-    <addaction name="actionDelete_sample"/>
-    <addaction name="actionAdd_Sub_pops_Current_Gating"/>
     <addaction name="separator"/>
     <addaction name="menuRename_with_file"/>
     <addaction name="separator"/>
@@ -1010,16 +864,6 @@
     <string>Show in folder...</string>
    </property>
   </action>
-  <action name="actionAdd_Sub_pops_Current_Gating">
-   <property name="text">
-    <string>Add Subpops (Checked Gates) </string>
-   </property>
-  </action>
-  <action name="actionDelete_sample">
-   <property name="text">
-    <string>Delete selected sample(s)</string>
-   </property>
-  </action>
  </widget>
  <resources>
   <include location="resource/qt_resource.qrc"/>
@@ -1066,22 +910,6 @@
     <hint type="sourcelabel">
      <x>976</x>
      <y>172</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>loadDataPB</sender>
-   <signal>clicked()</signal>
-   <receiver>actionLoad_Data_Files</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>85</x>
-     <y>69</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
