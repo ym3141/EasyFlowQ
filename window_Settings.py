@@ -58,7 +58,7 @@ class settingsWindow(wUi, wBase):
         else:
             self.firstTimeMsg.setVisible(False)
 
-        self.dotNEdit.setValidator(QtGui.QIntValidator(100, 1e6, self.dotNEdit))
+        self.dotNEdit.setValidator(QtGui.QIntValidator(int(100), int(1e6), self.dotNEdit))
 
         self.settings = localSettings()
 
