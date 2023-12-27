@@ -3,7 +3,7 @@ import matplotlib
 import json
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from os import path, startfile, environ
+from os import path, environ
 
 from src.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor

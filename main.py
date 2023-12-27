@@ -1,4 +1,5 @@
 import sys
+import platform
 from os import path, chdir, environ
 
 # detect what mode this program is running
@@ -35,6 +36,8 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
+    if platform.system() == 'Darwin':
+        app.setStyle('fusion')
     appFont = app.font()
     appFont.setPointSize(int(appFont.pointSize() * 0.875))
     app.setFont(appFont)
