@@ -83,15 +83,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.figOpsLayout.addWidget(self.figOpsPanel)
 
         # add the sample section
-        self.smplSect = mainUi_SmplSect(self, self.colorGen)
+        self.smplSect = mainUi_SmplSect(self, self.colorGen, lambda : self.curGateItems)
         self.smplBox.layout().addWidget(self.smplSect)
 
         self.smplSect.to_handle_One.connect(self.handle_One)
         self.smplSect.holdFigure.connect(self.handle_HoldFigure)
 
         self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
-        self.smplSect.actionAdd_subpops_Current_gating.triggered.connect(self.handle_AddSubpops)
-        self.smplSect.actionDelete_sample.triggered.connect(self.handle_DeleteSmpls)
         self.smplTreeWidget = self.smplSect.smplTreeWidget
 
         # init ui models
@@ -238,6 +236,9 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_LoadData(self):
         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
 
+        if len(fileNames) == 0:
+            return
+
         loadingBarDiag = QtWidgets.QProgressDialog('Initializing...', None, 0, len(fileNames) + 1, self)
         loadingBarDiag.setMinimumDuration(500)
         loadingBarDiag.setWindowTitle('Loading FCS files...')
@@ -246,7 +247,6 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         newColorList = self.colorGen.giveColors(len(fileNames))
 
-        idx = 0
         for idx in range(len(fileNames)):
             loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
             loadingBarDiag.setValue(idx + 1)
@@ -254,27 +254,6 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.smplTreeWidget.resizeColumnToContents(0)
         loadingBarDiag.setValue(idx + 2)
-
-    def handle_AddSubpops(self):
-        selectedSmpls = self.smplTreeWidget.selectedItems()
-
-        if len(self.curGateItems) == 0:
-            QtWidgets.QMessageBox.warning(self, 'No gate selected', 'You need to at least have one gate to create sub-populations')
-
-        inputStr, flag = QtWidgets.QInputDialog.getText(self, 'Name for subpopulation', 
-                                                        'Name (\"$\" will be replaced by parent name):', text='$_')
-        
-        if flag == False:
-            return
-
-        for selectedSmpl in selectedSmpls:
-            subpopColor = self.colorGen.giveColors(1)[0]
-            subpopName = inputStr.replace('$', selectedSmpl.displayName)
-            newSubpopItem = subpopItem(selectedSmpl, QtGui.QColor.fromRgbF(*subpopColor), subpopName, self.curGateItems)
-          
-            selectedSmpl.setExpanded(True)
-        
-        self.smplTreeWidget.resizeColumnToContents(0)
         
     def handle_AddGate(self):
         self._disableInputForGate(True)
@@ -632,28 +611,6 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.compWindow.load_json(jDict)
 
         self.statusbar.removeWidget(self.progBar)
-
-    def handle_DeleteSmpls(self):
-        curSelected = self.smplTreeWidget.selectedItems()
-        if len(curSelected) == 0:
-            QtWidgets.QMessageBox.warning(self, 'No sample selected', 'Please select sample(s) to delete')
-            return
-        delSmplNameList = [smpl.text(0) for smpl in curSelected]
-        delSmplNameList_str = '\n' + '\n'.join(delSmplNameList)
-        input = QtWidgets.QMessageBox.question(self, 'Delete samples or subpops?', 
-                                               'Are you sure to delete the following samples or subpops?' + delSmplNameList_str)
-
-        if input == QtWidgets.QMessageBox.Yes:
-            for item in curSelected:
-                if isinstance(item, subpopItem):
-                    parentItem = item.parent()
-                    parentItem.removeChild(item)
-                    del item
-                elif isinstance(item, smplItem):
-                    deleteIdx = self.smplTreeWidget.indexOfTopLevelItem(item)
-                    deletedItem = self.smplTreeWidget.takeTopLevelItem(deleteIdx)
-                    del deletedItem
-            self.handle_One()
 
     def handle_HoldFigure(self, holdFlag):
         self.holdFigureUpdate = holdFlag
