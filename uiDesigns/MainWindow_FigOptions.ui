@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>220</width>
-    <height>325</height>
+    <height>341</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -15,11 +15,6 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
-  </property>
-  <property name="font">
-   <font>
-    <pointsize>7</pointsize>
-   </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>

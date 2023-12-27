@@ -10,11 +10,6 @@
     <height>650</height>
    </rect>
   </property>
-  <property name="font">
-   <font>
-    <pointsize>7</pointsize>
-   </font>
-  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>

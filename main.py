@@ -36,8 +36,7 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
     appFont = app.font()
-    print(appFont.pointSize())
-    appFont.setPointSize(7)
+    appFont.setPointSize(int(appFont.pointSize() * 0.875))
     app.setFont(appFont)
 
     settings = localSettings()
