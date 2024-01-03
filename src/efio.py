@@ -1,7 +1,6 @@
 import json
 import traceback
-from os import path
-from pathlib import Path as plPath
+from os import path, sep
 from copy import deepcopy
 
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
@@ -234,14 +233,13 @@ class sessionSave():
 def _convert_smplItem(item, saveDir, selectedSmplItems=[]):
     smplSave = deepcopy(item.__dict__)
 
-    filePathObj = plPath(smplSave['fileDir'])
-    smplSave['fileDir'] = filePathObj.as_posix()
+    smplSave['fileDir'] = _to_posixpath(smplSave['fileDir'])
     try:
-        relPath = path.relpath(filePathObj, saveDir)
-        smplSave['fileDir_rel'] = plPath(relPath).as_posix()
+        relPath = path.relpath(smplSave['fileDir'], saveDir)
+        smplSave['fileDir_rel'] = _to_posixpath(relPath)
     except Exception as e:
         smplSave['fileDir_rel'] = None
-    smplSave['fileDir_abs'] = filePathObj.resolve().as_posix()
+    smplSave['fileDir_abs'] = _to_posixpath(path.abspath(smplSave['fileDir']))
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 
@@ -312,6 +310,13 @@ def _convert_qsItem(qsItem):
 
 def _expand_norm_path(filePath: str):
     return path.normpath(path.expanduser(filePath))
+
+# This is for getting rid of pathlib (cause problem in some version with pyinstaller)
+def _to_posixpath(fileFath: str): 
+    if sep == '/':
+        return fileFath
+    else:
+        return fileFath.replace(sep, '/')
 
 def getSysDefaultDir():
     if path.exists(_expand_norm_path('~/Desktop')):
