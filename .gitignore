@@ -7,6 +7,7 @@ release/*
 !release/pyi_mac.sh
 !release/pyi_win.ps1
 !release/pyi_mac.spec
+!release/pyi_mac_x86.spec
 !release/pyi_win.spec
 !release/IF_win.ifp
 !release/environment_win.yml
