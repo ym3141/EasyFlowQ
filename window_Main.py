@@ -270,6 +270,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.gateEditor.gateConfirmed.connect(self.loadGate)
         self.gateEditor.connect(add_or_edit='add')
+        # self.loadGate(polygonGate(['FSC-A', 'FSC-H'], ['log', 'log'], verts=[[1e5, 1e5], [1e6, 1e5], [1e6, 1e6], [1e5, 1e6]]))
 
     def handle_AddQuad(self):
         self._disableInputForGate(True)
@@ -642,6 +643,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             event.accept()
 
     def _disableInputForGate(self, disable=True):
+        # return
         self.toolBox.setEnabled(not disable)
         self.smplBox.setEnabled(not disable)
         self.rightFrame.setEnabled(not disable)
@@ -736,6 +738,7 @@ class mainUi(mainWindowBase, mainWindowUi):
                     newQItem.setCheckState(checkState)
 
                 self.gateListWidget.addItem(newQItem)
+                self.gateListWidget.setCurrentItem(newQItem)
                 return newQItem
 
     def loadQuadrant(self, quadrant, replace=None, quadName=None):
