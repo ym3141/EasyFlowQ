@@ -12,7 +12,7 @@ wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/SettingsWindow.ui
 
 class localSettings(QtCore.QSettings):
 
-    with open('./localSettings.default.json') as jFile:
+    with open(path.join(__location__, './localSettings.default.json')) as jFile:
         default_jSetting = json.load(jFile)
 
     def __init__(self, testMode=False) -> None:
