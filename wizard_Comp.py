@@ -2,18 +2,20 @@ import sys
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtCore import Qt, pyqtSignal
 from copy import copy
+from os import path, getcwd
 
-from src.qtModels import gateWidgetItem
-from src.comp import autoFluoTbModel, spillMatTbModel
+from backend.qtModels import gateWidgetItem
+from backend.comp import autoFluoTbModel, spillMatTbModel
 import numpy as np
 from scipy.stats.mstats import gmean
 import pandas as pd
 
 import warnings
 import json
-from src.efio import getSysDefaultDir
+from backend.efio import getSysDefaultDir
 
-wUi, wBase = uic.loadUiType('./uiDesigns/CompWizard.ui') # Load the .ui file
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWizard.ui')) # Load the .ui file
 
 class compWizard(wUi, wBase):
     mainCompValueEdited = pyqtSignal()
@@ -358,7 +360,7 @@ class compWizard(wUi, wBase):
             self.accept()
 
 # UI box on page2
-wAssignBox, wBaseAssignBox = uic.loadUiType('./uiDesigns/CompWizard_SmplAssignBox.ui')
+wAssignBox, wBaseAssignBox = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWizard_SmplAssignBox.ui'))
 class smplAssignBox(wAssignBox, wBaseAssignBox):
 
     def __init__(self, parent, chnlName, comboModel):

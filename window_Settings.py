@@ -1,14 +1,14 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from matplotlib.colors import to_hex
-from os import path
+from os import path, getcwd
 
-from src.efio import getSysDefaultDir
+from backend.efio import getSysDefaultDir
 
 import json
 
-wUi, wBase = uic.loadUiType('./uiDesigns/SettingsWindow.ui') # Load the .ui file
-
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/SettingsWindow.ui')) # Load the .ui file
 
 class localSettings(QtCore.QSettings):
 

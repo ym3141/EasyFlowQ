@@ -60,6 +60,10 @@ def newWindowProc(sessionSaveFile, pos):
     newProcess = Process(target=newWindowFunc, args=(sessionSaveFile, pos))
     newProcess.start()
 
-if __name__ == "__main__":
+def mainFunction():
+    print(__file__)
     freeze_support()
     newWindowFunc()
+
+if __name__ == "__main__":
+    mainFunction()

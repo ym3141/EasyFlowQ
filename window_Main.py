@@ -3,13 +3,13 @@ import matplotlib
 import json
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from os import path, environ
+from os import path, getcwd, environ
 
-from src.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
-from src.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
-from src.plotWidgets import plotCanvas
-from src.efio import sessionSave, writeRawFcs, getSysDefaultDir
-from src.utils import colorGenerator
+from backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
+from backend.plotWidgets import plotCanvas
+from backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
+from backend.utils import colorGenerator
 
 from window_RenameCF import renameWindow_CF
 from window_RenameMap import renameWindow_Map
@@ -24,7 +24,8 @@ from uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
 
 matplotlib.use('QT5Agg')
 
-mainWindowUi, mainWindowBase = uic.loadUiType('./uiDesigns/MainWindow.ui') # Load the .ui file
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+mainWindowUi, mainWindowBase = uic.loadUiType(path.join(__location__, 'uiDesigns/MainWindow.ui')) # Load the .ui file
 
 class mainUi(mainWindowBase, mainWindowUi):
     requestNewWindow = QtCore.pyqtSignal(str, QtCore.QPoint)

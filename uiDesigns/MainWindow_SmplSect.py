@@ -7,14 +7,15 @@ too integrated to the other part of the program.
 '''
 
 import sys
-from os import environ
+from os import environ, path, getcwd
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtWidgets import QWidget
 
-from src.qtModels import smplItem, subpopItem
+from backend.qtModels import smplItem, subpopItem
 
-smplSectUi, smplSectBase = uic.loadUiType('./uiDesigns/MainWindow_SmplSect.ui') # Load the .ui file
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+smplSectUi, smplSectBase = uic.loadUiType(path.join(__location__, 'MainWindow_SmplSect.ui')) # Load the .ui file
 
 class mainUi_SmplSect(smplSectBase, smplSectUi):
     to_handle_One = QtCore.pyqtSignal()

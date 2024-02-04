@@ -1,15 +1,16 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from matplotlib.colors import to_hex
-from os import path
+from os import path, getcwd
 
 import pandas as pd
 import numpy as np
-from src.qtModels import pandasTableModel
+from backend.qtModels import pandasTableModel
 
 import re
 
-wUi, wBase = uic.loadUiType('./uiDesigns/RenameWindow_Map.ui') # Load the .ui file
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_Map.ui')) # Load the .ui file
 
 class renameWindow_Map(wUi, wBase):
     renameConfirmed = QtCore.pyqtSignal(dict)

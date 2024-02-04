@@ -1,15 +1,17 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from matplotlib.colors import to_hex
-from os import path
+from os import path, getcwd
 
 import pandas as pd
 import numpy as np
-from src.qtModels import pandasTableModel
+from backend.qtModels import pandasTableModel
 
 import re
 
-wUi, wBase = uic.loadUiType('./uiDesigns/RenameWindow_CF.ui') # Load the .ui file
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+
+wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_CF.ui')) # Load the .ui file
 re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
 
 class renameWindow_CF(wUi, wBase):
@@ -120,8 +122,8 @@ def exel2renameTable(renamingFileDir, maxPlatN):
     renamePlates = []
     for idx in range(plateNumber):
         renamePlate = renames.iloc[idx * 8: idx * 8 + 8, 0: 12]
-        renamePlate.set_axis(np.arange(1, 13), axis='columns', inplace=True)
-        renamePlate.set_axis(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], axis='index', inplace=True)
+        renamePlate = renamePlate.set_axis(np.arange(1, 13), axis='columns', copy=False)
+        renamePlate = renamePlate.set_axis(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], axis='index', copy=False)
         renamePlate.loc['Legend', [1,2]] = ['Sample exist', 'Duplicated name']
         renamePlate.fillna('', inplace=True)
         renamePlate.replace(emptyName, '', inplace=True)

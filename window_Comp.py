@@ -1,16 +1,18 @@
 import sys
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from os import path, getcwd
 
 from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import Qt
 
 import pandas as pd
 import numpy as np
-from src.qtModels import pandasTableModel, chnlModel
-from src.comp import autoFluoTbModel, spillMatTbModel
+from backend.qtModels import pandasTableModel, chnlModel
+from backend.comp import autoFluoTbModel, spillMatTbModel
 
 
-wUi, wBase = uic.loadUiType('./uiDesigns/CompWindow.ui') # Load the .ui file
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWindow.ui')) # Load the .ui file
 
 class compWindow(wUi, wBase):
     compValueEdited = QtCore.pyqtSignal()

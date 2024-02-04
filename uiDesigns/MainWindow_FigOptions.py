@@ -3,7 +3,10 @@ import math
 from PyQt5 import QtWidgets, QtCore, uic
 from PyQt5.QtGui import QDoubleValidator
 
-figOpsUi, figOpsBase = uic.loadUiType('./uiDesigns/MainWindow_FigOptions.ui') # Load the .ui file
+from os import path, getcwd
+
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+figOpsUi, figOpsBase = uic.loadUiType(path.join(__location__, 'MainWindow_FigOptions.ui')) # Load the .ui file
 
 class mainUI_figOps(figOpsBase, figOpsUi):
     signal_AxLimsNeedUpdate = QtCore.pyqtSignal(object, object, object, object)
