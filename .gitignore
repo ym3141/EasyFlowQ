@@ -16,6 +16,7 @@ release/*
 .vscode/
 .DS_store
 localSettings.user.json
+TestEnv/
 
 # data that is too large
 demoSamples/CompDemo/*
