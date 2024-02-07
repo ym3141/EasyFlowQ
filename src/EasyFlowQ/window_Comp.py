@@ -7,8 +7,9 @@ from PyQt5.QtCore import Qt
 
 import pandas as pd
 import numpy as np
-from backend.qtModels import pandasTableModel, chnlModel
-from backend.comp import autoFluoTbModel, spillMatTbModel
+
+from .backend.qtModels import pandasTableModel, chnlModel
+from .backend.comp import autoFluoTbModel, spillMatTbModel
 
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))

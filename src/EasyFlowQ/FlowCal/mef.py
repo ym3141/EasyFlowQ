@@ -21,9 +21,9 @@ if packaging.version.parse(sklearn.__version__) \
 else:
     from sklearn.mixture import GMM
 
-import FlowCal.plot
-import FlowCal.transform
-import FlowCal.stats
+# import FlowCal.plot
+# import FlowCal.transform
+# import FlowCal.stats
 
 standard_curve_colors = ['tab:blue', 'tab:green', 'tab:red']
 

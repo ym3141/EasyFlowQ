@@ -10,8 +10,8 @@ import os.path
 import secrets
 import string
 
-from FlowCal.io import FCSData
-from FlowCal.transform import to_rfi
+from ..FlowCal.io import FCSData
+from ..FlowCal.transform import to_rfi
 
 from .plotWidgets import gateSmpls
 from .gates import polygonGate, lineGate, quadrantGate

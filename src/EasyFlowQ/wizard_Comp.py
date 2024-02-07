@@ -1,18 +1,20 @@
 import sys
+import numpy as np
+import pandas as pd
+import warnings
+import json
+
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtCore import Qt, pyqtSignal
 from copy import copy
 from os import path, getcwd
 
-from backend.qtModels import gateWidgetItem
-from backend.comp import autoFluoTbModel, spillMatTbModel
-import numpy as np
 from scipy.stats.mstats import gmean
-import pandas as pd
 
-import warnings
-import json
-from backend.efio import getSysDefaultDir
+
+from .backend.efio import getSysDefaultDir
+from .backend.qtModels import gateWidgetItem
+from .backend.comp import autoFluoTbModel, spillMatTbModel
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWizard.ui')) # Load the .ui file

@@ -10,9 +10,8 @@ else:
     print('running in a normal Python process')
 
 from PyQt5 import QtWidgets, QtCore
-from window_Main import mainUi
-
-from window_Settings import localSettings
+from .window_Main import mainUi
+from .window_Settings import localSettings
 
 from multiprocessing import Process, freeze_support
 from traceback import format_exception

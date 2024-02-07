@@ -5,9 +5,7 @@ from os import path, getcwd
 
 import pandas as pd
 import numpy as np
-from backend.qtModels import pandasTableModel
-
-import re
+from .backend.qtModels import pandasTableModel
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_Map.ui')) # Load the .ui file

@@ -5,13 +5,14 @@ from os import path, getcwd
 
 import pandas as pd
 import numpy as np
-from backend.qtModels import pandasTableModel
-from backend.efio import writeRawFcs
-from backend.plotWidgets import cachedStats
-
 import csv
 import io
 from xlsxwriter.utility import xl_col_to_name
+
+from .backend.qtModels import pandasTableModel
+from .backend.efio import writeRawFcs
+from .backend.plotWidgets import cachedStats
+
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/StatWindow.ui')) # Load the .ui file

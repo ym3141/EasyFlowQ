@@ -12,7 +12,7 @@ import warnings
 
 import numpy as np
 
-import FlowCal.plot
+# import FlowCal.plot
 
 encoding = 'ISO-8859-1'
 

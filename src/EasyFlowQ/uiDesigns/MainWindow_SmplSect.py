@@ -12,9 +12,10 @@ from os import environ, path, getcwd
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtWidgets import QWidget
 
-from backend.qtModels import smplItem, subpopItem
+from ..backend.qtModels import smplItem, subpopItem
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+sys.path.append(path.join(__location__, 'resource'))
 smplSectUi, smplSectBase = uic.loadUiType(path.join(__location__, 'MainWindow_SmplSect.ui')) # Load the .ui file
 
 class mainUi_SmplSect(smplSectBase, smplSectUi):

@@ -9,7 +9,7 @@ from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 
 from PyQt5 import QtCore, QtGui
 
-from FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
+from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from .gates import quadrant, split, polygonGate, lineGate
 
 import warnings

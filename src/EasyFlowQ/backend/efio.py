@@ -10,7 +10,7 @@ from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QMessageBox, QProgressDialog
 from PyQt5.QtGui import QColor
 
-from FlowCal.io import FCSData
+from ..FlowCal.io import FCSData
 from typing import List
 
 import pandas as pd

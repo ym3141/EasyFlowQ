@@ -5,22 +5,22 @@ import json
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path, getcwd, environ
 
-from backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
-from backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
-from backend.plotWidgets import plotCanvas
-from backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
-from backend.utils import colorGenerator
+from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
+from .backend.plotWidgets import plotCanvas
+from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
+from .backend.utils import colorGenerator
 
-from window_RenameCF import renameWindow_CF
-from window_RenameMap import renameWindow_Map
-from window_Stats import statWindow
-from window_Settings import settingsWindow, localSettings
-from window_About import aboutWindow
-from window_Comp import compWindow
-from wizard_Comp import compWizard
+from .window_RenameCF import renameWindow_CF
+from .window_RenameMap import renameWindow_Map
+from .window_Stats import statWindow
+from .window_Settings import settingsWindow, localSettings
+from .window_About import aboutWindow
+from .window_Comp import compWindow
+from .wizard_Comp import compWizard
 
-from uiDesigns.MainWindow_FigOptions import mainUI_figOps
-from uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
+from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
+from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
 
 matplotlib.use('QT5Agg')
 
