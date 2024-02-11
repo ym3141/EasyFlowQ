@@ -16,7 +16,7 @@ release/*
 .vscode/
 .DS_store
 localSettings.user.json
-TestEnv/
+test/venvs
 
 # data that is too large
 demoSamples/CompDemo/*
@@ -24,3 +24,6 @@ demoSamples/CompDemo/*
 # mkdocs related
 site/
 docs/img/DocImages.afdesign
+
+# dist
+dist/

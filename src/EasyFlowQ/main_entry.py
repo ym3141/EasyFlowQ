@@ -30,6 +30,7 @@ def myexcepthook(type, value, traceback):
 
 def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
+    freeze_support()
 
     environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
@@ -59,10 +60,5 @@ def newWindowProc(sessionSaveFile, pos):
     newProcess = Process(target=newWindowFunc, args=(sessionSaveFile, pos))
     newProcess.start()
 
-def mainFunction():
-    print(__file__)
-    freeze_support()
-    newWindowFunc()
-
 if __name__ == "__main__":
-    mainFunction()
+    newWindowFunc()

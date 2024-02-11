@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "EasyFlowQ"
+version = "1.4.8"
+authors = [
+  { name="Yitong Ma", email="yitongma7@gmail.com" },
+]
+
+dependencies = [
+  "pyqt5>=5.9",
+  "scipy>=1.7",
+  "matplotlib>=3.5",
+  "pandas>=1.5",
+  "numpy>=1.21",
+  "seaborn",
+  "xlsxwriter"
+]
+
+description = "User-friendly flow cytometry analyzer with (GUI)"
+readme = "docs/README.md"
+
+requires-python = ">=3.9"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/ym3141/EasyFlowQ"
+Issues = "https://github.com/ym3141/EasyFlowQ/issues"
+
+[project.scripts]
+EasyFlowQ = "EasyFlowQ.main_entry:newWindowFunc"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/release",
+  "/docs/img",
+  "/demoSamples",
+  "/site"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/EasyFlowQ"]
