@@ -5,6 +5,7 @@ __pycache__/
 _temp/*
 release/*
 !release/pyi_mac.sh
+!release/pyi_mac_x86.sh
 !release/pyi_win.ps1
 !release/pyi_mac.spec
 !release/pyi_win.spec
