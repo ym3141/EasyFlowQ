@@ -63,7 +63,7 @@ class settingsWindow(wUi, wBase):
 
         self.loadSettings()
 
-        self.browsePB.clicked.connect(self.handle_Browse)
+        self.browsePB.clicked.connect(self.handle_browse)
         self.OKPB.clicked.connect(self.handle_return)
         self.defaultPB.clicked.connect(self.handle_restoreDefault)
 
@@ -78,7 +78,7 @@ class settingsWindow(wUi, wBase):
         self.dpiSpinBox.setValue(self.settings['plot dpi scale'])
 
 
-    def handle_Browse(self):
+    def handle_browse(self):
         defaultDir = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select the default directory', './')
         if not defaultDir:
             return
