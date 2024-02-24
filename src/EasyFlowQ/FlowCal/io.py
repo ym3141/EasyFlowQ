@@ -12,7 +12,7 @@ import warnings
 
 import numpy as np
 
-# import FlowCal.plot
+from . import plot
 
 encoding = 'ISO-8859-1'
 
@@ -1573,7 +1573,7 @@ class FCSData(np.ndarray):
             elif scale_channel == 'logicle':
                 # Create transform class
                 # Use the LogicleTransform class from the plot module
-                t = FlowCal.plot._LogicleTransform(data=self,
+                t = plot._LogicleTransform(data=self,
                                                    channel=channel,
                                                    **kwargs)
                 # We now generate ``nbins`` uniformly spaced bins centered at

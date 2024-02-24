@@ -276,9 +276,12 @@ class plotCanvas(FigureCanvasQTAgg):
                         inGateFracText = 'N/A'
 
                     self.ax.annotate('Gate: {0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
-                                     xy=[np.mean(selectedGate.ends), 0.5 * ymax_histo], textcoords='offset points', xytext=(0, 30), 
+                                     xy=[np.mean(selectedGate.ends), 0.5 * ymax_histo], textcoords='offset points', xytext=(10, 25), 
                                      bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
-                                     horizontalalignment='left', verticalalignment='top', annotation_clip=True)
+                                     horizontalalignment='right', verticalalignment='top', annotation_clip=True)
+                    
+                    xlim_auto[0] = np.min([selectedGate.ends[0], xlim_auto[0]])
+                    xlim_auto[1] = np.max([selectedGate.ends[1], xlim_auto[1]])
                 pass
 
             self.ax.set_xlabel(axisNames[0])
