@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "EasyFlowQ"
-version = "1.4.8"
+version = "1.4.9"
 authors = [
   { name="Yitong Ma", email="yitongma7@gmail.com" },
 ]
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 description = "User-friendly flow cytometry analyzer with (GUI)"
-readme = "docs/README.md"
+readme = "docs/README_PyPI.md"
 
 requires-python = ">=3.9"
 
