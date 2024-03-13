@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "EasyFlowQ"
-version = "1.4.9"
+version = "1.4.10"
 authors = [
   { name="Yitong Ma", email="yitongma7@gmail.com" },
 ]
@@ -22,7 +22,7 @@ dependencies = [
 description = "User-friendly flow cytometry analyzer with (GUI)"
 readme = "docs/README_PyPI.md"
 
-requires-python = ">=3.9"
+requires-python = ">=3.7"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -41,7 +41,7 @@ EasyFlowQ = "EasyFlowQ.main_entry:newWindowFunc"
 exclude = [
   "/release",
   "/docs/img",
-  "/demoSamples",
+  "/demo_samples",
   "/site"
 ]
 
