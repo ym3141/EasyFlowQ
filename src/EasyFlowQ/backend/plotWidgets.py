@@ -32,6 +32,14 @@ lineGateStyle = {
     'color':'gray'
 }
 
+dotSizeDict = {
+    'Smaller': 0.3,
+    'Small' : 0.6,
+    'Regular': 1,
+    'Big': 1.8,
+    'Bigger': 3
+}
+
 class cachedStats():
     def __init__(self) -> None:
         self.smplItems = []
@@ -89,7 +97,8 @@ class plotCanvas(FigureCanvasQTAgg):
         plotType = 'Dot plot',
         normOption = 'Percentage',
         perfModeN=None, legendOps=1, smooth=0,
-        selectedGateItem=None
+        selectedGateItem=None,
+        dotSize = 0, dotOpacity = 0.8
         ):
 
         self.curPlotType = plotType
@@ -132,6 +141,8 @@ class plotCanvas(FigureCanvasQTAgg):
         if plotType == 'Dot plot':
             # plot dots
             self.cachedPlotStats.chnls = chnls
+            dotAlpha = dotOpacity / 100
+
             if perfModeN:
                 NperSmpl = int(perfModeN / len(gatedSmpls))
                 for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -143,13 +154,15 @@ class plotCanvas(FigureCanvasQTAgg):
                 
                     scatter2d(sampledSmpl, self.ax, [xChnl, yChnl],
                             xscale=axScales[0], yscale=axScales[1],
-                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
+                            s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
 
             else:
                 for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
                     scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
                             xscale=axScales[0], yscale=axScales[1],
-                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, s=1)
+                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
+                            s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
 
             if isinstance(quad_split, quadrant):
             # Draw quadrant if selected

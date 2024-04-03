@@ -23,16 +23,23 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         self.plotOptionBG, self.xAxisOptionBG, self.yAxisOptionBG, self.normOptionBG = buttonGroups
         self.rangeEdits = self._setupLineEdit()
 
+        self.stackWidget.setCurrentWidget(self.pageDots)
+
         self.xlimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
         self.ylimAutoCheck.stateChanged.connect(self.handle_AxisAuto)
 
         self.histRadio.toggled.connect(self.signal_HistTypeSelected)
+        self.histRadio.toggled.connect(self.handle_histRadioToggled)
+
+        self.dotSizeComboBox.setCurrentIndex(2)
 
         for bg in buttonGroups:
             for radio in bg.buttons():
                 radio.clicked.connect(self.signal_PlotRedraw)
 
         self.smoothSlider.valueChanged.connect(self.signal_PlotRedraw)
+        self.opacitySlider.valueChanged.connect(self.signal_PlotRedraw)
+        self.dotSizeComboBox.currentIndexChanged.connect(self.signal_PlotRedraw)
 
     def handle_AxlimEdited(self):
         which = self.sender()
@@ -62,7 +69,12 @@ class mainUI_figOps(figOpsBase, figOpsUi):
             elif which is self.ylimAutoCheck:
                 self.signal_AxLimsNeedUpdate.emit(None, None, 'auto', 'auto')
                 pass
-        pass
+
+    def handle_histRadioToggled(self, toggleState):
+        if toggleState:
+            self.stackWidget.setCurrentWidget(self.pageHist)
+        else:
+            self.stackWidget.setCurrentWidget(self.pageDots)
 
     
     def _organizeButtonGroups(self):
@@ -97,6 +109,11 @@ class mainUI_figOps(figOpsBase, figOpsUi):
 
         return rangeEdits
 
+    # This returns a package of relevant fig options
+    @property
+    def curFigOptions(self):
+        return self.curPlotType, self.curAxScales, self.curAxLims, self.curNormOption, self.smoothSlider.value(), self.curDotSize, self.curOpacity
+    
     @property
     def curAxScales(self):
         return (self.xAxisOptionBG.checkedButton().text(), self.yAxisOptionBG.checkedButton().text())
@@ -110,10 +127,6 @@ class mainUI_figOps(figOpsBase, figOpsUi):
             if yRadio.text() == AxScales[1]:
                 yRadio.setChecked(True)
                 continue
-
-    @property
-    def curFigOptions(self):
-        return self.curPlotType, self.curAxScales, self.curAxLims, self.curNormOption, self.smoothSlider.value()
 
     @property
     def curNormOption(self):
@@ -137,6 +150,7 @@ class mainUI_figOps(figOpsBase, figOpsUi):
 
     @property
     def curAxLims(self):
+    # Returns [xmin, xmax, ymin, ymax] in float
         xAuto = (self.xlimAutoCheck.checkState() == 2)
         yAuto = (self.ylimAutoCheck.checkState() == 2)
 
@@ -167,6 +181,13 @@ class mainUI_figOps(figOpsBase, figOpsUi):
     def set_curSmooth(self, smooth):
         self.smoothSlider.setValue(smooth)
 
+    @property
+    def curDotSize(self):
+        return self.dotSizeComboBox.currentText()
+    
+    @property
+    def curOpacity(self):
+        return self.opacitySlider.value()
 
 class axlimValidator(QDoubleValidator):
     def fixup(self, a0: str) -> str:
