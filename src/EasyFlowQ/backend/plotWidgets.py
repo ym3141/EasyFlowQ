@@ -33,11 +33,11 @@ lineGateStyle = {
 }
 
 dotSizeDict = {
-    'Smaller': 0.3,
-    'Small' : 0.6,
-    'Regular': 1,
-    'Big': 1.8,
-    'Bigger': 3
+    'Smaller': 0.8,
+    'Small' : 1.3,
+    'Regular': 2,
+    'Big': 3.5,
+    'Bigger': 6
 }
 
 class cachedStats():

@@ -655,7 +655,7 @@
          <property name="minimumSize">
           <size>
            <width>220</width>
-           <height>340</height>
+           <height>390</height>
           </size>
          </property>
          <property name="frameShape">
@@ -677,7 +677,7 @@
      <x>0</x>
      <y>0</y>
      <width>1041</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
