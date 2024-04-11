@@ -259,28 +259,28 @@ class mainUi(mainWindowBase, mainWindowUi):
         loadingBarDiag.setValue(idx + 2)
         
     def handle_AddGate(self):
-        self._disableInputForGate(True)
-        self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
         plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
-        if plotType == 'Dot plot':
+        if plotType == 'Dot plot' or plotType == 'Density plot':
             self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
             self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
         
         elif plotType == 'Histogram':
             self.statusbar.showMessage('Left click to draw a line gate, Right click to cancel', 0)
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
+        
+        else:
+            return
 
-        self.gateEditor.gateConfirmed.connect(self.loadGate)
-        self.gateEditor.connect(add_or_edit='add')
-        # self.loadGate(polygonGate(['FSC-A', 'FSC-H'], ['log', 'log'], verts=[[1e5, 1e5], [1e6, 1e5], [1e6, 1e6], [1e5, 1e6]]))
-
-    def handle_AddQuad(self):
         self._disableInputForGate(True)
         self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+        self.gateEditor.gateConfirmed.connect(self.loadGate)
+        self.gateEditor.connect(add_or_edit='add')
+
+    def handle_AddQuad(self):
         plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
-        if plotType == 'Dot plot':
+        if plotType == 'Dot plot' or plotType == 'Density plot':
             self.statusbar.showMessage('Left click to confirm, Right click to cancel', 0)
             self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
             self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
@@ -292,6 +292,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.splitEditor.splitConfirmed.connect(self.loadSplit)
             self.splitEditor.addSplit_connect()
         
+        self._disableInputForGate(True)
+        self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
 
     def handle_NewSession(self):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
