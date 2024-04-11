@@ -186,6 +186,9 @@ class mainUI_figOps(figOpsBase, figOpsUi):
     def curDotSize(self):
         return self.dotSizeComboBox.currentText()
     
+    # def set_curDotSize(self, dotSize: str):
+    #     self.dotSizeComboBox.set
+    
     @property
     def curOpacity(self):
         return self.opacitySlider.value()

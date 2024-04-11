@@ -5,6 +5,7 @@ from copy import deepcopy
 
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
+from .. import __version__
 
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QMessageBox, QProgressDialog
@@ -48,7 +49,7 @@ class sessionSave():
 
     def __init__(self, mainUiWindow, saveFileDir) -> None:
 
-        self.save_ver = mainUiWindow.version
+        self.save_ver = float(__version__)
         
         self.fileDir = saveFileDir
         baseDir = path.dirname(saveFileDir)
@@ -69,10 +70,8 @@ class sessionSave():
             qsItem = mainUiWindow.qsListWidget.item(idx)
             self.qsSaveList.append(_convert_qsItem(qsItem))
 
-
-        self.figOptions = dict()
-        self.figOptions['curPlotType'], self.figOptions['curAxScales'], self.figOptions['curAxLims'], \
-            self.figOptions['curNormOption'], self.figOptions['curSmooth'], *_ = mainUiWindow.figOpsPanel.curFigOptions
+        optionsKeys = ['curPlotType', 'curAxScales', 'curAxLims', 'curNormOption', 'curSmooth', 'curDotSize', 'curOpacity']
+        self.figOptions = dict(zip(optionsKeys, mainUiWindow.figOpsPanel.curFigOptions[0:len(optionsKeys)]))
         self.figOptions['curChnls'] = mainUiWindow.curChnls
 
         self.curComp = mainUiWindow.compWindow.to_json()
@@ -138,6 +137,7 @@ class sessionSave():
                 failedFiles.append('Unknown FCS')
                 traceback.print_tb(e.__traceback__)
 
+
         loadingBarDiag.setValue(2)
         loadingBarDiag.setLabelText('Loading gates...')
         gateDict = dict()
@@ -160,6 +160,7 @@ class sessionSave():
                 gateLoadFlag = True
                 traceback.print_tb(e.__traceback__)
 
+
         loadingBarDiag.setValue(3)
         loadingBarDiag.setLabelText('Loading ploting settings...')
         try: 
@@ -172,10 +173,21 @@ class sessionSave():
             figSettingFlag = True
             traceback.print_tb(e.__traceback__)
 
+        if save_ver >= 1.5:
+            try: 
+                mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
+                mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])
+                mainUiWindow.figOpsPanel.set_curPlotType(jDict['figOptions']['curPlotType'])
 
+                mainUiWindow.set_curChnls(jDict['figOptions']['curChnls'])
+            except Exception as e:
+                figSettingFlag = True
+                traceback.print_tb(e.__traceback__)
+
+
+        loadingBarDiag.setValue(4)
+        loadingBarDiag.setLabelText('Loading quadrants and splits...')
         if save_ver >= 1.0:
-            loadingBarDiag.setValue(4)
-            loadingBarDiag.setLabelText('Loading quadrants and splits...')
             try:
                 mainUiWindow.figOpsPanel.set_curSmooth(jDict['figOptions']['curSmooth'])
             except Exception as e:
@@ -192,9 +204,10 @@ class sessionSave():
                     gateLoadFlag = True
                     traceback.print_tb(e.__traceback__)
 
+
+        loadingBarDiag.setValue(5)
+        loadingBarDiag.setLabelText('Loading compensations and settings...')
         if save_ver >= 1.2:
-            loadingBarDiag.setValue(5)
-            loadingBarDiag.setLabelText('Loading compensations and settings...')
             jString = jDict.get('curComp', None)
 
             try:
@@ -205,10 +218,10 @@ class sessionSave():
                 compFlag = True
                 traceback.print_tb(e.__traceback__)
 
-        if save_ver >= 1.4:
-            loadingBarDiag.setValue(6)
-            loadingBarDiag.setLabelText('Loading and reconstructing subpops...')
 
+        loadingBarDiag.setValue(6)
+        loadingBarDiag.setLabelText('Loading and reconstructing subpops...')
+        if save_ver >= 1.4:
             for rootSmpl, subpops in smpl_subpops:
                 for subpop in subpops:
                     loadSubpop_recursive(subpop, rootSmpl, gateDict)
