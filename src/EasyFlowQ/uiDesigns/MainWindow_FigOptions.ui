@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>220</width>
-    <height>363</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -34,14 +34,14 @@
      <property name="flat">
       <bool>true</bool>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QGridLayout" name="gridLayout_2">
       <property name="topMargin">
        <number>3</number>
       </property>
       <property name="bottomMargin">
-       <number>3</number>
+       <number>0</number>
       </property>
-      <item>
+      <item row="0" column="0">
        <widget class="QRadioButton" name="dotRadio">
         <property name="text">
          <string>Dot plot</string>
@@ -51,7 +51,14 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="densityRadio">
+        <property name="text">
+         <string>Density plot</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
        <widget class="QRadioButton" name="histRadio">
         <property name="text">
          <string>Histogram</string>
@@ -80,7 +87,7 @@
        <number>3</number>
       </property>
       <property name="bottomMargin">
-       <number>3</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QGroupBox" name="xAxisOptionBox">
@@ -373,7 +380,7 @@
    <item>
     <widget class="QStackedWidget" name="stackWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageDots">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -533,48 +540,35 @@
          <property name="flat">
           <bool>true</bool>
          </property>
-         <widget class="QRadioButton" name="norm2PercRadio">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>15</y>
-            <width>91</width>
-            <height>23</height>
-           </rect>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="bottomMargin">
+           <number>0</number>
           </property>
-          <property name="text">
-           <string>Percentage</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="norm2TotalRadio">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>35</y>
-            <width>165</width>
-            <height>23</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Percentage of total</string>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="norm2CountRadio">
-          <property name="geometry">
-           <rect>
-            <x>120</x>
-            <y>15</y>
-            <width>81</width>
-            <height>23</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Cell count</string>
-          </property>
-         </widget>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="norm2PercRadio">
+            <property name="text">
+             <string>Percentage</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="norm2CountRadio">
+            <property name="text">
+             <string>Cell count</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="norm2TotalRadio">
+            <property name="text">
+             <string>Percentage of total</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -583,7 +577,7 @@
           <bool>false</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -651,6 +645,19 @@
       </layout>
      </widget>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

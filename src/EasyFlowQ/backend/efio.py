@@ -72,7 +72,7 @@ class sessionSave():
 
         self.figOptions = dict()
         self.figOptions['curPlotType'], self.figOptions['curAxScales'], self.figOptions['curAxLims'], \
-            self.figOptions['curNormOption'], self.figOptions['curSmooth'], = mainUiWindow.figOpsPanel.curFigOptions
+            self.figOptions['curNormOption'], self.figOptions['curSmooth'], *_ = mainUiWindow.figOpsPanel.curFigOptions
         self.figOptions['curChnls'] = mainUiWindow.curChnls
 
         self.curComp = mainUiWindow.compWindow.to_json()

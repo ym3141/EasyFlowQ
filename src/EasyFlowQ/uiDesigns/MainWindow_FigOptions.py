@@ -84,6 +84,7 @@ class mainUI_figOps(figOpsBase, figOpsUi):
 
         plotOptionBG.addButton(self.dotRadio, 0)
         plotOptionBG.addButton(self.histRadio, 1)
+        plotOptionBG.addButton(self.densityRadio, 2)
         # Make sure y auto is always unchecked when switch figure type
         plotOptionBG.buttonToggled.connect(lambda: self.ylimAutoCheck.setChecked(2))
 

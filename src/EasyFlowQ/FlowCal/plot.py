@@ -645,12 +645,12 @@ class _LogicleLocator(matplotlib.ticker.Locator):
         if vmax < vmin:
             vmin, vmax = vmax, vmin
 
-        if not matplotlib.ticker.is_decade(abs(vmin), b):
+        if not _is_decade(abs(vmin), b):
             if vmin < 0:
                 vmin = -_base_up(-vmin, b)
             else:
                 vmin = _base_down(vmin, b)
-        if not matplotlib.ticker.is_decade(abs(vmax), b):
+        if not _is_decade(abs(vmax), b):
             if vmax < 0:
                 vmax = -_base_down(-vmax, b)
             else:
@@ -891,6 +891,17 @@ class _ViolinLogFormatterSciNotation(matplotlib.ticker.LogFormatterSciNotation):
         return matplotlib.ticker.LogFormatterSciNotation.__call__(self,
                                                                   x=x,
                                                                   pos=pos)
+
+# Replace the ticker.is_decade that was removed in matplotlib 3.8
+# see here: https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html
+def _is_decade(x, base=10):
+    if not np.isfinite(x):
+        return False
+    if x == 0.0:
+        return True
+    
+    y = np.log(x) / np.log(base)
+    np.isclose(y, np.round(y))
 
 ###
 # CUSTOM SCALES
@@ -2963,7 +2974,7 @@ def violin_dose_response(data,
         plt.savefig(savefig, dpi=savefig_dpi)
         plt.close()
 
-def density2d(data, 
+def density2d(data, ax=None,
               channels=[0,1],
               bins=1024,
               mode='mesh',
@@ -3067,6 +3078,10 @@ def density2d(data,
         ``plt.pcolormesh`` if ``mode==mesh``.
 
     """
+    # Use current axes if not provided
+    if ax is None:
+        ax = plt.gca()
+
     # Extract channels to plot
     if len(channels) != 2:
         raise ValueError('two channels need to be specified')
@@ -3152,14 +3167,14 @@ def density2d(data,
         x = np.ravel(xv)[Hind != 0]
         y = np.ravel(yv)[Hind != 0]
         z = np.ravel(H if sH is None else sH)[Hind != 0]
-        plt.scatter(x, y, s=1.5, edgecolor='none', c=z, **kwargs)
+        ax.scatter(x, y, edgecolor='none', c=z, **kwargs)
     elif mode == 'mesh':
-        plt.pcolormesh(xe, ye, H if sH is None else sH, **kwargs)
+        ax.pcolormesh(xe, ye, H if sH is None else sH, **kwargs)
     else:
         raise ValueError("mode {} not recognized".format(mode))
 
     if colorbar:
-        cbar = plt.colorbar()
+        cbar = ax.colorbar()
         if normed:
             cbar.ax.set_ylabel('Probability')
         else:
@@ -3167,47 +3182,47 @@ def density2d(data,
 
     # Set scale of axes
     if xscale=='logicle':
-        plt.gca().set_xscale(xscale, data=data_plot, channel=0)
+        ax.set_xscale(xscale, data=data_plot, channel=0)
     else:
-        plt.gca().set_xscale(xscale)
+        ax.set_xscale(xscale)
     if yscale=='logicle':
-        plt.gca().set_yscale(yscale, data=data_plot, channel=1)
+        ax.set_yscale(yscale, data=data_plot, channel=1)
     else:
-        plt.gca().set_yscale(yscale)
+        ax.set_yscale(yscale)
 
     # x and y limits
     if xlim is not None:
         # Highest priority is user-provided limits
-        plt.xlim(xlim)
+        ax.set_xlim(xlim)
     else:
         # Use histogram edges
-        plt.xlim((xe[0], xe[-1]))
+        ax.set_xlim((xe[0], xe[-1]))
 
     if ylim is not None:
         # Highest priority is user-provided limits
-        plt.ylim(ylim)
+        ax.set_ylim(ylim)
     else:
         # Use histogram edges
-        plt.ylim((ye[0], ye[-1]))
+        ax.set_ylim((ye[0], ye[-1]))
 
     # x and y labels
     if xlabel is not None:
         # Highest priority is user-provided label
-        plt.xlabel(xlabel)
+        ax.set_xlabel(xlabel)
     elif hasattr(data_plot, 'channels'):
         # Attempt to use channel name
-        plt.xlabel(data_plot.channels[0])
+        ax.set_xlabel(data_plot.channels[0])
 
     if ylabel is not None:
         # Highest priority is user-provided label
-        plt.ylabel(ylabel)
+        ax.set_ylabel(ylabel)
     elif hasattr(data_plot, 'channels'):
         # Attempt to use channel name
-        plt.ylabel(data_plot.channels[1])
+        ax.set_ylabel(data_plot.channels[1])
 
     # title
     if title is not None:
-        plt.title(title)
+        ax.set_title(title)
 
     # Save if necessary
     if savefig is not None:
@@ -3274,8 +3289,8 @@ def scatter2d(data_list, ax=None,
     passed directly to ``plt.scatter``.
 
     """
-    # Check if a specific ax is given
-    ax = plt.gca()
+    # # Check if a specific ax is given
+    # ax = plt.gca()
 
     # Check appropriate number of channels
     if len(channels) != 2:
@@ -3298,10 +3313,10 @@ def scatter2d(data_list, ax=None,
         # Get channels to plot
         data_plot = data[:, channels]
         # Make scatter plot
-        plt.scatter(data_plot[:,0],
-                    data_plot[:,1],
-                    color=color[i],
-                    **kwargs)
+        ax.scatter(data_plot[:,0],
+                   data_plot[:,1],
+                   color=color[i],
+                   **kwargs)
 
     # Set labels if specified, else try to extract channel names
     if xlabel is not None:

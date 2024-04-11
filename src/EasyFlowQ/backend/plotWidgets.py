@@ -9,7 +9,8 @@ from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 
 from PyQt5 import QtCore, QtGui
 
-from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
+from ..FlowCal.plot import scatter2d, density2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
+from ..FlowCal.io import FCSData
 from .gates import quadrant, split, polygonGate, lineGate
 
 import warnings
@@ -33,11 +34,11 @@ lineGateStyle = {
 }
 
 dotSizeDict = {
-    'Smaller': 0.8,
-    'Small' : 1.3,
-    'Regular': 2,
-    'Big': 3.5,
-    'Bigger': 6
+    'Smaller': 1.7,
+    'Small' : 3,
+    'Regular': 5,
+    'Big': 7,
+    'Bigger': 10
 }
 
 class cachedStats():
@@ -76,8 +77,6 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.ax.set_xlabel('None')
         self.ax.set_ylabel('None')
-
-        self.sampleRNG = np.random.default_rng()
 
         self.curPlotType = 'Dot plot'
 
@@ -137,32 +136,51 @@ class plotCanvas(FigureCanvasQTAgg):
             _gateList = gateList + [selectedGateItem.gate]
             gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, _gateList, lastGateStatOnly=True)
                 
-        # Plot dots or histogram
-        if plotType == 'Dot plot':
-            # plot dots
+        # Plot dots, histogram or density plot
+        if plotType == 'Dot plot' or plotType == 'Density plot':
+            # plot dots and density plot
             self.cachedPlotStats.chnls = chnls
             dotAlpha = dotOpacity / 100
 
-            if perfModeN:
-                NperSmpl = int(perfModeN / len(gatedSmpls))
-                for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
-                    if len(gatedSmpl) > NperSmpl:
-                        sampledIdx = self.sampleRNG.choice(NperSmpl, size=NperSmpl, replace=False, axis=0, shuffle=False)
-                        sampledSmpl = gatedSmpl[sampledIdx, :]
-                    else: 
-                        sampledSmpl = gatedSmpl
-                
-                    scatter2d(sampledSmpl, self.ax, [xChnl, yChnl],
-                            xscale=axScales[0], yscale=axScales[1],
-                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
-                            s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
+            if plotType == 'Dot plot':
+                shorthand_scatter2d = lambda smpl, smplItem : scatter2d(smpl, self.ax, [xChnl, yChnl], xscale=axScales[0], yscale=axScales[1],
+                                                                        color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
+                                                                        s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
+                if perfModeN:
+                    NperSmpl = int(perfModeN / len(gatedSmpls))
+                    for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+                        if len(gatedSmpl) > NperSmpl:
+                            sampleRNG = np.random.default_rng(42)
+                            sampledIdx = sampleRNG.choice(len(gatedSmpl), size=NperSmpl, replace=False, axis=0, shuffle=False)
+                            sampledSmpl = gatedSmpl[sampledIdx, :]
+                        else: 
+                            sampledSmpl = gatedSmpl
+                    
+                        shorthand_scatter2d(sampledSmpl, smplItem)
+                else:
+                    for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+                        shorthand_scatter2d(gatedSmpl, smplItem)
+            
+            elif plotType == 'Density plot':
+                # Combine all the selected samples
+                if len(gatedSmpls) > 1:
+                    allSmplCombined = np.vstack([smpl[:, [xChnl, yChnl]] for smpl in gatedSmpls])
+                    allSmplCombined = FCSData_from_array(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
+                    plotLabel = 'All Selected Samples'
+                else:
+                    allSmplCombined = gatedSmpls[0][:, [xChnl, yChnl]]
+                    plotLabel = smplItems[0].displayName
 
-            else:
-                for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
-                    scatter2d(gatedSmpl, self.ax, [xChnl, yChnl],
-                            xscale=axScales[0], yscale=axScales[1],
-                            color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
-                            s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
+                if perfModeN and len(allSmplCombined) > perfModeN:
+                    sampleRNG = np.random.default_rng(42)
+                    sampledIdx = sampleRNG.choice(len(allSmplCombined), size=perfModeN, replace=False, axis=0, shuffle=False)
+                    sampledSmpl = allSmplCombined[sampledIdx, :]
+                else: 
+                    sampledSmpl = allSmplCombined
+                
+                density2d(sampledSmpl, self.ax, [xChnl, yChnl], mode='scatter', cmap='plasma', s=dotSizeDict[dotSize], alpha=dotAlpha, 
+                            xscale=axScales[0], yscale=axScales[1], label = plotLabel)
+                
 
             if isinstance(quad_split, quadrant):
             # Draw quadrant if selected
@@ -374,6 +392,37 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.set_ylim([ymin, ymax])
 
         self.draw()
+
+# Quick and dirty way of creating a FCSData from an numpy array
+# Use cautionously, this clase does not check if the created FCSData files are self-consistant
+class FCSData_from_array(FCSData):
+
+    # This copys all attributes from the "templet"
+    def __new__(cls, template, np_array):
+        # Get data from fcs_file object
+        obj = np_array.view(cls)
+
+        # Add FCS file attributes
+        obj._infile = 'N/A'
+        obj._text = template._text
+        obj._analysis = template._analysis
+
+        # Add channel-independent attributes
+        obj._data_type = template._data_type
+        obj._time_step = template._time_step
+        obj._acquisition_start_time = template._acquisition_start_time
+        obj._acquisition_end_time = template._acquisition_end_time
+
+        # Add channel-dependent attributes
+        obj._channels = template._channels
+        obj._amplification_type = template._amplification_type
+        obj._detector_voltage = template._detector_voltage
+        obj._amplifier_gain = template._amplifier_gain
+        obj._channel_labels = template._channel_labels
+        obj._range = template._range
+        obj._resolution = template._resolution
+
+        return obj
 
 
 def gateSmpls(smpls, gateList, lastGateStatOnly=False):
