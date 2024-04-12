@@ -109,7 +109,7 @@ class compWindow(wUi, wBase):
                 idxMap = dict(zip(self.autoFluoModel.DFIndices, self.autoFluoModel.chnlList))
                 outputAutoFluo = self.autoFluoModel.dfData.rename(index=idxMap)
             else:
-                outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).fillna(0)
+                outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).infer_objects(copy=False).fillna(0)
             outputSpillMat = self.spillMatModel.dfData.copy()
             return (self.chnlListModel.keyList, outputAutoFluo, outputSpillMat)
 

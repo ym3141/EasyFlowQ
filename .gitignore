@@ -24,7 +24,7 @@ demoSamples/CompDemo/*
 
 # mkdocs related
 site/
-docs/img/DocImages.afdesign
+docs/img/*.afdesign
 
 # dist
 dist/

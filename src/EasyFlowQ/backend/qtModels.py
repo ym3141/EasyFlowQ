@@ -226,7 +226,7 @@ class pandasTableModel(QAbstractTableModel):
             self._background = backgroundDF
 
         if editableDF is None:
-            self._editableDF = pd.DataFrame().reindex_like(data).fillna(True)
+            self._editableDF = pd.DataFrame(index=data.index, columns=data.columns).fillna(True)
         else:
             self._editableDF = editableDF
 

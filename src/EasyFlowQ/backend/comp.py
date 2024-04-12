@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import json
 
+from io import StringIO
 import itertools
 
 from .qtModels import pandasTableModel
@@ -24,7 +25,7 @@ class autoFluoTbModel(pandasTableModel):
         else:
             editableDF = pd.DataFrame(np.zeros((len(chnlList), 1), dtype=bool), index=self.DFIndices, columns=['AutoFluor'])
         
-        autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).fillna(0)
+        autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).infer_objects(copy=False).fillna(0)
 
         super().__init__(autoFluoDF, editableDF=editableDF, validator=QtGui.QDoubleValidator())
 
@@ -61,7 +62,7 @@ class autoFluoTbModel(pandasTableModel):
                 if not forceOverwrite:
                     return (overwriteFlag, missedChnls)
             
-            self.setData(self.index(idx, 0), inputDF.loc[inputChnlDict[chnl]][0])
+            self.setData(self.index(idx, 0), inputDF.loc[inputChnlDict[chnl]].iloc[0])
                  
         return (overwriteFlag, missedChnls)
     
@@ -76,8 +77,10 @@ class autoFluoTbModel(pandasTableModel):
     def load_json(self, jString: str):
         if jString is None:
             return False, []
-        spillMatDF = pd.read_json(jString, orient='split')
-        overwriteFlag, missedChnls = self.loadDF(spillMatDF)
+        
+        with StringIO(jString) as jStringIO:
+            spillMatDF = pd.read_json(jStringIO, orient='split')
+            overwriteFlag, missedChnls = self.loadDF(spillMatDF)
 
         return overwriteFlag, missedChnls
 
@@ -157,8 +160,10 @@ class spillMatTbModel(pandasTableModel):
     def load_json(self, jString: str):
         if jString is None: # Represent an empty matrix
             return False, []
-        spillMatDF = pd.read_json(jString, orient='split') 
-        overwriteFlag, missedChnls = self.loadMatDF(spillMatDF)
+        
+        with StringIO(jString) as jStringIO:
+            spillMatDF = pd.read_json(jStringIO, orient='split') 
+            overwriteFlag, missedChnls = self.loadMatDF(spillMatDF)
 
         return overwriteFlag, missedChnls
 
