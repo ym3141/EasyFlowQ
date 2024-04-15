@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../css/extra.css" rel="stylesheet" />
     
       <script>
         // Current page data
@@ -106,8 +107,9 @@
                 <h1 id="basic-usage">Basic usage</h1>
 <p>This page will describe the basics of using EasyFlowQ, including basic settings, loading sessions and FCS files, as well as basic analysis method. For more examples, please visit our <a href="../Tutorial/">Tutorial</a> page.</p>
 <h2 id="first-time-setup">First time setup</h2>
+<hr />
 <p>Upon the first time start, EasyFlowQ will greet you with the setting window (see below). If this is your first time using EasyFlowQ, we recommend you only change the first setting (<strong>Default fcs directory</strong>). Click browse and select the top-most folder that you normally keep your flow cytometry data. The EasyFlowQ will always open this directory when you load sessions or fcs files, and it will speed up your analysis workflow. </p>
-<p><img alt="Startup Setting" src="../img/StartUpSettings.png" /></p>
+<p><img alt="Startup Setting" src="../img/StartUpSettings.png" style="width:600px" /></p>
 <p>The other settings you can change in this page include:</p>
 <ul>
 <li><strong>Limit total number of dots</strong>: Decrease the number if refreshing of dot plot is slow. </li>
@@ -117,6 +119,7 @@
 <p>If you encounter a "Permission Error" pop up after clicking "OK". That suggest you likely do not have the permission to write in the installed directory. The settings are not saved but you can continue to use the program and do analysis. To correct this, run the program as administrator.</p>
 <p>Don't worry if you missed this. This setting window is always available in the "settings" menu.</p>
 <h2 id="simple-analysis-workflow">Simple analysis workflow</h2>
+<hr />
 <p>Here we list some of the basic operations for a simple analysis:</p>
 <ol>
 <li><strong>Load sample:</strong> To load samples, on the click Data -&gt; Load data files (or simply Ctrl+L). You can load multiple files, and a list of data will be shown on the left.</li>
@@ -131,6 +134,7 @@
 <p>Below you can see an annotated screenshot about the operations mentioned above.</p>
 <p><img alt="BasicOperations" src="../img/BasicOps.jpg" /></p>
 <h2 id="gating">Gating</h2>
+<hr />
 <p>Currently EasyFlowQ provides two gating types: <em>polygon (2D)</em> and <em>line (1D)</em>. To start drawing gates, click on the "+" in the "Gate" panel (upper right). You will enter the corresponding gate drawing mode, based on your current plot type (change in the "Plot type" section). For <em>polygon gate</em><em>, left click to create a new vertex, and right click will close the gate (if more than three vertices exist). For </em>line gate*, the 2nd vertex will automatically close the gate. </p>
 <p>Check the desired gates in the "Gate" panel to apply that gate onto the samples. <strong>Currently, all gatings are "global". This means if a gate is checked, all the samples plotted will be gated by that gate! This is enforced so that all samples plotted are under the same gating conditions.</strong> For situations that different gates for different samples are required, please refers to the <a href="#subpopulations">Subpopulation section</a>.</p>
 <p><strong>Known bug specific to MacOS version</strong>: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).</p>
@@ -139,11 +143,13 @@
 <h4 id="edit-or-delete-existing-gates">Edit or delete existing gates</h4>
 <p>Right click the existing gates in the "Gate" section, and you will see the options to edit or delete.</p>
 <h2 id="batch-renaming-with-xlsx">Batch-renaming with xlsx</h2>
+<hr />
 <p>Renaming samples from a high throughput experiment setup can be time consuming. EasyflowQ provides two methods to batch renaming samples names. Both methods provides a easy way for batch renaming your samples using a excel files (.xlsx). To access these tools, go to "Data" -&gt; "Rename with file" (see below).</p>
 <p><img alt="BasicOperations" src="../img/BatchRename.jpg" /></p>
 <h4 id="regular-rename">Regular rename</h4>
 <h4 id="cytoflex-format-file-names"><a href="https://www.beckman.com/landing/ppc/flow/cytoflex">CytoFLEX</a> format file names</h4>
 <h2 id="subpopulations">Subpopulations</h2>
+<hr />
 <p>EasyFlowQ supports subpopulations.</p>
               
             </div>
