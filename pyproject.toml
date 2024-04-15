@@ -16,7 +16,8 @@ dependencies = [
   "pandas>=1.5",
   "numpy>=1.21",
   "seaborn",
-  "xlsxwriter"
+  "xlsxwriter",
+  "openpyxl"
 ]
 
 description = "User-friendly flow cytometry analyzer with (GUI)"

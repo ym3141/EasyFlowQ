@@ -1,8 +1,17 @@
 site_name: "EasyFLowQ"
 repo_url: https://github.com/ym3141/EasyFlowQ
 
+theme:
+  name: readthedocs
+
 nav: 
   - Home: "README.md"
   - "Basic Usage.md"
   - "Tutorial.md"
   - LICENSE(MIT): "LICENSE.md"
+
+markdown_extensions:
+  - attr_list
+
+extra_css:
+  - css/extra.css
