@@ -20,6 +20,7 @@ smplSectUi, smplSectBase = uic.loadUiType(path.join(__location__, 'MainWindow_Sm
 
 class mainUi_SmplSect(smplSectBase, smplSectUi):
     to_handle_One = QtCore.pyqtSignal()
+    to_load_samples = QtCore.pyqtSignal(list)
     holdFigure = QtCore.pyqtSignal(bool)
 
     def __init__(self, parent, colorGen, curGateItems_func):
@@ -51,6 +52,8 @@ class mainUi_SmplSect(smplSectBase, smplSectUi):
         self.selectRootsPB.clicked.connect(self.handle_SelectAllRoots)
         self.searchSmplEdit.returnPressed.connect(self.handle_SearchSmplTree)
 
+        # Set up drag and drop
+        self.setAcceptDrops(True)
 
     def handle_ChangeSmplColor(self):
         colorDiag = QtWidgets.QColorDialog()
@@ -143,6 +146,26 @@ class mainUi_SmplSect(smplSectBase, smplSectUi):
         
         self.smplTreeWidget.resizeColumnToContents(0)
 
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            smpls_to_load = [url.toLocalFile() for url in event.mimeData().urls()]
+            self.to_load_samples.emit(smpls_to_load)
+            event.accept()
+        else:
+            event.ignore()
+
 class smplTreeWidgetCls(QtWidgets.QTreeWidget):
 
     def __init__(self, parent: QWidget) -> None:
@@ -162,6 +185,6 @@ if __name__ == '__main__':
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
 
-    window = mainUi_SmplSect(None, None)
+    window = mainUi_SmplSect(None, None, lambda : [])
     window.show()
     sys.exit(app.exec_())

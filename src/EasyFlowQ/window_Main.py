@@ -91,6 +91,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplSect.to_handle_One.connect(self.handle_One)
         self.smplSect.holdFigure.connect(self.handle_HoldFigure)
 
+        self.smplSect.to_load_samples.connect(self.handle_LoadData)
         self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
         self.smplTreeWidget = self.smplSect.smplTreeWidget
 
@@ -236,8 +237,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.smplsOnPlot = smplsOnPlot
 
-    def handle_LoadData(self):
-        fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
+    def handle_LoadData(self, fileNames=None):
+        if fileNames is None:
+            fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
+        else:
+            fileNames = [name for name in fileNames if name.endswith('.fcs')]
 
         if len(fileNames) == 0:
             return
