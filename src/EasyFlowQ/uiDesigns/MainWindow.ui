@@ -860,9 +860,7 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="resource/qt_resource.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>compExportPB</sender>

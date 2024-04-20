@@ -10,7 +10,6 @@ import sys
 from os import environ, path, getcwd
 
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from PyQt5.QtWidgets import QWidget
 
 from ..backend.qtModels import smplItem, subpopItem
 
@@ -33,6 +32,10 @@ class mainUi_SmplSect(smplSectBase, smplSectUi):
 
         self.colorGen = colorGen
         self.curGateItems_func = curGateItems_func
+
+        # Give the color button a icon
+        print(path.join(__location__, 'resource/PelatteIcon2.png'))
+        self.colorPB.setIcon(QtGui.QIcon(path.join(__location__, 'resource/PelatteIcon2.png')))
 
         # add actions to context manu and link functions
         self.smplTreeWidget.addActions([self.actionAdd_subpops_Current_gating])
@@ -168,7 +171,7 @@ class mainUi_SmplSect(smplSectBase, smplSectUi):
 
 class smplTreeWidgetCls(QtWidgets.QTreeWidget):
 
-    def __init__(self, parent: QWidget) -> None:
+    def __init__(self, parent: QtWidgets.QWidget) -> None:
         super().__init__(parent)
 
         # Customized the look.

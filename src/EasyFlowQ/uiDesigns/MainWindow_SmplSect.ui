@@ -72,7 +72,7 @@
        <string>Color</string>
       </property>
       <property name="icon">
-       <iconset resource="resource/qt_resource.qrc">
+       <iconset>
         <normaloff>:/icons/PelatteIcon2.tif</normaloff>:/icons/PelatteIcon2.tif</iconset>
       </property>
      </widget>
@@ -155,8 +155,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="resource/qt_resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
