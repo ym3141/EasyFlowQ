@@ -34,7 +34,6 @@ class mainUi_SmplSect(smplSectBase, smplSectUi):
         self.curGateItems_func = curGateItems_func
 
         # Give the color button a icon
-        print(path.join(__location__, 'resource/PelatteIcon2.png'))
         self.colorPB.setIcon(QtGui.QIcon(path.join(__location__, 'resource/PelatteIcon2.png')))
 
         # add actions to context manu and link functions

@@ -8,6 +8,7 @@ nav:
   - Home: "README.md"
   - "Basic Usage.md"
   - "Tutorial.md"
+  - "Dev notes.md"
   - LICENSE(MIT): "LICENSE.md"
 
 markdown_extensions:

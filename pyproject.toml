@@ -13,7 +13,7 @@ dependencies = [
   "pyqt5>=5.9",
   "scipy>=1.7",
   "matplotlib>=3.5",
-  "pandas>=1.5",
+  "pandas>=2.0",
   "numpy>=1.21",
   "seaborn",
   "xlsxwriter",
