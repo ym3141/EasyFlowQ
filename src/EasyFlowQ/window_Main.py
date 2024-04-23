@@ -5,6 +5,8 @@ import json
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from os import path, getcwd, environ
 
+from . import __version__
+
 from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
 from .backend.plotWidgets import plotCanvas
@@ -237,8 +239,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.smplsOnPlot = smplsOnPlot
 
-    def handle_LoadData(self, fileNames=None):
-        if fileNames is None:
+    def handle_LoadData(self, fileNames=False):
+        if (not fileNames) or (fileNames is None):
             fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
         else:
             fileNames = [name for name in fileNames if name.endswith('.fcs')]
@@ -849,7 +851,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     def updateWinTitle(self):
         pathStr = self.sessionSavePath if self.sessionSavePath else 'Not saved'
-        self.setWindowTitle('EasyFlowQ v{0:.1f}; ({1}{2})'.format(self.version, ('*' if self.saveFlag else ''), pathStr)) 
+        self.setWindowTitle('EasyFlowQ v{0}; ({1}{2})'.format(__version__, ('*' if self.saveFlag else ''), pathStr)) 
 
     def isWindowAlmostNew(self):
         return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())

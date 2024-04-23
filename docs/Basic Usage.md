@@ -58,6 +58,7 @@ Renaming samples from a high throughput experiment setup can be time consuming. 
 ![BasicOperations](img/BatchRename.jpg)
 
 #### Regular rename
+For basic renaming, create a excel file (.xlsx), with the old name in the first column 
 
 #### [CytoFLEX](https://www.beckman.com/landing/ppc/flow/cytoflex) format file names
 
