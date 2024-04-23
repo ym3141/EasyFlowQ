@@ -226,7 +226,7 @@
        <rect>
         <x>70</x>
         <y>20</y>
-        <width>61</width>
+        <width>51</width>
         <height>22</height>
        </rect>
       </property>
@@ -242,7 +242,7 @@
        <rect>
         <x>140</x>
         <y>20</y>
-        <width>61</width>
+        <width>51</width>
         <height>22</height>
        </rect>
       </property>
@@ -325,7 +325,7 @@
        <rect>
         <x>140</x>
         <y>20</y>
-        <width>61</width>
+        <width>51</width>
         <height>22</height>
        </rect>
       </property>
@@ -341,7 +341,7 @@
        <rect>
         <x>70</x>
         <y>20</y>
-        <width>61</width>
+        <width>51</width>
         <height>22</height>
        </rect>
       </property>
@@ -380,7 +380,7 @@
    <item>
     <widget class="QStackedWidget" name="stackWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageDots">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -469,7 +469,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="2" colspan="2">
            <widget class="QComboBox" name="dotSizeComboBox">
             <item>
              <property name="text">
