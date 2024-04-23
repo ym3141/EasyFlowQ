@@ -7,6 +7,10 @@ import pandas as pd
 import numpy as np
 from .backend.qtModels import pandasTableModel
 
+# Fix the issue of pyinstaller not inluding openpyxl
+import openpyxl
+import openpyxl.cell._writer
+
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_Map.ui')) # Load the .ui file
 

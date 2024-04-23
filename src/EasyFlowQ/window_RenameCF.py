@@ -7,6 +7,10 @@ import pandas as pd
 import numpy as np
 import re
 
+# Fix the issue of pyinstaller not inluding openpyxl
+import openpyxl
+import openpyxl.cell._writer
+
 from .backend.qtModels import pandasTableModel
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
