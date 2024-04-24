@@ -179,7 +179,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     sampledSmpl = allSmplCombined
                 
                 density2d(sampledSmpl, self.ax, [xChnl, yChnl], mode='scatter', cmap='plasma', s=dotSizeDict[dotSize], alpha=dotAlpha, 
-                            xscale=axScales[0], yscale=axScales[1], label = plotLabel)
+                            xscale=axScales[0], yscale=axScales[1], label = plotLabel, bins=256, smooth=smooth)
                 
 
             if isinstance(quad_split, quadrant):

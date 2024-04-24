@@ -1447,7 +1447,7 @@ class FCSData(np.ndarray):
         else:
             return self._resolution[channels]
 
-    def hist_bins(self, channels=None, nbins=None, scale='logicle', **kwargs):
+    def hist_bins(self, channels=None, nbins=None, scale='logicle', use_actual_range=False, **kwargs):
         """
         Get histogram bin edges for the specified channel(s).
 
@@ -1536,7 +1536,10 @@ class FCSData(np.ndarray):
             if nbins_channel is None:
                 nbins_channel = res_channel
             # Get range of channel
-            range_channel = self.range(channel)
+            if use_actual_range:
+                range_channel = [np.min(self[:, channel]), np.max(self[:, channel])]
+            else:
+                range_channel = self.range(channel)
             # Generate bins according to specified scale
             if scale_channel == 'linear':
                 # We will now generate ``nbins`` uniformly spaced bins centered

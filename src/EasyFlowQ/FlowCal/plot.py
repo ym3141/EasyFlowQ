@@ -3113,10 +3113,10 @@ def density2d(data, ax=None,
             # ``data_plot.hist_bins()``.
             if not hasattr(bins, '__iter__'):
                 bins = [data_plot.hist_bins(channels=0,
-                                            nbins=bins,
+                                            nbins=bins, use_actual_range=True,
                                             scale=xscale),
                         data_plot.hist_bins(channels=1,
-                                            nbins=bins,
+                                            nbins=bins, use_actual_range=True,
                                             scale=yscale)]
 
     else:
