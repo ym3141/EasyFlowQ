@@ -480,7 +480,10 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # Check if it's a polygone gate, and also change the current plot to the state that the gate was created on
         if isinstance(curSelectedGate, polygonGate):
-            if not (plotType == 'Dot plot' and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls):
+
+            # check if the current plot is compatible with the gate
+            rightPlotFlag = (plotType in ['Dot plot', 'Density plot']) and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls
+            if not rightPlotFlag:
                 input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
                                                                               Switch to them (current plot will be lost)?')
                 if input == QtWidgets.QMessageBox.Yes:
