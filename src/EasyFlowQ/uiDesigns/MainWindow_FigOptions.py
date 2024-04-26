@@ -159,14 +159,21 @@ class mainUI_figOps(figOpsBase, figOpsUi):
 
         return xlim + ylim
 
+    # Set the current axis limits, if the input is nan, set lim to auto
     def set_curAxLims(self, xmin, xmax, ymin, ymax):
         if not (math.isnan(xmin) or math.isnan(xmax)):
             self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
             self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
+            self.xlimAutoCheck.setCheckState(0)
+        else:
+            self.xlimAutoCheck.setCheckState(2)
 
         if not (math.isnan(ymin) or math.isnan(ymax)):
             self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
             self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
+            self.ylimAutoCheck.setCheckState(0)
+        else:
+            self.ylimAutoCheck.setCheckState(2)
 
     def set_axAuto(self, xAxis=False, yAxis=False):
         if xAxis:

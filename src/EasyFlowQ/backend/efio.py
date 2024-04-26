@@ -15,6 +15,7 @@ from ..FlowCal.io import FCSData
 from typing import List
 
 import pandas as pd
+import numpy as np
 
 class writeRawFcs(QThread):
     prograssChanged = pyqtSignal(str, float)
@@ -172,6 +173,22 @@ class sessionSave():
         except Exception as e:
             figSettingFlag = True
             traceback.print_tb(e.__traceback__)
+
+        if save_ver >= 1.0:
+            try:
+                lims = []
+                for lim in jDict['figOptions']['curAxLims']:
+                    if lim == 'auto':
+                        lims.append(np.nan)
+                    else:
+                        lims.append(float(lim))
+
+                mainUiWindow.figOpsPanel.set_curAxLims(*lims)
+                
+            except Exception as e:
+                figSettingFlag = True
+                traceback.print_tb(e.__traceback__)
+
 
         if save_ver >= 1.5:
             try: 
