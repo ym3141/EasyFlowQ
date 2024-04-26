@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 from scipy.ndimage import gaussian_filter1d, uniform_filter1d
+from scipy.interpolate import interpn
+from scipy.stats import gaussian_kde
 
 from PyQt5 import QtCore, QtGui
 
@@ -177,10 +179,45 @@ class plotCanvas(FigureCanvasQTAgg):
                     sampledSmpl = allSmplCombined[sampledIdx, :]
                 else: 
                     sampledSmpl = allSmplCombined
+
+                kdeSize = 1024
+                if len(sampledSmpl) < kdeSize:
+                    kdeSmpl = sampledSmpl[:, [xChnl, yChnl]]
+                else:
+                    sampleRNG2 = np.random.default_rng(43)
+                    kdeSmplIdx = sampleRNG2.choice(len(sampledSmpl), size=kdeSize, replace=False, axis=0, shuffle=False)
+                    kdeSmpl = sampledSmpl[kdeSmplIdx, :]
+
+                # Transform the data if needed
+                transformed_kdeSmpl = []
+                transformed_sampledSmpl = []
+
+                for chnl, scale in zip(chnls, axScales):
+                    if scale == 'logicle':
+                        logicleT = _LogicleTransform(data=kdeSmpl[:, chnl], channel=chnl).inverted()
+                        transformed_kdeSmpl.append(logicleT.transform_non_affine(kdeSmpl[:, chnl]))
+                        transformed_sampledSmpl.append(logicleT.transform_non_affine(sampledSmpl[:, chnl]))
+                    elif scale == 'log':
+                        transformed_kdeSmpl.append(np.log10(kdeSmpl[:, chnl]))
+                        transformed_sampledSmpl.append(np.log10(sampledSmpl[:, chnl]))
+                    elif scale == 'linear':
+                        transformed_kdeSmpl.append(kdeSmpl[:, chnl])
+                        transformed_sampledSmpl.append(sampledSmpl[:, chnl])
+
+                transformed_kdeSmpl = np.vstack(transformed_kdeSmpl)
+                transformed_sampledSmpl = np.vstack(transformed_sampledSmpl)
+                # Remove NaN and INFs in columns
+                transformed_kdeSmpl = transformed_kdeSmpl[:, np.all(np.isfinite(transformed_kdeSmpl), axis=0)]
+                smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=0)
                 
-                density2d(sampledSmpl, self.ax, [xChnl, yChnl], mode='scatter', cmap='plasma', s=dotSizeDict[dotSize], alpha=dotAlpha, 
-                            xscale=axScales[0], yscale=axScales[1], label = plotLabel, bins=256, smooth=smooth)
-                
+                # Construct the kde
+                G_kde = gaussian_kde(transformed_kdeSmpl)
+
+                # plotting
+                scatter2d(sampledSmpl[smplMask, :], self.ax, channels=[xChnl, yChnl], 
+                          c=G_kde(transformed_sampledSmpl[:, smplMask]), xscale=axScales[0], yscale=axScales[1],
+                          cmap = 'plasma', label=plotLabel, s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
+
 
             if isinstance(quad_split, quadrant):
             # Draw quadrant if selected
@@ -465,6 +502,7 @@ def gateSmpls(smpls, gateList, lastGateStatOnly=False):
     
     return gatedSmpls, gateFracs, inGateFlags
 
+# Coppied and modified from FlowCal.plot.hist1D
 def hist1d_line(data, ax, channel, xscale, color,
                 bins=1024,
                 normed_height=False,

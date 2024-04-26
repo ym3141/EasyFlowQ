@@ -3300,13 +3300,16 @@ def scatter2d(data_list, ax=None,
     if not isinstance(data_list, list):
         data_list = [data_list]
 
-    # Default colors
-    if color is None:
-        color = [cmap_default(i) for i in np.linspace(0, 1, len(data_list))]
+    if 'c' in kwargs:
+        color = [None]*len(data_list)
+    else:
+        # Default colors
+        if color is None:
+            color = [cmap_default(i) for i in np.linspace(0, 1, len(data_list))]
 
-    # Convert color to list, if necessary
-    if not isinstance(color, list):
-       color = [color]*len(data_list)
+        # Convert color to list, if necessary
+        if not isinstance(color, list):
+            color = [color]
 
     # Iterate through data_list
     for i, data in enumerate(data_list):

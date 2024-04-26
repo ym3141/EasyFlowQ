@@ -57,8 +57,7 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         elif which in self.rangeEdits[2:4]:
             self.signal_AxLimsNeedUpdate.emit(None, None, float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text()))
         
-        print('range edited')
-
+        
     def handle_AxisAuto(self, checkState):
         which = self.sender()
 
