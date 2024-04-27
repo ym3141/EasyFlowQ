@@ -164,22 +164,17 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         if not (math.isnan(xmin) or math.isnan(xmax)):
             self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
             self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
-            self.xlimAutoCheck.setCheckState(0)
-        else:
-            self.xlimAutoCheck.setCheckState(2)
 
         if not (math.isnan(ymin) or math.isnan(ymax)):
             self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
             self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
-            self.ylimAutoCheck.setCheckState(0)
-        else:
-            self.ylimAutoCheck.setCheckState(2)
-
-    def set_axAuto(self, xAxis=False, yAxis=False):
-        if xAxis:
-            self.xlimAutoCheck.setCheckState(2)
-        if yAxis:
-            self.ylimAutoCheck.setCheckState(2)
+            
+            
+    def set_axAuto(self, xAxis=None, yAxis=None):
+        if not xAxis is None:
+            self.xlimAutoCheck.setCheckState(2 if xAxis else 0)
+        if not yAxis is None:
+            self.ylimAutoCheck.setCheckState(2 if yAxis else 0)
 
     @property
     def curSmooth(self):

@@ -176,14 +176,15 @@ class sessionSave():
 
         if save_ver >= 1.0:
             try:
-                lims = []
-                for lim in jDict['figOptions']['curAxLims']:
-                    if lim == 'auto':
-                        lims.append(np.nan)
-                    else:
-                        lims.append(float(lim))
-
-                mainUiWindow.figOpsPanel.set_curAxLims(*lims)
+                mainUiWindow.figOpsPanel.set_axAuto(xAxis=True, yAxis=True)
+                xmin, xmax, ymin, ymax = jDict['figOptions']['curAxLims']
+                if not (xmin == 'auto' or xmax == 'auto'):
+                    mainUiWindow.figOpsPanel.set_axAuto(xAxis=False)
+                    mainUiWindow.figOpsPanel.set_curAxLims(xmin, xmax, np.nan, np.nan)
+                
+                if not (ymin == 'auto' or ymax == 'auto'):
+                    mainUiWindow.figOpsPanel.set_axAuto(yAxis=False)
+                    mainUiWindow.figOpsPanel.set_curAxLims(np.nan, np.nan, ymin, ymax)
                 
             except Exception as e:
                 figSettingFlag = True
