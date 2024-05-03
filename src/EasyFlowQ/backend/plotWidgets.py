@@ -97,7 +97,7 @@ class plotCanvas(FigureCanvasQTAgg):
         gateList=[], quad_split=None,
         plotType = 'Dot plot',
         normOption = 'Percentage',
-        perfModeN=None, legendOps=1, smooth=0,
+        perfModeN=None, legendOps=1, gatePercOps=2, smooth=0,
         selectedGateItem=None,
         dotSize = 0, dotOpacity = 0.8
         ):
@@ -251,13 +251,17 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.ax.plot(xydata[:, 0], xydata[:, 1], **polygonGateStyle)
                     self.drawnGates = True
 
-                    if len(gatedSmpls) == 1:
-                        inGateFracText = '{:.2%}'.format(gateFracs[0][-1])
+                    if len(gatedSmpls) < 5 and gatePercOps:
+                        inGateFracText = []
+                        for idx in range(len(gatedSmpls)):
+                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
+                        inGateFracText = ''.join(inGateFracText)
+
                     else:
-                        inGateFracText = 'N/A'
+                        inGateFracText = ''
 
                     UR_point = np.max(selectedGate.verts, axis=0)
-                    self.ax.annotate('Gate: {0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
+                    self.ax.annotate('Gate: {0}{1}'.format(selectedGateItem.text(), inGateFracText), 
                                      xy=UR_point, textcoords='offset points', xytext=(-20, -10), 
                                      bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
                                      horizontalalignment='right', verticalalignment='top', annotation_clip=True)
@@ -338,15 +342,18 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.ax.plot(selectedGate.ends, [0.5 * ymax_histo, 0.5 * ymax_histo], **lineGateStyle)
                     self.drawnGates = True
 
-                    if len(gatedSmpls) == 1:
-                        inGateFracText = '{:.2%}'.format(gateFracs[0][-1])
+                    if len(gatedSmpls) < 5 and gatePercOps:
+                        inGateFracText = []
+                        for idx in range(len(gatedSmpls)):
+                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
+                        inGateFracText = ''.join(inGateFracText)
                     else:
-                        inGateFracText = 'N/A'
+                        inGateFracText = ''
 
-                    self.ax.annotate('Gate: {0} \n({1})'.format(selectedGateItem.text(), inGateFracText), 
-                                     xy=[np.mean(selectedGate.ends), 0.5 * ymax_histo], textcoords='offset points', xytext=(10, 25), 
+                    self.ax.annotate('Gate: {0}{1}'.format(selectedGateItem.text(), inGateFracText), 
+                                     xy=[selectedGate.ends[1], 0.5 * ymax_histo], textcoords='offset points', xytext=(-2, 2), 
                                      bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
-                                     horizontalalignment='right', verticalalignment='top', annotation_clip=True)
+                                     horizontalalignment='right', verticalalignment='bottom', annotation_clip=True)
                     
                     xlim_auto[0] = np.min([selectedGate.ends[0], xlim_auto[0]])
                     xlim_auto[1] = np.max([selectedGate.ends[1], xlim_auto[1]])

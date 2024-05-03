@@ -207,7 +207,7 @@
               <rect>
                <x>10</x>
                <y>80</y>
-               <width>301</width>
+               <width>131</width>
                <height>20</height>
               </rect>
              </property>
@@ -235,6 +235,22 @@
              </property>
              <property name="text">
               <string>⇄</string>
+             </property>
+            </widget>
+            <widget class="QCheckBox" name="showGatePercCheck">
+             <property name="geometry">
+              <rect>
+               <x>150</x>
+               <y>80</y>
+               <width>101</width>
+               <height>20</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>In gate percentage</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </widget>

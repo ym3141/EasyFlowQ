@@ -151,6 +151,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.perfCheck.stateChanged.connect(self.handle_One)
         self.showLegendCheck.stateChanged.connect(self.handle_One)
+        self.showGatePercCheck.stateChanged.connect(self.handle_One)
 
         self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
         self.compWindow.compValueEdited.connect(self.handle_One)
@@ -232,7 +233,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             gateList=[gateItem.gate for gateItem in self.curGateItems],
             quad_split = quad_split,
             plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(),
+            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(), gatePercOps = self.showGatePercCheck.checkState(),
             selectedGateItem=selectedGateItem,
             dotSize=dotSize, dotOpacity=dotOpacity
         )
