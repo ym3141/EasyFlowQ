@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1041</width>
-    <height>700</height>
+    <width>1150</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>205</width>
+        <width>210</width>
         <height>0</height>
        </size>
       </property>
@@ -207,7 +207,7 @@
               <rect>
                <x>10</x>
                <y>80</y>
-               <width>131</width>
+               <width>171</width>
                <height>20</height>
               </rect>
              </property>
@@ -242,7 +242,7 @@
               <rect>
                <x>190</x>
                <y>80</y>
-               <width>101</width>
+               <width>191</width>
                <height>20</height>
               </rect>
              </property>
@@ -259,7 +259,7 @@
            <widget class="QGroupBox" name="groupBox">
             <property name="minimumSize">
              <size>
-              <width>170</width>
+              <width>175</width>
               <height>0</height>
              </size>
             </property>
@@ -284,7 +284,7 @@
               <rect>
                <x>10</x>
                <y>50</y>
-               <width>91</width>
+               <width>101</width>
                <height>21</height>
               </rect>
              </property>
@@ -297,7 +297,7 @@
               <rect>
                <x>10</x>
                <y>75</y>
-               <width>151</width>
+               <width>161</width>
                <height>21</height>
               </rect>
              </property>
@@ -308,7 +308,7 @@
             <widget class="QPushButton" name="compExportPB">
              <property name="geometry">
               <rect>
-               <x>110</x>
+               <x>120</x>
                <y>45</y>
                <width>51</width>
                <height>21</height>
@@ -321,7 +321,7 @@
             <widget class="QPushButton" name="compImportPB">
              <property name="geometry">
               <rect>
-               <x>110</x>
+               <x>120</x>
                <y>20</y>
                <width>51</width>
                <height>21</height>
@@ -378,7 +378,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>220</width>
+        <width>225</width>
         <height>16777215</height>
        </size>
       </property>
@@ -692,7 +692,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1041</width>
+     <width>1150</width>
      <height>18</height>
     </rect>
    </property>
