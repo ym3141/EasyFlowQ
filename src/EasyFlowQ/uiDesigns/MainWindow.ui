@@ -240,7 +240,7 @@
             <widget class="QCheckBox" name="showGatePercCheck">
              <property name="geometry">
               <rect>
-               <x>150</x>
+               <x>190</x>
                <y>80</y>
                <width>101</width>
                <height>20</height>

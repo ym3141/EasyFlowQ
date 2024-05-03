@@ -92,9 +92,9 @@
      <widget class="QPushButton" name="selectRootsPB">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>120</x>
         <y>25</y>
-        <width>71</width>
+        <width>81</width>
         <height>21</height>
        </rect>
       </property>
