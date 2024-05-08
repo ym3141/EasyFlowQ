@@ -96,7 +96,6 @@ class mainUI_figOps(figOpsBase, figOpsUi):
         yAxisOptionBG.addButton(self.yLogicleRadio, 2)
 
         normOptionBG.addButton(self.norm2PercRadio, 0)
-        normOptionBG.addButton(self.norm2TotalRadio, 1)
         normOptionBG.addButton(self.norm2CountRadio, 2)
 
         return plotOptionBG, xAxisOptionBG, yAxisOptionBG, normOptionBG

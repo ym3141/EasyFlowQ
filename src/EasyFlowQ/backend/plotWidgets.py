@@ -96,7 +96,7 @@ class plotCanvas(FigureCanvasQTAgg):
         compValues,
         gateList=[], quad_split=None,
         plotType = 'Dot plot',
-        normOption = 'Percentage',
+        normOption = 'Unit Area',
         perfModeN=None, legendOps=1, gatePercOps=2, smooth=0,
         selectedGateItem=None,
         dotSize = 0, dotOpacity = 0.8
@@ -314,8 +314,8 @@ class plotCanvas(FigureCanvasQTAgg):
             else:
                 self.ax.set_yscale(axScales[1])
 
-            if not (normOption == 'Cell count'):
-                self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
+            # if not (normOption == 'Cell count'):
+            #     self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
 
             if isinstance(quad_split, split):
                 if quad_split.chnl == xChnl:
@@ -530,10 +530,8 @@ def hist1d_line(data, ax, channel, xscale, color,
                 bins = data.hist_bins(channels=channel, nbins=bins, scale=xscale, **xscale_kwargs)
 
     # Calculate weights if normalizing bins by height
-    if normed_height == 'Percentage':
+    if normed_height == 'Unit Area':
         weights = np.ones_like(data[:, channel]) / float(len(data[:, channel]))
-    elif normed_height == 'Percentage of total':
-        weights = np.ones_like(data[:, channel]) / float(int(data.text['$TOT']))
     else:
         weights = None
 

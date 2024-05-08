@@ -380,7 +380,7 @@
    <item>
     <widget class="QStackedWidget" name="stackWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageDots">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -544,27 +544,20 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="norm2PercRadio">
-            <property name="text">
-             <string>Percentage</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QRadioButton" name="norm2CountRadio">
             <property name="text">
-             <string>Cell count</string>
+             <string>Cell Count</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="norm2TotalRadio">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="norm2PercRadio">
             <property name="text">
-             <string>Percentage of total</string>
+             <string>Unit Area</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

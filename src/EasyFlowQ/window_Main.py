@@ -122,7 +122,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
-        self.actionExport_data_in_current_gates.triggered.connect(self.handle_ExportDataInGates)
+        self.actionas_csv.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
@@ -392,9 +392,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = False
         self.handle_One()
 
+    # This function export fcs data that are in gates to csv/npy files, 
     def handle_ExportDataInGates(self):
 
-        self.statWindow.updateStat(self.smplsOnPlot, self.curChnls, self.curGateItems)
+        self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
 
         if len(self.statWindow.cur_Name_RawData_Pairs):
             saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSavePath)

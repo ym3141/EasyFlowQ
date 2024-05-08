@@ -718,11 +718,18 @@
      <addaction name="actionSimple_mapping"/>
      <addaction name="actionFor_Cytoflex"/>
     </widget>
+    <widget class="QMenu" name="menuExport_raw_current_gate">
+     <property name="title">
+      <string>Export raw (current gate)</string>
+     </property>
+     <addaction name="actionas_csv"/>
+    </widget>
     <addaction name="actionLoad_Data_Files"/>
     <addaction name="separator"/>
     <addaction name="menuRename_with_file"/>
+    <addaction name="actionRelabel_channels"/>
     <addaction name="separator"/>
-    <addaction name="actionExport_data_in_current_gates"/>
+    <addaction name="menuExport_raw_current_gate"/>
    </widget>
    <widget class="QMenu" name="menuGraph">
     <property name="title">
@@ -830,11 +837,6 @@
     <string>Cytoflex naming system</string>
    </property>
   </action>
-  <action name="actionExport_data_in_current_gates">
-   <property name="text">
-    <string>Export data in current gates</string>
-   </property>
-  </action>
   <action name="actionDelete_Gate">
    <property name="text">
     <string>Delete Gate</string>
@@ -873,6 +875,21 @@
   <action name="actionShow_in_folder">
    <property name="text">
     <string>Show in folder...</string>
+   </property>
+  </action>
+  <action name="actionRelabel_channels">
+   <property name="text">
+    <string>Relabel channels</string>
+   </property>
+  </action>
+  <action name="actionas_csv">
+   <property name="text">
+    <string>as .csv</string>
+   </property>
+  </action>
+  <action name="actionas_npy">
+   <property name="text">
+    <string>as .npy</string>
    </property>
   </action>
  </widget>
