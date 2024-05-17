@@ -20,6 +20,7 @@ from .window_Settings import settingsWindow, localSettings
 from .window_About import aboutWindow
 from .window_Comp import compWindow
 from .wizard_Comp import compWizard
+from .window_EditStain import editStainWindow
 
 from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
 from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
@@ -50,7 +51,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.version = self.settingDict['version']
         self._saveFlag = False
 
-        self.chnlDict = dict()
+        # self.chnlDict = dict()
         self.colorGen = colorGenerator()
         self.sessionSavePath = None
         self.holdFigureUpdate = True
@@ -97,6 +98,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
         self.smplTreeWidget = self.smplSect.smplTreeWidget
 
+        # add the progress bar
+        self.progBar = QtWidgets.QProgressBar(self)
+        self.progBar.reset()
+        self.statusbar.addPermanentWidget(self.progBar)
+
         # init ui models
         self.gateListWidgetModel = self.gateListWidget.model()
 
@@ -122,6 +128,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
+        self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
         self.actionas_csv.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
@@ -199,6 +206,8 @@ class mainUi(mainWindowBase, mainWindowUi):
             return
 
         self.set_saveFlag(True)
+        self.statusbar.showMessage('Randering plot...')
+        QtCore.QCoreApplication.processEvents()
         selectedSmpls = self.smplTreeWidget.selectedItems()
 
         if len(self.gateListWidget.selectedItems()) > 0:
@@ -237,7 +246,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             selectedGateItem=selectedGateItem,
             dotSize=dotSize, dotOpacity=dotOpacity
         )
-
+        self.statusbar.clearMessage()
         self.smplsOnPlot = smplsOnPlot
 
     def handle_LoadData(self, fileNames=False):
@@ -392,6 +401,16 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = False
         self.handle_One()
 
+    def handle_EditStain(self):
+        editStainDict = {}
+        self.editStainWindow = editStainWindow(self.chnlListModel, editStainDict)
+        isEditAccept = self.editStainWindow.exec_()
+        if isEditAccept:
+            for chnlKey, stainName in editStainDict.items():
+                self.chnlListModel.setStainName(chnlKey, stainName)        
+
+            self.handle_One()
+
     # This function export fcs data that are in gates to csv/npy files, 
     def handle_ExportDataInGates(self):
 
@@ -402,9 +421,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             if not saveFileDir:
                 return
 
-            self.progBar = QtWidgets.QProgressBar(self)
-            self.statusbar.addPermanentWidget(self.progBar)
-            self.statusbar.showMessage('Exporting starting...')
+            self.statusbar.showMessage('Export starting...')
 
             names = [a[0] for a in self.statWindow.cur_Name_RawData_Pairs]
             fcsDatas = [a[1] for a in self.statWindow.cur_Name_RawData_Pairs]
@@ -451,7 +468,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.progBar.setValue(int(progFrac*100))
 
     def handle_ExportDataFinished(self):
-        self.statusbar.removeWidget(self.progBar)
+        self.progBar.reset()
         self.statusbar.showMessage('Exporting Finished')
 
     def handle_DeleteGate(self):

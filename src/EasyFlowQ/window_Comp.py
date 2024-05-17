@@ -76,7 +76,7 @@ class compWindow(wUi, wBase):
     # This function create a model of empty compensation matrix, and set it to the model
     def createEmpty(self):
         chnlList = self.chnlListModel.keyList
-        chnlNames = [fullName[len(chnlList[idx])+2:] for idx, fullName in enumerate(self.chnlListModel.fullNameList)]
+        chnlNames = [fullName[len(chnlList[idx])+2:] for idx, fullName in enumerate(self.chnlListModel.fullTextList)]
 
         self.autoFluoModel = autoFluoTbModel(chnlList, chnlNames)
         self.autoFluoTable.setModel(self.autoFluoModel)

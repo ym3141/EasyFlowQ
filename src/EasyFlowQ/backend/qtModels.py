@@ -178,6 +178,7 @@ class chnlModel(QStandardItemModel):
     def __init__(self):
         super().__init__()
         self.chnlNameDict = dict()
+        self.stainDict = dict()
 
     def addChnl(self, chnlKey, chnlName):
         if not (chnlKey in self.keyList):
@@ -185,9 +186,26 @@ class chnlModel(QStandardItemModel):
             newChnlItem.setData(chnlKey)
             self.appendRow(newChnlItem)
             self.chnlNameDict[chnlKey] = chnlName
+            self.stainDict[chnlKey] = ''
             return 1
         else:
             return 0
+        
+    def setStainName(self, chnlKey, stainName):
+        if chnlKey in self.stainDict:
+            self.stainDict[chnlKey] = stainName
+            idx = self.keyList.index(chnlKey)
+
+            if stainName != '':
+                self.item(idx).setText('{0}: {1} | {2}'.format(chnlKey, self.chnlNameDict[chnlKey], stainName))
+            else:
+                self.item(idx).setText('{0}: {1}'.format(chnlKey, self.chnlNameDict[chnlKey]))
+    
+    def loadStainDict(self, stainDict: dict):
+        for chnlKey, stainName in stainDict.items():
+            if stainName != '':
+                self.setStainName(chnlKey, stainName)
+
 
     def qIdxFromKey(self, chnlKey):
         if chnlKey in self.chnlNameDict:
@@ -204,8 +222,19 @@ class chnlModel(QStandardItemModel):
         return [self.item(idx).data() for idx in range(self.rowCount())]
 
     @property
-    def fullNameList(self):
+    def fullTextList(self):
         return [self.item(idx).text() for idx in range(self.rowCount())]
+
+    @property
+    def stainLabelList(self):
+        return [self.stainDict[chnlKey] for chnlKey in self.keyList]
+    
+    @property
+    def fullChnlNameList(self):
+        result = []
+        for chnlKey in self.keyList:
+            result.append('{0}: {1}'.format(chnlKey, self.chnlNameDict[chnlKey]))
+        return result
 
 
 class pandasTableModel(QAbstractTableModel):

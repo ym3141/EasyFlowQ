@@ -74,6 +74,7 @@ class sessionSave():
         optionsKeys = ['curPlotType', 'curAxScales', 'curAxLims', 'curNormOption', 'curSmooth', 'curDotSize', 'curOpacity']
         self.figOptions = dict(zip(optionsKeys, mainUiWindow.figOpsPanel.curFigOptions[0:len(optionsKeys)]))
         self.figOptions['curChnls'] = mainUiWindow.curChnls
+        self.stainDict = mainUiWindow.chnlListModel.stainDict
 
         self.curComp = mainUiWindow.compWindow.to_json()
         self.applyComp = mainUiWindow.compApplyCheck.isChecked()
@@ -191,13 +192,17 @@ class sessionSave():
                 traceback.print_tb(e.__traceback__)
 
 
-        if save_ver >= 1.5:
+        if save_ver >= 1.2:
             try: 
                 mainUiWindow.figOpsPanel.set_curAxScales(jDict['figOptions']['curAxScales'])
                 mainUiWindow.figOpsPanel.set_curNormOption(jDict['figOptions']['curNormOption'])
                 mainUiWindow.figOpsPanel.set_curPlotType(jDict['figOptions']['curPlotType'])
 
                 mainUiWindow.set_curChnls(jDict['figOptions']['curChnls'])
+
+                # Load the stain dictionary
+                if save_ver >= 1.5:
+                    mainUiWindow.chnlListModel.loadStainDict(jDict['stainDict'])
             except Exception as e:
                 figSettingFlag = True
                 traceback.print_tb(e.__traceback__)

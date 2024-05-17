@@ -727,7 +727,7 @@
     <addaction name="actionLoad_Data_Files"/>
     <addaction name="separator"/>
     <addaction name="menuRename_with_file"/>
-    <addaction name="actionRelabel_channels"/>
+    <addaction name="actionEdit_stain_labels"/>
     <addaction name="separator"/>
     <addaction name="menuExport_raw_current_gate"/>
    </widget>
@@ -877,9 +877,9 @@
     <string>Show in folder...</string>
    </property>
   </action>
-  <action name="actionRelabel_channels">
+  <action name="actionAnnotate_channels">
    <property name="text">
-    <string>Relabel channels</string>
+    <string>Anotate channels</string>
    </property>
   </action>
   <action name="actionas_csv">
@@ -890,6 +890,11 @@
   <action name="actionas_npy">
    <property name="text">
     <string>as .npy</string>
+   </property>
+  </action>
+  <action name="actionEdit_stain_labels">
+   <property name="text">
+    <string>Edit stain labels</string>
    </property>
   </action>
  </widget>
