@@ -324,12 +324,14 @@ def _convert_gateItem(gateItem):
     gateSave['checkState'] = gateItem.checkState()
     gateSave['uuid'] = gateItem.uuid
 
+    # delete the keys that are not serializable
+    for gateSaveKey in ['prebuiltPath', '_dataCurrentlyGating']: 
+        if gateSaveKey in gateSave:
+            del gateSave[gateSaveKey]
+
+    # convert the verts to list
     if gateSave['type'] == 'polygonGate':
         gateSave['verts'] = gateSave['verts'].tolist()
-        del gateSave['prebuiltPath']
-
-    elif gateSave['type'] == 'lineGate' or gateSave['type'] == 'quadrantGate':
-        pass
 
     return gateSave
 

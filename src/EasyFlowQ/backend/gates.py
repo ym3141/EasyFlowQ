@@ -7,6 +7,7 @@ from matplotlib.artist import Artist
 from matplotlib.path import Path as mpl_path
 
 from PyQt5 import QtCore
+from functools import lru_cache
 
 
 def dist(x, y):
@@ -54,9 +55,17 @@ class polygonGate():
                 verts4path[:, idx] = np.log10(verts4path[:, idx])
                 
         self.prebuiltPath = mpl_path(verts4path)
+        self._dataCurrentlyGating = None
 
     def isInsideGate(self, fcsData):
-        points = fcsData[:, self.chnls].copy()
+        dataHash = hash(fcsData.sum(axis=1).tobytes())
+        self._dataCurrentlyGating = fcsData
+
+        return self._isInsideGate_cached(dataHash)
+    
+    @lru_cache(maxsize=128)
+    def _isInsideGate_cached(self, dataHash):
+        points = self._dataCurrentlyGating[:, self.chnls].copy()
 
         for idx, scale in enumerate(self.axScales):
             if scale == 'log':
@@ -67,6 +76,7 @@ class polygonGate():
 
         return insideFlags
 
+
 class lineGate:
     def __init__(self, chnl, ends:list) -> None:
 
@@ -75,12 +85,19 @@ class lineGate:
             ends.reverse()
         self.ends = ends
 
+        self._dataCurrentlyGating = None
+
     def isInsideGate(self, fcsData):
-        points = fcsData[:, self.chnls[0]].copy()
+        dataHash = hash(fcsData.sum(axis=1).tobytes())
+        self._dataCurrentlyGating = fcsData
 
+        return self._isInsideGate_cached(dataHash)
+    
+    @lru_cache(maxsize=128)
+    def _isInsideGate_cached(self, dataHash):
+        points = self._dataCurrentlyGating[:, self.chnl]
         insideFlags = np.logical_and(points > self.ends[0], points < self.ends[1])
-
-        return insideFlags
+        return np.array(insideFlags)
 
     @property
     def chnls(self):

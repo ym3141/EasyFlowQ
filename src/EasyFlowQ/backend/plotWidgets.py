@@ -471,7 +471,6 @@ class FCSData_from_array(FCSData):
 
 def gateSmpls(smpls, gateList, lastGateStatOnly=False):
     #gate samples with a list of gate:
-
     gatedSmpls = []
     gateFracs = []
     inGateFlags = []
@@ -479,11 +478,9 @@ def gateSmpls(smpls, gateList, lastGateStatOnly=False):
         
         inGateFlag = np.ones(fcsData.shape[0], dtype=bool)
         fracInEachGate = []
-
         for idx, gate in enumerate(gateList):
-
+            # channels exist in the sample
             if gate.chnls[0] in fcsData.channels and gate.chnls[1] in fcsData.channels:
-
                 newFlag = gate.isInsideGate(fcsData)
 
                 if np.sum(inGateFlag) > 0:
@@ -495,7 +492,7 @@ def gateSmpls(smpls, gateList, lastGateStatOnly=False):
                 if lastGateStatOnly and idx == len(gateList) - 1:
                     pass
                 else:
-                    inGateFlag = np.logical_and(gate.isInsideGate(fcsData), inGateFlag)
+                    inGateFlag = np.logical_and(newFlag, inGateFlag)
 
             else: 
                 warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)

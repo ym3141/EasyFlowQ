@@ -1759,7 +1759,7 @@ class FCSData(np.ndarray):
 
         # Get data from fcs_file object, and change writeable flag.
         data = fcs_file.data
-        data.flags.writeable = True
+        data.flags.writeable = False
         obj = data.view(cls)
 
         # Add FCS file attributes
