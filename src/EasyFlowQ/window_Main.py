@@ -149,6 +149,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         # everything update figure
         self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
+        self.gateListWidget.itemSelectionChanged.connect(self.handle_One)
 
         self.gateListWidget.itemChanged.connect(self.handle_One)
         self.gateListWidgetModel.rowsMoved.connect(self.handle_One)
