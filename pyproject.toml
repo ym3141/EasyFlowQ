@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "EasyFlowQ"
-version = "1.4.10"
+version = "1.5.5"
 authors = [
   { name="Yitong Ma", email="yitongma7@gmail.com" },
 ]
@@ -42,7 +42,7 @@ EasyFlowQ = "EasyFlowQ.main_entry:newWindowFunc"
 exclude = [
   "/release",
   "/docs/img",
-  "/demo_samples",
+  "/demo_sample",
   "/site"
 ]
 
