@@ -288,6 +288,9 @@ class plotCanvas(FigureCanvasQTAgg):
                 ymax_histo = max([max(n), ymax_histo])
 
                 nonZeros = np.nonzero(n)
+                if nonZeros[0].size == 0:
+                    continue
+
                 if np.min(nonZeros) > 0:
                     minIdx = np.min(nonZeros) - 1
                 else:
