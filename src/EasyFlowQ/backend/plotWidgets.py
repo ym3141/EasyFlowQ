@@ -65,7 +65,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()
-        self.fig.set_tight_layout(True)
+        self.fig.set_layout_engine("tight") 
 
         if dpiScale:
             self.fig.dpi = self.fig.dpi * dpiScale
