@@ -345,7 +345,7 @@ class plotCanvas(FigureCanvasQTAgg):
                     self.ax.plot(selectedGate.ends, [0.5 * ymax_histo, 0.5 * ymax_histo], **lineGateStyle)
                     self.drawnGates = True
 
-                    if len(gatedSmpls) < 5 and gatePercOps:
+                    if len(gatedSmpls) <= 5 and gatePercOps:
                         inGateFracText = []
                         for idx in range(len(gatedSmpls)):
                             inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
