@@ -1,0 +1,2 @@
+# Subpopulations
+EasyFlowQ supports subpopulations.

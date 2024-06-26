@@ -6,10 +6,16 @@ theme:
 
 nav: 
   - Home: "README.md"
-  - "Basic Usage.md"
-  - "Tutorial.md"
-  - "Dev notes.md"
-  - LICENSE(MIT): "LICENSE.md"
+  - Basics: 
+    - "Basic usage.md"
+    - "Statistics.md"
+    - "Batch renaming.md"
+    - "Subpopulation.md"
+  - Tutorials:
+    - "Step-by-step example": "Tutorial.md"
+  - About:
+    - "Development notes": "Dev notes.md"
+    - LICENSE(MIT): "LICENSE.md"
 
 markdown_extensions:
   - attr_list

@@ -6,7 +6,7 @@ For full documentation and tutorials, visit [EasyFlowQ's Documentation Site](htt
 ---
 A user friendly GUI interface for analyzing flow cytometry data. The program is implemented by Qt/Python, and its UI logics are largely influenced by the original matlab version of [EasyFlow (by @ayaron)](https://github.com/AntebiLab/easyflow). The fcs file parser is based on the [FlowCal package](https://github.com/taborlab/FlowCal), with slight modification for implementing into the GUI. The standalone installers are packaged by [PyInstaller](https://pyinstaller.org/en/stable/) and [InstallForge](https://installforge.net/).
 
-## Download and install
+## Download, install and run
 ---
 You can either install EasyFlowQ via the provided [installers](#method-1-use-the-provided-installer-windows-or-macos), download [through PyPI](#method-2-install-from-the-python-package-index-pypi), or [run it directly with python](#method-3-run-from-python-a-python-installation-is-needed) ([Anaconda](https://www.anaconda.com/) installation required).
 

@@ -1,6 +1,6 @@
-# Basic usage
+# Startup, simple plot and gate
 
-This page will describe the basics of using EasyFlowQ, including basic settings, loading sessions and FCS files, as well as basic analysis method. For more examples, please visit our [Tutorial](Tutorial.md) page.
+This page will describe the basics of using EasyFlowQ, including basic settings, loading sessions and FCS files, as well as basic analysis method. For a step-by-step example, please visit our [Tutorial](Tutorial.md) page.
 
 ## First time setup
 ---
@@ -50,18 +50,3 @@ You can also select the gate to show on the plot. Note, it only works if you hav
 
 #### Edit or delete existing gates
 Right click the existing gates in the "Gate" section, and you will see the options to edit or delete.
-
-## Batch-renaming with xlsx
----
-Renaming samples from a high throughput experiment setup can be time consuming. EasyflowQ provides two methods to batch renaming samples names. Both methods provides a easy way for batch renaming your samples using a excel files (.xlsx). To access these tools, go to "Data" -> "Rename with file" (see below).
-
-![BasicOperations](img/BatchRename.jpg)
-
-#### Regular rename
-For basic renaming, create a excel file (.xlsx), with the old name in the first column 
-
-#### [CytoFLEX](https://www.beckman.com/landing/ppc/flow/cytoflex) format file names
-
-## Subpopulations
----
-EasyFlowQ supports subpopulations.
