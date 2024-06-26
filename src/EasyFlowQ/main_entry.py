@@ -9,7 +9,7 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
 else:
     print('running in a normal Python process')
 
-from PyQt5 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from .window_Main import mainUi
 from .window_Settings import localSettings
 
@@ -32,15 +32,16 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
     freeze_support()
 
-    environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    # environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+
     app = QtWidgets.QApplication(sys.argv)
     if platform.system() == 'Darwin':
         app.setStyle('fusion')
-    appFont = app.font()
-    appFont.setPointSize(int(appFont.pointSize() * 0.875))
-    app.setFont(appFont)
+    # appFont = app.font()
+    # appFont.setPointSize(int(appFont.pointSize() * 0.875))
+    # app.setFont(appFont)
 
     settings = localSettings()
     mainW = mainUi(settings, sessionSaveFile=sessionSaveFile, pos=pos)
@@ -50,7 +51,7 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     if not settings.verEntryExists():
         mainW.handle_Settings(firstTime=True)
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 def newWindowProc(sessionSaveFile, pos):
 

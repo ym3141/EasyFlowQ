@@ -4,8 +4,8 @@ import pandas as pd
 import warnings
 import json
 
-from PyQt5 import QtWidgets, QtGui, uic
-from PyQt5.QtCore import Qt, pyqtSignal
+from PySide6 import QtWidgets, QtGui, uic
+from PyQt5.QtCore import Qt, Signal
 from copy import copy
 from os import path, getcwd
 
@@ -20,7 +20,7 @@ __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWizard.ui')) # Load the .ui file
 
 class compWizard(wUi, wBase):
-    mainCompValueEdited = pyqtSignal()
+    mainCompValueEdited = Signal()
 
     def __init__(self, parent, chnlModel, smplWidget, gateWidget, dir4Save,
                  curMainAutoFluoModel:autoFluoTbModel, curMainSpillMatModel:spillMatTbModel) -> None:

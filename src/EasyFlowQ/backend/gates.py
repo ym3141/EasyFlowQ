@@ -6,7 +6,7 @@ from matplotlib.lines import Line2D
 from matplotlib.artist import Artist
 from matplotlib.path import Path as mpl_path
 
-from PyQt5 import QtCore
+from PySide6 import QtCore
 from functools import lru_cache
 
 
@@ -108,7 +108,7 @@ class baseGateEditor(QtCore.QObject):
     This is the base class for gate editors. 
     Provids features like signals, state, and rendering funcs.
     """
-    gateConfirmed = QtCore.pyqtSignal(object)
+    gateConfirmed = QtCore.Signal(object)
 
     def __init__(self, ax, lineParam:dict) -> None:
 
@@ -524,7 +524,7 @@ class quadrantEditor(QtCore.QObject):
     This class deal with creating and editing quadrant
     it take, edit, and generate a quadrant instance
     """
-    quadrantConfirmed = QtCore.pyqtSignal(object)
+    quadrantConfirmed = QtCore.Signal(object)
 
     def __init__(self, ax, canvasParam=None, quad=None) -> None:
         super(QtCore.QObject, self).__init__()
@@ -608,7 +608,7 @@ class splitEditor(QtCore.QObject):
     This class deal with creating and editing split
     it take, edit, and generate a quadrant instance
     """
-    splitConfirmed = QtCore.pyqtSignal(object)
+    splitConfirmed = QtCore.Signal(object)
 
     def __init__(self, ax, chnl=None) -> None:
         super(QtCore.QObject, self).__init__()

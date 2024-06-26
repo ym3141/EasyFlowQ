@@ -9,7 +9,7 @@ from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 from scipy.interpolate import interpn
 from scipy.stats import gaussian_kde
 
-from PyQt5 import QtCore, QtGui
+from PySide6 import QtCore, QtGui
 
 from ..FlowCal.plot import scatter2d, density2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
@@ -60,8 +60,8 @@ class cachedStats():
 
 class plotCanvas(FigureCanvasQTAgg):
 
-    signal_AxLimsUpdated = QtCore.pyqtSignal(float, float, float, float)
-    signal_PlotUpdated = QtCore.pyqtSignal(cachedStats)
+    signal_AxLimsUpdated = QtCore.Signal(float, float, float, float)
+    signal_PlotUpdated = QtCore.Signal(cachedStats)
 
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()

@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from matplotlib.colors import to_hex
 from os import path, getcwd
 
@@ -12,10 +12,10 @@ import openpyxl
 import openpyxl.cell._writer
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_Map.ui')) # Load the .ui file
+wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_Map.ui')) # Load the .ui file
 
 class renameWindow_Map(wUi, wBase):
-    renameConfirmed = QtCore.pyqtSignal(dict)
+    renameConfirmed = QtCore.Signal(dict)
 
     def __init__(self, dir4Save, smplNameList) -> None:
         wBase.__init__(self)

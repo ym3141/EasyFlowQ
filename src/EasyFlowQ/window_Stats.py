@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from matplotlib.colors import to_hex
 from os import path, getcwd
 
@@ -15,7 +15,7 @@ from .backend.plotWidgets import cachedStats
 
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/StatWindow.ui')) # Load the .ui file
+wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/StatWindow.ui')) # Load the .ui file
 
 intFormater = '{:.0f}'.format
 percFormater = '{:.2%}'.format

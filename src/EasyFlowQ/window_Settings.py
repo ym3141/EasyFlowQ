@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from matplotlib.colors import to_hex
 from os import path, getcwd
 import json
@@ -7,7 +7,7 @@ import json
 from .backend.efio import getSysDefaultDir
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/SettingsWindow.ui')) # Load the .ui file
+wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/SettingsWindow.ui')) # Load the .ui file
 
 class localSettings(QtCore.QSettings):
 
@@ -42,7 +42,7 @@ class localSettings(QtCore.QSettings):
         return True
 
 class settingsWindow(wUi, wBase):
-    newLocalSettingConfimed = QtCore.pyqtSignal(localSettings)
+    newLocalSettingConfimed = QtCore.Signal(localSettings)
 
     def __init__(self, firstTime=False) -> None:
 
