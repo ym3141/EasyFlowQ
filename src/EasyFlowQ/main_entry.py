@@ -37,8 +37,8 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
     app = QtWidgets.QApplication(sys.argv)
-    if platform.system() == 'Darwin':
-        app.setStyle('fusion')
+    if 'Fusion' in QtWidgets.QStyleFactory.keys():
+        app.setStyle('Fusion')
     # appFont = app.font()
     # appFont.setPointSize(int(appFont.pointSize() * 0.875))
     # app.setFont(appFont)

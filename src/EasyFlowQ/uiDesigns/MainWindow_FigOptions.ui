@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>220</width>
-    <height>360</height>
+    <height>415</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,6 +20,21 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="plotTypeBox">
      <property name="maximumSize">
@@ -225,7 +240,7 @@
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>20</y>
+        <y>25</y>
         <width>51</width>
         <height>22</height>
        </rect>
@@ -241,7 +256,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>20</y>
+        <y>25</y>
         <width>51</width>
         <height>22</height>
        </rect>
@@ -254,7 +269,7 @@
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>10</y>
+        <y>15</y>
         <width>31</width>
         <height>16</height>
        </rect>
@@ -267,7 +282,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>10</y>
+        <y>15</y>
         <width>41</width>
         <height>16</height>
        </rect>
@@ -324,7 +339,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>20</y>
+        <y>25</y>
         <width>51</width>
         <height>22</height>
        </rect>
@@ -340,7 +355,7 @@
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>20</y>
+        <y>25</y>
         <width>51</width>
         <height>22</height>
        </rect>
@@ -353,7 +368,7 @@
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>10</y>
+        <y>15</y>
         <width>31</width>
         <height>16</height>
        </rect>
@@ -366,7 +381,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>10</y>
+        <y>15</y>
         <width>41</width>
         <height>16</height>
        </rect>
@@ -380,7 +395,7 @@
    <item>
     <widget class="QStackedWidget" name="stackWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageDots">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -411,14 +426,7 @@
           <property name="bottomMargin">
            <number>3</number>
           </property>
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Opacity (%):</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
+          <item row="1" column="2" colspan="2">
            <widget class="QSlider" name="opacitySlider">
             <property name="minimum">
              <number>20</number>
@@ -446,8 +454,21 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Dot size:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
            <widget class="QSpinBox" name="opacitySpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimum">
              <number>20</number>
             </property>
@@ -462,14 +483,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Dot size:</string>
+             <string>Opacity (%):</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="2" colspan="2">
+          <item row="0" column="2" colspan="3">
            <widget class="QComboBox" name="dotSizeComboBox">
             <item>
              <property name="text">
@@ -505,6 +526,9 @@
      </widget>
      <widget class="QWidget" name="pageHist">
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="spacing">
+        <number>3</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -531,7 +555,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>60</height>
+           <height>55</height>
           </size>
          </property>
          <property name="title">
@@ -541,23 +565,26 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <property name="topMargin">
+           <number>3</number>
+          </property>
           <property name="bottomMargin">
-           <number>0</number>
+           <number>3</number>
           </property>
           <item row="0" column="1">
-           <widget class="QRadioButton" name="norm2CountRadio">
-            <property name="text">
-             <string>Cell Count</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
            <widget class="QRadioButton" name="norm2PercRadio">
             <property name="text">
              <string>Unit Area</string>
             </property>
             <property name="checked">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="norm2CountRadio">
+            <property name="text">
+             <string>Cell Count</string>
             </property>
            </widget>
           </item>
@@ -575,6 +602,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>55</height>
+          </size>
+         </property>
          <property name="title">
           <string>Smooth histogram</string>
          </property>
@@ -582,13 +615,16 @@
           <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="topMargin">
+           <number>3</number>
+          </property>
           <property name="bottomMargin">
            <number>3</number>
           </property>
           <item>
            <widget class="QSlider" name="smoothSlider">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>

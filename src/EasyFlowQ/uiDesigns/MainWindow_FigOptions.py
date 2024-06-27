@@ -1,17 +1,17 @@
 import sys
 import math
-from PyQt5 import QtWidgets, QtCore, uic
-from PyQt5.QtGui import QDoubleValidator
+from PySide6 import QtWidgets, QtCore, QtUiTools
+from PySide6.QtGui import QDoubleValidator
 
 from os import path, getcwd
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-figOpsUi, figOpsBase = uic.loadUiType(path.join(__location__, 'MainWindow_FigOptions.ui')) # Load the .ui file
+figOpsUi, figOpsBase = QtUiTools.loadUiType(path.join(__location__, 'MainWindow_FigOptions.ui')) # Load the .ui file
 
 class mainUI_figOps(figOpsBase, figOpsUi):
-    signal_AxLimsNeedUpdate = QtCore.pyqtSignal(object, object, object, object)
-    signal_HistTypeSelected = QtCore.pyqtSignal(bool)
-    signal_PlotRedraw = QtCore.pyqtSignal()
+    signal_AxLimsNeedUpdate = QtCore.Signal(object, object, object, object)
+    signal_HistTypeSelected = QtCore.Signal(bool)
+    signal_PlotRedraw = QtCore.Signal()
 
     def __init__(self, parent):
 

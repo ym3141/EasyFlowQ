@@ -9,26 +9,26 @@ too integrated to the other part of the program.
 import sys
 from os import environ, path, getcwd
 
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 
 from ..backend.qtModels import smplItem, subpopItem
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 sys.path.append(path.join(__location__, 'resource'))
-smplSectUi, smplSectBase = uic.loadUiType(path.join(__location__, 'MainWindow_SmplSect.ui')) # Load the .ui file
+smplSectUi, smplSectBase = QtUiTools.loadUiType(path.join(__location__, 'MainWindow_SmplSect.ui')) # Load the .ui file
 
 class mainUi_SmplSect(smplSectBase, smplSectUi):
-    to_handle_One = QtCore.pyqtSignal()
-    to_load_samples = QtCore.pyqtSignal(list)
-    holdFigure = QtCore.pyqtSignal(bool)
+    to_handle_One = QtCore.Signal()
+    to_load_samples = QtCore.Signal(list)
+    holdFigure = QtCore.Signal(bool)
 
     def __init__(self, parent, colorGen, curGateItems_func):
 
         smplSectBase.__init__(self, parent)
         self.setupUi(self)
 
-        self.smplTreeWidget = smplTreeWidgetCls(self)
-        self.layout().addWidget(self.smplTreeWidget)
+        # self.smplTreeWidget = smplTreeWidgetCls(self)
+        # self.layout().addWidget(self.smplTreeWidget)
 
         self.colorGen = colorGen
         self.curGateItems_func = curGateItems_func
@@ -168,17 +168,17 @@ class mainUi_SmplSect(smplSectBase, smplSectUi):
         else:
             event.ignore()
 
-class smplTreeWidgetCls(QtWidgets.QTreeWidget):
+# class smplTreeWidgetCls(QtWidgets.QTreeWidget):
 
-    def __init__(self, parent: QtWidgets.QWidget) -> None:
-        super().__init__(parent)
+#     def __init__(self, parent: QtWidgets.QWidget) -> None:
+#         super().__init__(parent)
 
-        # Customized the look.
-        self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
-        self.setSelectionMode(3) # ExtendedSelection
-        self.setSelectionBehavior(0) # SelectItems
-        self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-        self.setHeaderHidden(True)
+#         # Customized the look.
+#         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+#         self.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection) # ExtendedSelection
+#         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectItems) # SelectItems
+#         self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+#         self.setHeaderHidden(True)
 
 
 if __name__ == '__main__':

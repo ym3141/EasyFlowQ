@@ -1,9 +1,7 @@
-from PyQt5.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
-from PyQt5.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, pyqtSignal
-from PyQt5.QtWidgets import QListWidgetItem, QTreeWidgetItem
+from PySide6.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
+from PySide6.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, Signal
+from PySide6.QtWidgets import QListWidgetItem, QTreeWidgetItem
 import pandas as pd
-
-from PyQt5 import QtCore
 
 import sys
 import os.path
@@ -238,7 +236,7 @@ class chnlModel(QStandardItemModel):
 
 
 class pandasTableModel(QAbstractTableModel):
-    userInputSignal = pyqtSignal(QtCore.QModelIndex, object)
+    userInputSignal = Signal(QModelIndex, object)
 
     def __init__(self, data, foregroundDF = None, backgroundDF = None, editableDF = None, validator=None):
         super(pandasTableModel, self).__init__()

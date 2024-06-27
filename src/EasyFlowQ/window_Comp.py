@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from os import path, getcwd
 
 from PyQt5.QtGui import QPainter
@@ -13,10 +13,10 @@ from .backend.comp import autoFluoTbModel, spillMatTbModel
 
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWindow.ui')) # Load the .ui file
+wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/CompWindow.ui')) # Load the .ui file
 
 class compWindow(wUi, wBase):
-    compValueEdited = QtCore.pyqtSignal()
+    compValueEdited = QtCore.Signal()
 
     def __init__(self, chnlListModel=None) -> None:
 

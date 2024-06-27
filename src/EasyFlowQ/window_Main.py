@@ -9,21 +9,21 @@ from . import __version__
 
 # from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
 # from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
-# from .backend.plotWidgets import plotCanvas
+from .backend.plotWidgets import plotCanvas
 # from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
-# from .backend.utils import colorGenerator
+from .backend.utils import colorGenerator
 
 from .window_RenameCF import renameWindow_CF
 from .window_RenameMap import renameWindow_Map
-# from .window_Stats import statWindow
+from .window_Stats import statWindow
 from .window_Settings import settingsWindow, localSettings
 from .window_About import aboutWindow
-# from .window_Comp import compWindow
+from .window_Comp import compWindow
 # from .wizard_Comp import compWizard
 # from .window_EditStain import editStainWindow
 
-# from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
-# from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
+from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
+from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
 
 matplotlib.use('QT5Agg')
 
@@ -44,58 +44,57 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self.tab_GateQuad.tabBar().setTabTextColor(0, QtGui.QColor('black'))
     #     self.tab_GateQuad.tabBar().setTabTextColor(1, QtGui.QColor('black'))
 
-    #     # load the seetings:
-    #     self.settingDict = settings
+        # load the seetings:
+        self.settingDict = settings
         
-    #     # other init
-    #     self._saveFlag = False
+        # other init
+        self._saveFlag = False
+        self.chnlDict = dict()
+        self.colorGen = colorGenerator()
+        self.sessionSavePath = None
+        self.holdFigureUpdate = True
+        self.gateEditor = None
 
-    #     # self.chnlDict = dict()
-    #     self.colorGen = colorGenerator()
-    #     self.sessionSavePath = None
-    #     self.holdFigureUpdate = True
-    #     self.gateEditor = None
+        self.showLegendCheck.setCheckState(QtCore.Qt.PartiallyChecked)
 
-    #     self.showLegendCheck.setCheckState(QtCore.Qt.PartiallyChecked)
-
-    #     # initiate other windows
-    #     self.renameWindow = None
-    #     self.settingsWindow = None
-    #     self.compWindow = compWindow()
-    #     self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.get_dir4Save(),
-    #                                  lambda : self.curGateItems, 
-    #                                  lambda : self.curQuadSplitItem)
+        # initiate other windows
+        self.renameWindow = None
+        self.settingsWindow = None
+        self.compWindow = compWindow()
+        self.statWindow = statWindow(self.sessionSavePath if self.sessionSavePath else self.get_dir4Save(),
+                                     lambda : self.curGateItems, 
+                                     lambda : self.curQuadSplitItem)
         self.aboutWindow = aboutWindow()
 
-    #     # add the matplotlib ui
-    #     matplotlib.rcParams['savefig.directory'] = self.get_dir4Save()
-    #     matplotlib.rcParams['savefig.dpi'] = 600
+        # add the matplotlib ui
+        matplotlib.rcParams['savefig.directory'] = self.get_dir4Save()
+        matplotlib.rcParams['savefig.dpi'] = 600
 
-    #     self.mpl_canvas = plotCanvas(dpiScale=self.settingDict['plot dpi scale'])
+        self.mpl_canvas = plotCanvas(dpiScale=self.settingDict['plot dpi scale'])
 
-    #     self.plotLayout = QtWidgets.QVBoxLayout(self.plotBox)
-    #     self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
-    #     self.plotLayout.addWidget(self.mpl_canvas)
-    #     self.mpl_canvas.signal_PlotUpdated.connect(self.statWindow.updateStat)
+        self.plotLayout = QtWidgets.QVBoxLayout(self.plotBox)
+        self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
+        self.plotLayout.addWidget(self.mpl_canvas)
+        self.mpl_canvas.signal_PlotUpdated.connect(self.statWindow.updateStat)
 
-    #     self.smplsOnPlot = []
+        self.smplsOnPlot = []
 
-    #     # add the figure property panel
-    #     self.figOpsLayout = QtWidgets.QVBoxLayout(self.figOpsFrame)
-    #     self.figOpsLayout.setContentsMargins(0, 0, 0, 0)
-    #     self.figOpsPanel = mainUI_figOps(self.figOpsFrame)
-    #     self.figOpsLayout.addWidget(self.figOpsPanel)
+        # add the figure property panel
+        self.figOpsLayout = QtWidgets.QVBoxLayout(self.figOpsFrame)
+        self.figOpsLayout.setContentsMargins(0, 0, 0, 0)
+        self.figOpsPanel = mainUI_figOps(self.figOpsFrame)
+        self.figOpsLayout.addWidget(self.figOpsPanel)
 
-    #     # add the sample section
-    #     self.smplSect = mainUi_SmplSect(self, self.colorGen, lambda : self.curGateItems)
-    #     self.smplBox.layout().addWidget(self.smplSect)
+        # add the sample section
+        self.smplSect = mainUi_SmplSect(self, self.colorGen, lambda : self.curGateItems)
+        self.smplBox.layout().addWidget(self.smplSect)
 
-    #     self.smplSect.to_handle_One.connect(self.handle_One)
-    #     self.smplSect.holdFigure.connect(self.handle_HoldFigure)
+        self.smplSect.to_handle_One.connect(self.handle_One)
+        self.smplSect.holdFigure.connect(self.handle_HoldFigure)
 
-    #     self.smplSect.to_load_samples.connect(self.handle_LoadData)
-    #     self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
-    #     self.smplTreeWidget = self.smplSect.smplTreeWidget
+        self.smplSect.to_load_samples.connect(self.handle_LoadData)
+        self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
+        self.smplTreeWidget = self.smplSect.smplTreeWidget
 
     #     # add the progress bar
     #     self.progBar = QtWidgets.QProgressBar(self)
@@ -196,83 +195,83 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     if pos:
     #         self.move(pos)
 
-    #     self.holdFigureUpdate = False
+        self.holdFigureUpdate = False
 
-    # # the centre handler for updating the figure.
-    # def handle_One(self):
-    #     # this function is used to process info for the canvas to redraw
+    # the centre handler for updating the figure.
+    def handle_One(self):
+        # this function is used to process info for the canvas to redraw
 
-    #     if self.holdFigureUpdate:
-    #         return
+        if self.holdFigureUpdate:
+            return
 
-    #     self.set_saveFlag(True)
-    #     self.statusbar.showMessage('Randering plot...')
-    #     QtCore.QCoreApplication.processEvents()
-    #     selectedSmpls = self.smplTreeWidget.selectedItems()
+        self.set_saveFlag(True)
+        self.statusbar.showMessage('Randering plot...')
+        QtCore.QCoreApplication.processEvents()
+        selectedSmpls = self.smplTreeWidget.selectedItems()
 
-    #     if len(self.gateListWidget.selectedItems()) > 0:
-    #         selectedGateItem = self.gateListWidget.selectedItems()[0]
-    #     else:
-    #         selectedGateItem = None
+        if len(self.gateListWidget.selectedItems()) > 0:
+            selectedGateItem = self.gateListWidget.selectedItems()[0]
+        else:
+            selectedGateItem = None
 
-    #     if self.perfCheck.isChecked():
-    #         try:
-    #             perfModeN = self.settingDict['dot N in perf mode']
-    #         except:
-    #             perfModeN = 20000
-    #     else:
-    #         perfModeN = None
+        if self.perfCheck.isChecked():
+            try:
+                perfModeN = self.settingDict['dot N in perf mode']
+            except:
+                perfModeN = 20000
+        else:
+            perfModeN = None
 
-    #     plotType, axScales, axRanges, normOption, smooth, dotSize, dotOpacity, *_ = self.figOpsPanel.curFigOptions
+        plotType, axScales, axRanges, normOption, smooth, dotSize, dotOpacity, *_ = self.figOpsPanel.curFigOptions
 
-    #     if isinstance(self.curQuadSplitItem, quadWidgetItem):
-    #         quad_split = self.curQuadSplitItem.quad
-    #     elif isinstance(self.curQuadSplitItem, splitWidgetItem):
-    #         quad_split = self.curQuadSplitItem.split
-    #     else:
-    #         quad_split = None
+        if isinstance(self.curQuadSplitItem, quadWidgetItem):
+            quad_split = self.curQuadSplitItem.quad
+        elif isinstance(self.curQuadSplitItem, splitWidgetItem):
+            quad_split = self.curQuadSplitItem.split
+        else:
+            quad_split = None
 
-    #     compValues = self.compWindow.curComp if self.compApplyCheck.isChecked() else None
+        compValues = self.compWindow.curComp if self.compApplyCheck.isChecked() else None
 
-    #     smplsOnPlot = self.mpl_canvas.redraw(
-    #         selectedSmpls,
-    #         chnls=self.curChnls, 
-    #         axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
-    #         compValues = compValues,
-    #         gateList=[gateItem.gate for gateItem in self.curGateItems],
-    #         quad_split = quad_split,
-    #         plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-    #         perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(), gatePercOps = self.showGatePercCheck.checkState(),
-    #         selectedGateItem=selectedGateItem,
-    #         dotSize=dotSize, dotOpacity=dotOpacity
-    #     )
-    #     self.statusbar.clearMessage()
-    #     self.smplsOnPlot = smplsOnPlot
+        smplsOnPlot = self.mpl_canvas.redraw(
+            selectedSmpls,
+            chnls=self.curChnls, 
+            axisNames=(self.xComboBox.currentText(), self.yComboBox.currentText()),
+            compValues = compValues,
+            gateList=[gateItem.gate for gateItem in self.curGateItems],
+            quad_split = quad_split,
+            plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
+            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(), gatePercOps = self.showGatePercCheck.checkState(),
+            selectedGateItem=selectedGateItem,
+            dotSize=dotSize, dotOpacity=dotOpacity
+        )
+        self.statusbar.clearMessage()
+        self.smplsOnPlot = smplsOnPlot
 
-    # def handle_LoadData(self, fileNames=False):
-    #     if (not fileNames) or (fileNames is None):
-    #         fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
-    #     else:
-    #         fileNames = [name for name in fileNames if name.endswith('.fcs')]
+    def handle_LoadData(self, fileNames=False):
+        if (not fileNames) or (fileNames is None):
+            fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
+        else:
+            fileNames = [name for name in fileNames if name.endswith('.fcs')]
 
-    #     if len(fileNames) == 0:
-    #         return
+        if len(fileNames) == 0:
+            return
 
-    #     loadingBarDiag = QtWidgets.QProgressDialog('Initializing...', None, 0, len(fileNames) + 1, self)
-    #     loadingBarDiag.setMinimumDuration(500)
-    #     loadingBarDiag.setWindowTitle('Loading FCS files...')
-    #     loadingBarDiag.setWindowModality(QtCore.Qt.WindowModal)
-    #     loadingBarDiag.setValue(0)
+        loadingBarDiag = QtWidgets.QProgressDialog('Initializing...', None, 0, len(fileNames) + 1, self)
+        loadingBarDiag.setMinimumDuration(500)
+        loadingBarDiag.setWindowTitle('Loading FCS files...')
+        loadingBarDiag.setWindowModality(QtCore.Qt.WindowModal)
+        loadingBarDiag.setValue(0)
         
-    #     newColorList = self.colorGen.giveColors(len(fileNames))
+        newColorList = self.colorGen.giveColors(len(fileNames))
 
-    #     for idx in range(len(fileNames)):
-    #         loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
-    #         loadingBarDiag.setValue(idx + 1)
-    #         self.loadFcsFile(fileNames[idx], newColorList[idx])
+        for idx in range(len(fileNames)):
+            loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
+            loadingBarDiag.setValue(idx + 1)
+            self.loadFcsFile(fileNames[idx], newColorList[idx])
 
-    #     self.smplTreeWidget.resizeColumnToContents(0)
-    #     loadingBarDiag.setValue(idx + 2)
+        self.smplTreeWidget.resizeColumnToContents(0)
+        loadingBarDiag.setValue(idx + 2)
         
     # def handle_AddGate(self):
     #     plotType, axScales, *_ = self.figOpsPanel.curFigOptions
@@ -646,8 +645,8 @@ class mainUi(mainWindowBase, mainWindowUi):
 
     #     self.statusbar.removeWidget(self.progBar)
 
-    # def handle_HoldFigure(self, holdFlag):
-    #     self.holdFigureUpdate = holdFlag
+    def handle_HoldFigure(self, holdFlag):
+        self.holdFigureUpdate = holdFlag
         
     # def closeEvent(self, event: QtGui.QCloseEvent):
     #     if self.statWindow.isVisible():
@@ -878,15 +877,15 @@ class mainUi(mainWindowBase, mainWindowUi):
     # def isWindowAlmostNew(self):
     #     return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())
 
-    # def get_dir4Save(self):
-    #     if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
-    #         return path.dirname(self.sessionSavePath)
-    #     elif hasattr(self, 'smplTreeWidget') and self.smplTreeWidget.topLevelItemCount() > 0:
-    #         return path.dirname(self.smplTreeWidget.topLevelItem(0).fileDir)
-    #     elif path.exists(self.settingDict['default dir']):
-    #         return self.settingDict['default dir']
-    #     else:
-    #         return path.abspath(getSysDefaultDir())
+    def get_dir4Save(self):
+        if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):
+            return path.dirname(self.sessionSavePath)
+        elif hasattr(self, 'smplTreeWidget') and self.smplTreeWidget.topLevelItemCount() > 0:
+            return path.dirname(self.smplTreeWidget.topLevelItem(0).fileDir)
+        elif path.exists(self.settingDict['default dir']):
+            return self.settingDict['default dir']
+        else:
+            return path.abspath(getSysDefaultDir())
 
 if __name__ == '__main__':
 
