@@ -299,7 +299,7 @@ class _LogicleTransform(matplotlib.transforms.Transform):
                         y = d
                     # If negative events are present, use minimum.
                     if np.any(y < 0):
-                        r = np.min(y)
+                        r = np.percentile(np.array(y), .1)
                         Wi = (M - np.log10(T / abs(r))) / 2
                         W = Wi if Wi > W else W
         else:
