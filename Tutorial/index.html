@@ -71,6 +71,10 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#step-5-select-out-cd19-apc-jurkat-cells">Step 5: Select out CD19- (APC-) Jurkat cells</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-6-select-out-transfected-cells">Step 6: Select out transfected cells</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-7-plot-the-final-figure-to-compare-t-cell-activation">Step 7: Plot the final figure to compare T cell activation</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -132,10 +136,27 @@ Cell-line_HighPeptide.fcs
 </ol>
 <p>With the above steps, you should be able to reach a a state similar to the image below:
 <img alt="Tutorial1" src="../img/Tutorial1.jpg" /> </p>
+<p><strong>We can now apply the "live" gate by checking it (click the empty box before the gate name).</strong></p>
 <h2 id="step-4-gate-out-single-cells">Step 4: Gate out single cells</h2>
-<p>We can now apply the "live" gate by checking it (click the empty box before the gate name). Now we switch Y axis to <strong>FSC-H: None</strong> for selecting single cells (top panel). Similar to previous step we now create a gate named "single" around the highly correlated cells. </p>
+<p>Now we switch Y axis to <strong>FSC-H: None</strong> for selecting single cells (top panel). Similar to previous step we now create a gate named "single" around the highly correlated cells. </p>
 <p><img alt="Tutorial2" src="../img/Tutorial2.jpg" /> </p>
+<p><strong>We can now apply the "single" gate by checking it, similar to previous step.</strong></p>
 <h2 id="step-5-select-out-cd19-apc-jurkat-cells">Step 5: Select out CD19- (APC-) Jurkat cells</h2>
+<p>To gate out the CD19- (APC-) cells, we need to create a line (1D) gate in the APC channel. To do so, following the steps below:
+1. On the top panel, select <strong>R600-A: APC-A</strong> for X-Axis. For simplicity, we also only select the "Control" sample for histogram. 
+2. select <strong>Histogram</strong> under the "Plot type". Note, when switch to histogram, the Y-Axis will be ignored.
+3. Select <strong>Logicle</strong> for X-Axis' scale, and <strong>Linear</strong> for Y-Axis' scale
+4. Check the <strong>Auto</strong> box for both X-Axis' and Y-Axis' range
+5. Click the <strong>"+"</strong> button next to "List of gate" in the upper right conner. Start drawing out a "line gate" covering the negative peak of the histogram. When you finish the gate with a 2nd click, a window will pop out, and please enter the desired name of this gate. Here we simply put "CD19-", and click OK.</p>
+<p><img alt="Tutorial3" src="../img/Tutorial3.jpg" /> </p>
+<p><strong>We can now apply the "CD19-" gate by checking it, similar to previous step.</strong></p>
+<h2 id="step-6-select-out-transfected-cells">Step 6: Select out transfected cells</h2>
+<p>Similar to previous step, now switch the X-Axis to <strong>V445-A: Pacific Blue-A</strong> and gate out the positive peak with a gate named "Transfected". <em>Note for replicating the plot in the paper: you will need to manually adjust the X-Axis to start from 500, and switch the sample to "Cell-line_LowPeptide". We skips these step here for the simplicity.</em></p>
+<p><img alt="Tutorial4" src="../img/Tutorial4.jpg" /> </p>
+<p><strong>We can now apply the "Transfected" gate by checking it, similar to previous step.</strong></p>
+<h2 id="step-7-plot-the-final-figure-to-compare-t-cell-activation">Step 7: Plot the final figure to compare T cell activation</h2>
+<p>Now we can finally plot the comparison. Switch to the <strong>B530-A: FITC-A</strong> and select all the samples on the right (or click in the sample box, and press Ctrl-A). To save this figure, click the "save icon" right above the figure, and you can save the figure in multiple formats (png, jpeg, svg, pdf, etc.).</p>
+<p><img alt="Tutorial5" src="../img/Tutorial5.jpg" /> </p>
               
             </div>
           </div><footer>
