@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Basic usage - EasyFLowQ</title>
+    <title>Startup, simple plot and gate - EasyFLowQ</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Basic usage";
-        var mkdocs_page_input_path = "Basic Usage.md";
+        var mkdocs_page_name = "Startup, simple plot and gate";
+        var mkdocs_page_input_path = "Basic usage.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -44,8 +44,9 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Basic usage</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Startup, simple plot and gate</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#first-time-setup">First time setup</a>
     </li>
@@ -59,30 +60,26 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#batch-renaming-with-xlsx">Batch-renaming with xlsx</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#regular-rename">Regular rename</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#cytoflex-format-file-names">CytoFLEX format file names</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#subpopulations">Subpopulations</a>
-    </li>
     </ul>
-                </li>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Statistics/">Statistics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Batch%20renaming/">Batch-renaming with xlsx</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Subpopulation/">Subpopulations</a>
+                  </li>
               </ul>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../Tutorial/">Step-by-step example</a>
-                </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Tutorial/">Step-by-step example</a>
+                  </li>
               </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../Dev%20notes/">Development notes</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../LICENSE/">LICENSE(MIT)</a>
-                </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Dev%20notes/">Development notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../LICENSE/">LICENSE(MIT)</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -98,9 +95,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Basic usage</li>
+          <li class="breadcrumb-item">Basics</li>
+      <li class="breadcrumb-item active">Startup, simple plot and gate</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/Basic Usage.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/Basic usage.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -108,7 +106,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="basic-usage">Basic usage</h1>
+                <h1 id="startup-simple-plot-and-gate">Startup, simple plot and gate</h1>
 <p>This page will describe the basics of using EasyFlowQ, including basic settings, loading sessions and FCS files, as well as basic analysis method. For a step-by-step example, please visit our <a href="../Tutorial/">Tutorial</a> page.</p>
 <h2 id="first-time-setup">First time setup</h2>
 <hr />
@@ -146,23 +144,12 @@
 <p>You can also select the gate to show on the plot. Note, it only works if you have the right axis(s) (where the gates are defined) selected. To clear the selection, click the "Clear selection" button in the "Gate" panel.</p>
 <h4 id="edit-or-delete-existing-gates">Edit or delete existing gates</h4>
 <p>Right click the existing gates in the "Gate" section, and you will see the options to edit or delete.</p>
-<h2 id="batch-renaming-with-xlsx">Batch-renaming with xlsx</h2>
-<hr />
-<p>Renaming samples from a high throughput experiment setup can be time consuming. EasyflowQ provides two methods to batch renaming samples names. Both methods provides a easy way for batch renaming your samples using a excel files (.xlsx). To access these tools, go to "Data" -&gt; "Rename with file" (see below).</p>
-<p><img alt="BasicOperations" src="../img/BatchRename.jpg" /></p>
-<h4 id="regular-rename">Regular rename</h4>
-<p>For basic renaming, create a excel file (.xlsx), with the old name in the first column </p>
-<h4 id="cytoflex-format-file-names"><a href="https://www.beckman.com/landing/ppc/flow/cytoflex">CytoFLEX</a> format file names</h4>
-<p>The BECKMAN's CytoFLEX flow cytometer use a unique naming system when under the plate mode. </p>
-<h2 id="subpopulations">Subpopulations</h2>
-<hr />
-<p>EasyFlowQ supports subpopulations.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../Tutorial/" class="btn btn-neutral float-right" title="Step-by-step example">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../Statistics/" class="btn btn-neutral float-right" title="Statistics">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -192,7 +179,7 @@
       <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../Tutorial/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../Statistics/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

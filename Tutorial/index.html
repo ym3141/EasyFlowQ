@@ -44,12 +44,20 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../Basic%20Usage/">Basic usage</a>
-                </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Basic%20usage/">Startup, simple plot and gate</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Statistics/">Statistics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Batch%20renaming/">Batch-renaming with xlsx</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Subpopulation/">Subpopulations</a>
+                  </li>
               </ul>
+              <p class="caption"><span class="caption-text">Tutorials</span></p>
               <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="./">Step-by-step example</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Step-by-step example</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#step-0-considerations-before-start">Step 0: Considerations before start</a>
     </li>
@@ -57,18 +65,21 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#step-2-save-a-session-file-optional">Step 2: Save a session file (optional)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#step-3-create-polygon-gates-for-live-and-single-cells">Step 3: Create polygon gates for live and single cells</a>
+    <li class="toctree-l2"><a class="reference internal" href="#step-3-plot-fcs-ssc-and-use-polygon-gate-to-select-out-live-cells">Step 3: Plot FCS-SSC and use polygon gate to select out live cells</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-4-gate-out-single-cells">Step 4: Gate out single cells</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#step-5-select-out-cd19-apc-jurkat-cells">Step 5: Select out CD19- (APC-) Jurkat cells</a>
     </li>
     </ul>
-                </li>
+                  </li>
               </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../Dev%20notes/">Development notes</a>
-                </li>
-              </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../LICENSE/">LICENSE(MIT)</a>
-                </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Dev%20notes/">Development notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../LICENSE/">LICENSE(MIT)</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -84,6 +95,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Tutorials</li>
       <li class="breadcrumb-item active">Step-by-step example</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/Tutorial.md" class="icon icon-github"> Edit on GitHub</a>
@@ -96,24 +108,39 @@
               
                 <h1 id="step-by-step-example">Step-by-step example</h1>
 <p><strong>This page is still in the works</strong></p>
-<p>Here we provide a step-by-step example of using EasyFlow to analyze a dataset of 
-The dataset used in this tutorial can be downloaded from: ..... This tutorial is also part of demos published in </p>
+<p>Here we provide a step-by-step example of using EasyFlow to analyze a dataset of T-cell activation in a mix culture of T (Jurkat) and B (T2) cell lines.
+The dataset used in this tutorial can be downloaded from: our Github <a href="https://github.com/ym3141/EasyFlowQ/releases/tag/v1.5.6">v1.5 release (manuscript ed.) page</a>. To obtained the data, download the <strong>demo_fcs.zip</strong> file and unzip it into a separate directory. This tutorial is also part of our publication on EasyFlow <a href="">EasyFlow: An open-source, user-friendly cytometry analyzer with graphic user interface (GUI)</a></p>
 <h2 id="step-0-considerations-before-start">Step 0: Considerations before start</h2>
 <p>Before start, we highly recommend your download or move all the data (fcs files) into a local drive on your system, and make sure you have the permission to write to the drive (or folder). Depending on your operation system, it might be helpful to run EasyFlowQ as administrator if possible.</p>
 <h2 id="step-1-start-easyflowq-and-load-fcs-file">Step 1: Start EasyFlowQ and load fcs file</h2>
 <p>Start EasyFlowQ using your <a href="../#download-install-and-run">method of choice</a> (either through a GUI, CLI, or directly from python script). Click the "Load data (.fcs)" button in the interface's upper left corner (Ctrl + L also works). Navigate to the place of your fcs files, and select the following files.</p>
-<pre><code>Unstained.fcs
-Stained.fcs
+<pre><code>Cell-line_Control.fcs
+Cell-line_LowPeptide.fcs
+Cell-line_HighPeptide.fcs
 </code></pre>
 <p>Select open, and the fcs files should be loaded.</p>
 <h2 id="step-2-save-a-session-file-optional">Step 2: Save a session file (optional)</h2>
 <p>We highly recommend to save the session at this point. To do so, simple select "File -&gt; Save" in the menu bar (Ctrl + S also works). We recommend save the session file in the same directory with the fcs file.</p>
-<h2 id="step-3-create-polygon-gates-for-live-and-single-cells">Step 3: Create polygon gates for live and single cells</h2>
+<h2 id="step-3-plot-fcs-ssc-and-use-polygon-gate-to-select-out-live-cells">Step 3: Plot FCS-SSC and use polygon gate to select out live cells</h2>
+<ol>
+<li>Plot the data; Select all three sample on the right. Note it is not required to select <em>all</em> three samples for this step, as all gate created in this process are "universal".</li>
+<li>Plot in the FSC-SSC channel: On the panel above the plotting area, select <strong>FSC-A: None</strong> under the "X-Axis" and <strong>SSC-A: None</strong> under Y-Axis.</li>
+<li>Tweak figure options: On the right panel, select <strong>Density plot</strong> as plot type; Select <strong>linear</strong> under both "Axis scale" for both X and Y axis. </li>
+<li>Tweak X and Y range: Uncheck the the <strong>auto</strong> box under both X-Axis and Y-Axis, and change the range to 0 to 3e7 for X, and 0 to 7e6 for Y.</li>
+<li>Click the <strong>"+"</strong> button next to "List of gate" in the upper right conner. Start drawing out a gate around the "live" cells on the plot using mouse with left clicks. When finish, right click to close the gate. Note, the program will auto-close the gate.</li>
+<li>A window will pop out, and please enter the desired name of this gate. Here we simply put "live", and click OK.</li>
+</ol>
+<p>With the above steps, you should be able to reach a a state similar to the image below:
+<img alt="Tutorial1" src="../img/Tutorial1.jpg" /> </p>
+<h2 id="step-4-gate-out-single-cells">Step 4: Gate out single cells</h2>
+<p>We can now apply the "live" gate by checking it (click the empty box before the gate name). Now we switch Y axis to <strong>FSC-H: None</strong> for selecting single cells (top panel). Similar to previous step we now create a gate named "single" around the highly correlated cells. </p>
+<p><img alt="Tutorial2" src="../img/Tutorial2.jpg" /> </p>
+<h2 id="step-5-select-out-cd19-apc-jurkat-cells">Step 5: Select out CD19- (APC-) Jurkat cells</h2>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../Basic%20Usage/" class="btn btn-neutral float-left" title="Basic usage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../Subpopulation/" class="btn btn-neutral float-left" title="Subpopulations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../Dev%20notes/" class="btn btn-neutral float-right" title="Development notes">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -141,7 +168,7 @@ Stained.fcs
         </span>
     
     
-      <span><a href="../Basic%20Usage/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../Subpopulation/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../Dev%20notes/" style="color: #fcfcfc">Next &raquo;</a></span>
