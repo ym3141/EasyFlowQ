@@ -297,11 +297,13 @@ class _LogicleTransform(matplotlib.transforms.Transform):
                             y = d[:, channel]
                     else:
                         y = d
-                    # If negative events are present, use minimum.
-                    if np.any(y < 0):
-                        r = np.percentile(np.array(y), .1)
+                    # If negative events are present, use .2 percentile.
+                    r = np.percentile(np.array(y), .2)
+                    if r < 0:
                         Wi = (M - np.log10(T / abs(r))) / 2
-                        W = Wi if Wi > W else W
+                    else:
+                        Wi = 0
+                    W = Wi if Wi > W else W
         else:
             # Default parameter values
             if T is None:
