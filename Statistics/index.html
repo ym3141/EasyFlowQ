@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Statistics - EasyFLowQ</title>
+    <title>Viewing the statistics - EasyFLowQ</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Statistics";
+        var mkdocs_page_name = "Viewing the statistics";
         var mkdocs_page_input_path = "Statistics.md";
         var mkdocs_page_url = null;
       </script>
@@ -48,7 +48,9 @@
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../Basic%20usage/">Startup, simple plot and gate</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Statistics</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Viewing the statistics</a>
+    <ul class="current">
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Batch%20renaming/">Batch-renaming with xlsx</a>
                   </li>
@@ -82,7 +84,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Basics</li>
-      <li class="breadcrumb-item active">Statistics</li>
+      <li class="breadcrumb-item active">Viewing the statistics</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/Statistics.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -92,7 +94,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                
+                <h1 id="viewing-the-statistics">Viewing the statistics</h1>
+<p>To view the statistics, select <strong>Stats window</strong> under the <strong>Stats</strong> menu.</p>
+<p><img alt="OpenStats" src="../img/OpenStats.jpg" /></p>
+<p>A typical statistic window looks like the following, when the window is fully extended to show all the columns:</p>
+<p><img alt="StatsWindowExample" src="../img/StatsWindowExample.jpg" /></p>
+<p>The selected samples are listed as rows of relevant statistics. From left to right, the table shows:</p>
+<ol>
+<li>Total cell number</li>
+<li>Cell percentage (of total) in currently checked gate</li>
+<li>Percentage of each gating step, based on current gate order (from top to bottom in the gating panel). This could take more than one column.</li>
+<li>The selected (not necessarily checked) gate's percentage. If the selected gate is also checked, this column will be 100%.</li>
+<li>Mean and median of the currently selected channels of the samples in gates.</li>
+<li>If selected, quadrant or split statistics.</li>
+</ol>
+<p>This whole table can be downloaded as an excel file for further analysis by clicking the button <strong>Export stats as .xlsx</strong> (top left conner).</p>
+<p>This window, if left open, will be timely updated when the plotting options, as well as sample or gate selections change in the main window. So in case you want to export multiple stat excel files, we recommend leave this open, and change accordingly in the main window, and export all the files you need. <em>This will slow down performance slightly.</em></p>
               
             </div>
           </div><footer>
