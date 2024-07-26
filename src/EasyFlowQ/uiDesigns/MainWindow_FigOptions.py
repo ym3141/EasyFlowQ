@@ -61,7 +61,7 @@ class mainUI_figOps(figOpsBase, figOpsUi):
     def handle_AxisAuto(self, checkState):
         which = self.sender()
 
-        if checkState == 2:
+        if checkState is QtCore.Qt.Checked:
             if which is self.xlimAutoCheck:
                 self.signal_AxLimsNeedUpdate.emit('auto', 'auto', None, None)
                 pass
@@ -150,8 +150,8 @@ class mainUI_figOps(figOpsBase, figOpsUi):
     @property
     def curAxLims(self):
     # Returns [xmin, xmax, ymin, ymax] in float
-        xAuto = (self.xlimAutoCheck.checkState() == 2)
-        yAuto = (self.ylimAutoCheck.checkState() == 2)
+        xAuto = (self.xlimAutoCheck.isChecked())
+        yAuto = (self.ylimAutoCheck.isChecked())
 
         xlim = ['auto', 'auto'] if xAuto else [float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text())]
         ylim = ['auto', 'auto'] if yAuto else [float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())]
@@ -171,9 +171,9 @@ class mainUI_figOps(figOpsBase, figOpsUi):
             
     def set_axAuto(self, xAxis=None, yAxis=None):
         if not xAxis is None:
-            self.xlimAutoCheck.setCheckState(2 if xAxis else 0)
+            self.xlimAutoCheck.setChecked(True if xAxis else False)
         if not yAxis is None:
-            self.ylimAutoCheck.setCheckState(2 if yAxis else 0)
+            self.ylimAutoCheck.setChecked(True if yAxis else False)
 
     @property
     def curSmooth(self):

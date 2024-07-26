@@ -97,7 +97,7 @@ class plotCanvas(FigureCanvasQTAgg):
         gateList=[], quad_split=None,
         plotType = 'Dot plot',
         normOption = 'Unit Area',
-        perfModeN=None, legendOps=1, gatePercOps=2, smooth=0,
+        perfModeN=None, legendOps=QtCore.Qt.PartiallyChecked, gatePercOps=True, smooth=0,
         selectedGateItem=None,
         dotSize = 0, dotOpacity = 0.8
         ):
@@ -381,7 +381,7 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_ylim([ymin, ymax])
 
         # draw legends
-        if legendOps == 2 or (legendOps == 1 and len(smplItems) < 12):
+        if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
             if self.drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))

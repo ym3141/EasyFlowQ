@@ -7,10 +7,10 @@ from os import path, getcwd, environ
 
 from . import __version__
 
-# from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
-# from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
+from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
+from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
 from .backend.plotWidgets import plotCanvas
-# from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
+from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from .backend.utils import colorGenerator
 
 from .window_RenameCF import renameWindow_CF
@@ -96,34 +96,34 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.smplSect.loadDataPB.clicked.connect(self.handle_LoadData)
         self.smplTreeWidget = self.smplSect.smplTreeWidget
 
-    #     # add the progress bar
-    #     self.progBar = QtWidgets.QProgressBar(self)
-    #     self.progBar.reset()
-    #     self.statusbar.addPermanentWidget(self.progBar)
+        # add the progress bar
+        self.progBar = QtWidgets.QProgressBar(self)
+        self.progBar.reset()
+        self.statusbar.addPermanentWidget(self.progBar)
 
-    #     # init ui models
-    #     self.gateListWidgetModel = self.gateListWidget.model()
+        # init ui models
+        self.gateListWidgetModel = self.gateListWidget.model()
 
-    #     self.chnlListModel = chnlModel()
-    #     self.xComboBox.setModel(self.chnlListModel)
-    #     self.yComboBox.setModel(self.chnlListModel)
+        self.chnlListModel = chnlModel()
+        self.xComboBox.setModel(self.chnlListModel)
+        self.yComboBox.setModel(self.chnlListModel)
 
-    #     # add actions to context memu
-    #     self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
-    #     self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
+        # add actions to context memu
+        self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
+        self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
 
-    #     # add the secret testing shortcut
-    #     secretShortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
+        # add the secret testing shortcut
+        secretShortcut = QtGui.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
 
-    #     # link triggers:
-    #     # menu
-    #     self.actionNew_Session.triggered.connect(self.handle_NewSession)
-    #     self.actionSave.triggered.connect(self.handle_Save)
-    #     self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
-    #     self.actionSave_as.triggered.connect(self.handle_SaveAs)
-    #     self.actionShow_in_folder.triggered.connect(self.handle_ShowInFolder)
+        # link triggers:
+        # menu
+        self.actionNew_Session.triggered.connect(self.handle_NewSession)
+        self.actionSave.triggered.connect(self.handle_Save)
+        self.actionOpen_Session.triggered.connect(self.handle_OpenSession)
+        self.actionSave_as.triggered.connect(self.handle_SaveAs)
+        self.actionShow_in_folder.triggered.connect(self.handle_ShowInFolder)
 
-    #     self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
+        self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
     #     self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
@@ -145,22 +145,22 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
     #     self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
 
-    #     # everything update figure
-    #     self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
-    #     self.gateListWidget.itemSelectionChanged.connect(self.handle_One)
+        # everything update figure
+        self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
+        self.gateListWidget.itemSelectionChanged.connect(self.handle_One)
 
-    #     self.gateListWidget.itemChanged.connect(self.handle_One)
-    #     self.gateListWidgetModel.rowsMoved.connect(self.handle_One)
+        self.gateListWidget.itemChanged.connect(self.handle_One)
+        self.gateListWidgetModel.rowsMoved.connect(self.handle_One)
 
-    #     self.xComboBox.currentIndexChanged.connect(self.handle_One)
-    #     self.yComboBox.currentIndexChanged.connect(self.handle_One)
+        self.xComboBox.currentIndexChanged.connect(self.handle_One)
+        self.yComboBox.currentIndexChanged.connect(self.handle_One)
 
-    #     self.perfCheck.stateChanged.connect(self.handle_One)
-    #     self.showLegendCheck.stateChanged.connect(self.handle_One)
-    #     self.showGatePercCheck.stateChanged.connect(self.handle_One)
+        self.perfCheck.stateChanged.connect(self.handle_One)
+        self.showLegendCheck.stateChanged.connect(self.handle_One)
+        self.showGatePercCheck.stateChanged.connect(self.handle_One)
 
-    #     self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
-    #     self.compWindow.compValueEdited.connect(self.handle_One)
+        self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
+        self.compWindow.compValueEdited.connect(self.handle_One)
 
     #     # gates
     #     self.addGateButton.clicked.connect(self.handle_AddGate)
@@ -182,18 +182,17 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self.clearGatePB.clicked.connect(lambda : self.gateListWidget.clearSelection())
     #     self.axisSwapPB.clicked.connect(self.handle_SwapAxis)
 
-    #     # load the session if there is a session save file:
-    #     if sessionSaveFile:
-    #         sessionSave.loadSessionSave(self, sessionSaveFile)
-    #         self.set_sessionSavePath(sessionSaveFile)
-    #         self.holdFigureUpdate = False
-    #         self.handle_One()
-    #         self.set_saveFlag(False)
+        # load the session if there is a session save file:
+        if sessionSaveFile:
+            sessionSave.loadSessionSave(self, sessionSaveFile)
+            self.set_sessionSavePath(sessionSaveFile)
+            self.releaseFigureUpdateHold()
+            self.set_saveFlag(False)
 
-    #     self.updateWinTitle()
+        self.updateWinTitle()
 
-    #     if pos:
-    #         self.move(pos)
+        if pos:
+            self.move(pos)
 
         self.holdFigureUpdate = False
 
@@ -241,7 +240,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             gateList=[gateItem.gate for gateItem in self.curGateItems],
             quad_split = quad_split,
             plotType = plotType, axScales = axScales, axRanges = axRanges, normOption=normOption, smooth=smooth,
-            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(), gatePercOps = self.showGatePercCheck.checkState(),
+            perfModeN = perfModeN, legendOps = self.showLegendCheck.checkState(), gatePercOps = self.showGatePercCheck.isChecked(),
             selectedGateItem=selectedGateItem,
             dotSize=dotSize, dotOpacity=dotOpacity
         )
@@ -265,6 +264,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         newColorList = self.colorGen.giveColors(len(fileNames))
 
+        self.holdFigureUpdate = True
         for idx in range(len(fileNames)):
             loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
             loadingBarDiag.setValue(idx + 1)
@@ -272,6 +272,7 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.smplTreeWidget.resizeColumnToContents(0)
         loadingBarDiag.setValue(idx + 2)
+        self.releaseFigureUpdateHold()
         
     # def handle_AddGate(self):
     #     plotType, axScales, *_ = self.figOpsPanel.curFigOptions
@@ -310,57 +311,56 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self._disableInputForGate(True)
     #     self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
 
-    # def handle_NewSession(self):
-    #     self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
+    def handle_NewSession(self):
+        self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
-    # def handle_OpenSession(self):
-    #     openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.get_dir4Save(), filter='*.eflq')
-    #     if not openFileDir:
-    #         return
-    #     # print(openFileDir)
+    def handle_OpenSession(self):
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.get_dir4Save(), filter='*.eflq')
+        if not openFileDir:
+            return
+        # print(openFileDir)
 
-    #     if self.isWindowAlmostNew():
-    #     #If there is nothing in this current window, update the current window
-    #         self.holdFigureUpdate = True
-    #         sessionSave.loadSessionSave(self, openFileDir)
-    #         self.set_sessionSavePath(openFileDir)
-    #         self.holdFigureUpdate = False
-    #         self.handle_One()
+        if self.isWindowAlmostNew():
+        #If there is nothing in this current window, update the current window
+            self.holdFigureUpdate = True
+            sessionSave.loadSessionSave(self, openFileDir)
+            self.set_sessionSavePath(openFileDir)
+            self.releaseFigureUpdateHold()
 
-    #         self.set_saveFlag(False)
-    #     else:
-    #         self.requestNewWindow.emit(openFileDir, self.pos() + QtCore.QPoint(60, 60))
+            self.set_saveFlag(False)
+        else:
+            self.requestNewWindow.emit(openFileDir, self.pos() + QtCore.QPoint(60, 60))
 
-    # def handle_Save(self):
-    #     if self.sessionSavePath:
-    #         # if save exist, replace it at the same dir
-    #         sessionSaveFile = sessionSave(self, self.sessionSavePath)
-    #         sessionSaveFile.saveJson()
+    def handle_Save(self):
+        if self.sessionSavePath:
+            # if save exist, replace it at the same dir
+            sessionSaveFile = sessionSave(self, self.sessionSavePath)
+            sessionSaveFile.saveJson()
 
-    #         self.set_saveFlag(False)
-    #     else: 
-    #         self.handle_SaveAs()
+            self.set_saveFlag(False)
+        else: 
+            self.handle_SaveAs()
 
-    # def handle_SaveAs(self):
-    #     saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.get_dir4Save(), filter='*.eflq')
-    #     if not saveFileDir:
-    #         return
+    def handle_SaveAs(self):
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.get_dir4Save(), filter='*.eflq')
+        if not saveFileDir:
+            return
 
-    #     self.set_sessionSavePath(saveFileDir)
-    #     sessionSaveFile = sessionSave(self, saveFileDir)
-    #     sessionSaveFile.saveJson()
+        self.set_sessionSavePath(saveFileDir)
+        sessionSaveFile = sessionSave(self, saveFileDir)
+        sessionSaveFile.saveJson()
 
-    #     self.set_saveFlag(False)
-    #     pass
+        self.set_saveFlag(False)
+        pass
 
-    # def handle_ShowInFolder(self):
-    #     if not (self.sessionSavePath is None):
-    #         qUrl = QtCore.QUrl.fromLocalFile(path.dirname(self.sessionSavePath))
-    #         successFlag = QtGui.QDesktopServices.openUrl(qUrl)
-    #         if successFlag:
-    #             return
+    def handle_ShowInFolder(self):
+        if not (self.sessionSavePath is None):
+            qUrl = QtCore.QUrl.fromLocalFile(path.dirname(self.sessionSavePath))
+            successFlag = QtGui.QDesktopServices.openUrl(qUrl)
+            if successFlag:
+                return
         
-    #     QtWidgets.QMessageBox.critical(self, 'Not a proper location', 'Cannot open folder here, or session file not saved yet.')
+        QtWidgets.QMessageBox.critical(self, 'Not a proper location', 'Cannot open folder here, or session file not saved yet.')
 
     def handle_RenameForCF(self):
         if not self.smplTreeWidget.topLevelItemCount():
@@ -397,8 +397,7 @@ class mainUi(mainWindowBase, mainWindowUi):
             if smplItem.fcsFileName in renameDict:
                 smplItem.displayName = renameDict[smplItem.fcsFileName]
         
-        self.holdFigureUpdate = False
-        self.handle_One()
+        self.releaseFigureUpdateHold()
 
     # def handle_EditStain(self):
     #     editStainDict = {}
@@ -680,31 +679,31 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self.smplBox.setEnabled(not disable)
     #     self.rightFrame.setEnabled(not disable)
 
-    # # load fcs file, as well as change check if the current channel is compatible and change accordingly
-    # def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
-    #     self.set_saveFlag(True)
+    # load fcs file, as well as change check if the current channel is compatible and change accordingly
+    def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
+        self.set_saveFlag(True)
 
-    #     newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
+        newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
 
-    #     self.smplTreeWidget.addTopLevelItem(newRootSmplItem)
-    #     if displayName:
-    #         newRootSmplItem.displayName = displayName
+        self.smplTreeWidget.addTopLevelItem(newRootSmplItem)
+        if displayName:
+            newRootSmplItem.displayName = displayName
 
-    #     if selected:
-    #         newRootSmplItem.setSelected(True)
+        if selected:
+            newRootSmplItem.setSelected(True)
 
-    #     # merging the channel dictionary. 
-    #     # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
-    #     newChnlFlag = False
-    #     for key in newRootSmplItem.chnlNameDict:
-    #         isNew = self.chnlListModel.addChnl(key, newRootSmplItem.chnlNameDict[key])
-    #         newChnlFlag = newChnlFlag or isNew
+        # merging the channel dictionary. 
+        # If two channel with same channel name (key), but different flurophore (value), the former one will be kept
+        newChnlFlag = False
+        for key in newRootSmplItem.chnlNameDict:
+            isNew = self.chnlListModel.addChnl(key, newRootSmplItem.chnlNameDict[key])
+            newChnlFlag = newChnlFlag or isNew
             
-    #     # update the compensation model if there are new channels added
-    #     if newChnlFlag:    
-    #         self.compWindow.updateChnls(self.chnlListModel)
+        # update the compensation model if there are new channels added
+        if newChnlFlag:    
+            self.compWindow.updateChnls(self.chnlListModel)
 
-    #     return newRootSmplItem
+        return newRootSmplItem
 
     # def loadGate(self, gate, replace=None, gateName=None, checkState=0):
     #     self.set_saveFlag(True)
@@ -817,65 +816,69 @@ class mainUi(mainWindowBase, mainWindowUi):
     #             newSItem = splitWidgetItem(splitName, split)
     #             self.qsListWidget.addItem(newSItem)
 
-    # def secretCrash(self):
-    #     input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 
-    #                                            'You have reached the secret place for crashing the app, proceed?',
-    #                                            buttons=QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Cancel)
-    #     if input == QtWidgets.QMessageBox.StandardButton.Ok:
-    #         null_val2 = dict()
-    #         null_val1 = null_val2['Key_Not_Exsit']
+    def secretCrash(self):
+        input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 
+                                               'You have reached the secret place for crashing the app, proceed?',
+                                               buttons=QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Cancel)
+        if input == QtWidgets.QMessageBox.StandardButton.Ok:
+            null_val2 = dict()
+            null_val1 = null_val2['Key_Not_Exsit']
 
-    # @property
-    # def curChnls(self):
-    #     if self.xComboBox.currentIndex() == -1 and self.yComboBox.currentIndex() == -1:
-    #         return [None, None]
-    #     else:
-    #         xChnl = self.chnlListModel.keyList[self.xComboBox.currentIndex()]
-    #         yChnl = self.chnlListModel.keyList[self.yComboBox.currentIndex()]
-    #         return [xChnl, yChnl]
+    @property
+    def curChnls(self):
+        if self.xComboBox.currentIndex() == -1 and self.yComboBox.currentIndex() == -1:
+            return [None, None]
+        else:
+            xChnl = self.chnlListModel.keyList[self.xComboBox.currentIndex()]
+            yChnl = self.chnlListModel.keyList[self.yComboBox.currentIndex()]
+            return [xChnl, yChnl]
 
-    # def set_curChnls(self, chnls):
-    #     self.xComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[0]))
-    #     self.yComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[1]))
+    def set_curChnls(self, chnls):
+        self.xComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[0]))
+        self.yComboBox.setCurrentIndex(self.chnlListModel.keyList.index(chnls[1]))
 
 
-    # @property
-    # def curGateItems(self):
-    #     allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
+    @property
+    def curGateItems(self):
+        allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
 
-    #     return [gateItem for gateItem in allGateItems if (gateItem.checkState() == 2)]
+        return [gateItem for gateItem in allGateItems if (gateItem.isChecked())]
 
-    # @property
-    # def curQuadSplitItem(self):
-    #     qsList = self.qsListWidget.selectedItems()
-    #     if qsList:
-    #         return qsList[0]
-    #     else:
-    #         return None
+    @property
+    def curQuadSplitItem(self):
+        qsList = self.qsListWidget.selectedItems()
+        if qsList:
+            return qsList[0]
+        else:
+            return None
 
-    # @property
-    # def saveFlag(self):
-    #     return self._saveFlag
+    @property
+    def saveFlag(self):
+        return self._saveFlag
 
-    # def set_saveFlag(self, flag: bool):
-    #     if not self._saveFlag == flag:
-    #         self._saveFlag = flag
-    #         self.updateWinTitle()
+    def set_saveFlag(self, flag: bool):
+        if not self._saveFlag == flag:
+            self._saveFlag = flag
+            self.updateWinTitle()
 
-    # def set_sessionSavePath(self, sessionSaveDir):
-    #     # Set the sessionSaveDir, also update the window title
-    #     self.sessionSavePath = sessionSaveDir
-    #     self.statWindow.sessionDir = path.dirname(self.sessionSavePath)
-    #     matplotlib.rcParams['savefig.directory'] = path.dirname(self.sessionSavePath)
+    # Set the sessionSaveDir, also update the window title
+    def set_sessionSavePath(self, sessionSaveDir):
+        self.sessionSavePath = sessionSaveDir
+        self.statWindow.sessionDir = path.dirname(self.sessionSavePath)
+        matplotlib.rcParams['savefig.directory'] = path.dirname(self.sessionSavePath)
 
-    #     self.updateWinTitle()
+        self.updateWinTitle()
 
-    # def updateWinTitle(self):
-    #     pathStr = self.sessionSavePath if self.sessionSavePath else 'Not saved'
-    #     self.setWindowTitle('EasyFlowQ v{0}; ({1}{2})'.format(__version__, ('*' if self.saveFlag else ''), pathStr)) 
+    def releaseFigureUpdateHold(self):
+        self.holdFigureUpdate = False
+        self.handle_One()
 
-    # def isWindowAlmostNew(self):
-    #     return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())
+    def updateWinTitle(self):
+        pathStr = self.sessionSavePath if self.sessionSavePath else 'Not saved'
+        self.setWindowTitle('EasyFlowQ v{0}; ({1}{2})'.format(__version__, ('*' if self.saveFlag else ''), pathStr)) 
+
+    def isWindowAlmostNew(self):
+        return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())
 
     def get_dir4Save(self):
         if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):

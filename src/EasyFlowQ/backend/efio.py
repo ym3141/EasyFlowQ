@@ -7,9 +7,9 @@ from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
 from .. import __version__
 
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
-from PyQt5.QtWidgets import QMessageBox, QProgressDialog
-from PyQt5.QtGui import QColor
+from PySide6.QtCore import QThread, Signal, Qt
+from PySide6.QtWidgets import QMessageBox, QProgressDialog
+from PySide6.QtGui import QColor
 
 from ..FlowCal.io import FCSData
 from typing import List
@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 
 class writeRawFcs(QThread):
-    prograssChanged = pyqtSignal(str, float)
+    prograssChanged = Signal(str, float)
 
     def __init__(self, parent, names, rawDatas: List[FCSData], saveDir: str) -> None:
         super().__init__(parent)
