@@ -312,6 +312,11 @@ class plotCanvas(FigureCanvasQTAgg):
                 if xlim_auto[0] <= 0:
                     xlim_auto[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
 
+            # re-adjust the xlims if logicle scale is used, because logicle scale limit the right limit based on the last sample
+            # This ensures the logical scale limits are based on all the data
+            elif axScales[0] == 'logicle':
+                self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
+
             if axScales[1] == 'logicle':
                 self.ax.set_yscale('log')
             else:
