@@ -65,3 +65,4 @@ Now we can finally plot the comparison. Switch to the **B530-A: FITC-A** and sel
 
 ![Tutorial5](img/Tutorial5.jpg) 
 
+## Step 8: 

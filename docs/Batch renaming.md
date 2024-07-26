@@ -3,9 +3,13 @@ Renaming samples from a high throughput experiment setup can be time consuming. 
 
 ![BasicOperations](img/BatchRename.jpg)
 
-## Regular rename
+## Regular rename (Single mapping)
 ---
-For basic renaming, create a excel file (.xlsx), with the old name in the first column 
+For basic renaming, create a excel file (.xlsx), with the old name in the first column (A), and new names in the second column (B). Save this excel file at desired location. We recommend the same folder as the .fcs files. Here is an example:
+
+![SimpleRenameExcel](img/SimpleRename.jpg){: style="width:300px"}
+
+Then go back to EasyFlowQ, and select **Simple mapping** in the menu, and load the file created above.
 
 ## [CytoFLEX](https://www.beckman.com/landing/ppc/flow/cytoflex) format file names
 ---
