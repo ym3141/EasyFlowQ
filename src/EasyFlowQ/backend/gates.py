@@ -132,7 +132,7 @@ class baseGateEditor(QtCore.QObject):
         self.line = Line2D([], [], **lineParam, animated=True)
         pass
 
-    def connect(self, add_or_edit:str = 'add'):
+    def connectInputs(self, add_or_edit:str = 'add'):
         if add_or_edit == 'add':
             self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
@@ -143,7 +143,7 @@ class baseGateEditor(QtCore.QObject):
             self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.editGate_on_keyInput)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.editGate_on_motion)
 
-    def disconnect(self):
+    def disconnectInputs(self):
         self.canvas.mpl_disconnect(self.pressCid)
         self.canvas.mpl_disconnect(self.moveCid)
         self.canvas.mpl_disconnect(self.releaseCid)
@@ -219,7 +219,7 @@ class polygonGateEditor(baseGateEditor):
             xydata = np.vstack((xydata[0:-1], xydata[0]))
             self.line.set_data(xydata.T)
 
-            self.disconnect()
+            self.disconnectInputs()
             
             self.blitDraw()
 
@@ -322,13 +322,13 @@ class polygonGateEditor(baseGateEditor):
     def editGate_on_keyInput(self, event):
         if event.key == 'enter':
             # enter key recieved
-            self.disconnect()
+            self.disconnectInputs()
 
             finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
             self.gateConfirmed.emit(finishedNewGate)
 
         elif event.key == 'escape':
-            self.disconnect()
+            self.disconnectInputs()
             self.gateConfirmed.emit(None)
 
 
@@ -372,7 +372,7 @@ class lineGateEditor(baseGateEditor):
 
                 self.blitDraw()
             else:
-                self.disconnect()
+                self.disconnectInputs()
 
                 xydata = np.vstack((xydata[0:-1], [vert[0], xydata[0, 1]]))
                 self.line.set_data(xydata.T)
@@ -386,7 +386,7 @@ class lineGateEditor(baseGateEditor):
                 self.gateConfirmed.emit(newLineGate)
         
         elif event.button == 3:
-            self.disconnect()
+            self.disconnectInputs()
             self.gateConfirmed.emit(None)
             pass
             
@@ -462,13 +462,13 @@ class lineGateEditor(baseGateEditor):
     def editGate_on_keyInput(self, event):
         if event.key == 'enter':
             # enter key recieved
-            self.disconnect()
+            self.disconnectInputs()
             xydata = self.line.get_xydata()
             finishedNewGate = lineGate(self.chnl, ends=[xydata[0, 0], xydata[1, 0]])
             self.gateConfirmed.emit(finishedNewGate)
 
         elif event.key == 'escape':
-            self.disconnect()
+            self.disconnectInputs()
             self.gateConfirmed.emit(None)
 
 

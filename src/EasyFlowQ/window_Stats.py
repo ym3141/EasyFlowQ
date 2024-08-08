@@ -149,7 +149,7 @@ class statWindow(wUi, wBase):
 
 
     def handle_ExportData(self):
-        saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionDir)
+        saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', dir=self.sessionDir)
         if not saveFileDir:
             return
 

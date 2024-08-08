@@ -20,7 +20,7 @@ from .window_Settings import settingsWindow, localSettings
 from .window_About import aboutWindow
 from .window_Comp import compWindow
 # from .wizard_Comp import compWizard
-# from .window_EditStain import editStainWindow
+from .window_EditStain import editStainWindow
 
 from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
 from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
@@ -126,10 +126,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
-    #     self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
-    #     self.actionas_csv.triggered.connect(self.handle_ExportDataInGates)
+        self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
+        self.actionas_csv.triggered.connect(self.handle_ExportDataInGates)
 
-    #     self.actionStats_window.triggered.connect(self.handle_StatWindow)
+        self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
     #     self.actionWizardComp.triggered.connect(self.handle_CompWizard)
     #     self.actionImportComp.triggered.connect(self.handle_ImportComp)
@@ -162,9 +162,9 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.figOpsPanel.signal_PlotRedraw.connect(self.handle_One)
         self.compWindow.compValueEdited.connect(self.handle_One)
 
-    #     # gates
-    #     self.addGateButton.clicked.connect(self.handle_AddGate)
-    #     self.addQuadButton.clicked.connect(self.handle_AddQuad)
+        # gates
+        self.addGateButton.clicked.connect(self.handle_AddGate)
+        self.addQuadButton.clicked.connect(self.handle_AddQuad)
 
     #     self.gateListWidget.itemSelectionChanged.connect(self.handle_GateSelectionChanged)
 
@@ -177,10 +177,10 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
     #     self.compWindow.compValueEdited.connect(lambda : self.set_saveFlag(True))
 
-    #     # others
-    #     self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
-    #     self.clearGatePB.clicked.connect(lambda : self.gateListWidget.clearSelection())
-    #     self.axisSwapPB.clicked.connect(self.handle_SwapAxis)
+        # others
+        self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
+        self.clearGatePB.clicked.connect(lambda : self.gateListWidget.clearSelection())
+        self.axisSwapPB.clicked.connect(self.handle_SwapAxis)
 
         # load the session if there is a session save file:
         if sessionSaveFile:
@@ -274,42 +274,42 @@ class mainUi(mainWindowBase, mainWindowUi):
         loadingBarDiag.setValue(idx + 2)
         self.releaseFigureUpdateHold()
         
-    # def handle_AddGate(self):
-    #     plotType, axScales, *_ = self.figOpsPanel.curFigOptions
+    def handle_AddGate(self):
+        plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
-    #     if plotType == 'Dot plot' or plotType == 'Density plot':
-    #         self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
-    #         self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
+        if plotType == 'Dot plot' or plotType == 'Density plot':
+            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
+            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
         
-    #     elif plotType == 'Histogram':
-    #         self.statusbar.showMessage('Left click to draw a line gate, Right click to cancel', 0)
-    #         self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
+        elif plotType == 'Histogram':
+            self.statusbar.showMessage('Left click to draw a line gate, Right click to cancel', 0)
+            self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
         
-    #     else:
-    #         return
+        else:
+            return
 
-    #     self._disableInputForGate(True)
-    #     self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
-    #     self.gateEditor.gateConfirmed.connect(self.loadGate)
-    #     self.gateEditor.connect(add_or_edit='add')
+        self._disableInputForGate(True)
+        self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+        self.gateEditor.gateConfirmed.connect(self.loadGate)
+        self.gateEditor.connectInputs(add_or_edit='add')
 
-    # def handle_AddQuad(self):
-    #     plotType, axScales, *_ = self.figOpsPanel.curFigOptions
+    def handle_AddQuad(self):
+        plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
-    #     if plotType == 'Dot plot' or plotType == 'Density plot':
-    #         self.statusbar.showMessage('Left click to confirm, Right click to cancel', 0)
-    #         self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
-    #         self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
-    #         self.quadEditor.addQuad_connect()
+        if plotType == 'Dot plot' or plotType == 'Density plot':
+            self.statusbar.showMessage('Left click to confirm, Right click to cancel', 0)
+            self.quadEditor = quadrantEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
+            self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
+            self.quadEditor.addQuad_connect()
 
-    #     elif plotType == 'Histogram':
-    #         self.statusbar.showMessage('Left click to draw a split, Right click to cancel', 0)
-    #         self.splitEditor = splitEditor(self.mpl_canvas.ax, self.curChnls[0])
-    #         self.splitEditor.splitConfirmed.connect(self.loadSplit)
-    #         self.splitEditor.addSplit_connect()
+        elif plotType == 'Histogram':
+            self.statusbar.showMessage('Left click to draw a split, Right click to cancel', 0)
+            self.splitEditor = splitEditor(self.mpl_canvas.ax, self.curChnls[0])
+            self.splitEditor.splitConfirmed.connect(self.loadSplit)
+            self.splitEditor.addSplit_connect()
         
-    #     self._disableInputForGate(True)
-    #     self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
+        self._disableInputForGate(True)
+        self.mpl_canvas.setCursor(QtCore.Qt.CrossCursor)
 
     def handle_NewSession(self):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
@@ -399,47 +399,47 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.releaseFigureUpdateHold()
 
-    # def handle_EditStain(self):
-    #     editStainDict = {}
-    #     self.editStainWindow = editStainWindow(self.chnlListModel, editStainDict)
-    #     isEditAccept = self.editStainWindow.exec_()
-    #     if isEditAccept:
-    #         for chnlKey, stainName in editStainDict.items():
-    #             self.chnlListModel.setStainName(chnlKey, stainName)        
+    def handle_EditStain(self):
+        editStainDict = {}
+        self.editStainWindow = editStainWindow(self.chnlListModel, editStainDict)
+        isEditAccept = self.editStainWindow.exec_()
+        if isEditAccept:
+            for chnlKey, stainName in editStainDict.items():
+                self.chnlListModel.setStainName(chnlKey, stainName)        
 
-    #         self.handle_One()
+            self.handle_One()
 
-    # # This function export fcs data that are in gates to csv/npy files, 
-    # def handle_ExportDataInGates(self):
+    # This function export fcs data that are in gates to csv/npy files, 
+    def handle_ExportDataInGates(self):
 
-    #     self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
+        self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
 
-    #     if len(self.statWindow.cur_Name_RawData_Pairs):
-    #         saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSavePath)
-    #         if not saveFileDir:
-    #             return
+        if len(self.statWindow.cur_Name_RawData_Pairs):
+            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSavePath)
+            if not saveFileDir:
+                return
 
-    #         self.statusbar.showMessage('Export starting...')
+            self.statusbar.showMessage('Export starting...')
 
-    #         names = [a[0] for a in self.statWindow.cur_Name_RawData_Pairs]
-    #         fcsDatas = [a[1] for a in self.statWindow.cur_Name_RawData_Pairs]
+            names = [a[0] for a in self.statWindow.cur_Name_RawData_Pairs]
+            fcsDatas = [a[1] for a in self.statWindow.cur_Name_RawData_Pairs]
 
-    #         writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
-    #         writterThread.prograssChanged.connect(lambda a, b: self.handle_UpdateProgBar(a, b, 'Exporting: '))
-    #         writterThread.finished.connect(self.handle_ExportDataFinished)
+            writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
+            writterThread.prograssChanged.connect(lambda a, b: self.handle_UpdateProgBar(a, b, 'Exporting: '))
+            writterThread.finished.connect(self.handle_ExportDataFinished)
 
-    #         writterThread.start()
+            writterThread.start()
 
-    #     else:
-    #         QtWidgets.QMessageBox.warning(self, 'Error', 'No sample selected to export')
+        else:
+            QtWidgets.QMessageBox.warning(self, 'Error', 'No sample selected to export')
 
-    # def handle_StatWindow(self):
-    #     if not self.statWindow.isVisible():
-    #         self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
-    #         self.statWindow.show()
-    #     self.statWindow.raise_()
-    #     self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
-    #     pass
+    def handle_StatWindow(self):
+        if not self.statWindow.isVisible():
+            self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
+            self.statWindow.show()
+        self.statWindow.raise_()
+        self.statWindow.move(self.pos() + QtCore.QPoint(100, 60))
+        pass
 
     def handle_Settings(self, firstTime=False):
         self.settingsWindow = settingsWindow(firstTime=firstTime)
@@ -452,14 +452,14 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_NewSetting(self, newSetting):
         self.settingDict = newSetting
 
-    # def handle_SwapAxis(self):
-    #     self.holdFigureUpdate = True
-    #     xAxisTempIndex = self.xComboBox.currentIndex()
-    #     self.xComboBox.setCurrentIndex(self.yComboBox.currentIndex())
-    #     self.yComboBox.setCurrentIndex(xAxisTempIndex)
+    def handle_SwapAxis(self):
+        self.holdFigureUpdate = True
+        xAxisTempIndex = self.xComboBox.currentIndex()
+        self.xComboBox.setCurrentIndex(self.yComboBox.currentIndex())
+        self.yComboBox.setCurrentIndex(xAxisTempIndex)
 
-    #     self.holdFigureUpdate = False
-    #     self.handle_One()
+        self.holdFigureUpdate = False
+        self.handle_One()
 
     # def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
     #     self.statusbar.showMessage(prefixText + curName)
@@ -481,98 +481,98 @@ class mainUi(mainWindowBase, mainWindowUi):
     #         self.handle_One()
     #     pass
 
-    # def handle_EditGate(self):
-    #     curSelected = self.gateListWidget.selectedItems()
-    #     if len(curSelected) == 0:
-    #         QtWidgets.QMessageBox.warning(self, 'No gate selected', 'Please select a gate to edit')
-    #         return
-    #     else:
-    #         curSelectedGate = curSelected[0].gate
+    def handle_EditGate(self):
+        curSelected = self.gateListWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No gate selected', 'Please select a gate to edit')
+            return
+        else:
+            curSelectedGate = curSelected[0].gate
 
-    #     if isinstance(curSelectedGate, quadrantGate):
-    #         QtWidgets.QMessageBox.warning(self, 'This is a quadrant gate', 'Sorry you cannot edit gate generated from quadrant')
-    #         return
+        if isinstance(curSelectedGate, quadrantGate):
+            QtWidgets.QMessageBox.warning(self, 'This is a quadrant gate', 'Sorry you cannot edit gate generated from quadrant')
+            return
 
-    #     plotType, axScales, *_ = self.figOpsPanel.curFigOptions
+        plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
-    #     # Check if it's a polygone gate, and also change the current plot to the state that the gate was created on
-    #     if isinstance(curSelectedGate, polygonGate):
+        # Check if it's a polygone gate, and also change the current plot to the state that the gate was created on
+        if isinstance(curSelectedGate, polygonGate):
 
-    #         # check if the current plot is compatible with the gate
-    #         rightPlotFlag = (plotType in ['Dot plot', 'Density plot']) and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls
-    #         if not rightPlotFlag:
-    #             input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
-    #                                                                           Switch to them (current plot will be lost)?')
-    #             if input == QtWidgets.QMessageBox.Yes:
-    #                 self.holdFigureUpdate = True
-    #                 self.set_curChnls(curSelectedGate.chnls)
-    #                 self.figOpsPanel.set_curPlotType('Dot plot')
-    #                 self.figOpsPanel.set_curAxScales(curSelectedGate.axScales)
+            # check if the current plot is compatible with the gate
+            rightPlotFlag = (plotType in ['Dot plot', 'Density plot']) and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls
+            if not rightPlotFlag:
+                input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
+                                                                              Switch to them (current plot will be lost)?')
+                if input == QtWidgets.QMessageBox.Yes:
+                    self.holdFigureUpdate = True
+                    self.set_curChnls(curSelectedGate.chnls)
+                    self.figOpsPanel.set_curPlotType('Dot plot')
+                    self.figOpsPanel.set_curAxScales(curSelectedGate.axScales)
 
-    #                 self.holdFigureUpdate = False
-    #                 self.handle_One()
-    #             else:
-    #                 return
+                    self.holdFigureUpdate = False
+                    self.handle_One()
+                else:
+                    return
 
-    #         self.figOpsPanel.set_axAuto(True, True)
+            self.figOpsPanel.set_axAuto(True, True)
 
-    #         self.statusbar.showMessage('Left click to drag gate/point; Right click to delete/add vertex; ENTER to confirm edit; ESC to exit', 0)
-    #         self._disableInputForGate(True)
-    #         self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
+            self.statusbar.showMessage('Left click to drag gate/point; Right click to delete/add vertex; ENTER to confirm edit; ESC to exit', 0)
+            self._disableInputForGate(True)
+            self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
 
-    #         self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
-    #         self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
-    #         self.gateEditor.connect(add_or_edit='edit')
+            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
+            self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
+            self.gateEditor.connectInputs(add_or_edit='edit')
         
-    #     elif isinstance(curSelectedGate, lineGate):
-    #         if not (plotType == 'Histogram' and self.curChnls[0] == curSelectedGate.chnl):
-    #             input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
-    #                                                                           Switch to them (current plot will be lost)?')
-    #             if input == QtWidgets.QMessageBox.Yes:
-    #                 self.holdFigureUpdate = True
-    #                 self.set_curChnls(curSelectedGate.chnls)
-    #                 self.figOpsPanel.set_curPlotType('Histogram')
+        elif isinstance(curSelectedGate, lineGate):
+            if not (plotType == 'Histogram' and self.curChnls[0] == curSelectedGate.chnl):
+                input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
+                                                                              Switch to them (current plot will be lost)?')
+                if input == QtWidgets.QMessageBox.Yes:
+                    self.holdFigureUpdate = True
+                    self.set_curChnls(curSelectedGate.chnls)
+                    self.figOpsPanel.set_curPlotType('Histogram')
 
-    #                 self.holdFigureUpdate = False
-    #                 self.handle_One()
-    #             else:
-    #                 return
+                    self.holdFigureUpdate = False
+                    self.handle_One()
+                else:
+                    return
 
-    #         self.figOpsPanel.set_axAuto(True, True)
+            self.figOpsPanel.set_axAuto(True, True)
 
-    #         self.statusbar.showMessage('Left click to drag gate/point; ENTER to confirm edit; ESC to exit', 0)
-    #         self._disableInputForGate(True)
-    #         self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
+            self.statusbar.showMessage('Left click to drag gate/point; ENTER to confirm edit; ESC to exit', 0)
+            self._disableInputForGate(True)
+            self.mpl_canvas.setCursor(QtCore.Qt.OpenHandCursor)
 
-    #         self.gateEditor = lineGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
-    #         self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
-    #         self.gateEditor.connect(add_or_edit='edit')
-    #         pass
+            self.gateEditor = lineGateEditor(self.mpl_canvas.ax, gate=curSelectedGate)
+            self.gateEditor.gateConfirmed.connect(lambda gate : self.loadGate(gate, replace=curSelected[0]))
+            self.gateEditor.connectInputs(add_or_edit='edit')
+            pass
 
-    #     else:
-    #         QtWidgets.QMessageBox.warning(self, 'Editing of this gate type not supported', 'Sorry you cannot edit this type of gates right now!')
-    #         return
+        else:
+            QtWidgets.QMessageBox.warning(self, 'Editing of this gate type not supported', 'Sorry you cannot edit this type of gates right now!')
+            return
 
-    # # This function decide if a redraw is recalled when the selection of gate changes.
-    # def handle_GateSelectionChanged(self):
-    #     if self.mpl_canvas.drawnGates:
-    #         self.handle_One()
-    #         return
+    # This function decide if a redraw is recalled when the selection of gate changes.
+    def handle_GateSelectionChanged(self):
+        if self.mpl_canvas.drawnGates:
+            self.handle_One()
+            return
         
-    #     if len(self.gateListWidget.selectedItems()) == 0:
-    #         return 
+        if len(self.gateListWidget.selectedItems()) == 0:
+            return 
 
-    #     selectedGate = self.gateListWidget.selectedItems()[0].gate
-    #     if isinstance(selectedGate, polygonGate):
-    #         if selectedGate.chnls == self.curChnls and self.figOpsPanel.curPlotType == 'Dot plot':
-    #             self.handle_One()
-    #         else:
-    #             return
-    #     elif isinstance(selectedGate, lineGate):
-    #         if selectedGate.chnl == self.curChnls[0] and self.figOpsPanel.curPlotType == 'Histogram':
-    #             self.handle_One()
-    #         else:
-    #             return
+        selectedGate = self.gateListWidget.selectedItems()[0].gate
+        if isinstance(selectedGate, polygonGate):
+            if selectedGate.chnls == self.curChnls and self.figOpsPanel.curPlotType == 'Dot plot':
+                self.handle_One()
+            else:
+                return
+        elif isinstance(selectedGate, lineGate):
+            if selectedGate.chnl == self.curChnls[0] and self.figOpsPanel.curPlotType == 'Histogram':
+                self.handle_One()
+            else:
+                return
     
     # def handle_DeleteQuad(self):
     #     curSelected = self.qsListWidget.selectedItems()
@@ -673,11 +673,11 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     else:
     #         event.accept()
 
-    # def _disableInputForGate(self, disable=True):
-    #     # return
-    #     self.toolBox.setEnabled(not disable)
-    #     self.smplBox.setEnabled(not disable)
-    #     self.rightFrame.setEnabled(not disable)
+    def _disableInputForGate(self, disable=True):
+        # return
+        self.toolBox.setEnabled(not disable)
+        self.smplBox.setEnabled(not disable)
+        self.rightFrame.setEnabled(not disable)
 
     # load fcs file, as well as change check if the current channel is compatible and change accordingly
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
@@ -705,116 +705,116 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         return newRootSmplItem
 
-    # def loadGate(self, gate, replace=None, gateName=None, checkState=0):
-    #     self.set_saveFlag(True)
-    #     self._disableInputForGate(False)
-    #     self.mpl_canvas.unsetCursor()
-    #     self.statusbar.clearMessage()
+    def loadGate(self, gate, replace=None, gateName=None, checkState=QtCore.Qt.Unchecked):
+        self.set_saveFlag(True)
+        self._disableInputForGate(False)
+        self.mpl_canvas.unsetCursor()
+        self.statusbar.clearMessage()
 
-    #     if not (replace is None):
-    #     # trying to replace a gate
-    #         if gate is None:
-    #             self.handle_One()
-    #         else:
-    #             qBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 
-    #                                          'Gate edited', 'Do you want to overwrite, or to save as a new gate?', 
-    #                                          QtWidgets.QMessageBox.Discard)
-    #             newGateButton = qBox.addButton('New gate', QtWidgets.QMessageBox.YesRole)
-    #             overwriteButton = qBox.addButton('Overwrite', QtWidgets.QMessageBox.DestructiveRole)
+        if not (replace is None):
+        # trying to replace a gate
+            if gate is None:
+                self.handle_One()
+            else:
+                qBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 
+                                             'Gate edited', 'Do you want to overwrite, or to save as a new gate?', 
+                                             QtWidgets.QMessageBox.Discard)
+                newGateButton = qBox.addButton('New gate', QtWidgets.QMessageBox.YesRole)
+                overwriteButton = qBox.addButton('Overwrite', QtWidgets.QMessageBox.DestructiveRole)
                 
                 
-    #             input = qBox.exec()
+                input = qBox.exec()
 
-    #             if qBox.clickedButton() == newGateButton:
-    #                 gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
-    #                 if not flag:
-    #                     self.handle_One()
-    #                     return
-    #                 newQItem = gateWidgetItem(gateName, gate)
-    #                 self.gateListWidget.addItem(newQItem)
+                if qBox.clickedButton() == newGateButton:
+                    gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
+                    if not flag:
+                        self.handle_One()
+                        return
+                    newQItem = gateWidgetItem(gateName, gate)
+                    self.gateListWidget.addItem(newQItem)
 
-    #             elif qBox.clickedButton() == overwriteButton:
-    #                 input = QtWidgets.QMessageBox.warning(self, 'Refresh subpopulations?', 
-    #                                                       'Do you want to also regenerate all the affected subpopulations? \n' +
-    #                                                       'Proceeding without regeneration may cause unexpected inconsistency in the future!',
-    #                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+                elif qBox.clickedButton() == overwriteButton:
+                    input = QtWidgets.QMessageBox.warning(self, 'Refresh subpopulations?', 
+                                                          'Do you want to also regenerate all the affected subpopulations? \n' +
+                                                          'Proceeding without regeneration may cause unexpected inconsistency in the future!',
+                                                          QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
                     
-    #                 replace.gate = gate
+                    replace.gate = gate
 
-    #                 if input == QtWidgets.QMessageBox.Yes:
-    #                     treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
-    #                     while treeIterator.value():
-    #                         treeItem = treeIterator.value()
-    #                         if isinstance(treeItem, subpopItem):
-    #                             allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
-    #                             treeItem.gateUpdated(replace, allGateItems)
-    #                         treeIterator += 1
-    #             return replace
+                    if input == QtWidgets.QMessageBox.Yes:
+                        treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)
+                        while treeIterator.value():
+                            treeItem = treeIterator.value()
+                            if isinstance(treeItem, subpopItem):
+                                allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
+                                treeItem.gateUpdated(replace, allGateItems)
+                            treeIterator += 1
+                return replace
 
-    #     else:
-    #     # this is a new gate, or loading from a save file.
-    #         if gate is None:
-    #             QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
-    #             self.handle_One()
-    #         else:
-    #             if not gateName:
-    #             # no name. likely a new gate
-    #                 gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
-    #                 if not flag:
-    #                     self.handle_One()
-    #                     return
+        else:
+        # this is a new gate, or loading from a save file.
+            if gate is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
+                self.handle_One()
+            else:
+                if not gateName:
+                # no name. likely a new gate
+                    gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
+                    if not flag:
+                        self.handle_One()
+                        return
                     
-    #             newQItem = gateWidgetItem(gateName, gate)
-    #             if checkState: 
-    #                 newQItem.setCheckState(checkState)
+                newQItem = gateWidgetItem(gateName, gate)
+                if checkState: 
+                    newQItem.setCheckState(checkState)
 
-    #             self.gateListWidget.addItem(newQItem)
-    #             self.gateListWidget.setCurrentItem(newQItem)
-    #             return newQItem
+                self.gateListWidget.addItem(newQItem)
+                self.gateListWidget.setCurrentItem(newQItem)
+                return newQItem
 
-    # def loadQuadrant(self, quadrant, replace=None, quadName=None):
-    #     self.set_saveFlag(True)
-    #     self._disableInputForGate(False)
-    #     self.mpl_canvas.unsetCursor()
-    #     self.statusbar.clearMessage()
+    def loadQuadrant(self, quadrant, replace=None, quadName=None):
+        self.set_saveFlag(True)
+        self._disableInputForGate(False)
+        self.mpl_canvas.unsetCursor()
+        self.statusbar.clearMessage()
 
-    #     if replace:
-    #         pass
-    #     else:
-    #         if quadrant is None:
-    #             QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid quadrant')
-    #             self.handle_One()
-    #         else:
-    #             if not quadName:
-    #                 quadName, flag = QtWidgets.QInputDialog.getText(self, 'New quadrant', 'Name for the new quadrant')
-    #                 if not flag:
-    #                     self.handle_One()
-    #                     return
+        if replace:
+            pass
+        else:
+            if quadrant is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid quadrant')
+                self.handle_One()
+            else:
+                if not quadName:
+                    quadName, flag = QtWidgets.QInputDialog.getText(self, 'New quadrant', 'Name for the new quadrant')
+                    if not flag:
+                        self.handle_One()
+                        return
                     
-    #             newQItem = quadWidgetItem(quadName, quadrant)
-    #             self.qsListWidget.addItem(newQItem)
+                newQItem = quadWidgetItem(quadName, quadrant)
+                self.qsListWidget.addItem(newQItem)
     
-    # def loadSplit(self, split, replace=None, splitName=None):
-    #     self.set_saveFlag(True)
-    #     self._disableInputForGate(False)
-    #     self.mpl_canvas.unsetCursor()
-    #     self.statusbar.clearMessage()
+    def loadSplit(self, split, replace=None, splitName=None):
+        self.set_saveFlag(True)
+        self._disableInputForGate(False)
+        self.mpl_canvas.unsetCursor()
+        self.statusbar.clearMessage()
 
-    #     if replace:
-    #         pass
-    #     else:
-    #         if split is None:
-    #             QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid split')
-    #             self.handle_One()
-    #         else:
-    #             if not splitName:
-    #                 splitName, flag = QtWidgets.QInputDialog.getText(self, 'New split', 'Name for the new split')
-    #                 if not flag:
-    #                     self.handle_One()
-    #                     return
+        if replace:
+            pass
+        else:
+            if split is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid split')
+                self.handle_One()
+            else:
+                if not splitName:
+                    splitName, flag = QtWidgets.QInputDialog.getText(self, 'New split', 'Name for the new split')
+                    if not flag:
+                        self.handle_One()
+                        return
                     
-    #             newSItem = splitWidgetItem(splitName, split)
-    #             self.qsListWidget.addItem(newSItem)
+                newSItem = splitWidgetItem(splitName, split)
+                self.qsListWidget.addItem(newSItem)
 
     def secretCrash(self):
         input = QtWidgets.QMessageBox.critical(self, 'Warning! (or congrat?)', 
@@ -842,7 +842,7 @@ class mainUi(mainWindowBase, mainWindowUi):
     def curGateItems(self):
         allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
 
-        return [gateItem for gateItem in allGateItems if (gateItem.isChecked())]
+        return [gateItem for gateItem in allGateItems if (gateItem.checkState() is QtCore.Qt.Checked)]
 
     @property
     def curQuadSplitItem(self):
@@ -852,7 +852,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         else:
             return None
 
-    @property
+    @property 
     def saveFlag(self):
         return self._saveFlag
 

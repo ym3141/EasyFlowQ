@@ -99,10 +99,10 @@ class subpopItem(smplItem):
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):
-        super(QListWidgetItem, self).__init__(gateName)
+        super().__init__(gateName)
 
         self.setFlags(self.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEditable)
-        self.setCheckState(0)
+        self.setCheckState(Qt.Unchecked)
 
         self.setData(0x100, gate)
 

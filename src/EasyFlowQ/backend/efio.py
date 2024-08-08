@@ -145,12 +145,17 @@ class sessionSave():
         gateDict = dict()
         for jGate in jDict.get('gateSaveList', []):
             try:
+                if type(jGate['checkState']) is int:
+                    checkState = Qt.CheckState(jGate['checkState'])
+                else:
+                    checkState = Qt.Unchecked
+
                 if jGate['type'] == 'polygonGate':
-                    newGateItem = mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                    newGateItem = mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), gateName=jGate['displayName'], checkState=checkState)
                 elif jGate['type'] == 'lineGate':
-                    newGateItem = mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                    newGateItem = mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), gateName=jGate['displayName'], checkState=checkState)
                 elif jGate['type'] == 'quadrantGate':
-                    newGateItem = mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=jGate['checkState'])
+                    newGateItem = mainUiWindow.loadGate(quadrantGate(jGate['chnls'], jGate['center'], jGate['corner']), gateName=jGate['displayName'], checkState=checkState)
 
                 # Should only get uuid for 1.4 and above
                 gateUuid = jGate.get('uuid')
@@ -321,7 +326,7 @@ def _convert_gateItem(gateItem):
 
     gateSave['type'] = gateItem.gate.__class__.__name__
     gateSave['displayName'] = gateItem.text()
-    gateSave['checkState'] = gateItem.checkState()
+    gateSave['checkState'] = gateItem.checkState().value
     gateSave['uuid'] = gateItem.uuid
 
     # delete the keys that are not serializable
