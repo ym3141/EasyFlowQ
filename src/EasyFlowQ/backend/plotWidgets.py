@@ -422,7 +422,7 @@ class plotCanvas(FigureCanvasQTAgg):
         return compedSmpls
 
     def updateAxLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
-        # self.ax.autoscale()
+        self.ax.autoscale()
 
         if not (xmin is None or xmax is None):
             if xmin == 'auto' or xmax == 'auto':

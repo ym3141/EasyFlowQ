@@ -139,11 +139,11 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionAbout.triggered.connect(lambda : self.aboutWindow.show())
 
-    #     # context menu
-    #     self.actionDelete_Gate.triggered.connect(self.handle_DeleteGate)
-    #     self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
-    #     self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
-    #     self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
+        # context menu
+        self.actionDelete_Gate.triggered.connect(self.handle_DeleteGate)
+        self.actionEdit_Gate.triggered.connect(self.handle_EditGate)
+        self.actionDelete_Quad.triggered.connect(self.handle_DeleteQuad)
+        self.actionQuad2Gate.triggered.connect(self.handle_Quad2Gate)
 
         # everything update figure
         self.qsListWidget.itemSelectionChanged.connect(self.handle_One)
@@ -165,12 +165,11 @@ class mainUi(mainWindowBase, mainWindowUi):
         # gates
         self.addGateButton.clicked.connect(self.handle_AddGate)
         self.addQuadButton.clicked.connect(self.handle_AddQuad)
+        self.gateListWidget.itemSelectionChanged.connect(self.handle_GateSelectionChanged)
 
-    #     self.gateListWidget.itemSelectionChanged.connect(self.handle_GateSelectionChanged)
-
-    #     # axes lims
-    #     self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
-    #     self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
+        # axes lims
+        self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
+        self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
 
     #     # compensation:
     #     self.compEditPB.clicked.connect(self.handle_EditComp)
@@ -469,17 +468,17 @@ class mainUi(mainWindowBase, mainWindowUi):
     #     self.progBar.reset()
     #     self.statusbar.showMessage('Exporting Finished')
 
-    # def handle_DeleteGate(self):
-    #     curSelected = self.gateListWidget.selectedItems()
-    #     if len(curSelected) == 0:
-    #         QtWidgets.QMessageBox.warning(self, 'No gate selected', 'Please select a gate to delete')
-    #         return
-    #     input = QtWidgets.QMessageBox.question(self, 'Delete gate?', 'Are you sure to delete gate \"{0}\"'.format(curSelected[0].text()))
+    def handle_DeleteGate(self):
+        curSelected = self.gateListWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No gate selected', 'Please select a gate to delete')
+            return
+        input = QtWidgets.QMessageBox.question(self, 'Delete gate?', 'Are you sure to delete gate \"{0}\"'.format(curSelected[0].text()))
 
-    #     if input == QtWidgets.QMessageBox.Yes:
-    #         self.gateListWidget.takeItem(self.gateListWidget.row(curSelected[0]))
-    #         self.handle_One()
-    #     pass
+        if input == QtWidgets.QMessageBox.Yes:
+            self.gateListWidget.takeItem(self.gateListWidget.row(curSelected[0]))
+            self.handle_One()
+        pass
 
     def handle_EditGate(self):
         curSelected = self.gateListWidget.selectedItems()
@@ -574,31 +573,31 @@ class mainUi(mainWindowBase, mainWindowUi):
             else:
                 return
     
-    # def handle_DeleteQuad(self):
-    #     curSelected = self.qsListWidget.selectedItems()
-    #     if len(curSelected) == 0:
-    #         QtWidgets.QMessageBox.warning(self, 'No quadrant selected', 'Please select a gate to delete')
-    #         return
-    #     input = QtWidgets.QMessageBox.question(self, 'Delete quadrant?', 'Are you sure to delete quadrant \"{0}\"'.format(curSelected[0].text()))
+    def handle_DeleteQuad(self):
+        curSelected = self.qsListWidget.selectedItems()
+        if len(curSelected) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No quadrant selected', 'Please select a gate to delete')
+            return
+        input = QtWidgets.QMessageBox.question(self, 'Delete quadrant?', 'Are you sure to delete quadrant \"{0}\"'.format(curSelected[0].text()))
 
-    #     if input == QtWidgets.QMessageBox.Yes:
-    #         self.qsListWidget.takeItem(self.qsListWidget.row(curSelected[0]))
-    #         self.handle_One()
+        if input == QtWidgets.QMessageBox.Yes:
+            self.qsListWidget.takeItem(self.qsListWidget.row(curSelected[0]))
+            self.handle_One()
 
-    # def handle_Quad2Gate(self):
-    #     curSelected = self.qsListWidget.selectedItems()
-    #     if isinstance(curSelected, split):
-    #         QtWidgets.QMessageBox.warning(self, 'This is a split (1D)', 
-    #                                       'Cannot create gates from 1D split. Please consider using a 1D gate in the \"gate tab\" instead')
-    #         return
+    def handle_Quad2Gate(self):
+        curSelected = self.qsListWidget.selectedItems()
+        if isinstance(curSelected, split):
+            QtWidgets.QMessageBox.warning(self, 'This is a split (1D)', 
+                                          'Cannot create gates from 1D split. Please consider using a 1D gate in the \"gate tab\" instead')
+            return
         
-    #     if not len(curSelected) == 0:
-    #         newGates = curSelected[0].quad.generateGates()
-    #         gateNameSuffixes = ['|LL', '|UL', '|LR', '|UR']
-    #         for newGate, suffix in zip(newGates, gateNameSuffixes):
-    #             self.loadGate(newGate, gateName='{0}{1}'.format(curSelected[0].text(), suffix))
+        if not len(curSelected) == 0:
+            newGates = curSelected[0].quad.generateGates()
+            gateNameSuffixes = ['|LL', '|UL', '|LR', '|UR']
+            for newGate, suffix in zip(newGates, gateNameSuffixes):
+                self.loadGate(newGate, gateName='{0}{1}'.format(curSelected[0].text(), suffix))
         
-    #     self.tab_GateQuad.setCurrentWidget(self.tabGate)
+        self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
     # def handle_EditComp(self):
     #     self.compWindow.show()
@@ -647,31 +646,31 @@ class mainUi(mainWindowBase, mainWindowUi):
     def handle_HoldFigure(self, holdFlag):
         self.holdFigureUpdate = holdFlag
         
-    # def closeEvent(self, event: QtGui.QCloseEvent):
-    #     if self.statWindow.isVisible():
-    #         self.statWindow.close()
+    def closeEvent(self, event: QtGui.QCloseEvent):
+        if self.statWindow.isVisible():
+            self.statWindow.close()
 
-    #     if self.aboutWindow.isVisible():
-    #         self.aboutWindow.close()
+        if self.aboutWindow.isVisible():
+            self.aboutWindow.close()
 
-    #     if self.compWindow.isVisible():
-    #         self.compWindow.close()
+        if self.compWindow.isVisible():
+            self.compWindow.close()
 
-    #     if self.saveFlag:
-    #         input = QtWidgets.QMessageBox.question(self, 'Close session', 'Save changes to the file?', buttons=
-    #                                                QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+        if self.saveFlag:
+            input = QtWidgets.QMessageBox.question(self, 'Close session', 'Save changes to the file?', buttons=
+                                                   QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
 
-    #         if input == QtWidgets.QMessageBox.Cancel:
-    #             event.ignore()
-    #         elif input == QtWidgets.QMessageBox.Discard:
-    #             event.accept()
-    #         elif input == QtWidgets.QMessageBox.Save:
-    #             self.handle_Save()
+            if input == QtWidgets.QMessageBox.Cancel:
+                event.ignore()
+            elif input == QtWidgets.QMessageBox.Discard:
+                event.accept()
+            elif input == QtWidgets.QMessageBox.Save:
+                self.handle_Save()
 
-    #             event.accept()
+                event.accept()
 
-    #     else:
-    #         event.accept()
+        else:
+            event.accept()
 
     def _disableInputForGate(self, disable=True):
         # return
