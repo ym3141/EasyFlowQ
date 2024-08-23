@@ -527,7 +527,7 @@ class quadrantEditor(QtCore.QObject):
     quadrantConfirmed = QtCore.Signal(object)
 
     def __init__(self, ax, canvasParam=None, quad=None) -> None:
-        super(QtCore.QObject, self).__init__()
+        super().__init__()
 
         self.ax = ax
         self.canvas = self.ax.figure.canvas

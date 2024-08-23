@@ -1,5 +1,5 @@
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
+from PySide6 import QtGui
+from PySide6.QtCore import Qt
 import numpy as np
 import pandas as pd
 import json

@@ -207,7 +207,7 @@ class sessionSave():
 
                 # Load the stain dictionary
                 if save_ver >= 1.5:
-                    mainUiWindow.chnlListModel.loadStainDict(jDict['stainDict'])
+                    mainUiWindow.chnlListModel.loadStainDict(jDict.get('stainDict', {}))
             except Exception as e:
                 figSettingFlag = True
                 traceback.print_tb(e.__traceback__)

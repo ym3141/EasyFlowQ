@@ -2,8 +2,8 @@ import sys
 from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from os import path, getcwd
 
-from PyQt5.QtGui import QPainter
-from PyQt5.QtCore import Qt
+from PySide6.QtGui import QPainter
+from PySide6.QtCore import Qt
 
 import pandas as pd
 import numpy as np

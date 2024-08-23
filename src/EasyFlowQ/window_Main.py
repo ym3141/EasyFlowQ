@@ -171,10 +171,10 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
         self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
 
-    #     # compensation:
-    #     self.compEditPB.clicked.connect(self.handle_EditComp)
-    #     self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
-    #     self.compWindow.compValueEdited.connect(lambda : self.set_saveFlag(True))
+        # compensation:
+        self.compEditPB.clicked.connect(self.handle_EditComp)
+        self.compApplyCheck.stateChanged.connect(self.handle_ApplyComp)
+        self.compWindow.compValueEdited.connect(lambda : self.set_saveFlag(True))
 
         # others
         self.clearQuadPB.clicked.connect(lambda : self.qsListWidget.clearSelection())
@@ -414,7 +414,7 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
 
         if len(self.statWindow.cur_Name_RawData_Pairs):
-            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', directory=self.sessionSavePath)
+            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', dir=self.sessionSavePath)
             if not saveFileDir:
                 return
 
@@ -460,13 +460,13 @@ class mainUi(mainWindowBase, mainWindowUi):
         self.holdFigureUpdate = False
         self.handle_One()
 
-    # def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
-    #     self.statusbar.showMessage(prefixText + curName)
-    #     self.progBar.setValue(int(progFrac*100))
+    def handle_UpdateProgBar(self, curName, progFrac, prefixText=''):
+        self.statusbar.showMessage(prefixText + curName)
+        self.progBar.setValue(int(progFrac*100))
 
-    # def handle_ExportDataFinished(self):
-    #     self.progBar.reset()
-    #     self.statusbar.showMessage('Exporting Finished')
+    def handle_ExportDataFinished(self):
+        self.progBar.reset()
+        self.statusbar.showMessage('Exporting Finished')
 
     def handle_DeleteGate(self):
         curSelected = self.gateListWidget.selectedItems()
@@ -599,49 +599,49 @@ class mainUi(mainWindowBase, mainWindowUi):
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
-    # def handle_EditComp(self):
-    #     self.compWindow.show()
-    #     self.compWindow.raise_()
-    #     pass
+    def handle_EditComp(self):
+        self.compWindow.show()
+        self.compWindow.raise_()
+        pass
 
-    # def handle_ApplyComp(self, state):
-    #     if state == 2:
-    #         if self.compWindow.curComp == (None, None, None):
-    #             QtWidgets.QMessageBox.warning(self, 'No compensation', 'No compensation is set, please check the compensation window.')
-    #         else:
-    #             self.handle_One()
+    def handle_ApplyComp(self, state):
+        if state == 2:
+            if self.compWindow.curComp == (None, None, None):
+                QtWidgets.QMessageBox.warning(self, 'No compensation', 'No compensation is set, please check the compensation window.')
+            else:
+                self.handle_One()
             
-    #     elif state == 0:
-    #         self.handle_One()
-    #     pass
+        elif state == 0:
+            self.handle_One()
+        pass
 
     # def handle_CompWizard(self):
     #     compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.get_dir4Save(),
     #                                self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
     #     compWizDialog.show()
 
-    # def handle_ExportComp(self):
-    #     jDict = self.compWindow.to_json()
-    #     saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.get_dir4Save(), filter='*.efComp')
-    #     if not saveFileDir:
-    #         return
+    def handle_ExportComp(self):
+        jDict = self.compWindow.to_json()
+        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.get_dir4Save(), filter='*.efComp')
+        if not saveFileDir:
+            return
 
-    #     with open(saveFileDir, 'w+') as f:
-    #         json.dump(jDict, f, sort_keys=True, indent=4)
+        with open(saveFileDir, 'w+') as f:
+            json.dump(jDict, f, sort_keys=True, indent=4)
 
-    # def handle_ImportComp(self):        
-    #     openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Import compensation', self.get_dir4Save(), filter='*.efComp')
-    #     if not openFileDir:
-    #         return 
+    def handle_ImportComp(self):        
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Import compensation', self.get_dir4Save(), filter='*.efComp')
+        if not openFileDir:
+            return 
         
-    #     self.statusbar.clearMessage()
-    #     self.statusbar.showMessage('Loading compensation (may take some time)')
+        self.statusbar.clearMessage()
+        self.statusbar.showMessage('Loading compensation (may take some time)')
 
-    #     with open(openFileDir, 'r') as f:
-    #         jDict = json.load(f)
-    #         self.compWindow.load_json(jDict)
+        with open(openFileDir, 'r') as f:
+            jDict = json.load(f)
+            self.compWindow.load_json(jDict)
 
-    #     self.statusbar.removeWidget(self.progBar)
+        self.statusbar.removeWidget(self.progBar)
 
     def handle_HoldFigure(self, holdFlag):
         self.holdFigureUpdate = holdFlag

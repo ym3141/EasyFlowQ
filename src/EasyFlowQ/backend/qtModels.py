@@ -1,4 +1,4 @@
-from PySide6.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator
+from PySide6.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator, QValidator
 from PySide6.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, Signal
 from PySide6.QtWidgets import QListWidgetItem, QTreeWidgetItem
 import pandas as pd
@@ -140,7 +140,7 @@ class gateWidgetItem(QListWidgetItem):
 
 class quadWidgetItem(QListWidgetItem):
     def __init__(self, quadName, quad):
-        super(QListWidgetItem, self).__init__(quadName)
+        super().__init__(quadName)
 
         self.setFlags(self.flags() | Qt.ItemIsEditable)
 
@@ -157,7 +157,7 @@ class quadWidgetItem(QListWidgetItem):
 
 class splitWidgetItem(QListWidgetItem):
     def __init__(self, splitName, split):
-        super(QListWidgetItem, self).__init__(splitName)
+        super().__init__(splitName)
 
         self.setFlags(self.flags() | Qt.ItemIsEditable)
 
@@ -307,7 +307,7 @@ class pandasTableModel(QAbstractTableModel):
                     self.userInputSignal.emit(index, value)
                 return True
 
-            elif self._validator.validate(str(value), 0)[0] == 2:
+            elif self._validator.validate(str(value), 0)[0] is QValidator.State.Acceptable:
                 if isinstance(self._validator,  QIntValidator):
                     self._data.iloc[row, column] = int(value)
                 elif isinstance(self._validator, QDoubleValidator):
