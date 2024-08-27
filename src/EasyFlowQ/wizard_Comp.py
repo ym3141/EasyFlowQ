@@ -4,8 +4,8 @@ import pandas as pd
 import warnings
 import json
 
-from PySide6 import QtWidgets, QtGui, uic
-from PyQt5.QtCore import Qt, Signal
+from PySide6 import QtWidgets, QtGui, QtUiTools
+from PySide6.QtCore import Qt, Signal
 from copy import copy
 from os import path, getcwd
 
@@ -17,7 +17,7 @@ from .backend.qtModels import gateWidgetItem
 from .backend.comp import autoFluoTbModel, spillMatTbModel
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWizard.ui')) # Load the .ui file
+wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/CompWizard.ui')) # Load the .ui file
 
 class compWizard(wUi, wBase):
     mainCompValueEdited = Signal()
@@ -60,9 +60,9 @@ class compWizard(wUi, wBase):
         self.load2MainPB.clicked.connect(self.handle_load2MainComp)
         self.exportPB.clicked.connect(self.handle_ExportMat)
 
-        finish_button = self.button(QtWidgets.QWizard.FinishButton)
-        finish_button.disconnect()
-        finish_button.clicked.connect(self.handle_WizFinish)
+        # finish_button = self.button(QtWidgets.QWizard.FinishButton)
+        # # finish_button.disconnect()
+        # finish_button.clicked.connect(self.handle_WizFinish)
 
         # other
         self.dir4Save = dir4Save
@@ -86,9 +86,12 @@ class compWizard(wUi, wBase):
             del layoutItem
 
             # Constract the lists of selected channel/sample/gate
-            self.selectedChnlItems = [self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == 2]
-            self.selectedSmplItems = [self.wizSmplModel.item(idx) for idx in range(self.wizSmplModel.rowCount()) if self.wizSmplModel.item(idx).checkState() == 2]
-            self.selectedGateItems = [self.wizGateModel.item(idx) for idx in range(self.wizGateModel.rowCount()) if self.wizGateModel.item(idx).checkState() == 2]
+            self.selectedChnlItems = \
+                [self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == Qt.Checked]
+            self.selectedSmplItems = \
+                [self.wizSmplModel.item(idx) for idx in range(self.wizSmplModel.rowCount()) if self.wizSmplModel.item(idx).checkState() == Qt.Checked]
+            self.selectedGateItems = \
+                [self.wizGateModel.item(idx) for idx in range(self.wizGateModel.rowCount()) if self.wizGateModel.item(idx).checkState() == Qt.Checked]
 
             # Model for the comboboxes
             self.selectedSmplModel = QtGui.QStandardItemModel()
@@ -111,16 +114,17 @@ class compWizard(wUi, wBase):
 
         if id == 2:
             self.assignedPairs = []
+            self.progressBar.setValue(0)
             for p2AssignBox in self.p2AssignBoxes:
                 self.assignedPairs.append((p2AssignBox.chnlName, p2AssignBox.comboBox.currentIndex()))
 
             if self.assignedPairs[0][1] == -1:
                 self.noAutoFCheck.setDisabled(True)
-                self.noAutoFCheck.setCheckState(2)
+                self.noAutoFCheck.setChecked(True)
                 self.noAutoF = True
             else:
                 self.noAutoFCheck.setDisabled(False)
-                self.noAutoFCheck.setCheckState(0)
+                self.noAutoFCheck.setChecked(True)
                 self.noAutoF = False
 
         if id == 3:
@@ -131,8 +135,8 @@ class compWizard(wUi, wBase):
 
     def validateCurrentPage(self):
         if self.currentId() == 0:
-            chnlN = len([self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == 2])
-            smplN = len([self.wizSmplModel.item(idx) for idx in range(self.wizSmplModel.rowCount()) if self.wizSmplModel.item(idx).checkState() == 2])
+            chnlN = len([self.wizChnlModel.item(idx) for idx in range(self.wizChnlModel.rowCount()) if self.wizChnlModel.item(idx).checkState() == Qt.Checked])
+            smplN = len([self.wizSmplModel.item(idx) for idx in range(self.wizSmplModel.rowCount()) if self.wizSmplModel.item(idx).checkState() == Qt.Checked])
             
             if chnlN == 0 or smplN == 0:
                 QtWidgets.QMessageBox.critical(self, 
@@ -218,7 +222,7 @@ class compWizard(wUi, wBase):
 
             self.chnlKeyList = [item.data(0x101) for item in self.selectedChnlItems]
 
-            if self.percentileCheck.checkState() == 2:
+            if self.percentileCheck.checkState() == Qt.Checked:
                 self.usePercentile = self.percentileSlider.value()
             else:
                 self.usePercentile = -1
@@ -255,7 +259,6 @@ class compWizard(wUi, wBase):
                     inGateFlag = np.ones(smplFCS.shape[0], dtype=bool)
                     for gate in gateList:
                         if gate.chnls[0] in smplFCS.channels and gate.chnls[1] in smplFCS.channels:
-                            newFlag = gate.isInsideGate(smplFCS)
                             inGateFlag = np.logical_and(gate.isInsideGate(smplFCS), inGateFlag)
 
                         else: 
@@ -305,6 +308,20 @@ class compWizard(wUi, wBase):
             self.newCompFlag = True
 
             return True
+        
+        elif self.currentId() == 3:
+            if self.newCompFlag:
+                input = QtWidgets.QMessageBox.warning(self, 'Compenation not used or save!',
+                                                    'The new compensation has not been applied into the main window or exported. You will lose it if you exit now. Yes to exist',
+                                                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+            
+                if input == QtWidgets.QMessageBox.Yes:
+                    return True
+                else:
+                    return False
+            else:
+                return True
+
         else: 
             return True
 
@@ -322,7 +339,7 @@ class compWizard(wUi, wBase):
         if not (self.curMainSpillMatModel.isIdentity() and self.curMainAutoFluoModel.isZeros()):
             input = QtWidgets.QMessageBox.warning(self, 
                     'Overwrite current compensation?',
-                    'The current compensation is not zero/identity! This action will overwrite some part of the current one.' +
+                    'The current compensation is not zero/identity! This action will overwrite some part of the current one. ' +
                     'Yes to proceed.',
                     buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel
                     )
@@ -349,20 +366,9 @@ class compWizard(wUi, wBase):
             json.dump(jDict, f, sort_keys=True, indent=4)
         self.newCompFlag = False
 
-    def handle_WizFinish(self):
-        if self.newCompFlag:
-            input = QtWidgets.QMessageBox.warning(self, 'Compenation not used or save!',
-                                                  'The new compensation has not been applied into the main window or exported. You will lose it if you exit now. Yes to exist',
-                                                  QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-        
-            if input == QtWidgets.QMessageBox.Yes:
-                self.accept()
-
-        else:
-            self.accept()
 
 # UI box on page2
-wAssignBox, wBaseAssignBox = uic.loadUiType(path.join(__location__, 'uiDesigns/CompWizard_SmplAssignBox.ui'))
+wAssignBox, wBaseAssignBox = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/CompWizard_SmplAssignBox.ui'))
 class smplAssignBox(wAssignBox, wBaseAssignBox):
 
     def __init__(self, parent, chnlName, comboModel):
@@ -391,7 +397,7 @@ class wPage1Model(QtGui.QStandardItemModel):
                 newItem = QtGui.QStandardItem(smplTreeWidget.topLevelItem(idx).data(0, Qt.DisplayRole))
                 newItem.setData(smplTreeWidget.topLevelItem(idx).data(0, 0x100), 0x100)
                 newItem.setData(smplTreeWidget.topLevelItem(idx).data(0, 1), 1)
-                newItem.setCheckState(2)
+                newItem.setCheckState(Qt.Unchecked)
                 items.append(newItem)
 
         elif gateListWidget is not None:
@@ -407,14 +413,13 @@ class wPage1Model(QtGui.QStandardItemModel):
             # Copying items from standardItemModel / (channels)
             for idx in range(chnlItemModel.rowCount()):
                 items.append(chnlItemModel.item(idx).clone())
-                items[-1].setCheckState(0)
+                items[-1].setCheckState(Qt.Unchecked)
         else:
             return
 
         for newItem in items:
             newItem.setFlags(newItem.flags() | Qt.ItemIsUserCheckable)
             newItem.setFlags(newItem.flags() & (~Qt.ItemIsEditable))
-            # newItem.setCheckState(0)
             self.appendRow(newItem)
 
 

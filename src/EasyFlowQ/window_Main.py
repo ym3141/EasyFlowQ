@@ -19,7 +19,7 @@ from .window_Stats import statWindow
 from .window_Settings import settingsWindow, localSettings
 from .window_About import aboutWindow
 from .window_Comp import compWindow
-# from .wizard_Comp import compWizard
+from .wizard_Comp import compWizard
 from .window_EditStain import editStainWindow
 
 from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
@@ -131,9 +131,9 @@ class mainUi(mainWindowBase, mainWindowUi):
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
-    #     self.actionWizardComp.triggered.connect(self.handle_CompWizard)
-    #     self.actionImportComp.triggered.connect(self.handle_ImportComp)
-    #     self.actionExportComp.triggered.connect(self.handle_ExportComp)
+        self.actionWizardComp.triggered.connect(self.handle_CompWizard)
+        self.actionImportComp.triggered.connect(self.handle_ImportComp)
+        self.actionExportComp.triggered.connect(self.handle_ExportComp)
 
         self.actionSettings.triggered.connect(self.handle_Settings)
 
@@ -615,10 +615,10 @@ class mainUi(mainWindowBase, mainWindowUi):
             self.handle_One()
         pass
 
-    # def handle_CompWizard(self):
-    #     compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.get_dir4Save(),
-    #                                self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
-    #     compWizDialog.show()
+    def handle_CompWizard(self):
+        compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.get_dir4Save(),
+                                   self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
+        compWizDialog.show()
 
     def handle_ExportComp(self):
         jDict = self.compWindow.to_json()
