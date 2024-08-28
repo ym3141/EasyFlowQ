@@ -6,20 +6,19 @@ from os import path, getcwd
 import pandas as pd
 import numpy as np
 from .backend.qtModels import pandasTableModel
+from .uiDesigns import UiLoader
 
 # Fix the issue of pyinstaller not inluding openpyxl
 import openpyxl
 import openpyxl.cell._writer
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_Map.ui')) # Load the .ui file
 
-class renameWindow_Map(wUi, wBase):
+class renameWindow_Map(QtWidgets.QWidget):
     renameConfirmed = QtCore.Signal(dict)
 
     def __init__(self, dir4Save, smplNameList) -> None:
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('RenameWindow_Map.ui', self)
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         

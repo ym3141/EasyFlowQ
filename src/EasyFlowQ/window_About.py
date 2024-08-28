@@ -1,14 +1,13 @@
-from PySide6 import QtUiTools
+from PySide6 import QtWidgets
 from os import path, getcwd
+from .uiDesigns import UiLoader
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/AboutWindow.ui')) # Load the .ui file
 
-class aboutWindow(wUi, wBase):
+class aboutWindow(QtWidgets.QWidget):
     def __init__(self) -> None:
 
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('AboutWindow.ui', self)
 
 if __name__ == '__main__':
     pass

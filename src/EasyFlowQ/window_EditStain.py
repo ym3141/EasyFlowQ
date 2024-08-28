@@ -1,21 +1,19 @@
-from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
+from PySide6 import QtWidgets, QtCore, QtGui
 from matplotlib.colors import to_hex
 from os import path, getcwd
 
 import pandas as pd
 import numpy as np
 from .backend.qtModels import pandasTableModel, chnlModel
+from .uiDesigns import UiLoader
 
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/EditStainWindow.ui')) # Load the .ui file
-
-class editStainWindow(wUi, wBase):
+class editStainWindow(QtWidgets.QDialog):
     # Class for the window that allows the user to edit the stain labels for each channel
     # stainDict: dictionary with the stain labels for each channel, input is expected to be empty dict
     def __init__(self, chnlListModel: chnlModel, outStainDict: dict) -> None:
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('EditStainWindow.ui', self)
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 

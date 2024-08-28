@@ -24,20 +24,19 @@ from .window_EditStain import editStainWindow
 
 from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
 from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
+from .uiDesigns import UiLoader
 
 matplotlib.use('QT5Agg')
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-mainWindowUi, mainWindowBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/MainWindow.ui')) # Load the .ui file
 
-class mainUi(mainWindowBase, mainWindowUi):
+class mainUi(QtWidgets.QMainWindow):
     requestNewWindow = QtCore.Signal(str, QtCore.QPoint)
 
     def __init__(self, settings: localSettings, sessionSaveFile=None, pos=None):
 
         # init and setup UI
-        mainWindowBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('MainWindow.ui', self)
 
     #     # UI tweaks for macos
     #     self.menubar.setNativeMenuBar(False)

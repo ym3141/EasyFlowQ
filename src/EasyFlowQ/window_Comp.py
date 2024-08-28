@@ -10,18 +10,15 @@ import numpy as np
 
 from .backend.qtModels import pandasTableModel, chnlModel
 from .backend.comp import autoFluoTbModel, spillMatTbModel
+from .uiDesigns import UiLoader
 
-
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/CompWindow.ui')) # Load the .ui file
-
-class compWindow(wUi, wBase):
+class compWindow(QtWidgets.QWidget):
     compValueEdited = QtCore.Signal()
 
     def __init__(self, chnlListModel=None) -> None:
 
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('CompWindow.ui', self)
 
         # Setting up the UIs
         self.ylabelFrame.layout().addWidget(verticalLabel('Signal spill from (fluorophore):'))

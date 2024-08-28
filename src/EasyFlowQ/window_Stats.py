@@ -12,20 +12,17 @@ from xlsxwriter.utility import xl_col_to_name
 from .backend.qtModels import pandasTableModel
 from .backend.efio import writeRawFcs
 from .backend.plotWidgets import cachedStats
-
-
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/StatWindow.ui')) # Load the .ui file
+from .uiDesigns import UiLoader
 
 intFormater = '{:.0f}'.format
 percFormater = '{:.2%}'.format
 valFormater = '{:.4e}'.format
 
-class statWindow(wUi, wBase):
+class statWindow(QtWidgets.QWidget):
     def __init__(self, sessionDir, curGateItems_func, curQSItem_func) -> None:
 
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('StatWindow.ui', self)
 
         self.sessionDir = sessionDir
         self.dataDF = pd.DataFrame()
@@ -182,7 +179,7 @@ class statWindow(wUi, wBase):
             self.copySelection()
             return True
 
-        return super(wBase, self).eventFilter(source, event)
+        return super(QtWidgets.QWidget, self).eventFilter(source, event)
 
     def copySelection(self):
         # this parts enables copy multiple cells.

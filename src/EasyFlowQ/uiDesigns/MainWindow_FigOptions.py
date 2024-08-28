@@ -4,19 +4,17 @@ from PySide6 import QtWidgets, QtCore, QtUiTools
 from PySide6.QtGui import QDoubleValidator
 
 from os import path, getcwd
+from . import UiLoader
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-figOpsUi, figOpsBase = QtUiTools.loadUiType(path.join(__location__, 'MainWindow_FigOptions.ui')) # Load the .ui file
-
-class mainUI_figOps(figOpsBase, figOpsUi):
+class mainUI_figOps(QtWidgets.QWidget):
     signal_AxLimsNeedUpdate = QtCore.Signal(object, object, object, object)
     signal_HistTypeSelected = QtCore.Signal(bool)
     signal_PlotRedraw = QtCore.Signal()
 
     def __init__(self, parent):
 
-        figOpsBase.__init__(self, parent)
-        self.setupUi(self)
+        super().__init__(parent)
+        UiLoader().loadUi('MainWindow_FigOptions.ui', self)
 
         # Group the buttons
         buttonGroups = self._organizeButtonGroups()

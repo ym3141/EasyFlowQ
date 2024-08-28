@@ -1,13 +1,13 @@
 import sys
-from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
+from PySide6 import QtWidgets, QtCore, QtGui
 from matplotlib.colors import to_hex
 from os import path, getcwd
 import json
 
 from .backend.efio import getSysDefaultDir
+from .uiDesigns import UiLoader
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/SettingsWindow.ui')) # Load the .ui file
 
 class localSettings(QtCore.QSettings):
 
@@ -15,7 +15,7 @@ class localSettings(QtCore.QSettings):
         default_jSetting = json.load(jFile)
 
     def __init__(self, testMode=False) -> None:
-        super().__init__(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope,'EasyFlowQ', 'EasyFlowQ_v1')
+        super().__init__(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, 'EasyFlowQ', 'EasyFlowQ_v1')
         # print(self.format(), self.fileName(), sep='\t')
         self.testMode = testMode
     
@@ -41,13 +41,13 @@ class localSettings(QtCore.QSettings):
             return False
         return True
 
-class settingsWindow(wUi, wBase):
+class settingsWindow(QtWidgets.QWidget):
     newLocalSettingConfimed = QtCore.Signal(localSettings)
 
     def __init__(self, firstTime=False) -> None:
 
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__(self)
+        UiLoader().loadUi('SettingsWindow.ui', self)
 
         if firstTime:
             self.firstTimeMsg.setVisible(True)

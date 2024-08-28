@@ -12,23 +12,20 @@ from os import environ, path, getcwd
 from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 
 from ..backend.qtModels import smplItem, subpopItem
+from . import UiLoader
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 sys.path.append(path.join(__location__, 'resource'))
-smplSectUi, smplSectBase = QtUiTools.loadUiType(path.join(__location__, 'MainWindow_SmplSect.ui')) # Load the .ui file
 
-class mainUi_SmplSect(smplSectBase, smplSectUi):
+class mainUi_SmplSect(QtWidgets.QWidget):
     to_handle_One = QtCore.Signal()
     to_load_samples = QtCore.Signal(list)
     holdFigure = QtCore.Signal(bool)
 
     def __init__(self, parent, colorGen, curGateItems_func):
 
-        smplSectBase.__init__(self, parent)
-        self.setupUi(self)
-
-        # self.smplTreeWidget = smplTreeWidgetCls(self)
-        # self.layout().addWidget(self.smplTreeWidget)
+        super().__init__(parent)
+        UiLoader().loadUi('MainWindow_SmplSect.ui', self)
 
         self.colorGen = colorGen
         self.curGateItems_func = curGateItems_func

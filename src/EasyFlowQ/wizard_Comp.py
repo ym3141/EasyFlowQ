@@ -15,17 +15,15 @@ from scipy.stats.mstats import gmean
 from .backend.efio import getSysDefaultDir
 from .backend.qtModels import gateWidgetItem
 from .backend.comp import autoFluoTbModel, spillMatTbModel
+from .uiDesigns import UiLoader
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/CompWizard.ui')) # Load the .ui file
-
-class compWizard(wUi, wBase):
+class compWizard(QtWidgets.QWizard):
     mainCompValueEdited = Signal()
 
     def __init__(self, parent, chnlModel, smplWidget, gateWidget, dir4Save,
                  curMainAutoFluoModel:autoFluoTbModel, curMainSpillMatModel:spillMatTbModel) -> None:
-        wBase.__init__(self, parent)
-        self.setupUi(self)
+        super().__init__(parent)
+        UiLoader().loadUi('CompWizard.ui', self)
 
         # link the vertical scrollbars on page4
         self.spillMatTable.verticalScrollBar().valueChanged.connect(self.autoFluoTable.verticalScrollBar().setValue)
@@ -267,7 +265,7 @@ class compWizard(wUi, wBase):
                     gatedFCS = smplFCS[inGateFlag, :]
 
                     if self.usePercentile != -1:
-                        percMask = gatedFCS[:, chnlKey] >= np.percentile(gatedFCS[:, chnlKey], 100 - self.usePercentile / 100)
+                        percMask = gatedFCS[:, chnlKey] >= np.percentile(np.array(gatedFCS[:, chnlKey]), 100 - self.usePercentile)
                         gatedFCS = gatedFCS[percMask, :]
 
                     if self.noAutoFCheck.checkState() == 0 and not (self.autoFs is None):
@@ -327,7 +325,7 @@ class compWizard(wUi, wBase):
 
     def handle_P2ClearAll(self):
         for child in self.wP2Scroll.children():
-            if isinstance(child, wAssignBox):
+            if isinstance(child, smplAssignBox):
                 child.handle_Clear()
 
     def handle_SelectSpillMat(self, selected):
@@ -368,12 +366,11 @@ class compWizard(wUi, wBase):
 
 
 # UI box on page2
-wAssignBox, wBaseAssignBox = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/CompWizard_SmplAssignBox.ui'))
-class smplAssignBox(wAssignBox, wBaseAssignBox):
+class smplAssignBox(QtWidgets.QGroupBox):
 
     def __init__(self, parent, chnlName, comboModel):
         super().__init__(chnlName, parent)
-        self.setupUi(self)
+        UiLoader().loadUi('CompWizard_SmplAssignBox.ui', self)
         
         self.chnlName = chnlName
         self.setTitle('Single-color sample for {0}'.format(chnlName))

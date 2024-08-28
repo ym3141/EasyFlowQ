@@ -12,18 +12,16 @@ import openpyxl
 import openpyxl.cell._writer
 
 from .backend.qtModels import pandasTableModel
+from .uiDesigns import UiLoader
 
-__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-
-wUi, wBase = QtUiTools.loadUiType(path.join(__location__, 'uiDesigns/RenameWindow_CF.ui')) # Load the .ui file
 re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
 
-class renameWindow_CF(wUi, wBase):
+class renameWindow_CF(QtWidgets.QWidget):
     renameConfirmed = QtCore.Signal(dict)
 
     def __init__(self, dir4Save, smplNameList) -> None:
-        wBase.__init__(self)
-        self.setupUi(self)
+        super().__init__()
+        UiLoader().loadUi('RenameWindow_CF.ui', self)
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
