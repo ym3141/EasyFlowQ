@@ -6,7 +6,7 @@ from matplotlib.lines import Line2D
 from matplotlib.artist import Artist
 from matplotlib.path import Path as mpl_path
 
-from PySide6 import QtCore
+from PySide6 import QtCore, QtWidgets
 from functools import lru_cache
 
 
@@ -44,7 +44,7 @@ class polygonGate():
         elif verts:
             self.verts = np.array(verts)
         else:
-            verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
+            self.verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
 
         self.chnls = chnls
         self.axScales = axScales
@@ -136,6 +136,7 @@ class baseGateEditor(QtCore.QObject):
         if add_or_edit == 'add':
             self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
+            self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.addGate_on_keyInput)
         else:
             self.lastPos = None
             self.pressCid = self.canvas.mpl_connect('button_press_event', self.editGate_on_press)
@@ -160,6 +161,11 @@ class baseGateEditor(QtCore.QObject):
 
     def addGate_on_motion(self, event):
         pass
+
+    def addGate_on_keyInput(self, event):
+        if event.key == 'escape':
+            self.disconnectInputs()
+            self.gateConfirmed.emit(None)
 
     def editGate_on_press(self, event):
         pass
@@ -214,20 +220,28 @@ class polygonGateEditor(baseGateEditor):
             self.blitDraw()
 
         elif event.button == 3:
-            # right click recieved, close the gate
             xydata = self.line.get_xydata()
-            xydata = np.vstack((xydata[0:-1], xydata[0]))
-            self.line.set_data(xydata.T)
-
-            self.disconnectInputs()
-            
-            self.blitDraw()
 
             if len(xydata) > 3:
+                # right click recieved, and the gate is valid: close the gate
+                xydata = np.vstack((xydata[0:-1], xydata[0]))
+                self.line.set_data(xydata.T)
+
+                self.disconnectInputs()
                 finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
                 self.gateConfirmed.emit(finishedNewGate)
             else:
-                self.gateConfirmed.emit(None)
+                # not a valid gate, keep drawing
+                vert = [event.xdata, event.ydata]
+                xydata = self.line.get_xydata()
+                xydata = np.vstack((xydata[0:-1], vert, vert))
+                self.line.set_data(xydata.T)
+
+                self.blitDraw()
+                # QtWidgets.QMessageBox.warning(None, 'Error', 'Not a valid gate. Press ESC to cancel.')
+
+            self.blitDraw()
+
 
     def addGate_on_motion(self, event):
         vert = [event.xdata, event.ydata]
