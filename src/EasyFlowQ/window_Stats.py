@@ -179,7 +179,7 @@ class statWindow(QtWidgets.QWidget):
             self.copySelection()
             return True
 
-        return super(statWindow, self).eventFilter(source, event)
+        return super().eventFilter(source, event)
 
     def copySelection(self):
         # this parts enables copy multiple cells.
