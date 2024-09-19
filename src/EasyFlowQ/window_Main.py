@@ -53,7 +53,6 @@ class mainUi(QtWidgets.QMainWindow):
         self.sessionSavePath = None
         self.holdFigureUpdate = True
         self.gateEditor = None
-        self.cachedGateName = None
 
         self.showLegendCheck.setCheckState(QtCore.Qt.PartiallyChecked)
 
@@ -274,16 +273,10 @@ class mainUi(QtWidgets.QMainWindow):
         self.releaseFigureUpdateHold()
         
     def handle_AddGate(self):
-        gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
-        if not flag:
-            self.handle_One()
-            return
-
-        self.cachedGateName = gateName
         plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
         if plotType == 'Dot plot' or plotType == 'Density plot':
-            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm, ESC to exit', 0)
+            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
             self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
         
         elif plotType == 'Histogram':
@@ -759,12 +752,15 @@ class mainUi(QtWidgets.QMainWindow):
         else:
         # this is a new gate, or loading from a save file.
             if gate is None:
+                QtWidgets.QMessageBox.warning(self, 'Error', 'Not a valid gate')
                 self.handle_One()
             else:
-                if not gateName and not (self.cachedGateName is None):
-                    # no name. likely a new gate
-                    gateName = self.cachedGateName
-                    self.cachedGateName
+                if not gateName:
+                # no name. likely a new gate
+                    gateName, flag = QtWidgets.QInputDialog.getText(self, 'New gate', 'Name for the new gate')
+                    if not flag:
+                        self.handle_One()
+                        return
                     
                 newQItem = gateWidgetItem(gateName, gate)
                 if checkState: 

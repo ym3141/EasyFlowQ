@@ -46,7 +46,7 @@ class settingsWindow(QtWidgets.QWidget):
 
     def __init__(self, firstTime=False) -> None:
 
-        super().__init__()
+        super().__init__(self)
         UiLoader().loadUi('SettingsWindow.ui', self)
 
         if firstTime:
