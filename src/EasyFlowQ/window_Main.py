@@ -276,11 +276,11 @@ class mainUi(QtWidgets.QMainWindow):
         plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
         if plotType == 'Dot plot' or plotType == 'Density plot':
-            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm', 0)
+            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm, ESC to cancel.', 0)
             self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
         
         elif plotType == 'Histogram':
-            self.statusbar.showMessage('Left click to draw a line gate, Right click to cancel', 0)
+            self.statusbar.showMessage('Left click to draw a line gate, Right click or ESC to cancel', 0)
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
         
         else:

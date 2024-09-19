@@ -44,7 +44,7 @@ class polygonGate():
         elif verts:
             self.verts = np.array(verts)
         else:
-            verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
+            self.verts = [[0, 0], [0, np.inf], [np.inf, np.inf], [np.inf, 0]]
 
         self.chnls = chnls
         self.axScales = axScales
@@ -134,8 +134,9 @@ class baseGateEditor(QtCore.QObject):
 
     def connectInputs(self, add_or_edit:str = 'add'):
         if add_or_edit == 'add':
-            self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
+            self.releaseCid = self.canvas.mpl_connect('button_release_event', self.addGate_on_release)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
+            self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.addGate_on_keyInput)
         else:
             self.lastPos = None
             self.pressCid = self.canvas.mpl_connect('button_press_event', self.editGate_on_press)
@@ -155,11 +156,16 @@ class baseGateEditor(QtCore.QObject):
         self.ax.draw_artist(self.line)
         self.canvas.blit(self.ax.bbox)
 
-    def addGate_on_press(self, event):
+    def addGate_on_release(self, event):
         pass
 
     def addGate_on_motion(self, event):
         pass
+
+    def addGate_on_keyInput(self, event):
+        if event.key == 'escape':
+            self.disconnectInputs()
+            self.gateConfirmed.emit(None)
 
     def editGate_on_press(self, event):
         pass
@@ -204,7 +210,7 @@ class polygonGateEditor(baseGateEditor):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         self.blitDraw()
 
-    def addGate_on_press(self, event):
+    def addGate_on_release(self, event):
         if event.button == 1:
             vert = [event.xdata, event.ydata]
             xydata = self.line.get_xydata()
@@ -361,7 +367,7 @@ class lineGateEditor(baseGateEditor):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         self.blitDraw()
 
-    def addGate_on_press(self, event):
+    def addGate_on_release(self, event):
         if event.button == 1:
             vert = [event.xdata, event.ydata]
             xydata = self.line.get_xydata()
@@ -402,9 +408,9 @@ class lineGateEditor(baseGateEditor):
         self.line.set_data(xydata.T)
         self.blitDraw()
 
-    def addGate_connect(self):
-        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
-        self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
+    # def addGate_connect(self):
+    #     self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_release)
+    #     self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
 
     def editGate_on_press(self, event):
         if event.button == 1:
@@ -546,14 +552,14 @@ class quadrantEditor(QtCore.QObject):
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
 
 
-    def addQuad_on_press(self, event):
+    def addQuad_on_release(self, event):
         if event.button == 1:
             vert = [event.xdata, event.ydata]
 
             finishedQuadrant = quadrant(self.chnls, vert)
             self.quadrantConfirmed.emit(finishedQuadrant)
 
-            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.releaseCid)
             self.canvas.mpl_disconnect(self.moveCid)
 
             self.blitDraw()
@@ -561,7 +567,7 @@ class quadrantEditor(QtCore.QObject):
         elif event.button == 3:
             # right click recieved, cancel the quadrant
 
-            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.releaseCid)
             self.canvas.mpl_disconnect(self.moveCid)
             
             self.quadrantConfirmed.emit(None)
@@ -582,7 +588,7 @@ class quadrantEditor(QtCore.QObject):
         self.blitDraw()
 
     def addQuad_connect(self):
-        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addQuad_on_press)
+        self.releaseCid = self.canvas.mpl_connect('button_release_event', self.addQuad_on_release)
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addQuad_on_motion)
 
     def blitDraw(self):
@@ -611,7 +617,7 @@ class splitEditor(QtCore.QObject):
     splitConfirmed = QtCore.Signal(object)
 
     def __init__(self, ax, chnl=None) -> None:
-        super(QtCore.QObject, self).__init__()
+        super().__init__()
 
         self.ax = ax
         self.canvas = self.ax.figure.canvas
@@ -623,13 +629,13 @@ class splitEditor(QtCore.QObject):
 
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
 
-    def addSplit_on_press(self, event):
+    def addSplit_on_release(self, event):
         if event.button == 1:
 
             finishedSplit = split(self.chnl, event.xdata)
             self.splitConfirmed.emit(finishedSplit)
 
-            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.releaseCid)
             self.canvas.mpl_disconnect(self.moveCid)
 
             self.blitDraw()
@@ -637,7 +643,7 @@ class splitEditor(QtCore.QObject):
         elif event.button == 3:
             # right click recieved, cancel the quadrant
 
-            self.canvas.mpl_disconnect(self.pressCid)
+            self.canvas.mpl_disconnect(self.releaseCid)
             self.canvas.mpl_disconnect(self.moveCid)
             
             self.splitConfirmed.emit(None)
@@ -654,7 +660,7 @@ class splitEditor(QtCore.QObject):
         self.blitDraw()
 
     def addSplit_connect(self):
-        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addSplit_on_press)
+        self.releaseCid = self.canvas.mpl_connect('button_release_event', self.addSplit_on_release)
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addSplit_on_motion)
 
     def blitDraw(self):
