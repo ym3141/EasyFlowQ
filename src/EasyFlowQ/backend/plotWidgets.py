@@ -224,7 +224,6 @@ class plotCanvas(FigureCanvasQTAgg):
                           c=G_kde(transformed_sampledSmpl[:, smplMask]), xscale=axScales[0], yscale=axScales[1],
                           cmap = 'plasma', label=plotLabel, s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
 
-
             if isinstance(quad_split, quadrant):
             # Draw quadrant if selected
                 if quad_split.chnls[0] == xChnl and quad_split.chnls[1] == yChnl:
@@ -276,6 +275,11 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(axisNames[1])
 
+            # re-adjust the lims if logicle scale is used, because logicle scale limit the lower limit based on the last sample
+            for idx, ax in enumerate(axScales):
+                if ax == 'logicle':
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[idx])
+
         elif plotType == 'Histogram':
             # plot histograme
             # record possible xlims for later use, if xlim is auto
@@ -317,6 +321,11 @@ class plotCanvas(FigureCanvasQTAgg):
             if axScales[0] == 'log':
                 if xlim_auto[0] <= 0:
                     xlim_auto[0] = gatedSmpl.hist_bins(channels=xChnl, nbins=256, scale='log')[0]
+            elif axScales[0] == 'logicle':
+                # re-adjust the xlims if logicle scale is used, because logicle scale limit the right limit based on the last sample
+                # This ensures the logical scale limits are based on all the data
+                self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
+
 
             if axScales[1] == 'logicle':
                 self.ax.set_yscale('log')

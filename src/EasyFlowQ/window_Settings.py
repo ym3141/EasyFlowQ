@@ -46,13 +46,11 @@ class settingsWindow(QtWidgets.QWidget):
 
     def __init__(self, firstTime=False) -> None:
 
-        super().__init__(self)
+        super().__init__()
         UiLoader().loadUi('SettingsWindow.ui', self)
 
         if firstTime:
             self.firstTimeMsg.setVisible(True)
-            self.resize(self.size().width(), 330)
-
             self.setWindowTitle(self.windowTitle() + ' - First time setup!')
         else:
             self.firstTimeMsg.setVisible(False)
