@@ -134,7 +134,7 @@ class baseGateEditor(QtCore.QObject):
 
     def connect(self, add_or_edit:str = 'add'):
         if add_or_edit == 'add':
-            self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
+            self.pressCid = self.canvas.mpl_connect('button_release_event', self.addGate_on_press)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
         else:
             self.lastPos = None
@@ -403,7 +403,7 @@ class lineGateEditor(baseGateEditor):
         self.blitDraw()
 
     def addGate_connect(self):
-        self.pressCid = self.canvas.mpl_connect('button_press_event', self.addGate_on_press)
+        self.pressCid = self.canvas.mpl_connect('button_release_event', self.addGate_on_press)
         self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
 
     def editGate_on_press(self, event):
