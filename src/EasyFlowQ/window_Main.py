@@ -584,17 +584,16 @@ class mainUi(QtWidgets.QMainWindow):
             self.handle_One()
 
     def handle_Quad2Gate(self):
-        curSelected = self.qsListWidget.selectedItems()
-        if isinstance(curSelected, split):
+        curSelected = self.qsListWidget.selectedItems()[0]
+        if isinstance(curSelected, splitWidgetItem):
             QtWidgets.QMessageBox.warning(self, 'This is a split (1D)', 
                                           'Cannot create gates from 1D split. Please consider using a 1D gate in the \"gate tab\" instead')
             return
         
-        if not len(curSelected) == 0:
-            newGates = curSelected[0].quad.generateGates()
-            gateNameSuffixes = ['|LL', '|UL', '|LR', '|UR']
-            for newGate, suffix in zip(newGates, gateNameSuffixes):
-                self.loadGate(newGate, gateName='{0}{1}'.format(curSelected[0].text(), suffix))
+        newGates = curSelected.quad.generateGates()
+        gateNameSuffixes = ['|LL', '|UL', '|LR', '|UR']
+        for newGate, suffix in zip(newGates, gateNameSuffixes):
+            self.loadGate(newGate, gateName='{0}{1}'.format(curSelected[0].text(), suffix))
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         
