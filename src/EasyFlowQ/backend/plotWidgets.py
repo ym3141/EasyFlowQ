@@ -4,6 +4,12 @@ from matplotlib.ticker import PercentFormatter
 import matplotlib.transforms as transforms
 import matplotlib.pyplot as plt
 
+# import the necessary backend for saving figures (for pyinstaller)
+import matplotlib.backends.backend_pdf
+import matplotlib.backends.backend_ps
+import matplotlib.backends.backend_svg
+import matplotlib.backends.backend_pgf
+
 import numpy as np
 from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 from scipy.interpolate import interpn
