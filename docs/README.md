@@ -49,7 +49,7 @@ EasyFlowQ.main_entry.newWindowFunc()
 
 #### **Method #3:** Run from python (a python installation is needed)
 
-For running the program from the source, download the whole code and run the command below. Standard Anaconda (latest ver) should be sufficient for running the program.
+For running the program from the source, download the whole code and run the command below. Standard Anaconda should be sufficient for running the program **up to v1.5**. Starting from v1.6, PySide6 is also required for running the code.
 ```
 Path/To/Folder$ python ./main.py
 ```
