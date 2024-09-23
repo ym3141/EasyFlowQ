@@ -1,5 +1,4 @@
 # Step-by-step example
-**This page is still in the works**
 
 Here we provide a step-by-step example of using EasyFlow to analyze a dataset of T-cell activation in a mix culture of T (Jurkat) and B (T2) cell lines.
 The dataset used in this tutorial can be downloaded from: our Github [v1.5 release (manuscript ed.) page](https://github.com/ym3141/EasyFlowQ/releases/tag/v1.5.6). To obtained the data, download the **demo_fcs.zip** file and unzip it into a separate directory. This tutorial is also part of our publication on EasyFlow [EasyFlow: An open-source, user-friendly cytometry analyzer with graphic user interface (GUI)]()
@@ -65,4 +64,6 @@ Now we can finally plot the comparison. Switch to the **B530-A: FITC-A** and sel
 
 ![Tutorial5](img/Tutorial5.jpg) 
 
-## Step 8: 
+## Step 8: Export the statistics
+The statistic window is accessible from the menu bar Stats -> Stats window. From there you will get detailed data about cell count and percentage in gate, quardrant or split, as well as median and mean fluorescence data. For more detailed information, pleaes refer to the statistic window page: [Statistics](Statistics.md).
+
