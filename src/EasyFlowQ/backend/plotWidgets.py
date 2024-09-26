@@ -280,6 +280,8 @@ class plotCanvas(FigureCanvasQTAgg):
                 if ax == 'logicle':
                     self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[idx])
 
+            self.updateAxLims(axRanges[0], axRanges[1])
+
         elif plotType == 'Histogram':
             # plot histograme
             # record possible xlims for later use, if xlim is auto
@@ -380,20 +382,20 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
 
-        # deal with xlim and ylim            
-        xmin, xmax, ymin, ymax = axRanges
-        if xmin == 'auto' or xmax =='auto':
-            if plotType == 'Histogram':
-                self.ax.set_xlim(xlim_auto)
-            else:
-                self.ax.autoscale(True, 'x')
-        else:
-            self.ax.set_xlim([xmin, xmax])
+        # # deal with xlim and ylim            
+        # xmin, xmax, ymin, ymax = axRanges
+        # if xmin == 'auto' or xmax =='auto':
+        #     if plotType == 'Histogram':
+        #         self.ax.set_xlim(xlim_auto)
+        #     else:
+        #         self.ax.autoscale(True, 'x')
+        # else:
+        #     self.ax.set_xlim([xmin, xmax])
 
-        if ymin == 'auto' or ymax == 'auto':
-            self.ax.autoscale(True, 'y')
-        else:
-            self.ax.set_ylim([ymin, ymax])
+        # if ymin == 'auto' or ymax == 'auto':
+        #     self.ax.autoscale(True, 'y')
+        # else:
+        #     self.ax.set_ylim([ymin, ymax])
 
         # draw legends
         if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
@@ -436,22 +438,27 @@ class plotCanvas(FigureCanvasQTAgg):
             compedSmpls.append(compedSmpl)
         return compedSmpls
 
-    def updateAxLims(self, xmin=None, xmax=None, ymin=None, ymax=None):
-        self.ax.autoscale()
-
-        if not (xmin is None or xmax is None):
-            if xmin == 'auto' or xmax == 'auto':
-                self.ax.autoscale(True, axis='x')
+    # Update axis limites with lims. If 'auto', set auto axis. If None, then do nothing for that axis
+    def updateAxLims(self, xlims = 'auto', ylims = 'auto'):
+        if xlims == 'auto':
+            self.ax.autoscale(axis='x')
+            self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+        elif not (xlims is None):
+            try: 
+                self.ax.set_xlim(xlims)
+            except ValueError:
+                self.ax.autoscale(axis='x')
                 self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
-            else:
-                self.ax.set_xlim([xmin, xmax])
-
-        if not (ymin is None or ymax is None):
-            if ymin == 'auto' or ymax == 'auto':
-                self.ax.autoscale(True, axis='y')
+        
+        if ylims == 'auto':
+            self.ax.autoscale(axis='y')
+            self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+        elif not (ylims is None):
+            try:
+                self.ax.set_ylim(ylims)
+            except ValueError:
+                self.ax.autoscale(axis='y')
                 self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
-            else:
-                self.ax.set_ylim([ymin, ymax])
 
         self.draw()
 

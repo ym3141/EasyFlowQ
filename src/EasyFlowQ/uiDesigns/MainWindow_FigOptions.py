@@ -7,7 +7,7 @@ from os import path, getcwd
 from . import UiLoader
 
 class mainUI_figOps(QtWidgets.QWidget):
-    signal_AxLimsNeedUpdate = QtCore.Signal(object, object, object, object)
+    signal_AxLimsNeedUpdate = QtCore.Signal(object, object)
     signal_HistTypeSelected = QtCore.Signal(bool)
     signal_PlotRedraw = QtCore.Signal()
 
@@ -51,20 +51,20 @@ class mainUI_figOps(QtWidgets.QWidget):
             self.rangeEdits[2].setValidator(axlimValidator(float('-inf'), float(which.text()), 5))
 
         if which in self.rangeEdits[0:2]:
-            self.signal_AxLimsNeedUpdate.emit(float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text()), None, None)
+            self.signal_AxLimsNeedUpdate.emit((float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text())), None)
         elif which in self.rangeEdits[2:4]:
-            self.signal_AxLimsNeedUpdate.emit(None, None, float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text()))
+            self.signal_AxLimsNeedUpdate.emit(None, (float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())))
         
         
     def handle_AxisAuto(self, checkState):
         which = self.sender()
 
-        if checkState is QtCore.Qt.Checked:
+        if which.checkState() is QtCore.Qt.Checked:
             if which is self.xlimAutoCheck:
-                self.signal_AxLimsNeedUpdate.emit('auto', 'auto', None, None)
+                self.signal_AxLimsNeedUpdate.emit('auto', None)
                 pass
             elif which is self.ylimAutoCheck:
-                self.signal_AxLimsNeedUpdate.emit(None, None, 'auto', 'auto')
+                self.signal_AxLimsNeedUpdate.emit(None, 'Auto')
                 pass
 
     def handle_histRadioToggled(self, toggleState):
@@ -151,8 +151,8 @@ class mainUI_figOps(QtWidgets.QWidget):
         xAuto = (self.xlimAutoCheck.isChecked())
         yAuto = (self.ylimAutoCheck.isChecked())
 
-        xlim = ['auto', 'auto'] if xAuto else [float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text())]
-        ylim = ['auto', 'auto'] if yAuto else [float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())]
+        xlim = ['auto'] if xAuto else [[float(self.xlimMinEdit.text()), float(self.xlimMaxEdit.text())]]
+        ylim = ['auto'] if yAuto else [[float(self.ylimMinEdit.text()), float(self.ylimMaxEdit.text())]]
 
         return xlim + ylim
 

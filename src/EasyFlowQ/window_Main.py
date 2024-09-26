@@ -895,14 +895,7 @@ if __name__ == '__main__':
 
     sys.excepthook = myexcepthook
 
-    # environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
     app = QtWidgets.QApplication(sys.argv)
-    # appFont = app.font()
-    # print(appFont.pointSize())
-    # appFont.setPointSize(7)
-    # app.setFont(appFont)
 
     testSettings = localSettings(testMode=True)
     window = mainUi(testSettings)
