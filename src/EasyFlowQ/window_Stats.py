@@ -197,7 +197,7 @@ class statWindow(QtWidgets.QWidget):
                 table[row][column] = index.data()
             stream = io.StringIO()
             csv.writer(stream, delimiter='\t').writerows(table)
-            QtWidgets.qApp.clipboard().setText(stream.getvalue())
+            QtGui.QClipboard().setText(stream.getvalue())
         return
 
 if __name__ == '__main__':
