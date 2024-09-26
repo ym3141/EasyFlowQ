@@ -14,6 +14,8 @@ from ..FlowCal.transform import to_rfi
 from .plotWidgets import gateSmpls
 from .gates import polygonGate, lineGate, quadrantGate
 
+pd.set_option('future.no_silent_downcasting', True)
+
 def getFileStem(fileDir):
     if fileDir is None:
         return None

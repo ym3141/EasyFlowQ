@@ -133,8 +133,6 @@ class statWindow(QtWidgets.QWidget):
                     if formater is percFormater:
                         # +1 because excel's first column is index (sample names)
                         writer.sheets['stats'].set_column(idx + 1, idx + 1, cell_format=percFmt)
-
-                writer.close()
         
         except PermissionError:
             QtWidgets.QMessageBox.warning(self, 'Permission Error', 'Please ensure you have writing permission to this directory, and the file is not opened elsewhere.')
