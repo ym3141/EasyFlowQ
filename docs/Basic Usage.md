@@ -43,7 +43,7 @@ Currently EasyFlowQ provides two gating types: *polygon (2D)* and *line (1D)*. T
 
 Check the desired gates in the "Gate" panel to apply that gate onto the samples. **Currently, all gatings are "global". This means if a gate is checked, all the samples plotted will be gated by that gate! This is enforced so that all samples plotted are under the same gating conditions.** For situations that different gates for different samples are required, please refers to the [Subpopulation section](Subpopulation.md).
 
-**Known bug specific to MacOS version**: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).
+**For ver<=1.5, known bug specific to MacOS version**: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).
 
 #### Plot the gate
 You can also select the gate to show on the plot. Note, it only works if you have the right axis(s) (where the gates are defined) selected. To clear the selection, click the "Clear selection" button in the "Gate" panel.
