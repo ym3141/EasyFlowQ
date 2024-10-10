@@ -157,14 +157,18 @@ class mainUI_figOps(QtWidgets.QWidget):
         return xlim + ylim
 
     # Set the current axis limits, if the input is nan, set lim to auto
-    def set_curAxLims(self, xmin, xmax, ymin, ymax):
-        if not (math.isnan(xmin) or math.isnan(xmax)):
-            self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
-            self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
-
-        if not (math.isnan(ymin) or math.isnan(ymax)):
-            self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
-            self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
+    def set_curAxLims(self, xlim, ylim):
+        if not (xlim == 'auto' or xlim is None):
+            xmin, xmax = xlim
+            if not (math.isnan(xmin) or math.isnan(xmax)):
+                self.xlimMinEdit.setText('{0:.2e}'.format(xmin))
+                self.xlimMaxEdit.setText('{0:.2e}'.format(xmax))
+        
+        if not (ylim == 'auto' or ylim is None):
+            ymin, ymax = ylim
+            if not (math.isnan(ymin) or math.isnan(ymax)):
+                self.ylimMinEdit.setText('{0:.2e}'.format(ymin))
+                self.ylimMaxEdit.setText('{0:.2e}'.format(ymax))
             
             
     def set_axAuto(self, xAxis=None, yAxis=None):

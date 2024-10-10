@@ -183,14 +183,23 @@ class sessionSave():
         if save_ver >= 1.0:
             try:
                 mainUiWindow.figOpsPanel.set_axAuto(xAxis=True, yAxis=True)
-                xmin, xmax, ymin, ymax = jDict['figOptions']['curAxLims']
-                if not (xmin == 'auto' or xmax == 'auto'):
+                # Change after v1.6
+                # Load the axis limits, if it is a group of two, then it is the x and y axis limits (new format)
+                # If it is a group of four, then it is the xmin, xmax, ymin, ymax (old format)
+                xylims = jDict['figOptions']['curAxLims']
+                if len(xylims) == 2:
+                    xlim, ylim = xylims
+                elif len(xylims) == 4:
+                    xlim = 'auto' if xylims[0] == 'auto' else xylims[0:2]
+                    ylim = 'auto' if xylims[2] == 'auto' else xylims[2:4]
+
+                if not (xlim == 'auto'):
                     mainUiWindow.figOpsPanel.set_axAuto(xAxis=False)
-                    mainUiWindow.figOpsPanel.set_curAxLims(xmin, xmax, np.nan, np.nan)
+                    mainUiWindow.figOpsPanel.set_curAxLims(xlim, None)
                 
-                if not (ymin == 'auto' or ymax == 'auto'):
+                if not (ylim == 'auto'):
                     mainUiWindow.figOpsPanel.set_axAuto(yAxis=False)
-                    mainUiWindow.figOpsPanel.set_curAxLims(np.nan, np.nan, ymin, ymax)
+                    mainUiWindow.figOpsPanel.set_curAxLims(None, ylim)
                 
             except Exception as e:
                 figSettingFlag = True

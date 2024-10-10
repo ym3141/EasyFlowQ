@@ -66,7 +66,7 @@ class cachedStats():
 
 class plotCanvas(FigureCanvasQTAgg):
 
-    signal_AxLimsUpdated = QtCore.Signal(float, float, float, float)
+    signal_AxLimsUpdated = QtCore.Signal(object, object)
     signal_PlotUpdated = QtCore.Signal(cachedStats)
 
     def __init__(self, dpiScale=None):
@@ -283,12 +283,14 @@ class plotCanvas(FigureCanvasQTAgg):
             self.updateAxLims(axRanges[0], axRanges[1])
 
         elif plotType == 'Histogram':
-            # plot histograme
-            # record possible xlims for later use, if xlim is auto
+        # plot histograme
             self.cachedPlotStats.chnls = [xChnl]
 
+            # record possible xlims for later use, if xlim is auto
             xlim_auto = [np.inf, -np.inf]
+            # record the maximum height of the histogram, this is for drawing the gate
             ymax_histo = 0
+
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
                 if gatedSmpl.shape[0] < 1:
                     continue
@@ -296,22 +298,15 @@ class plotCanvas(FigureCanvasQTAgg):
                 n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
                                             color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)
                 
-                # Find the proper ylims and xlims
                 ymax_histo = max([max(n), ymax_histo])
 
+                # record the xlims
                 nonZeros = np.nonzero(n)
                 if nonZeros[0].size == 0:
                     continue
-
-                if np.min(nonZeros) > 0:
-                    minIdx = np.min(nonZeros) - 1
-                else:
-                    minIdx = np.min(nonZeros)
-
-                if np.max(nonZeros) < len(nonZeros) - 1:
-                    maxIdx = np.max(nonZeros) + 1
-                else:
-                    maxIdx = np.max(nonZeros)
+                
+                minIdx = max(np.min(nonZeros) - 1, 0)
+                maxIdx = min(np.max(nonZeros) + 1, len(n) - 1)
 
                 xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
                 xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
@@ -328,14 +323,12 @@ class plotCanvas(FigureCanvasQTAgg):
                 # This ensures the logical scale limits are based on all the data
                 self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
 
-
+            # force the y axis to be log scale if logicle is used
             if axScales[1] == 'logicle':
                 self.ax.set_yscale('log')
             else:
                 self.ax.set_yscale(axScales[1])
 
-            # if not (normOption == 'Cell count'):
-            #     self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
 
             if isinstance(quad_split, split):
                 if quad_split.chnl == xChnl:
@@ -375,27 +368,14 @@ class plotCanvas(FigureCanvasQTAgg):
                                      bbox=dict(facecolor='w', alpha=0.3, edgecolor='w'),
                                      horizontalalignment='right', verticalalignment='bottom', annotation_clip=True)
                     
-                    xlim_auto[0] = np.min([selectedGate.ends[0], xlim_auto[0]])
-                    xlim_auto[1] = np.max([selectedGate.ends[1], xlim_auto[1]])
-                pass
 
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
 
-        # # deal with xlim and ylim            
-        # xmin, xmax, ymin, ymax = axRanges
-        # if xmin == 'auto' or xmax =='auto':
-        #     if plotType == 'Histogram':
-        #         self.ax.set_xlim(xlim_auto)
-        #     else:
-        #         self.ax.autoscale(True, 'x')
-        # else:
-        #     self.ax.set_xlim([xmin, xmax])
+            # replace the xlims if it is auto, with calculated xlims
+            xlim = xlim_auto if axRanges[0] == 'auto' else axRanges[0]
+            self.updateAxLims(xlim, axRanges[1])
 
-        # if ymin == 'auto' or ymax == 'auto':
-        #     self.ax.autoscale(True, 'y')
-        # else:
-        #     self.ax.set_ylim([ymin, ymax])
 
         # draw legends
         if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
@@ -408,7 +388,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.legend(markerscale=5)
             
         self.draw()
-        self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+        self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
 
         # Update the cached stats, and evoke the signal
         self.cachedPlotStats.smplItems = smplItems
@@ -442,23 +422,23 @@ class plotCanvas(FigureCanvasQTAgg):
     def updateAxLims(self, xlims = 'auto', ylims = 'auto'):
         if xlims == 'auto':
             self.ax.autoscale(axis='x')
-            self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+            self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
         elif not (xlims is None):
             try: 
                 self.ax.set_xlim(xlims)
             except ValueError:
                 self.ax.autoscale(axis='x')
-                self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+                self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
         
         if ylims == 'auto':
             self.ax.autoscale(axis='y')
-            self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+            self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
         elif not (ylims is None):
             try:
                 self.ax.set_ylim(ylims)
             except ValueError:
                 self.ax.autoscale(axis='y')
-                self.signal_AxLimsUpdated.emit(*self.ax.get_xlim(), *self.ax.get_ylim())
+                self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
 
         self.draw()
 
