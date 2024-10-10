@@ -334,9 +334,6 @@ class plotCanvas(FigureCanvasQTAgg):
             else:
                 self.ax.set_yscale(axScales[1])
 
-            # if not (normOption == 'Cell count'):
-            #     self.ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))
-
             if isinstance(quad_split, split):
                 if quad_split.chnl == xChnl:
                     sFracs = np.zeros((len(gatedSmpls),2))
@@ -382,20 +379,10 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_xlabel(axisNames[0])
             self.ax.set_ylabel(normOption)
 
-        # # deal with xlim and ylim            
-        # xmin, xmax, ymin, ymax = axRanges
-        # if xmin == 'auto' or xmax =='auto':
-        #     if plotType == 'Histogram':
-        #         self.ax.set_xlim(xlim_auto)
-        #     else:
-        #         self.ax.autoscale(True, 'x')
-        # else:
-        #     self.ax.set_xlim([xmin, xmax])
+            if axRanges[0] == 'auto':
+                axRanges[0] = xlim_auto
+            self.updateAxLims(axRanges[0], axRanges[1])
 
-        # if ymin == 'auto' or ymax == 'auto':
-        #     self.ax.autoscale(True, 'y')
-        # else:
-        #     self.ax.set_ylim([ymin, ymax])
 
         # draw legends
         if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
