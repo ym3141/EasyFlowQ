@@ -51,7 +51,7 @@ class polygonGate():
 
         verts4path = self.verts.copy()
         for idx, scale in enumerate(self.axScales):
-            if scale == 'log':
+            if scale in ('log', 'logicle'):
                 verts4path[:, idx] = np.log10(verts4path[:, idx])
                 
         self.prebuiltPath = mpl_path(verts4path)
@@ -68,7 +68,7 @@ class polygonGate():
         points = self._dataCurrentlyGating[:, self.chnls].copy()
 
         for idx, scale in enumerate(self.axScales):
-            if scale == 'log':
+            if scale in ('log', 'logicle'):
                 with np.errstate(invalid='ignore', divide='ignore'):
                     points[:, idx] = np.log10(points[:, idx])
 
