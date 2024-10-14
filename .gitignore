@@ -28,3 +28,6 @@ docs/img/*.afdesign
 
 # dist
 dist/
+
+# test env
+test/.venv/*
