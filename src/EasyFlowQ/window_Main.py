@@ -169,6 +169,7 @@ class mainUi(QtWidgets.QMainWindow):
         # axes lims
         self.mpl_canvas.signal_AxLimsUpdated.connect(self.figOpsPanel.set_curAxLims)
         self.figOpsPanel.signal_AxLimsNeedUpdate.connect(self.mpl_canvas.updateAxLims)
+        self.figOpsPanel.noExtremePB.clicked.connect(self.mpl_canvas.adjustLim_noExtreme)
 
         # compensation:
         self.compEditPB.clicked.connect(self.handle_EditComp)

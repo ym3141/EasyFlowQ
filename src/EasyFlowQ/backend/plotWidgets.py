@@ -442,6 +442,46 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.draw()
 
+    def adjustLim_noExtreme(self):
+        if self.curPlotType in ('Dot plot', 'Density plot'):
+            x_minmax = [np.inf, -np.inf]
+            y_minmax = [np.inf, -np.inf]
+            for smpl in self.cachedPlotStats.gatedSmpls:
+                x_minmax_smpl = np.percentile(np.array(smpl[:, self.cachedPlotStats.chnls[0]]), [1, 99])
+                y_minmax_smpl = np.percentile(np.array(smpl[:, self.cachedPlotStats.chnls[1]]), [1, 99])
+
+                x_minmax[0] = min(x_minmax[0], x_minmax_smpl[0])
+                x_minmax[1] = max(x_minmax[1], x_minmax_smpl[1])
+                y_minmax[0] = min(y_minmax[0], y_minmax_smpl[0])
+                y_minmax[1] = max(y_minmax[1], y_minmax_smpl[1])
+
+            if np.all(np.isfinite(x_minmax)) and np.all(np.isfinite(y_minmax)):
+                data2axes = self.ax.transData + self.ax.transAxes.inverted()
+                axes2data = data2axes.inverted()
+
+                lowerLeft_ax = data2axes.transform([x_minmax[0], y_minmax[0]])
+                upperRight_ax = data2axes.transform([x_minmax[1], y_minmax[1]])
+
+                figSpan = np.array(upperRight_ax) - np.array(lowerLeft_ax)
+                lowerLeft_ax = np.array(lowerLeft_ax) - 0.2 * figSpan
+                upperRight_ax = np.array(upperRight_ax) + 0.2 * figSpan
+
+                lowerLeft_ax = np.max([[0, 0], lowerLeft_ax], axis=0)
+                upperRight_ax = np.min([[1, 1], upperRight_ax], axis=0)
+
+                lowerLeft_data = axes2data.transform(lowerLeft_ax)
+                upperRight_data = axes2data.transform(upperRight_ax)
+
+                self.ax.set_xlim(lowerLeft_data[0], upperRight_data[0])
+                self.ax.set_ylim(lowerLeft_data[1], upperRight_data[1])
+
+                self.signal_AxLimsUpdated.emit([lowerLeft_data[0], upperRight_data[0]], [lowerLeft_data[1], upperRight_data[1]])
+
+                self.draw()
+            else:
+                return
+
+
 # Quick and dirty way of creating a FCSData from an numpy array
 # Use cautionously, this clase does not check if the created FCSData files are self-consistant
 class FCSData_from_array(FCSData):
