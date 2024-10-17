@@ -92,7 +92,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Axes scale</string>
+      <string>Axis scale</string>
      </property>
      <property name="flat">
       <bool>true</bool>
