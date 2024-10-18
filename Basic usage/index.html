@@ -46,7 +46,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Basics</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Startup, simple plot and gate</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Startup, simple plot and gate</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#first-time-setup">First time setup</a>
     </li>
@@ -66,7 +66,7 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Batch%20renaming/">Batch-renaming with xlsx</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Subpopulation/">Subpopulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../Sample%20panel/">Sample penal</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Tutorials</span></p>
@@ -138,8 +138,8 @@
 <h2 id="gating">Gating</h2>
 <hr />
 <p>Currently EasyFlowQ provides two gating types: <em>polygon (2D)</em> and <em>line (1D)</em>. To start drawing gates, click on the "+" in the "Gate" panel (upper right). You will enter the corresponding gate drawing mode, based on your current plot type (change in the "Plot type" section). For <em>polygon gate</em><em>, left click to create a new vertex, and right click will close the gate (if more than three vertices exist). For </em>line gate*, the 2nd vertex will automatically close the gate. </p>
-<p>Check the desired gates in the "Gate" panel to apply that gate onto the samples. <strong>Currently, all gatings are "global". This means if a gate is checked, all the samples plotted will be gated by that gate! This is enforced so that all samples plotted are under the same gating conditions.</strong> For situations that different gates for different samples are required, please refers to the <a href="#subpopulations">Subpopulation section</a>.</p>
-<p><strong>Known bug specific to MacOS version</strong>: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).</p>
+<p>Check the desired gates in the "Gate" panel to apply that gate onto the samples. <strong>Currently, all gatings are "global". This means if a gate is checked, all the samples plotted will be gated by that gate! This is enforced so that all samples plotted are under the same gating conditions.</strong> For situations that different gates for different samples are required, please refers to the <a href="../Sample%20panel/#Subpopulations">Subpopulation section</a>.</p>
+<p><strong>For ver&lt;=1.5, known bug specific to MacOS version</strong>: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).</p>
 <h4 id="plot-the-gate">Plot the gate</h4>
 <p>You can also select the gate to show on the plot. Note, it only works if you have the right axis(s) (where the gates are defined) selected. To clear the selection, click the "Clear selection" button in the "Gate" panel.</p>
 <h4 id="edit-or-delete-existing-gates">Edit or delete existing gates</h4>

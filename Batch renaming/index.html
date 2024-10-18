@@ -50,15 +50,17 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Statistics/">Viewing the statistics</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Batch-renaming with xlsx</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Batch-renaming with xlsx</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#regular-rename">Regular rename</a>
+    <li class="toctree-l2"><a class="reference internal" href="#regular-rename-single-mapping">Regular rename (Single mapping)</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#cytoflex-format-file-names">CytoFLEX format file names</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#notes-apply-to-both-method-of-batch-renaming">Notes apply to both method of batch renaming</a>
+    </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Subpopulation/">Subpopulations</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../Sample%20panel/">Sample penal</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Tutorials</span></p>
@@ -99,20 +101,31 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="batch-renaming-with-xlsx">Batch-renaming with xlsx</h1>
+<p><strong>Note</strong>: This page if for batch renaming samples. If you want to rename individual sample, simply click the name in the "sample section" on the left of the window, and rename it.</p>
 <p>Renaming samples from a high throughput experiment setup can be time consuming. EasyflowQ provides two methods to batch renaming samples names. Both methods provides a easy way for batch renaming your samples using a excel files (.xlsx). To access these tools, go to "Data" -&gt; "Rename with file" (see below).</p>
 <p><img alt="BasicOperations" src="../img/BatchRename.jpg" /></p>
-<h2 id="regular-rename">Regular rename</h2>
+<h2 id="regular-rename-single-mapping">Regular rename (Single mapping)</h2>
 <hr />
-<p>For basic renaming, create a excel file (.xlsx), with the old name in the first column </p>
+<p>For basic renaming, create a excel file (.xlsx), with the sample names (file name without ".fcs" by default) in the first column (A), and new names in the second column (B). Save this excel file at desired location. We recommend the same folder as the .fcs files. Here is an example:</p>
+<p><img alt="SimpleRenameExcel" src="../img/SimpleRename.jpg" style="width:300px" /></p>
+<p>Then go back to EasyFlowQ, and select <strong>Simple mapping</strong> in the menu, and load the file created above. The pop-out will preview your renaming pairs for you the confirm it. </p>
 <h2 id="cytoflex-format-file-names"><a href="https://www.beckman.com/landing/ppc/flow/cytoflex">CytoFLEX</a> format file names</h2>
 <hr />
-<p>The BECKMAN's CytoFLEX flow cytometer use a unique naming system when under the plate mode. </p>
+<p>BECKMAN's CytoFLEX flow cytometer use a unique naming system when under the plate mode. The schemes follows the patterns <code>(plate#)-('Tube' or 'Well')-(plate coordinate)</code> (e.g., <code>01-Well-B3</code>). Based on this, EasyflowQ can rename them with a excel with multiple sheets "resembling" a 2D plate labels (see below). If more than one sheet exist in the renaming excel, EasyFlowQ will automatically concatenate the names of each sheet together with a underscore ("_"). </p>
+<p><img alt="CytoflexRename" src="../img/CytoflexRename.jpg" /></p>
+<p>EasyFlowQ will also indicate if a certain sample does not exist (blank square vs green square), and if some names are duplicated (red font). <strong>This will not stop the renaming, but the user should proceed with caution</strong>.</p>
+<h2 id="notes-apply-to-both-method-of-batch-renaming">Notes apply to both method of batch renaming</h2>
+<ol>
+<li>The renames are only applied on the EasyFlowQ session level. This means nothing in the fcs file, including the content or the file names, were changed.</li>
+<li>You can run rename multiple times, with different or same (edited) xlsx file. </li>
+<li>Technically you can rename two different sample to a the same name, but it is not recommended.</li>
+</ol>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../Statistics/" class="btn btn-neutral float-left" title="Viewing the statistics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../Subpopulation/" class="btn btn-neutral float-right" title="Subpopulations">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../Sample%20panel/" class="btn btn-neutral float-right" title="Sample penal">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -142,7 +155,7 @@
       <span><a href="../Statistics/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../Subpopulation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../Sample%20panel/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Subpopulations - EasyFLowQ</title>
+    <title>Sample penal - EasyFLowQ</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Subpopulations";
-        var mkdocs_page_input_path = "Subpopulation.md";
+        var mkdocs_page_name = "Sample penal";
+        var mkdocs_page_input_path = "Sample panel.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -52,8 +52,12 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Batch%20renaming/">Batch-renaming with xlsx</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Subpopulations</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Sample penal</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#subpopulation">Subpopulation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sample-selection">Sample selection</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -84,9 +88,9 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Basics</li>
-      <li class="breadcrumb-item active">Subpopulations</li>
+      <li class="breadcrumb-item active">Sample penal</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/Subpopulation.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ym3141/EasyFlowQ/edit/master/docs/Sample panel.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -94,8 +98,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="subpopulations">Subpopulations</h1>
-<p>EasyFlowQ supports subpopulations.</p>
+                <h1 id="sample-panel-subpopulations-and-sample-selections">Sample panel : Subpopulations and Sample selections</h1>
+<p>This page talks about how the sample panel (the left section of the UI) functions.</p>
+<h2 id="subpopulation">Subpopulation</h2>
+<p>EasyFlowQ supports subpopulations (or subpos for short). To create subpops, select all the samples that you want to create subpops for, right click and select "Add subpops". You will be asked to provide names for all the subpops. Note "$" in the name will be replaced by their parent names, e.g., "$_GFP+" will become "sample1_GFP+".</p>
+<p><img alt="AddSubpops" src="../img/AddSubpops.jpg" /></p>
+<p>The create subpops will consist events that pass all the currently selected gate ("checked" but not including the "highlighted"). Note that all subpops are treated as an individual sample that consist a subset of it's parent from now on. This means even you "uncheck" the gates, the subpops will not "gain back" the events that was originally excluded during creation.</p>
+<p>You can create subpops based on subpops.</p>
+<h2 id="sample-selection">Sample selection</h2>
+<p>EasyFlowQ will plot for all the selected (highlighted) samples, including subpops, in the main plotting area (the central part). To facilitate this process, several buttons where located on top of this section:</p>
+<ol>
+<li><strong>Load data (.fcs)</strong>: Load fcs files. Same as the option in the drop down "data" menu. (Ctrl+L)</li>
+<li><strong>Color</strong>: Change color of all of selected samples.</li>
+<li><strong>Expand / Collapse All</strong>: These two buttons are related to subpops. If subpops exist, these two buttons will expand, or collapse all subpops.</li>
+<li><strong>All roots</strong>: This button let you select all of the root (parent) samples.</li>
+<li><strong>Select by keyword</strong>: This allows selecting samples by keywords. For example, entering "Treatment1" in the input box and hit ENTER, all the samples whose name contains the keyword of "Treatment1" will be selected for plotting. This is case sensitive.</li>
+</ol>
               
             </div>
           </div><footer>
