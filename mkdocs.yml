@@ -10,7 +10,7 @@ nav:
     - "Basic usage.md"
     - "Statistics.md"
     - "Batch renaming.md"
-    - "Subpopulation.md"
+    - Sample penal: "Sample panel.md"
   - Tutorials:
     - "Step-by-step example": "Tutorial.md"
   - About:

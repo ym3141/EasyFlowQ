@@ -16,12 +16,14 @@ Then go back to EasyFlowQ, and select **Simple mapping** in the menu, and load t
 
 ## [CytoFLEX](https://www.beckman.com/landing/ppc/flow/cytoflex) format file names
 ---
-BECKMAN's CytoFLEX flow cytometer use a unique naming system when under the plate mode. The schemes follows the patterns `(plate#)-('Tube' or 'Well')-(plate coordinate)` (e.g., `01-Well-B3`). Based on this, EasyflowQ can rename them with a excel sheet "resembling" a 2D plate labels, similar to the following:
+BECKMAN's CytoFLEX flow cytometer use a unique naming system when under the plate mode. The schemes follows the patterns `(plate#)-('Tube' or 'Well')-(plate coordinate)` (e.g., `01-Well-B3`). Based on this, EasyflowQ can rename them with a excel with multiple sheets "resembling" a 2D plate labels (see below). If more than one sheet exist in the renaming excel, EasyFlowQ will automatically concatenate the names of each sheet together with a underscore ("_"). 
+
+![CytoflexRename](img/CytoflexRename.jpg)
+
+EasyFlowQ will also indicate if a certain sample does not exist (blank square vs green square), and if some names are duplicated (red font). **This will not stop the renaming, but the user should proceed with caution**.
 
 
-
-
-## Notes applies to both method of batch renaming
+## Notes apply to both method of batch renaming
 1. The renames are only applied on the EasyFlowQ session level. This means nothing in the fcs file, including the content or the file names, were changed.
 2. You can run rename multiple times, with different or same (edited) xlsx file. 
 3. Technically you can rename two different sample to a the same name, but it is not recommended.
