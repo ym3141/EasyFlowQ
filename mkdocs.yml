@@ -22,3 +22,5 @@ markdown_extensions:
 
 extra_css:
   - css/extra.css
+
+edit_uri: ./edit/pyside6/docs
