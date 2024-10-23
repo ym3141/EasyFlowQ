@@ -463,8 +463,8 @@ class plotCanvas(FigureCanvasQTAgg):
                 upperRight_ax = data2axes.transform([x_minmax[1], y_minmax[1]])
 
                 figSpan = np.array(upperRight_ax) - np.array(lowerLeft_ax)
-                lowerLeft_ax = np.clip(np.array(lowerLeft_ax) - 0.1 * figSpan, a_min=0)
-                upperRight_ax = np.clip(np.array(upperRight_ax) + 0.1 * figSpan, a_max=1)
+                lowerLeft_ax = np.clip(np.array(lowerLeft_ax) - 0.1 * figSpan, a_min=0, a_max=None)
+                upperRight_ax = np.clip(np.array(upperRight_ax) + 0.1 * figSpan, a_min=None, a_max=1)
 
                 lowerLeft_data = axes2data.transform(lowerLeft_ax)
                 upperRight_data = axes2data.transform(upperRight_ax)

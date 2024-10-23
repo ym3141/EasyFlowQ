@@ -49,7 +49,7 @@ class localSettings(QtCore.QSettings):
 
         pathList = self['recent sessions']
         if sessionPath in pathList:
-            pathList.revmove(sessionPath)
+            pathList.remove(sessionPath)
         
         pathList.insert(0, sessionPath)
         self['recent sessions'] = pathList[:6]
