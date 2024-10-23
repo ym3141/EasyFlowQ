@@ -38,11 +38,6 @@ class mainUi(QtWidgets.QMainWindow):
         super().__init__()
         UiLoader().loadUi('MainWindow.ui', self)
 
-    #     # UI tweaks for macos
-    #     self.menubar.setNativeMenuBar(False)
-    #     self.tab_GateQuad.tabBar().setTabTextColor(0, QtGui.QColor('black'))
-    #     self.tab_GateQuad.tabBar().setTabTextColor(1, QtGui.QColor('black'))
-
         # load the seetings:
         self.settingDict = settings
         
@@ -99,6 +94,22 @@ class mainUi(QtWidgets.QMainWindow):
         self.progBar = QtWidgets.QProgressBar(self)
         self.progBar.reset()
         self.statusbar.addPermanentWidget(self.progBar)
+
+        # add recent file actions
+        for filePath in self.settingDict['recent sessions']:
+            if path.isfile(filePath) and filePath.endswith('.eflq'):
+                normFilePath = path.normpath(filePath)
+
+                if len(normFilePath) > 43:
+                    shortenPath = '...' + normFilePath[-40:]
+                else:
+                    shortenPath = normFilePath
+
+                newAction = self.menuOpen_Recent.addAction(shortenPath)
+                newAction.setData(normFilePath)
+                newAction.triggered.connect(lambda : self.handle_OpenSession(openFileDir=newAction.data()))
+            else:
+                self.settingDict['recent sessions'].remove(filePath)
 
         # init ui models
         self.gateListWidgetModel = self.gateListWidget.model()
@@ -313,11 +324,12 @@ class mainUi(QtWidgets.QMainWindow):
     def handle_NewSession(self):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
 
-    def handle_OpenSession(self):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.get_dir4Save(), filter='*.eflq')
+    def handle_OpenSession(self, openFileDir=None):
+        if not openFileDir:
+            openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open session', self.get_dir4Save(), filter='*.eflq')
+            self.settingDict.updateRecentSessions(openFileDir)
         if not openFileDir:
             return
-        # print(openFileDir)
 
         if self.isWindowAlmostNew():
         #If there is nothing in this current window, update the current window
@@ -336,17 +348,19 @@ class mainUi(QtWidgets.QMainWindow):
             sessionSaveFile = sessionSave(self, self.sessionSavePath)
             sessionSaveFile.saveJson()
 
+            self.settingDict.updateRecentSessions(self.sessionSavePath)
             self.set_saveFlag(False)
         else: 
             self.handle_SaveAs()
 
     def handle_SaveAs(self):
-        saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.get_dir4Save(), filter='*.eflq')
-        if not saveFileDir:
+        saveFilePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save session', self.get_dir4Save(), filter='*.eflq')
+        self.settingDict.updateRecentSessions(saveFilePath)
+        if not saveFilePath:
             return
 
-        self.set_sessionSavePath(saveFileDir)
-        sessionSaveFile = sessionSave(self, saveFileDir)
+        self.set_sessionSavePath(saveFilePath)
+        sessionSaveFile = sessionSave(self, saveFilePath)
         sessionSaveFile.saveJson()
 
         self.set_saveFlag(False)

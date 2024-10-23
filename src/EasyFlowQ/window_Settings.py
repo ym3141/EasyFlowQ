@@ -2,6 +2,7 @@ import sys
 from PySide6 import QtWidgets, QtCore, QtGui
 from matplotlib.colors import to_hex
 from os import path, getcwd
+from copy import deepcopy
 import json
 
 from .backend.efio import getSysDefaultDir
@@ -18,9 +19,12 @@ class localSettings(QtCore.QSettings):
         super().__init__(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, 'EasyFlowQ', 'EasyFlowQ_v1')
         # print(self.format(), self.fileName(), sep='\t')
         self.testMode = testMode
+
+        if not self.contains('recent sessions'):
+            self.setValue('recent sessions', json.dumps([]))
     
     def __getitem__(self, key):
-        qValue = self.value(key, defaultValue=self.default_jSetting[key])
+        qValue = self.value(key, defaultValue=self.default_jSetting[key], type=str)
 
         if self.testMode and (key == 'default dir'):
             return path.abspath('./demoSamples')
@@ -29,11 +33,26 @@ class localSettings(QtCore.QSettings):
             return int(qValue)
         elif key in ["plot dpi scale", "version"]:
             return float(qValue)
+        elif key in ['recent sessions']:
+            return json.loads(qValue)
         else:
             return qValue
 
     def __setitem__(self, key, value):
-        self.setValue(key, value)
+        if key in ['recent sessions']:
+            self.setValue(key, json.dumps(value))
+        else:
+            self.setValue(key, value)
+
+    def updateRecentSessions(self, sessionPath):
+        sessionPath = path.normpath(sessionPath)
+
+        pathList = self['recent sessions']
+        if sessionPath in pathList:
+            pathList.revmove(sessionPath)
+        
+        pathList.insert(0, sessionPath)
+        self['recent sessions'] = pathList[:6]
 
     def verEntryExists(self):
         if not self.contains('version'):

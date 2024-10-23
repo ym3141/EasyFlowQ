@@ -2,5 +2,6 @@
     "default dir": "",
     "dot N in perf mode": 20000,
     "plot dpi scale": 1.25,
-    "version": 1.4
+    "version": 1.6,
+    "recent sessions": "[]"
 }
