@@ -518,15 +518,21 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
     <property name="title">
      <string>Session</string>
     </property>
+    <widget class="QMenu" name="menuOpen_Recent">
+     <property name="title">
+      <string>Recent Sessions</string>
+     </property>
+    </widget>
     <addaction name="actionNew_Session"/>
     <addaction name="actionOpen_Session"/>
+    <addaction name="menuOpen_Recent"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
     <addaction name="separator"/>
@@ -720,6 +726,11 @@
   <action name="actionEdit_stain_labels">
    <property name="text">
     <string>Edit stain labels</string>
+   </property>
+  </action>
+  <action name="actionOther">
+   <property name="text">
+    <string>Other...</string>
    </property>
   </action>
  </widget>
