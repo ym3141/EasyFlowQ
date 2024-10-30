@@ -276,9 +276,10 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_ylabel(axisNames[1])
 
             # re-adjust the lims if logicle scale is used, because logicle scale limit the lower limit based on the last sample
-            for idx, ax in enumerate(axScales):
-                if ax == 'logicle':
-                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[idx])
+            if axScales[0] == 'logicle':
+                self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0])
+            if axScales[1] == 'logicle':
+                self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1])
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
