@@ -107,7 +107,7 @@ class mainUi(QtWidgets.QMainWindow):
 
                 newAction = self.menuOpen_Recent.addAction(shortenPath)
                 newAction.setData(normFilePath)
-                newAction.triggered.connect(lambda : self.handle_OpenSession(openFileDir=newAction.data()))
+                newAction.triggered.connect(self.handle_OpenRecentSession)
             else:
                 self.settingDict['recent sessions'].remove(filePath)
 
@@ -323,6 +323,10 @@ class mainUi(QtWidgets.QMainWindow):
 
     def handle_NewSession(self):
         self.requestNewWindow.emit('', self.pos() + QtCore.QPoint(60, 60))
+
+    def handle_OpenRecentSession(self):
+        wichAction = self.sender()
+        self.handle_OpenSession(wichAction.data())
 
     def handle_OpenSession(self, openFileDir=None):
         if not openFileDir:
