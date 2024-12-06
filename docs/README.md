@@ -60,5 +60,5 @@ For first time startup settings, please go to our [usage page](https://ym3141.gi
 
 ## Contact and citation
 ---
-For more info please contact <yitongma7@gmail.com>. If you use *EasyFlowQ* in your research, we would appreciate citation to the following preprint:
+For more info please contact <yitongma7@gmail.com>. If you use *EasyFlowQ* in your research, we would appreciate citation to the following publication:
 > Ma Y, Eizenberg-Magar I, Antebi Y. EasyFlow: An open-source, user-friendly cytometry analyzer with graphic user interface (GUI). PLoS One. 2024 Nov 13;19(11):e0308873. doi: 10.1371/journal.pone.0308873. PMID: 39536028; PMCID: PMC11560029.
