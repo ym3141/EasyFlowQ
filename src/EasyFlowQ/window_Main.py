@@ -275,10 +275,16 @@ class mainUi(QtWidgets.QMainWindow):
         newColorList = self.colorGen.giveColors(len(fileNames))
 
         self.holdFigureUpdate = True
+        if len(self.smplTreeWidget.selectedItems()) == 0:
+            self.smplTreeWidget.clearSelection()
+            setSelectedFlag = True
+        else:
+            setSelectedFlag = False
+
         for idx in range(len(fileNames)):
             loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
             loadingBarDiag.setValue(idx + 1)
-            self.loadFcsFile(fileNames[idx], newColorList[idx])
+            self.loadFcsFile(fileNames[idx], newColorList[idx], selected=setSelectedFlag)
 
         self.smplTreeWidget.resizeColumnToContents(0)
         loadingBarDiag.setValue(idx + 2)
