@@ -17,7 +17,7 @@ from scipy.stats import gaussian_kde
 
 from PySide6 import QtCore, QtGui
 
-from ..FlowCal.plot import scatter2d, density2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
+from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
 from .gates import quadrant, split, polygonGate, lineGate
 
@@ -443,6 +443,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.draw()
 
+    # Adjust the axis to 1 and 99 percentile for dot and density plots, with some margins
     def adjustLim_noExtreme(self):
         if self.curPlotType in ('Dot plot', 'Density plot'):
             x_minmax = [np.inf, -np.inf]
@@ -457,6 +458,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 y_minmax[1] = max(y_minmax[1], y_minmax_smpl[1])
 
             if np.all(np.isfinite(x_minmax)) and np.all(np.isfinite(y_minmax)):
+                # Using axis transforms to handle behaviors in log/logical scales, for 10% margin
                 data2axes = self.ax.transData + self.ax.transAxes.inverted()
                 axes2data = data2axes.inverted()
 
@@ -567,7 +569,17 @@ def hist1d_line(data, ax, channel, xscale, color,
             # If bins is None or an integer, get bin edges from
             # ``data_plot.hist_bins()``.
             if bins is None or isinstance(bins, int):
-                bins = data.hist_bins(channels=channel, nbins=bins, scale=xscale, **xscale_kwargs)
+                ploting_bins = data.hist_bins(channels=channel, nbins=bins, scale=xscale, **xscale_kwargs)
+
+                # If there is less then 16th of non-zero bins, use actual range
+                minData = np.min(data[:, channel])
+                maxData = np.max(data[:, channel])
+                minBinIdx = np.searchsorted(ploting_bins, minData)
+                maxBinIdx = np.searchsorted(ploting_bins, maxData)
+
+                if (maxBinIdx - minBinIdx) / len(ploting_bins) < 1/16:
+                    # print('there is less then 16th of non-zero bins')
+                    ploting_bins = data.hist_bins(channels=channel, nbins=bins, scale=xscale, use_actual_range=True, **xscale_kwargs)
 
     # Calculate weights if normalizing bins by height
     if normed_height == 'Unit Area':
@@ -576,7 +588,7 @@ def hist1d_line(data, ax, channel, xscale, color,
         weights = None
 
     # Plot
-    n, edges = np.histogram(data[:, channel], bins=bins, weights=weights)
+    n, edges = np.histogram(data[:, channel], bins=ploting_bins, weights=weights)
 
     if smooth:
         uniformFilterSize = int(smooth / 8) * 2 + 1 # make sure it's a ood intiger. Does not kick in till smooth = 16
