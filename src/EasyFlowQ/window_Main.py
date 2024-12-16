@@ -70,6 +70,7 @@ class mainUi(QtWidgets.QMainWindow):
         self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
         self.plotLayout.addWidget(self.mpl_canvas)
         self.mpl_canvas.signal_PlotUpdated.connect(self.statWindow.updateStat)
+        self.mpl_canvas.to_load_session.connect(self.handle_OpenSession)
 
         self.smplsOnPlot = []
 
@@ -340,11 +341,22 @@ class mainUi(QtWidgets.QMainWindow):
             self.settingDict.updateRecentSessions(openFileDir)
         if not openFileDir:
             return
+        
+        if not openFileDir.endswith('.eflq'):
+            QtWidgets.QMessageBox.critical(self, 'Open session error!', 
+                                           'EasyFlowQ can only open files ends with .eflq at this moment.')
 
         if self.isWindowAlmostNew():
         #If there is nothing in this current window, update the current window
             self.holdFigureUpdate = True
-            sessionSave.loadSessionSave(self, openFileDir)
+            errorMsg = sessionSave.loadSessionSave(self, openFileDir)
+            if errorMsg is False:
+                QtWidgets.QMessageBox.critical(self, 'Load session error!', 
+                                               'The session file is eiter corrupted or not a valid session file.')
+                return
+            elif type(errorMsg) == str:
+                QtWidgets.QMessageBox.warning(self, 'Session loaded partially.', errorMsg)
+
             self.set_sessionSavePath(openFileDir)
             self.releaseFigureUpdateHold()
 

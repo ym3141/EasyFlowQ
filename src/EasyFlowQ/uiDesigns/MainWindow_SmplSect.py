@@ -165,18 +165,6 @@ class mainUi_SmplSect(QtWidgets.QWidget):
         else:
             event.ignore()
 
-# class smplTreeWidgetCls(QtWidgets.QTreeWidget):
-
-#     def __init__(self, parent: QtWidgets.QWidget) -> None:
-#         super().__init__(parent)
-
-#         # Customized the look.
-#         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
-#         self.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection) # ExtendedSelection
-#         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectItems) # SelectItems
-#         self.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-#         self.setHeaderHidden(True)
-
 
 if __name__ == '__main__':
     environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"

@@ -15,7 +15,7 @@ from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 from scipy.interpolate import interpn
 from scipy.stats import gaussian_kde
 
-from PySide6 import QtCore, QtGui
+from PySide6 import QtCore, QtWidgets
 
 from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
@@ -69,6 +69,8 @@ class plotCanvas(FigureCanvasQTAgg):
     signal_AxLimsUpdated = QtCore.Signal(object, object)
     signal_PlotUpdated = QtCore.Signal(cachedStats)
 
+    to_load_session = QtCore.Signal(str)
+
     def __init__(self, dpiScale=None):
         self.fig, self.ax = plt.subplots()
         self.fig.set_layout_engine("tight") 
@@ -82,6 +84,8 @@ class plotCanvas(FigureCanvasQTAgg):
 
         self.navigationBar = NavigationToolbar(self, self)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.setAcceptDrops(True)
+
 
         self.ax.set_xlabel('None')
         self.ax.set_ylabel('None')
@@ -480,6 +484,32 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.draw()
             else:
                 return
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls():
+            dropUrls = event.mimeData().urls()
+            if len(dropUrls) > 1:
+                QtWidgets.QMessageBox.warning(self, 'Too many files', 
+                                              'EasyFlowQ only support droping a single session file(.eqfl) for loading.')
+                event.ignore()
+            else:
+                sessionDir = event.mimeData().urls()[0].toLocalFile()
+                event.accept()
+                self.to_load_session.emit(sessionDir)
+        else:
+            event.ignore()
 
 
 # Quick and dirty way of creating a FCSData from an numpy array

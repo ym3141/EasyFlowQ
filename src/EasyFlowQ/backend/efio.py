@@ -98,7 +98,19 @@ class sessionSave():
         compFlag = False
 
         with open(saveFileDir) as f:
-            jDict = json.load(f)
+            loadingBarDiag.setLabelText('Initializing: Trying loading as JSON...')
+            try:
+                jDict = json.load(f)    
+                loadingBarDiag.setLabelText('Initializing: Checking if this is a eflq JSON...')
+                # check if basic keys exist
+                # these keys exist in all EasyFlowQ save files from very eraly versions
+                if any([key not in jDict for key in ['fileDir', 'smplSaveList', 'gateSaveList', 'figOptions']]):
+                    raise Exception('Not a EasyFlowQ save file.')
+
+            except Exception as e:
+                loadingBarDiag.setValue(7)
+                return False
+            
         
         # for really early version, that don't have a save_ver
         if not 'save_ver' in jDict:
@@ -279,8 +291,11 @@ class sessionSave():
                 errorMsg += 'We may failed to load compensation settings or data.\n'
             errorMsg += 'We have loaded everything else, but please double check the data and settings.'
 
-            QMessageBox.warning(mainUiWindow, 'Something went wrong.', errorMsg)
-        
+            return errorMsg
+        else:
+            return True
+
+
 def _convert_smplItem(item, saveDir, selectedSmplItems=[]):
     smplSave = deepcopy(item.__dict__)
 
