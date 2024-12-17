@@ -11,11 +11,10 @@ elif platform == 'win32':
 
 
 _ver = EFQ.__version__
+exe_name = "EasyFlowQ_v{0}".format(_ver)
+bundle_name = "EasyFlowQ_Bundle_v{0}".format(_ver)
 
 block_cipher = None
-
-exe_name = "EasyFlowQ_v{0}".format(_ver)
-
 
 a = Analysis(['../main.py'],
              pathex=[],
@@ -56,14 +55,12 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='EasyFlowQ_Bundle')
+               name=bundle_name)
 
 if platform=='darwin':
-    coll = COLLECT(exe,
-                   a.binaries,
-                   a.zipfiles,
-                   a.datas, 
-                   strip=False,
-                   upx=True,
-                   upx_exclude=[],
-                   name='EasyFlowQ_Bundle')
+    app = BUNDLE(coll,
+                name='EasyFlowQ_MACOS.app',
+                version=_ver,
+                icon=None,
+                bundle_identifier=None)
+
