@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dChnlDialog</class>
+ <widget class="QDialog" name="dChnlDialog">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>500</width>
+    <height>309</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Define derived parameter (chennal)</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>New parameter name:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLineEdit" name="nameEdit">
+     <property name="maxLength">
+      <number>32767</number>
+     </property>
+     <property name="placeholderText">
+      <string>FLX1-UserDefine</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QPushButton" name="parsePB">
+     <property name="text">
+      <string>Parse formula</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>140</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Varible definations:</string>
+     </property>
+     <widget class="QComboBox" name="chnl2Combo">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>50</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="chnl3Combo">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>80</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="chnl4Combo">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>110</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>fl2 = </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>fl3 = </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>fl4 = </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>31</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>fl1 = </string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="chnl1Combo">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>20</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Formula for new parameter:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="0">
+    <widget class="QPlainTextEdit" name="formulaEdit">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="placeholderText">
+      <string>(fl1 + fl2) / fl3 </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="8">
+    <widget class="QTextBrowser" name="textBrowser">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.14286pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;EasyflowQ supports adding user defined channel derived from at max four parameters/channels (fl1, fl2, fl3, fl4). Here is an example fomula using three of them:&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;(fl1 + fl2) / fl3&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.14286pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;The fomula will be parsed by the &lt;/span&gt;&lt;a href=&quot;https://www.sympy.org/en/index.html&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;SymPy&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt; module Therefore we support most basic operations (&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;+&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;-&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;/&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;,&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt; **&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;) are supported, as well as some more advanced functions such as &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;log&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;sin&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;, and &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600;&quot;&gt;exp&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt;&quot;&gt;. Though as a result, due to python's convention, &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; color:#aa0000;&quot;&gt;the power operator is &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600; color:#aa0000;&quot;&gt;**&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; color:#aa0000;&quot;&gt;, instead of &lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; font-weight:600; color:#aa0000;&quot;&gt;^&lt;/span&gt;&lt;span style=&quot; font-size:8.14286pt; color:#aa0000;&quot;&gt;.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>dChnlDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>dChnlDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

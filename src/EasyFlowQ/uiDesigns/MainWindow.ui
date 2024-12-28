@@ -560,6 +560,8 @@
     <addaction name="menuRename_with_file"/>
     <addaction name="actionEdit_stain_labels"/>
     <addaction name="separator"/>
+    <addaction name="actionAdd_derived_parameter"/>
+    <addaction name="separator"/>
     <addaction name="menuExport_raw_current_gate"/>
    </widget>
    <widget class="QMenu" name="menuGraph">
@@ -731,6 +733,11 @@
   <action name="actionOther">
    <property name="text">
     <string>Other...</string>
+   </property>
+  </action>
+  <action name="actionAdd_derived_parameter">
+   <property name="text">
+    <string>Add derived parameter</string>
    </property>
   </action>
  </widget>
