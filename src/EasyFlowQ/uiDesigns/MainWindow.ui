@@ -53,16 +53,6 @@
          <property name="title">
           <string>Ploting options</string>
          </property>
-         <widget class="QComboBox" name="yComboBox">
-          <property name="geometry">
-           <rect>
-            <x>210</x>
-            <y>40</y>
-            <width>171</width>
-            <height>21</height>
-           </rect>
-          </property>
-         </widget>
          <widget class="QComboBox" name="xComboBox">
           <property name="geometry">
            <rect>
@@ -175,6 +165,63 @@
            <bool>true</bool>
           </property>
          </widget>
+         <widget class="QStackedWidget" name="stackedWidget">
+          <property name="geometry">
+           <rect>
+            <x>210</x>
+            <y>40</y>
+            <width>171</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="page">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="yComboBox"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_2">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="yHistComboBox"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </widget>
        </item>
        <item>
@@ -189,7 +236,7 @@
           <string>Compensation:</string>
          </property>
          <property name="flat">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
@@ -244,22 +291,6 @@
         </spacer>
        </item>
       </layout>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QGroupBox" name="plotBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Plots</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
      </widget>
     </item>
     <item row="0" column="2" rowspan="2">
@@ -510,6 +541,22 @@
       </layout>
      </widget>
     </item>
+    <item row="1" column="1">
+     <widget class="QGroupBox" name="plotBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string>Plots</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -518,7 +565,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
