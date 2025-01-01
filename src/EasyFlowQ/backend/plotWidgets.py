@@ -82,7 +82,7 @@ class plotCanvas(FigureCanvasQTAgg):
             
         super().__init__(self.fig)
 
-        self.navigationBar = efNavigationToolbar(self, self)
+        self.navigationBar = NavigationToolbar(self, self)
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.setAcceptDrops(True)
 
@@ -510,11 +510,6 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.to_load_session.emit(sessionDir)
         else:
             event.ignore()
-
-
-class efNavigationToolbar(NavigationToolbar):
-    # Customized NavigationToolbar2QT by removing the subplot and axis tool buttons
-    toolitems = [t for t in NavigationToolbar.toolitems if t[0] in ('Home', 'Back', 'Forward', None, 'Pan', 'Zoom', 'Save')]
 
 
 # Quick and dirty way of creating a FCSData from an numpy array

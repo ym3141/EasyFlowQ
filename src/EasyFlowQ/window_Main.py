@@ -67,7 +67,6 @@ class mainUi(QtWidgets.QMainWindow):
         self.mpl_canvas = plotCanvas(dpiScale=self.settingDict['plot dpi scale'])
 
         self.plotLayout = QtWidgets.QVBoxLayout(self.plotBox)
-        self.plotLayout.setContentsMargins(0, 0, 0, 0)
         self.plotLayout.addWidget(self.mpl_canvas.navigationBar)
         self.plotLayout.addWidget(self.mpl_canvas)
         self.mpl_canvas.signal_PlotUpdated.connect(self.statWindow.updateStat)
