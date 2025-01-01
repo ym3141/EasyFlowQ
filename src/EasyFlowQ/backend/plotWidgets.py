@@ -1,8 +1,8 @@
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
 from matplotlib.ticker import PercentFormatter
 import matplotlib.transforms as transforms
+import matplotlib.pyplot as plt
 
 # import the necessary backend for saving figures (for pyinstaller)
 import matplotlib.backends.backend_pdf
@@ -72,8 +72,7 @@ class plotCanvas(FigureCanvasQTAgg):
     to_load_session = QtCore.Signal(str)
 
     def __init__(self, dpiScale=None):
-        self.fig = Figure()
-        self.ax = self.fig.add_subplot(111)
+        self.fig, self.ax = plt.subplots()
         self.fig.set_layout_engine("tight") 
 
         if dpiScale:
