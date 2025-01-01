@@ -1,14 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
+import ..src.EasyFlowQ as EFQ
 from sys import platform
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--version", action="store", default="0.0")
-options = parser.parse_args()
-_ver = options.version
-
-exe_name = "EasyFlowQ_v{0}".format(_ver)
-bundle_name = "EasyFlowQ_Bundle_v{0}".format(_ver)
 
 if platform == 'darwin':
     exe_console = False
@@ -16,6 +8,11 @@ if platform == 'darwin':
 elif platform == 'win32':
     exe_console = True
     hidden_imports = ['xlsxwritter', 'pyside6-uic']
+
+
+_ver = EFQ.__version__
+exe_name = "EasyFlowQ_v{0}".format(_ver)
+bundle_name = "EasyFlowQ_Bundle_v{0}".format(_ver)
 
 block_cipher = None
 
