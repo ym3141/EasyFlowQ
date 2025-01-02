@@ -63,13 +63,13 @@ class polygonGate():
                     invLogicleT = _LogicleTransform(*logicleParams[idx]).inverted()
                 else:
                     invLogicleT = _LogicleTransform().inverted()
-                self.invLogicleTs[idx] = invLogicleT
-                verts4path[:, idx] = invLogicleT.transform_non_affine(verts4path[:, idx])
-                warnings.warn('Creating new gate: Logicle parameters are not provided for logicle scaled axis')
+                    warnings.warn('Creating new gate: Logicle parameters are not provided for logicle scaled axis. Using default parameters')
                 
+                self.invLogicleTs[idx] = invLogicleT
+                verts4path[:, idx] = invLogicleT.transform_non_affine(verts4path[:, idx])     
         self.prebuiltPath = mpl_path(verts4path)
 
-        # Cache for the data that is currently gating, for the lucahce to work
+        # Cache for the data that is currently gating, for the lru_cahce to work
         self._dataCurrentlyGating = None
 
     def isInsideGate(self, fcsData):
