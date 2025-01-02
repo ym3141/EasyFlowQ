@@ -1,0 +1,280 @@
+{
+    "applyComp": false,
+    "curComp": {
+        "autoFluo": null,
+        "keyList": [
+            "FSC-H",
+            "FSC-A",
+            "SSC-H",
+            "SSC-A",
+            "FL1-H",
+            "FL1-A",
+            "FL6-H",
+            "FL6-A",
+            "FL10-H",
+            "FL10-A",
+            "FL11-H",
+            "FL11-A",
+            "FSC-Width",
+            "Time"
+        ],
+        "spillMat": null,
+        "useAutoFluo": false
+    },
+    "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto"
+        ],
+        "curAxScales": [
+            "log",
+            "logicle"
+        ],
+        "curChnls": [
+            "FSC-A",
+            "FL10-A"
+        ],
+        "curDotSize": "Regular",
+        "curNormOption": "Unit Area",
+        "curOpacity": 80,
+        "curPlotType": "Dot plot",
+        "curSmooth": 0
+    },
+    "fileDir": "C:\\Users\\yiton\\Documents\\CodingProjects\\EasyFlowQ\\demo_sample\\SaveTestSimple_v1.6b.eflq",
+    "gateSaveList": [
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 2,
+            "chnls": [
+                "FSC-A",
+                "SSC-A"
+            ],
+            "displayName": "live",
+            "logicleParams": [
+                null,
+                null
+            ],
+            "type": "polygonGate",
+            "uuid": "rkjpzb8p",
+            "verts": [
+                [
+                    542267.5024896059,
+                    795067.8537883108
+                ],
+                [
+                    188678.70690378017,
+                    257235.16263159623
+                ],
+                [
+                    127817.63306582982,
+                    103596.58312944342
+                ],
+                [
+                    175855.8602361321,
+                    61980.07636895563
+                ],
+                [
+                    289072.75566486554,
+                    72901.656634798
+                ],
+                [
+                    579084.4296578238,
+                    306996.16754138406
+                ],
+                [
+                    718584.3618694217,
+                    712622.8035120199
+                ]
+            ]
+        },
+        {
+            "axScales": [
+                "log",
+                "log"
+            ],
+            "checkState": 2,
+            "chnls": [
+                "SSC-H",
+                "SSC-A"
+            ],
+            "displayName": "single",
+            "logicleParams": [
+                null,
+                [
+                    262144,
+                    4.5,
+                    0.5
+                ]
+            ],
+            "type": "polygonGate",
+            "uuid": "pbjfv1tc",
+            "verts": [
+                [
+                    52238.52325148455,
+                    76215.62566965436
+                ],
+                [
+                    198622.6098014232,
+                    410458.4462400332
+                ],
+                [
+                    383866.8967327591,
+                    763908.939755732
+                ],
+                [
+                    475320.6787533539,
+                    727350.5502895282
+                ],
+                [
+                    466931.1755347661,
+                    537535.5735674443
+                ],
+                [
+                    183871.91080800758,
+                    188822.4821362248
+                ],
+                [
+                    66632.58573941218,
+                    70810.439205788
+                ],
+                [
+                    52238.52325148455,
+                    62130.249777509576
+                ]
+            ]
+        },
+        {
+            "axScales": [
+                "log",
+                "logicle"
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FSC-A",
+                "FL10-A"
+            ],
+            "displayName": "logicleGate",
+            "type": "polygonGate",
+            "uuid": "5762r9eb",
+            "verts": [
+                [
+                    125840.89815374433,
+                    -375.52388791782096
+                ],
+                [
+                    141058.33569699904,
+                    462.54274846492416
+                ],
+                [
+                    209672.2374161787,
+                    360.45007501821215
+                ],
+                [
+                    265966.0687813655,
+                    -281.3125899855679
+                ],
+                [
+                    218496.1131641455,
+                    -671.9196684924817
+                ],
+                [
+                    153667.30157468008,
+                    -693.9130632103871
+                ]
+            ]
+        }
+    ],
+    "qsSaveList": [],
+    "save_ver": 1.6,
+    "smplSaveList": [
+        {
+            "Subpops": [],
+            "displayName": "01-Well-A1",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-A1.fcs",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-A1.fcs",
+            "fileDir_rel": "01-Well-A1.fcs",
+            "plotColor": [
+                0.10588235408067703,
+                0.6196078658103943,
+                0.46666666865348816,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "01-Well-B1",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-B1.fcs",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-B1.fcs",
+            "fileDir_rel": "01-Well-B1.fcs",
+            "plotColor": [
+                0.8509804010391235,
+                0.37254902720451355,
+                0.007843137718737125,
+                1.0
+            ],
+            "selected": true
+        },
+        {
+            "Subpops": [],
+            "displayName": "01-Well-C2",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-C2.fcs",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-C2.fcs",
+            "fileDir_rel": "01-Well-C2.fcs",
+            "plotColor": [
+                0.4588235318660736,
+                0.43921568989753723,
+                0.7019608020782471,
+                1.0
+            ],
+            "selected": true
+        },
+        {
+            "Subpops": [],
+            "displayName": "01-Well-C3",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-C3.fcs",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/01-Well-C3.fcs",
+            "fileDir_rel": "01-Well-C3.fcs",
+            "plotColor": [
+                0.9058823585510254,
+                0.16078431904315948,
+                0.5411764979362488,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "02-Well-C2",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/02-Well-C2.fcs",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/02-Well-C2.fcs",
+            "fileDir_rel": "02-Well-C2.fcs",
+            "plotColor": [
+                0.4000000059604645,
+                0.6509804129600525,
+                0.11764705926179886,
+                1.0
+            ],
+            "selected": false
+        }
+    ],
+    "stainDict": {
+        "FL1-A": "",
+        "FL1-H": "",
+        "FL10-A": "",
+        "FL10-H": "",
+        "FL11-A": "",
+        "FL11-H": "",
+        "FL6-A": "",
+        "FL6-H": "",
+        "FSC-A": "",
+        "FSC-H": "",
+        "FSC-Width": "",
+        "SSC-A": "",
+        "SSC-H": "",
+        "Time": ""
+    }
+}

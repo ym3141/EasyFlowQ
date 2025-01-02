@@ -6,9 +6,11 @@ from matplotlib.lines import Line2D
 from matplotlib.artist import Artist
 from matplotlib.path import Path as mpl_path
 
+from ..FlowCal.plot import _LogicleTransform
+
 from PySide6 import QtCore
 from functools import lru_cache
-
+import warnings
 
 def dist(x, y):
     """
@@ -37,7 +39,7 @@ def dist_point_to_segment(p, s0, s1):
     return dist(p, pb)
 
 class polygonGate():
-    def __init__(self, chnls, axScales, closedLine=None, verts=None) -> None:
+    def __init__(self, chnls, axScales, logicleParams=[None, None], closedLine=None, verts=None) -> None:
 
         if closedLine:
             self.verts = closedLine.get_xydata()[0:-1]
@@ -48,13 +50,26 @@ class polygonGate():
 
         self.chnls = chnls
         self.axScales = axScales
+        self.logicleParams = logicleParams
 
+        # Build the transforms for the gates, and transform the verts to the same scale in prebuiltPath 
+        self.invLogicleTs = [None, None]
         verts4path = self.verts.copy()
         for idx, scale in enumerate(self.axScales):
-            if scale in ('log', 'logicle'):
+            if scale == 'log':
                 verts4path[:, idx] = np.log10(verts4path[:, idx])
+            if scale == 'logicle': 
+                if logicleParams[idx] is not None:
+                    invLogicleT = _LogicleTransform(*logicleParams[idx]).inverted()
+                else:
+                    invLogicleT = _LogicleTransform().inverted()
+                self.invLogicleTs[idx] = invLogicleT
+                verts4path[:, idx] = invLogicleT.transform_non_affine(verts4path[:, idx])
+                warnings.warn('Creating new gate: Logicle parameters are not provided for logicle scaled axis')
                 
         self.prebuiltPath = mpl_path(verts4path)
+
+        # Cache for the data that is currently gating, for the lucahce to work
         self._dataCurrentlyGating = None
 
     def isInsideGate(self, fcsData):
@@ -67,10 +82,20 @@ class polygonGate():
     def _isInsideGate_cached(self, dataHash):
         points = self._dataCurrentlyGating[:, self.chnls].copy()
 
-        for idx, scale in enumerate(self.axScales):
-            if scale in ('log', 'logicle'):
-                with np.errstate(invalid='ignore', divide='ignore'):
+        # Transform the points to the same scale as the gate
+        with np.errstate(invalid='ignore', divide='ignore'):
+            for idx, scale in enumerate(self.axScales):
+                if scale == 'log':                
                     points[:, idx] = np.log10(points[:, idx])
+                if scale == 'logicle':
+                    if self.invLogicleTs[idx] is not None:
+                        points[:, idx] = self.invLogicleTs[idx].transform_non_affine(points[:, idx])
+                    elif self.logicleParams[idx] is not None:
+                        invLogicleT = _LogicleTransform(*self.logicleParams[idx]).inverted()
+                        self.invLogicleTs[idx] = invLogicleT
+                        points[:, idx] = invLogicleT.transform_non_affine(points[:, idx])
+                    else:
+                        raise ValueError('Gating: No prebuilt logical transform, nor for logicle parameters for this axis')
 
         insideFlags = self.prebuiltPath.contains_points(points)
 
@@ -198,7 +223,7 @@ class polygonGateEditor(baseGateEditor):
 
         if not gate:
             self.line.set_data([], [])
-            self.chnls, self.axScales = canvasParam
+            self.chnls, self.axScales, self.logicleParams = canvasParam
         else:
             self.chnls = gate.chnls
             self.axScales = gate.axScales
@@ -230,7 +255,7 @@ class polygonGateEditor(baseGateEditor):
             self.blitDraw()
 
             if len(xydata) > 3:
-                finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
+                finishedNewGate = polygonGate(self.chnls, self.axScales, self.logicleParams, closedLine=self.line)
                 self.gateConfirmed.emit(finishedNewGate)
             else:
                 self.gateConfirmed.emit(None)
@@ -278,7 +303,6 @@ class polygonGateEditor(baseGateEditor):
                 self.blitDraw()
                 pass
         
-
     def editGate_on_release(self, event):
         self.mouseholdAll = False
         self.mouseholdOnPoint = False
@@ -670,4 +694,15 @@ class splitEditor(QtCore.QObject):
         self.canvas.blit(self.ax.bbox)
 
 if __name__ == '__main__':
+    import json
+    testPolygonGate = polygonGate(['Fl1', 'Fl2'], ['logicle', 'logicle'], 
+                                  verts=[[0, 0], [0, 1], [1, 1], [1, 0]], 
+                                  logicleParams=[(262144, 4.5, 0.5,), (262144, 4.5, 0.5)])
+    gateSave = testPolygonGate.__dict__
+    for saveKey in ['prebuiltPath', '_dataCurrentlyGating', 'invLogicleTs']:
+        gateSave.pop(saveKey)
+    gateSave['verts'] = gateSave['verts'].tolist()
+    testPolygonGate.__dict__
+    jStr = json.dumps(gateSave, indent=4)
+    # print(jStr)
     pass
