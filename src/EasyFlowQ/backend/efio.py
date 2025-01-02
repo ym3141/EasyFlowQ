@@ -163,7 +163,10 @@ class sessionSave():
                     checkState = Qt.Unchecked
 
                 if jGate['type'] == 'polygonGate':
-                    newGateItem = mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], verts=jGate['verts']), 
+                    # Added in 1.6.5. If logicleParams is not in the save file, it's likely a previous save without full implementation of logicle gates
+                    # Set it to [None, None] and let polygonGate's __init__ to handle it
+                    logicleParams = jGate.get('logicleParams', [None, None])
+                    newGateItem = mainUiWindow.loadGate(polygonGate(jGate['chnls'], jGate['axScales'], logicleParams=logicleParams, verts=jGate['verts']),
                                                         gateName=jGate['displayName'], checkState=checkState)
                 elif jGate['type'] == 'lineGate':
                     newGateItem = mainUiWindow.loadGate(lineGate(jGate['chnl'], jGate['ends']), 

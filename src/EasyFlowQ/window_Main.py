@@ -303,7 +303,7 @@ class mainUi(QtWidgets.QMainWindow):
                 transform = revTransform._transform
                 logicalParams.append([transform._T, transform._M, transform._W])
             else:
-                logicalParams.append(False)
+                logicalParams.append(None)
 
         if plotType == 'Dot plot' or plotType == 'Density plot':
             self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm, ESC to cancel.', 0)

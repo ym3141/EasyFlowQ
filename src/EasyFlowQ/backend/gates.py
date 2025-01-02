@@ -10,7 +10,7 @@ from ..FlowCal.plot import _LogicleTransform
 
 from PySide6 import QtCore
 from functools import lru_cache
-
+import warnings
 
 def dist(x, y):
     """
@@ -61,10 +61,11 @@ class polygonGate():
             if scale == 'logicle': 
                 if logicleParams[idx] is not None:
                     invLogicleT = _LogicleTransform(*logicleParams[idx]).inverted()
-                    self.invLogicleTs[idx] = invLogicleT
-                    verts4path[:, idx] = invLogicleT.transform_non_affine(verts4path[:, idx])
                 else:
-                    raise ValueError('Creating new gate: Logicle parameters are not provided for logicle scaled axis')
+                    invLogicleT = _LogicleTransform().inverted()
+                self.invLogicleTs[idx] = invLogicleT
+                verts4path[:, idx] = invLogicleT.transform_non_affine(verts4path[:, idx])
+                warnings.warn('Creating new gate: Logicle parameters are not provided for logicle scaled axis')
                 
         self.prebuiltPath = mpl_path(verts4path)
 
