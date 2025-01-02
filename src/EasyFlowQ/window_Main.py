@@ -294,9 +294,20 @@ class mainUi(QtWidgets.QMainWindow):
     def handle_AddGate(self):
         plotType, axScales, *_ = self.figOpsPanel.curFigOptions
 
+        logicalParams = []
+        # check if the current plot has logical scales
+
+        revTransforms = [self.mpl_canvas.ax.xaxis.get_transform(), self.mpl_canvas.ax.yaxis.get_transform()]
+        for scale, revTransform in zip(axScales, revTransforms):
+            if scale == 'logicle':
+                transform = revTransform._transform
+                logicalParams.append([transform._T, transform._M, transform._W])
+            else:
+                logicalParams.append(False)
+
         if plotType == 'Dot plot' or plotType == 'Density plot':
             self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm, ESC to cancel.', 0)
-            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales))
+            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicalParams))
         
         elif plotType == 'Histogram':
             self.statusbar.showMessage('Left click to draw a line gate, Right click or ESC to cancel', 0)
