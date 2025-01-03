@@ -227,6 +227,7 @@ class polygonGateEditor(baseGateEditor):
         else:
             self.chnls = gate.chnls
             self.axScales = gate.axScales
+            self.logicleParams = gate.logicleParams
 
             xydata = np.vstack([gate.verts, gate.verts[0, :]])
             self.line.set_data(xydata.T)
@@ -354,7 +355,7 @@ class polygonGateEditor(baseGateEditor):
             # enter key recieved
             self.disconnectInputs()
 
-            finishedNewGate = polygonGate(self.chnls, self.axScales, closedLine=self.line)
+            finishedNewGate = polygonGate(self.chnls, self.axScales, logicleParams=self.logicleParams, closedLine=self.line)
             self.gateConfirmed.emit(finishedNewGate)
 
         elif event.key == 'escape':

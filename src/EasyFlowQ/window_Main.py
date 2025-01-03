@@ -641,7 +641,7 @@ class mainUi(QtWidgets.QMainWindow):
         newGates = curSelected.quad.generateGates()
         gateNameSuffixes = ['|LL', '|UL', '|LR', '|UR']
         for newGate, suffix in zip(newGates, gateNameSuffixes):
-            self.loadGate(newGate, gateName='{0}{1}'.format(curSelected[0].text(), suffix))
+            self.loadGate(newGate, gateName='{0}{1}'.format(curSelected.text(), suffix))
         
         self.tab_GateQuad.setCurrentWidget(self.tabGate)
         

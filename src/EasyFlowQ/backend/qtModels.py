@@ -110,6 +110,14 @@ class gateWidgetItem(QListWidgetItem):
 
         self._uuid = genShortUID()
 
+        if isinstance(self.gate, polygonGate):
+            toolTips = 'Polygon gate: \nx = {0} in {2} scale \ny = {1} in {3} scale'.format(*self.gate.chnls, *self.gate.axScales)
+        elif isinstance(self.gate, quadrantGate):
+            toolTips = 'Quadrant gate: \nx = {0} \ny = {1}'.format(*self.gate.chnls)
+        elif isinstance(self.gate, lineGate):
+            toolTips = 'Line gate: \nx = {0}'.format(self.gate.chnls[0])
+        self.setToolTip(toolTips)
+
     def data(self, role: int):
         if role == Qt.DisplayRole:
             if isinstance(self.gate, (polygonGate, quadrantGate)):
