@@ -25,8 +25,9 @@ def test_window_Main(qtbot):
 
     # Test of the plot widegt
     artistN = len(mWindow.mpl_canvas.ax.get_children())
-    # print(artistN)
     assert artistN == 12, 'Artists number on plot is {0}, instead'.format(artistN)
+
+    mWindow.close()
 
 
 def test_loading_eflq(qtbot):
@@ -48,3 +49,5 @@ def test_loading_eflq(qtbot):
     artistN = len(mWindow.mpl_canvas.ax.get_children())
     # print(artistN)
     assert artistN == 15, 'Artists number on plot is {0}, instead'.format(artistN)
+
+    mWindow.close()
