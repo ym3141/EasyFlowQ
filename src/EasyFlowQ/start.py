@@ -32,16 +32,11 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
     freeze_support()
 
-    # environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
-    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
-
     app = QtWidgets.QApplication(sys.argv)
+
+    # Force fusion style so that UI are consistant between different plateforms
     if 'Fusion' in QtWidgets.QStyleFactory.keys():
         app.setStyle('Fusion')
-    # appFont = app.font()
-    # appFont.setPointSize(int(appFont.pointSize() * 0.875))
-    # app.setFont(appFont)
 
     settings = localSettings()
     mainW = mainUi(settings, sessionSaveFile=sessionSaveFile, pos=pos)
@@ -60,6 +55,9 @@ def newWindowProc(sessionSaveFile, pos):
 
     newProcess = Process(target=newWindowFunc, args=(sessionSaveFile, pos))
     newProcess.start()
+
+def startGUI():
+    newWindowFunc()
 
 if __name__ == "__main__":
     newWindowFunc()

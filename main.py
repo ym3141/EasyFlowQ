@@ -1,4 +1,4 @@
-from src.EasyFlowQ import main_entry
+from src.EasyFlowQ import start
 
 if __name__ == "__main__":
-    main_entry.newWindowFunc()
+    start.startGUI()
