@@ -8,7 +8,7 @@ import os.path
 import secrets
 import string
 
-from ..FlowCal.io import FCSData
+from ..backend.dataIO import FCSData_ef as FCSData
 from ..FlowCal.transform import to_rfi
 
 from .plotWidgets import gateSmpls
@@ -52,6 +52,12 @@ class smplItem(QTreeWidgetItem):
         self.chnlNameDict = dict(zip(self.fcsSmpl.channels, self.fcsSmpl.channel_labels()))
 
         self.setData(0, 1, plotColor)
+
+    def addDrvedParam_recursively(self, drvedParam):
+        newData = self.data(0, 0x100).appendNewParam(drvedParam)
+        self.setData(0, 0x100, newData)
+        for idx in range(self.childCount()):
+            self.child(idx).addDrvedParam_recursively(drvedParam)
     
     @property
     def displayName(self):
