@@ -46,7 +46,7 @@
               </ul>
               <p class="caption"><span class="caption-text">Basics</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../Basic%20usage/">Startup, simple plot and gate</a>
+                  <li class="toctree-l1"><a class="" href="../Basic usage.md">None</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Statistics/">Viewing the statistics</a>
                   </li>
@@ -101,9 +101,9 @@
                 <h1 id="sample-panel-subpopulations-and-sample-selections">Sample panel : Subpopulations and Sample selections</h1>
 <p>This page talks about how the sample panel (the left section of the UI) functions.</p>
 <h2 id="subpopulation">Subpopulation</h2>
-<p>EasyFlowQ supports subpopulations (or subpos for short). To create subpops, select all the samples that you want to create subpops for, right click and select "Add subpops". You will be asked to provide names for all the subpops. Note "$" in the name will be replaced by their parent names, e.g., "$_GFP+" will become "sample1_GFP+".</p>
+<p>EasyFlowQ supports subpopulations (or subpops for short). To create subpops, select all the samples that you want to create subpops for, right click and select "Add subpops". You will be asked to provide names for all the subpops. Note "$" in the name will be replaced by their parent names, e.g., "$_GFP+" will become "sample1_GFP+".</p>
 <p><img alt="AddSubpops" src="../img/AddSubpops.jpg" /></p>
-<p>The create subpops will consist events that pass all the currently selected gate ("checked" but not including the "highlighted"). Note that all subpops are treated as an individual sample that consist a subset of it's parent from now on. This means even you "uncheck" the gates, the subpops will not "gain back" the events that was originally excluded during creation.</p>
+<p>The created subpops will consist events that pass all the currently checked gates (<strong>Important note</strong>: This does not necessarily include the "highlighted" gate). Note that all subpops are treated as an individual sample that consist of a subset of their parents' event from now on. This means even you "uncheck" the gates, the subpops will not "gain back" the events that was originally excluded during creation.</p>
 <p>You can create subpops based on subpops.</p>
 <h2 id="sample-selection">Sample selection</h2>
 <p>EasyFlowQ will plot for all the selected (highlighted) samples, including subpops, in the main plotting area (the central part). To facilitate this process, several buttons where located on top of this section:</p>
@@ -111,7 +111,7 @@
 <li><strong>Load data (.fcs)</strong>: Load fcs files. Same as the option in the drop down "data" menu. (Ctrl+L)</li>
 <li><strong>Color</strong>: Change color of all of selected samples.</li>
 <li><strong>Expand / Collapse All</strong>: These two buttons are related to subpops. If subpops exist, these two buttons will expand, or collapse all subpops.</li>
-<li><strong>All roots</strong>: This button let you select all of the root (parent) samples.</li>
+<li><strong>All roots</strong>: This button let you select all of the root (level zero) samples.</li>
 <li><strong>Select by keyword</strong>: This allows selecting samples by keywords. For example, entering "Treatment1" in the input box and hit ENTER, all the samples whose name contains the keyword of "Treatment1" will be selected for plotting. This is case sensitive.</li>
 </ol>
               
