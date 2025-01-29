@@ -2,6 +2,8 @@ from ..FlowCal.io import FCSData
 from sympy import Expr, lambdify, exp
 import numpy as np
 
+from PySide6.QtGui import QStandardItem
+
 class FCSData_ef(FCSData):
     """
     This is an subclass for FCSData from the FlowCal package.
@@ -85,10 +87,16 @@ class FCSData_ef(FCSData):
         return [param.name for param in self._drvedParams]
 
     
-class drvedParam:
+class drvedParam(QStandardItem):
     def __init__(self, name, formumla: Expr):
-        self.name = name
+        super().__init__(name)
         self.formula = formumla
         
         self.chnlKeys = [str(syb) for syb in list(formumla.free_symbols)]
         self.formulaFunc = lambdify(list(formumla.free_symbols), formumla)
+
+    @property
+    def name(self):
+        return self.text()
+
+    

@@ -29,7 +29,7 @@ def genShortUID(n=8):
 
 
 class smplItem(QTreeWidgetItem):
-    def __init__(self, parent, fcsFileDir, plotColor, fcsDataInput=None, displayName=None):
+    def __init__(self, parent, fcsFileDir, plotColor, fcsDataInput=None, displayName=None, addDrvedParams=[]):
         super(smplItem, self).__init__(parent)
 
         self.fileDir = fcsFileDir
@@ -45,6 +45,10 @@ class smplItem(QTreeWidgetItem):
                 self.setText(0, displayName)
             else:
                 self.setText(0, '(no name)')
+
+        for drvedParam in addDrvedParams:
+            if not drvedParam in fcsData.channels:
+                fcsData = fcsData.appendNewParam(drvedParam)
 
         self.setData(0, 0x100, fcsData)
 

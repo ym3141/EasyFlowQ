@@ -20,6 +20,7 @@ from PySide6 import QtCore, QtWidgets
 from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
 from .gates import quadrant, split, polygonGate, lineGate
+from .dataIO import FCSData_ef
 
 import warnings
 
@@ -178,7 +179,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 # Combine all the selected samples
                 if len(gatedSmpls) > 1:
                     allSmplCombined = np.vstack([smpl[:, [xChnl, yChnl]] for smpl in gatedSmpls])
-                    allSmplCombined = FCSData_from_array(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
+                    allSmplCombined = FCSData_ef.fromArray(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
                     plotLabel = 'All Selected Samples'
                 else:
                     allSmplCombined = gatedSmpls[0][:, [xChnl, yChnl]]
@@ -515,38 +516,6 @@ class plotCanvas(FigureCanvasQTAgg):
 class efNavigationToolbar(NavigationToolbar):
     # Customized NavigationToolbar2QT by removing the subplot and axis tool buttons
     toolitems = [t for t in NavigationToolbar.toolitems if t[0] in ('Home', 'Back', 'Forward', None, 'Pan', 'Zoom', 'Save')]
-
-
-# Quick and dirty way of creating a FCSData from an numpy array
-# Use cautionously, this clase does not check if the created FCSData files are self-consistant
-class FCSData_from_array(FCSData):
-
-    # This copys all attributes from the "templet"
-    def __new__(cls, template, np_array):
-        # Get data from fcs_file object
-        obj = np_array.view(cls)
-
-        # Add FCS file attributes
-        obj._infile = 'N/A'
-        obj._text = template._text
-        obj._analysis = template._analysis
-
-        # Add channel-independent attributes
-        obj._data_type = template._data_type
-        obj._time_step = template._time_step
-        obj._acquisition_start_time = template._acquisition_start_time
-        obj._acquisition_end_time = template._acquisition_end_time
-
-        # Add channel-dependent attributes
-        obj._channels = template._channels
-        obj._amplification_type = template._amplification_type
-        obj._detector_voltage = template._detector_voltage
-        obj._amplifier_gain = template._amplifier_gain
-        obj._channel_labels = template._channel_labels
-        obj._range = template._range
-        obj._resolution = template._resolution
-
-        return obj
 
 
 def gateSmpls(smpls, gateList, lastGateStatOnly=False):

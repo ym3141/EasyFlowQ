@@ -10,9 +10,8 @@ def fcs_data():
     return testData
 
 def test_appendNewParam(fcs_data):    
-    x, y = symbols('x y')    
-    formula = lambdify((x, y), x + y)
-    newdata = fcs_data.appendNewParam(drvedParam('sum', formula, ['FL1-A', 'FL6-A']))    
+    x, y = symbols(['FL1-A', 'FL6-A'])    
+    newdata = fcs_data.appendNewParam(drvedParam('sum', x + y))    
     assert 'sum' in newdata.drvedParamNames
     assert newdata.shape[1] == fcs_data.shape[1] + 1
     np.testing.assert_array_equal(newdata[:, 'sum'], fcs_data[:, 'FL1-A'] + fcs_data[:, 'FL6-A'])
