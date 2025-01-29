@@ -5,6 +5,7 @@ from copy import deepcopy
 
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
+from .dataIO import drvedParam
 from .. import __version__
 
 from PySide6.QtCore import QThread, Signal, Qt
@@ -16,6 +17,8 @@ from typing import List
 
 import pandas as pd
 import numpy as np
+import sympy
+from sympy.parsing.sympy_parser import parse_expr
 
 class writeRawFcs(QThread):
     prograssChanged = Signal(str, float)
@@ -78,7 +81,16 @@ class sessionSave():
 
         self.curComp = mainUiWindow.compWindow.to_json()
         self.applyComp = mainUiWindow.compApplyCheck.isChecked()
-        
+
+        self.derivedParams = []
+        for idx in range(mainUiWindow.drvedParamModel.rowCount()):
+            drvedParam = mainUiWindow.drvedParamModel.item(idx)
+            drvedParamDict = {
+                'name': drvedParam.text(),
+                'formula': sympy.srepr(drvedParam.formula)
+            }
+            self.derivedParams.append(drvedParamDict)
+
     def saveJson(self):
         with open(self.fileDir, 'w+') as f:
             json.dump(self.__dict__, f, sort_keys=True, indent=4)
@@ -121,6 +133,19 @@ class sessionSave():
         # load the FCS files
         loadingBarDiag.setValue(1)
         loadingBarDiag.setLabelText('Loading fcs files...')
+
+        jDrvedParams = jDict.get('derivedParams', [])
+        if len(jDrvedParams) > 0:
+            qBoxMessage = 'The formula (function) for the derived parameters will be executed as code directly without extra scrutiny. ' + \
+                          'We do not recommend loading them unless you trust the source of this save file. \n' + \
+                          'Do you want to load them?'
+            loadParamResponse = QMessageBox.question(loadingBarDiag, 'Derived parameters in save file', 
+                                                     qBoxMessage, QMessageBox.Yes | QMessageBox.No)
+            
+            if loadParamResponse == QMessageBox.Yes:
+                for jDrvedParam in jDrvedParams:
+                    newDrvedParam = drvedParam(jDrvedParam['name'], parse_expr(jDrvedParam['formula']))
+                    mainUiWindow.drvedParamModel.appendRow(newDrvedParam)
 
         smpl_subpops = []
         for jSmpl in jDict.get('smplSaveList', []):

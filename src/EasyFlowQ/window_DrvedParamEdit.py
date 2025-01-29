@@ -54,6 +54,10 @@ class drvedParamEditWindow(QtWidgets.QWidget):
         self._outputAppendRichText('', regQFmt)
         self._outputAppendRichText(f'Parameter formula: <b>{selectedParam.formula}<\\b>', regQFmt)
 
+    def showEvent(self, event):
+        if self.paramListView.model().rowCount() > 0:
+            self.paramListView.setCurrentIndex(self.paramListView.model().index(0, 0))
+        return super().showEvent(event)
 
     def _outputAppendRichText(self, text, charFmt):
         self.paramDetailEdit.setCurrentCharFormat(charFmt)
