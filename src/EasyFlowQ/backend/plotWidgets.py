@@ -411,15 +411,29 @@ class plotCanvas(FigureCanvasQTAgg):
 
         # check if comp channels matches smpl channel; if not create a new autoF and compMat based on the required
         for smpl in smpls:
-            if compValues[0] == list(smpl.channels):
+            # get the channels that are not derived parameters (the derived parameters are always at the end)
+            chnls_no_drvd = smpl.channels_no_drved
+
+            # test if the compValue and sample has the same channels and order
+            if compValues[0:len(chnls_no_drvd)] == list(chnls_no_drvd):
                 compMat = np.linalg.inv(compValues[2] / 100)
                 autoFVector = np.array(compValues[1]).T
-
+            
+            # if not, create a new autoF and compMat based on sample's order
             else:
-                tempAutoF = compValues[1].loc[list(smpl.channels)]
-                tempCompM = compValues[2][list(smpl.channels)].loc[list(smpl.channels)]
+                tempAutoF = compValues[1].loc[list(chnls_no_drvd)]
+                tempCompM = compValues[2][list(chnls_no_drvd)].loc[list(chnls_no_drvd)]
                 compMat = np.linalg.inv(tempCompM / 100)
                 autoFVector = np.array(tempAutoF).T
+
+            # expand the autoFVector and compMat if needed for are derived parameters
+            if len(smpl.drvedParamNames) > 0:
+                autoFVectorFiller = np.zeros((1, len(smpl.channels)))
+                autoFVectorFiller[:, :autoFVector.shape[1]] = autoFVector
+                autoFVector = autoFVectorFiller
+                compMatFiller = np.diag(np.ones(len(smpl.channels)))
+                compMatFiller[:compMat.shape[0], :compMat.shape[1]] = compMat
+                compMat = compMatFiller
 
             compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
             compedSmpls.append(compedSmpl)

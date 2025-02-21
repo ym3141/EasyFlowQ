@@ -85,6 +85,12 @@ class FCSData_ef(FCSData):
     @property
     def drvedParamNames(self):
         return [param.name for param in self._drvedParams]
+    
+    @property
+    def channels_no_drved(self):
+        if len(self._drvedParams) == 0:
+            return self._channels
+        return self._channels[:-len(self._drvedParams)]
 
     
 class drvedParam(QStandardItem):

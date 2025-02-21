@@ -47,7 +47,12 @@ class compWindow(QtWidgets.QWidget):
 
     # Update according to the new channel list. 
     def updateChnls(self, newChnlListModel:chnlModel):
-        self.chnlListModel = newChnlListModel
+
+        # update the channel list model, but remove the derived parameter from the input
+        self.chnlListModel = chnlModel()
+        for key in newChnlListModel.keyList_no_drvedParam:
+            self.chnlListModel.addChnl(key, newChnlListModel.chnlNameDict[key])
+        
         chnlList = self.chnlListModel.keyList
 
         if chnlList == list(self.spillMatModel.chnlList):

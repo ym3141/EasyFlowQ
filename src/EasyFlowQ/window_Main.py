@@ -484,7 +484,7 @@ class mainUi(QtWidgets.QMainWindow):
                 item.addDrvedParam_recursively(newDrvedParam)
                 self.progBar.setValue(idx + 1)
             
-            self.chnlListModel.addChnl(newParamName, 'Derived parameter')            
+            self.chnlListModel.addChnl(newParamName, 'Derived Parameter')            
 
             self.statusbar.clearMessage()
             self.progBar.reset()

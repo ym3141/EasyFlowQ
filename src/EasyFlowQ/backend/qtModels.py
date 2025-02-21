@@ -238,6 +238,10 @@ class chnlModel(QStandardItemModel):
     @property
     def keyList(self):
         return [self.item(idx).data() for idx in range(self.rowCount())]
+    
+    @property
+    def keyList_no_drvedParam(self):
+        return [key for key in self.keyList if not self.chnlNameDict[key].startswith('Derived Parameter')]
 
     @property
     def fullTextList(self):
