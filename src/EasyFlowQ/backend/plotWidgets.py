@@ -216,18 +216,26 @@ class plotCanvas(FigureCanvasQTAgg):
                         transformed_kdeSmpl.append(kdeSmpl[:, chnl])
                         transformed_sampledSmpl.append(sampledSmpl[:, chnl])
 
-                transformed_kdeSmpl = np.vstack(transformed_kdeSmpl)
-                transformed_sampledSmpl = np.vstack(transformed_sampledSmpl)
-                # Remove NaN and INFs in columns
-                transformed_kdeSmpl = transformed_kdeSmpl[:, np.all(np.isfinite(transformed_kdeSmpl), axis=0)]
-                smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=0)
-                
-                # Construct the kde
-                G_kde = gaussian_kde(transformed_kdeSmpl)
+                transformed_kdeSmpl = np.vstack(transformed_kdeSmpl).T
+                transformed_sampledSmpl = np.vstack(transformed_sampledSmpl).T
+
+                # Remove NaN and INFs in rows
+                transformed_kdeSmpl = transformed_kdeSmpl[np.all(np.isfinite(transformed_kdeSmpl), axis=1), :]
+                smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=1)
+
+                # Normalize between dimentions for kde
+                minMax = np.array([np.min(transformed_kdeSmpl, axis=0), np.max(transformed_kdeSmpl, axis=0)])
+                transformed_kdeSmpl = (transformed_kdeSmpl - minMax[0]) / (minMax[1] - minMax[0])
+                transformed_sampledSmpl = (transformed_sampledSmpl - minMax[0]) / (minMax[1] - minMax[0])
+
+                # Construct the kdea
+                G_kde = gaussian_kde(transformed_kdeSmpl.T)
+                G_kde.set_bandwidth(G_kde.factor / (kdeSize**(-1./6)) * (len(transformed_sampledSmpl)**(-1./6)))
+                cmap = G_kde(transformed_sampledSmpl[smplMask, :].T)
 
                 # plotting
                 scatter2d(sampledSmpl[smplMask, :], self.ax, channels=[xChnl, yChnl], 
-                          c=G_kde(transformed_sampledSmpl[:, smplMask]), xscale=axScales[0], yscale=axScales[1],
+                          c=cmap, xscale=axScales[0], yscale=axScales[1],
                           cmap = 'plasma', label=plotLabel, s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
 
             if isinstance(quad_split, quadrant):
