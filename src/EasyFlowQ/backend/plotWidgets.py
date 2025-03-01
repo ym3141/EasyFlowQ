@@ -297,7 +297,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
-        elif plotType == 'Histogram':
+        elif plotType == 'Histogram' or plotType == 'Stacked histo':
         # plot histograme
             self.cachedPlotStats.chnls = [xChnl]
 
@@ -306,25 +306,40 @@ class plotCanvas(FigureCanvasQTAgg):
             # record the maximum height of the histogram, this is for drawing the gate
             ymax_histo = 0
 
+            # recorded all the hights, edges and lines
+            ns, edges, lines = [], [], []
+
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
                 if gatedSmpl.shape[0] < 1:
                     continue
 
                 n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
                                             color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)
-                
-                ymax_histo = max([max(n), ymax_histo])
 
-                # record the xlims
-                nonZeros = np.nonzero(n)
-                if nonZeros[0].size == 0:
-                    continue
-                
-                minIdx = max(np.min(nonZeros) - 1, 0)
-                maxIdx = min(np.max(nonZeros) + 1, len(n) - 1)
+                ns.append(n)
+                edges.append(edges)
+                lines.append(line[0])
 
-                xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
-                xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
+            if plotType == 'Histogram':
+                ymax_histo = max([np.max(ns), ymax_histo]) * 1.1
+            else:  # It's stacked histogram
+                yShift = np.max(ns) * 0.5
+                ymax_histo = yShift * (len(ns) + 1)
+
+                for idx, line in enumerate(lines):
+                    xdata = line.get_xdata()
+                    ydata = line.get_ydata()
+                    line.set_data(xdata, ydata + yShift * idx)
+
+                    self.ax.fill_between(xdata, ydata + yShift * idx, yShift * idx, color=line.get_color(), alpha=0.3)
+
+            # calculate the xlims based on the data
+            nonZerosList = [np.nonzero(n) for n in ns]
+            minIdx = max(np.hstack(nonZerosList).min() - 1, 0)
+            maxIdx = min(np.hstack(nonZerosList).max() + 1, len(ns[0]) - 1)
+
+            xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
+            xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
 
             # likely no data drawn
             if xlim_auto == [np.inf, -np.inf]:
@@ -389,7 +404,8 @@ class plotCanvas(FigureCanvasQTAgg):
 
             # replace the xlims if it is auto, with calculated xlims
             xlim = xlim_auto if axRanges[0] == 'auto' else axRanges[0]
-            self.updateAxLims(xlim, axRanges[1])
+            ylim = [0, ymax_histo] if axRanges[1] == 'auto' else axRanges[1]
+            self.updateAxLims(xlim, ylim)
 
 
         # draw legends
@@ -401,6 +417,10 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0, 1, 0.9))
             else:
                 self.ax.legend(markerscale=5)
+
+        # hide the y axis ticks if it is a stacked histogram
+        if plotType == 'Stacked histo':
+            self.ax.set_yticks([], [])            
             
         self.draw()
         self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
