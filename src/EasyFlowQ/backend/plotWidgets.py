@@ -125,6 +125,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
         qFracs = []
         sFracs = []
+        lines = []
 
         # only draw samples that has the specified channels
         xChnl, yChnl = chnls
@@ -324,7 +325,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 ymax_histo = max([np.max(ns), ymax_histo]) * 1.1
             else:  # It's stacked histogram
                 yShift = np.max(ns) * 0.5
-                ymax_histo = yShift * (len(ns) + 1)
+                ymax_histo = yShift * (len(ns) + 1.1)
 
                 for idx, line in enumerate(lines):
                     xdata = line.get_xdata()
@@ -410,7 +411,14 @@ class plotCanvas(FigureCanvasQTAgg):
 
         # draw legends
         if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
-            if self.drawnQuadrant:
+            if plotType == 'Stacked histo' and len(lines) > 0:
+                for idx, line in enumerate(lines):
+                    yshift_text = idx / (len(lines) + 1)
+                    self.ax.annotate(
+                        line.get_label(), xy=(1, yshift_text), bbox=dict(facecolor='w', alpha=0.4, edgecolor='w'),
+                        horizontalalignment='right', verticalalignment='bottom', xycoords='axes fraction'
+                    )
+            elif self.drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
             elif self.drawnSplit:
