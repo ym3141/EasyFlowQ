@@ -134,6 +134,7 @@ class sessionSave():
         loadingBarDiag.setValue(1)
         loadingBarDiag.setLabelText('Loading fcs files...')
 
+        # new feature in v1.7
         jDrvedParams = jDict.get('derivedParams', [])
         if len(jDrvedParams) > 0:
             qBoxMessage = 'The formula (function) for the derived parameters will be executed as code directly without extra scrutiny. ' + \
