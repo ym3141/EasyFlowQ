@@ -1,6 +1,7 @@
 import sys
 import matplotlib
 import json
+import sympy.utilities.lambdify
 
 from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from os import path, getcwd, environ
@@ -12,6 +13,7 @@ from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, po
 from .backend.plotWidgets import plotCanvas
 from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from .backend.utils import colorGenerator
+from .backend.dataIO import drvedParam
 
 from .window_RenameCF import renameWindow_CF
 from .window_RenameMap import renameWindow_Map
@@ -21,6 +23,8 @@ from .window_About import aboutWindow
 from .window_Comp import compWindow
 from .wizard_Comp import compWizard
 from .window_EditStain import editStainWindow
+from .dialog_DrvedParam import drvedParamDialog
+from .window_DrvedParamEdit import drvedParamEditWindow
 
 from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
 from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
@@ -51,7 +55,13 @@ class mainUi(QtWidgets.QMainWindow):
 
         self.showLegendCheck.setCheckState(QtCore.Qt.PartiallyChecked)
 
-        # initiate other windows
+        # initiate ui models and other windows
+        self.gateListWidgetModel = self.gateListWidget.model()
+
+        self.chnlListModel = chnlModel()
+        self.xComboBox.setModel(self.chnlListModel)
+        self.yComboBox.setModel(self.chnlListModel)
+
         self.renameWindow = None
         self.settingsWindow = None
         self.compWindow = compWindow()
@@ -59,6 +69,10 @@ class mainUi(QtWidgets.QMainWindow):
                                      lambda : self.curGateItems, 
                                      lambda : self.curQuadSplitItem)
         self.aboutWindow = aboutWindow()
+        
+        self.drvedParamModel = QtGui.QStandardItemModel()
+        self.drvedParamEditWindow = drvedParamEditWindow(self.drvedParamModel)
+        self.drvedParamEditWindow.newParamRequested.connect(self.handle_DrvedParam)
 
         # add the matplotlib ui
         matplotlib.rcParams['savefig.directory'] = self.get_dir4Save()
@@ -112,12 +126,6 @@ class mainUi(QtWidgets.QMainWindow):
             else:
                 self.settingDict['recent sessions'].remove(filePath)
 
-        # init ui models
-        self.gateListWidgetModel = self.gateListWidget.model()
-
-        self.chnlListModel = chnlModel()
-        self.xComboBox.setModel(self.chnlListModel)
-        self.yComboBox.setModel(self.chnlListModel)
 
         # add actions to context memu
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
@@ -137,6 +145,8 @@ class mainUi(QtWidgets.QMainWindow):
         self.actionLoad_Data_Files.triggered.connect(self.handle_LoadData)
         self.actionFor_Cytoflex.triggered.connect(self.handle_RenameForCF)
         self.actionSimple_mapping.triggered.connect(self.handle_RenameMap)
+        self.actionDerivedParamNew.triggered.connect(self.handle_DrvedParam)
+        self.actionDerivedParamView_Delete.triggered.connect(lambda : self.drvedParamEditWindow.show())
         self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
         self.actionas_csv.triggered.connect(self.handle_ExportDataInGates)
 
@@ -455,6 +465,34 @@ class mainUi(QtWidgets.QMainWindow):
 
             self.handle_One()
 
+    def handle_DrvedParam(self):
+        self.drvedParamDialog = drvedParamDialog(self.chnlListModel)
+        isParamAccepted = self.drvedParamDialog.exec()
+        if isParamAccepted:
+            newParamFormula = self.drvedParamDialog.parsedFormula
+            newParamName = self.drvedParamDialog.newParamName
+
+            newDrvedParam = drvedParam(newParamName, newParamFormula)
+            self.drvedParamModel.appendRow(newDrvedParam)
+            
+            self.statusbar.showMessage('Adding derived parameter to samples...')
+            self.progBar.reset()
+            self.progBar.setMaximum(self.smplTreeWidget.topLevelItemCount())
+            self.setDisabled(True)
+            for idx in range(self.smplTreeWidget.topLevelItemCount()):
+                item = self.smplTreeWidget.topLevelItem(idx)
+                item.addDrvedParam_recursively(newDrvedParam)
+                self.progBar.setValue(idx + 1)
+            
+            self.chnlListModel.addChnl(newParamName, 'Derived Parameter')            
+
+            self.statusbar.clearMessage()
+            self.progBar.reset()
+            self.setEnabled(True)
+        else:
+            return
+
+
     # This function export fcs data that are in gates to csv/npy files, 
     def handle_ExportDataInGates(self):
 
@@ -724,11 +762,12 @@ class mainUi(QtWidgets.QMainWindow):
         self.smplBox.setEnabled(not disable)
         self.rightFrame.setEnabled(not disable)
 
-    # load fcs file, as well as change check if the current channel is compatible and change accordingly
+    # load fcs file, as well as check if the current channel is compatible and change accordingly
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
         self.set_saveFlag(True)
-
-        newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color))
+        
+        curDrvedParams = [self.drvedParamModel.item(idx) for idx in range(self.drvedParamModel.rowCount())]
+        newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color), addDrvedParams=curDrvedParams)
 
         self.smplTreeWidget.addTopLevelItem(newRootSmplItem)
         if displayName:

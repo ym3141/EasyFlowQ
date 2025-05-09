@@ -8,7 +8,7 @@ import os.path
 import secrets
 import string
 
-from ..FlowCal.io import FCSData
+from ..backend.dataIO import FCSData_ef as FCSData
 from ..FlowCal.transform import to_rfi
 
 from .plotWidgets import gateSmpls
@@ -29,7 +29,7 @@ def genShortUID(n=8):
 
 
 class smplItem(QTreeWidgetItem):
-    def __init__(self, parent, fcsFileDir, plotColor, fcsDataInput=None, displayName=None):
+    def __init__(self, parent, fcsFileDir, plotColor, fcsDataInput=None, displayName=None, addDrvedParams=[]):
         super(smplItem, self).__init__(parent)
 
         self.fileDir = fcsFileDir
@@ -46,12 +46,22 @@ class smplItem(QTreeWidgetItem):
             else:
                 self.setText(0, '(no name)')
 
+        for drvedParam in addDrvedParams:
+            if not drvedParam in fcsData.channels:
+                fcsData = fcsData.appendNewParam(drvedParam)
+
         self.setData(0, 0x100, fcsData)
 
         self.setFlags(self.flags() | Qt.ItemIsEditable)
         self.chnlNameDict = dict(zip(self.fcsSmpl.channels, self.fcsSmpl.channel_labels()))
 
         self.setData(0, 1, plotColor)
+
+    def addDrvedParam_recursively(self, drvedParam):
+        newData = self.data(0, 0x100).appendNewParam(drvedParam)
+        self.setData(0, 0x100, newData)
+        for idx in range(self.childCount()):
+            self.child(idx).addDrvedParam_recursively(drvedParam)
     
     @property
     def displayName(self):
@@ -228,6 +238,10 @@ class chnlModel(QStandardItemModel):
     @property
     def keyList(self):
         return [self.item(idx).data() for idx in range(self.rowCount())]
+    
+    @property
+    def keyList_no_drvedParam(self):
+        return [key for key in self.keyList if not self.chnlNameDict[key].startswith('Derived Parameter')]
 
     @property
     def fullTextList(self):

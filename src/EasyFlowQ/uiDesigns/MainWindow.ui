@@ -555,13 +555,19 @@
      </property>
      <addaction name="actionas_csv"/>
     </widget>
+    <widget class="QMenu" name="menuAdd_derived_parameter">
+     <property name="title">
+      <string>Derived parameter</string>
+     </property>
+     <addaction name="actionDerivedParamNew"/>
+     <addaction name="actionDerivedParamView_Delete"/>
+    </widget>
     <addaction name="actionLoad_Data_Files"/>
     <addaction name="separator"/>
     <addaction name="menuRename_with_file"/>
     <addaction name="actionEdit_stain_labels"/>
     <addaction name="separator"/>
-    <addaction name="actionAdd_derived_parameter"/>
-    <addaction name="separator"/>
+    <addaction name="menuAdd_derived_parameter"/>
     <addaction name="menuExport_raw_current_gate"/>
    </widget>
    <widget class="QMenu" name="menuGraph">
@@ -735,9 +741,14 @@
     <string>Other...</string>
    </property>
   </action>
-  <action name="actionAdd_derived_parameter">
+  <action name="actionDerivedParamNew">
    <property name="text">
-    <string>Add derived parameter</string>
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionDerivedParamView_Delete">
+   <property name="text">
+    <string>View or Delete</string>
    </property>
   </action>
  </widget>

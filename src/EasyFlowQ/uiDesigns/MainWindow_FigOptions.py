@@ -28,6 +28,8 @@ class mainUI_figOps(QtWidgets.QWidget):
 
         self.histRadio.toggled.connect(self.signal_HistTypeSelected)
         self.histRadio.toggled.connect(self.handle_histRadioToggled)
+        self.stackhistRadio.toggled.connect(self.signal_HistTypeSelected)
+        self.stackhistRadio.toggled.connect(self.handle_histRadioToggled)
 
         self.dotSizeComboBox.setCurrentIndex(2)
 
@@ -70,8 +72,10 @@ class mainUI_figOps(QtWidgets.QWidget):
     def handle_histRadioToggled(self, toggleState):
         if toggleState:
             self.stackWidget.setCurrentWidget(self.pageHist)
+            self.noExtremePB.setEnabled(False)
         else:
             self.stackWidget.setCurrentWidget(self.pageDots)
+            self.noExtremePB.setEnabled(True)
 
     
     def _organizeButtonGroups(self):
@@ -82,6 +86,7 @@ class mainUI_figOps(QtWidgets.QWidget):
         plotOptionBG.addButton(self.dotRadio, 0)
         plotOptionBG.addButton(self.histRadio, 1)
         plotOptionBG.addButton(self.densityRadio, 2)
+        plotOptionBG.addButton(self.stackhistRadio, 3)
         # Make sure y auto is always unchecked when switch figure type
         plotOptionBG.buttonToggled.connect(lambda: self.ylimAutoCheck.setChecked(2))
 

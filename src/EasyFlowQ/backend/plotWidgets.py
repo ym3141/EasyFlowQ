@@ -20,6 +20,7 @@ from PySide6 import QtCore, QtWidgets
 from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
 from .gates import quadrant, split, polygonGate, lineGate
+from .dataIO import FCSData_ef
 
 import warnings
 
@@ -124,6 +125,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
         qFracs = []
         sFracs = []
+        lines = []
 
         # only draw samples that has the specified channels
         xChnl, yChnl = chnls
@@ -178,7 +180,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 # Combine all the selected samples
                 if len(gatedSmpls) > 1:
                     allSmplCombined = np.vstack([smpl[:, [xChnl, yChnl]] for smpl in gatedSmpls])
-                    allSmplCombined = FCSData_from_array(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
+                    allSmplCombined = FCSData_ef.fromArray(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
                     plotLabel = 'All Selected Samples'
                 else:
                     allSmplCombined = gatedSmpls[0][:, [xChnl, yChnl]]
@@ -215,18 +217,26 @@ class plotCanvas(FigureCanvasQTAgg):
                         transformed_kdeSmpl.append(kdeSmpl[:, chnl])
                         transformed_sampledSmpl.append(sampledSmpl[:, chnl])
 
-                transformed_kdeSmpl = np.vstack(transformed_kdeSmpl)
-                transformed_sampledSmpl = np.vstack(transformed_sampledSmpl)
-                # Remove NaN and INFs in columns
-                transformed_kdeSmpl = transformed_kdeSmpl[:, np.all(np.isfinite(transformed_kdeSmpl), axis=0)]
-                smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=0)
-                
-                # Construct the kde
-                G_kde = gaussian_kde(transformed_kdeSmpl)
+                transformed_kdeSmpl = np.vstack(transformed_kdeSmpl).T
+                transformed_sampledSmpl = np.vstack(transformed_sampledSmpl).T
+
+                # Remove NaN and INFs in rows
+                transformed_kdeSmpl = transformed_kdeSmpl[np.all(np.isfinite(transformed_kdeSmpl), axis=1), :]
+                smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=1)
+
+                # Normalize between dimentions for kde
+                minMax = np.array([np.min(transformed_kdeSmpl, axis=0), np.max(transformed_kdeSmpl, axis=0)])
+                transformed_kdeSmpl = (transformed_kdeSmpl - minMax[0]) / (minMax[1] - minMax[0])
+                transformed_sampledSmpl = (transformed_sampledSmpl - minMax[0]) / (minMax[1] - minMax[0])
+
+                # Construct the kdea
+                G_kde = gaussian_kde(transformed_kdeSmpl.T)
+                G_kde.set_bandwidth(G_kde.factor / (kdeSize**(-1./6)) * (len(transformed_sampledSmpl)**(-1./6)))
+                cmap = G_kde(transformed_sampledSmpl[smplMask, :].T)
 
                 # plotting
                 scatter2d(sampledSmpl[smplMask, :], self.ax, channels=[xChnl, yChnl], 
-                          c=G_kde(transformed_sampledSmpl[:, smplMask]), xscale=axScales[0], yscale=axScales[1],
+                          c=cmap, xscale=axScales[0], yscale=axScales[1],
                           cmap = 'plasma', label=plotLabel, s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
 
             if isinstance(quad_split, quadrant):
@@ -288,7 +298,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
-        elif plotType == 'Histogram':
+        elif plotType == 'Histogram' or plotType == 'Stacked histo':
         # plot histograme
             self.cachedPlotStats.chnls = [xChnl]
 
@@ -297,25 +307,40 @@ class plotCanvas(FigureCanvasQTAgg):
             # record the maximum height of the histogram, this is for drawing the gate
             ymax_histo = 0
 
+            # recorded all the hights, edges and lines
+            ns, edges, lines = [], [], []
+
             for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
                 if gatedSmpl.shape[0] < 1:
                     continue
 
                 n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
                                             color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)
-                
-                ymax_histo = max([max(n), ymax_histo])
 
-                # record the xlims
-                nonZeros = np.nonzero(n)
-                if nonZeros[0].size == 0:
-                    continue
-                
-                minIdx = max(np.min(nonZeros) - 1, 0)
-                maxIdx = min(np.max(nonZeros) + 1, len(n) - 1)
+                ns.append(n)
+                edges.append(edges)
+                lines.append(line[0])
 
-                xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
-                xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
+            if plotType == 'Histogram':
+                ymax_histo = max([np.max(ns), ymax_histo]) * 1.1
+            else:  # It's stacked histogram
+                yShift = np.max(ns) * 0.5
+                ymax_histo = yShift * (len(ns) + 1.1)
+
+                for idx, line in enumerate(lines):
+                    xdata = line.get_xdata()
+                    ydata = line.get_ydata()
+                    line.set_data(xdata, ydata + yShift * idx)
+
+                    self.ax.fill_between(xdata, ydata + yShift * idx, yShift * idx, color=line.get_color(), alpha=0.3)
+
+            # calculate the xlims based on the data
+            nonZerosList = [np.nonzero(n) for n in ns]
+            minIdx = max(np.hstack(nonZerosList).min() - 1, 0)
+            maxIdx = min(np.hstack(nonZerosList).max() + 1, len(ns[0]) - 1)
+
+            xlim_auto[0] = np.min([edge[minIdx], xlim_auto[0]])
+            xlim_auto[1] = np.max([edge[maxIdx], xlim_auto[1]])
 
             # likely no data drawn
             if xlim_auto == [np.inf, -np.inf]:
@@ -380,18 +405,30 @@ class plotCanvas(FigureCanvasQTAgg):
 
             # replace the xlims if it is auto, with calculated xlims
             xlim = xlim_auto if axRanges[0] == 'auto' else axRanges[0]
-            self.updateAxLims(xlim, axRanges[1])
+            ylim = [0, ymax_histo] if axRanges[1] == 'auto' else axRanges[1]
+            self.updateAxLims(xlim, ylim)
 
 
         # draw legends
         if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
-            if self.drawnQuadrant:
+            if plotType == 'Stacked histo' and len(lines) > 0:
+                for idx, line in enumerate(lines):
+                    yshift_text = idx / (len(lines) + 1)
+                    self.ax.annotate(
+                        line.get_label(), xy=(1, yshift_text), bbox=dict(facecolor='w', alpha=0.4, edgecolor='w'),
+                        horizontalalignment='right', verticalalignment='bottom', xycoords='axes fraction'
+                    )
+            elif self.drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
             elif self.drawnSplit:
                 self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0, 1, 0.9))
             else:
                 self.ax.legend(markerscale=5)
+
+        # hide the y axis ticks if it is a stacked histogram
+        if plotType == 'Stacked histo':
+            self.ax.set_yticks([], [])            
             
         self.draw()
         self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
@@ -410,15 +447,29 @@ class plotCanvas(FigureCanvasQTAgg):
 
         # check if comp channels matches smpl channel; if not create a new autoF and compMat based on the required
         for smpl in smpls:
-            if compValues[0] == list(smpl.channels):
+            # get the channels that are not derived parameters (the derived parameters are always at the end)
+            chnls_no_drvd = smpl.channels_no_drved
+
+            # test if the compValue and sample has the same channels and order
+            if compValues[0:len(chnls_no_drvd)] == list(chnls_no_drvd):
                 compMat = np.linalg.inv(compValues[2] / 100)
                 autoFVector = np.array(compValues[1]).T
-
+            
+            # if not, create a new autoF and compMat based on sample's order
             else:
-                tempAutoF = compValues[1].loc[list(smpl.channels)]
-                tempCompM = compValues[2][list(smpl.channels)].loc[list(smpl.channels)]
+                tempAutoF = compValues[1].loc[list(chnls_no_drvd)]
+                tempCompM = compValues[2][list(chnls_no_drvd)].loc[list(chnls_no_drvd)]
                 compMat = np.linalg.inv(tempCompM / 100)
                 autoFVector = np.array(tempAutoF).T
+
+            # expand the autoFVector and compMat if needed for are derived parameters
+            if len(smpl.drvedParamNames) > 0:
+                autoFVectorFiller = np.zeros((1, len(smpl.channels)))
+                autoFVectorFiller[:, :autoFVector.shape[1]] = autoFVector
+                autoFVector = autoFVectorFiller
+                compMatFiller = np.diag(np.ones(len(smpl.channels)))
+                compMatFiller[:compMat.shape[0], :compMat.shape[1]] = compMat
+                compMat = compMatFiller
 
             compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
             compedSmpls.append(compedSmpl)
@@ -515,38 +566,6 @@ class plotCanvas(FigureCanvasQTAgg):
 class efNavigationToolbar(NavigationToolbar):
     # Customized NavigationToolbar2QT by removing the subplot and axis tool buttons
     toolitems = [t for t in NavigationToolbar.toolitems if t[0] in ('Home', 'Back', 'Forward', None, 'Pan', 'Zoom', 'Save')]
-
-
-# Quick and dirty way of creating a FCSData from an numpy array
-# Use cautionously, this clase does not check if the created FCSData files are self-consistant
-class FCSData_from_array(FCSData):
-
-    # This copys all attributes from the "templet"
-    def __new__(cls, template, np_array):
-        # Get data from fcs_file object
-        obj = np_array.view(cls)
-
-        # Add FCS file attributes
-        obj._infile = 'N/A'
-        obj._text = template._text
-        obj._analysis = template._analysis
-
-        # Add channel-independent attributes
-        obj._data_type = template._data_type
-        obj._time_step = template._time_step
-        obj._acquisition_start_time = template._acquisition_start_time
-        obj._acquisition_end_time = template._acquisition_end_time
-
-        # Add channel-dependent attributes
-        obj._channels = template._channels
-        obj._amplification_type = template._amplification_type
-        obj._detector_voltage = template._detector_voltage
-        obj._amplifier_gain = template._amplifier_gain
-        obj._channel_labels = template._channel_labels
-        obj._range = template._range
-        obj._resolution = template._resolution
-
-        return obj
 
 
 def gateSmpls(smpls, gateList, lastGateStatOnly=False):
