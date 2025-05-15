@@ -45,6 +45,8 @@ class compWindow(QtWidgets.QWidget):
         spillMatSelectionModel = self.spillMatTable.selectionModel()
         spillMatSelectionModel.selectionChanged.connect(self.handle_SelectAutoFluo)
 
+        self.chnlLoadedSuccess = True
+
     # Update according to the new channel list. 
     def updateChnls(self, newChnlListModel:chnlModel):
 

@@ -785,7 +785,11 @@ class mainUi(QtWidgets.QMainWindow):
             
         # update the compensation model if there are new channels added
         if newChnlFlag:    
-            self.compWindow.updateChnls(self.chnlListModel)
+            try:
+                self.compWindow.updateChnls(self.chnlListModel)
+            except Exception as e:
+                self.compWindow.chnlLoadedSuccess = False
+                pass
 
         return newRootSmplItem
 
