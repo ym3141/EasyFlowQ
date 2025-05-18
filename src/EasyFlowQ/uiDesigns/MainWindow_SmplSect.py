@@ -62,10 +62,14 @@ class mainUi_SmplSect(QtWidgets.QWidget):
 
         color = colorDiag.getColor(initial=QtGui.QColor('black'))
 
+        self.holdFigure.emit(True)
+
         if color.isValid():
             for item in self.smplTreeWidget.selectedItems():
                 item.plotColor = color
-
+        
+        self.holdFigure.emit(False)
+        self.to_handle_One.emit()
 
     def handle_ExpandCollapseSmplTree(self, expand=True):
         treeIterator = QtWidgets.QTreeWidgetItemIterator(self.smplTreeWidget)

@@ -241,7 +241,12 @@ class chnlModel(QStandardItemModel):
     
     @property
     def keyList_no_drvedParam(self):
-        return [key for key in self.keyList if not self.chnlNameDict[key].startswith('Derived Parameter')]
+        keyList = [key for key in self.keyList]
+        for key in keyList:
+            if type(self.chnlNameDict[key]) is str:
+                if self.chnlNameDict[key].startswith('Derived Parameter'):
+                    keyList.remove(key)
+        return keyList
 
     @property
     def fullTextList(self):
