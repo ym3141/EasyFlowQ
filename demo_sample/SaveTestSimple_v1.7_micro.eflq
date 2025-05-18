@@ -1,0 +1,68 @@
+{
+    "applyComp": false,
+    "curComp": {
+        "autoFluo": null,
+        "keyList": [
+            "SS-A",
+            "FITC-A",
+            "APC-A",
+            "APC-750-A",
+            "SS-H",
+            "FITC-H",
+            "APC-H",
+            "APC-750-H"
+        ],
+        "spillMat": null,
+        "useAutoFluo": false
+    },
+    "derivedParams": [],
+    "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto"
+        ],
+        "curAxScales": [
+            "log",
+            "log"
+        ],
+        "curChnls": [
+            "FITC-A",
+            "SS-A"
+        ],
+        "curDotSize": "Regular",
+        "curNormOption": "Unit Area",
+        "curOpacity": 80,
+        "curPlotType": "Dot plot",
+        "curSmooth": 0
+    },
+    "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/SaveTestSimple_v1.7_micro.eflq",
+    "gateSaveList": [],
+    "qsSaveList": [],
+    "save_ver": 1.7,
+    "smplSaveList": [
+        {
+            "Subpops": [],
+            "displayName": "micro-cytometry",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/micro-cytometry.fcs",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/micro-cytometry.fcs",
+            "fileDir_rel": "micro-cytometry.fcs",
+            "plotColor": [
+                0.10588235408067703,
+                0.6196078658103943,
+                0.46666666865348816,
+                1.0
+            ],
+            "selected": true
+        }
+    ],
+    "stainDict": {
+        "APC-750-A": "",
+        "APC-750-H": "",
+        "APC-A": "",
+        "APC-H": "",
+        "FITC-A": "",
+        "FITC-H": "",
+        "SS-A": "",
+        "SS-H": ""
+    }
+}

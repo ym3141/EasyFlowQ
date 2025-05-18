@@ -90,3 +90,23 @@ def test_loading_eflq1_6b(qtbot):
     mWindow.close()
 
 
+def test_loading_eflq1_6b(qtbot):
+    mWindow = mainUi(localSettings(testMode=True))
+    qtbot.addWidget(mWindow)
+    mWindow.show()
+
+    assert mWindow.isVisible()
+
+    # Test loading the v1.6b save file
+    sessionSave.loadSessionSave(mWindow, './demo_sample/SaveTestSimple_v1.7_micro.eflq')
+    mWindow.set_saveFlag(False) # Avoid prompting the save dialog
+
+    selectedSmpls = mWindow.smplTreeWidget.selectedItems()
+    assert len(selectedSmpls) == 1
+    assert selectedSmpls[0].text(0) == 'micro-cytometry', 'Sample name wrong, in loading the micro-cytometry save file'
+
+    mWindow.figOpsPanel.stackhistRadio.setChecked(True)
+
+    mWindow.close()
+
+
