@@ -298,7 +298,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
-        elif plotType == 'Histogram' or plotType == 'Stacked histo':
+        elif plotType in ('Histogram', 'Stacked histo', 'Aggregated histo'):
         # plot histograme
             self.cachedPlotStats.chnls = [xChnl]
 
@@ -310,18 +310,29 @@ class plotCanvas(FigureCanvasQTAgg):
             # recorded all the hights, edges and lines
             ns, edges, lines = [], [], []
 
-            for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
+            smplNames = [smplItem.displayName for smplItem in smplItems]
+            smplColors = [smplItem.plotColor.getRgbF() for smplItem in smplItems]
+            
+            if plotType == 'Aggregated histo':
+                # if the plot type is aggregated, then we need to combine all the samples
+
+                aggregatedSmpl = FCSData_ef.fromArray(gatedSmpls[0], np.vstack(gatedSmpls))
+                gatedSmpls = [aggregatedSmpl]
+                smplNames = ['Aggregated sample']
+                smplColors = [smplItems[0].plotColor.getRgbF()]            
+
+            for gatedSmpl, smplName, smplColor in zip(gatedSmpls, smplNames, smplColors):
                 if gatedSmpl.shape[0] < 1:
                     continue
 
-                n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplItem.displayName,
-                                            color=smplItem.plotColor.getRgbF(), xscale=axScales[0], normed_height=normOption, smooth=smooth)
+                n, edge, line = hist1d_line(gatedSmpl, self.ax, xChnl, label=smplName,
+                                            color=smplColor, xscale=axScales[0], normed_height=normOption, smooth=smooth)
 
                 ns.append(n)
                 edges.append(edges)
                 lines.append(line[0])
 
-            if plotType == 'Histogram':
+            if plotType == 'Histogram' or plotType == 'Aggregated histo':
                 ymax_histo = max([np.max(ns), ymax_histo]) * 1.1
             else:  # It's stacked histogram
                 yShift = np.max(ns) * 0.5
@@ -410,7 +421,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
 
         # draw legends
-        if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12):
+        if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12) or plotType == 'Aggregated histo':
             if plotType == 'Stacked histo' and len(lines) > 0:
                 for idx, line in enumerate(lines):
                     yshift_text = idx / (len(lines) + 1)
