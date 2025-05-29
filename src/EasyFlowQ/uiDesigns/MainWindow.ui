@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>800</height>
+    <width>1350</width>
+    <height>900</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -272,7 +272,7 @@
       </property>
       <property name="maximumSize">
        <size>
-        <width>225</width>
+        <width>260</width>
         <height>16777215</height>
        </size>
       </property>
@@ -455,15 +455,15 @@
        <item>
         <widget class="QFrame" name="figOpsFrame">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize">
           <size>
-           <width>220</width>
-           <height>390</height>
+           <width>235</width>
+           <height>431</height>
           </size>
          </property>
         </widget>
@@ -481,13 +481,13 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>230</width>
+        <width>240</width>
         <height>0</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>220</width>
+        <width>240</width>
         <height>16777215</height>
        </size>
       </property>
@@ -517,7 +517,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1200</width>
+     <width>1350</width>
      <height>21</height>
     </rect>
    </property>
