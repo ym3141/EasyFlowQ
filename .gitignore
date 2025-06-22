@@ -21,7 +21,10 @@ localSettings.user.json
 test/venvs
 
 # data that is too large
-demoSamples/CompDemo/*
+demo_sample/CompDemo/*
+
+# notebook checkpoints
+demo_sample/.ipynb_checkpoints
 
 # mkdocs related
 site/

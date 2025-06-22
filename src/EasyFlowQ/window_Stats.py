@@ -10,7 +10,6 @@ import io
 from xlsxwriter.utility import xl_col_to_name
 
 from .backend.qtModels import pandasTableModel
-from .backend.efio import writeRawFcs
 from .backend.plotWidgets import cachedStats
 from .uiDesigns import UiLoader
 
@@ -27,7 +26,6 @@ class statWindow(QtWidgets.QWidget):
         self.sessionDir = sessionDir
         self.dataDF = pd.DataFrame()
         self.displayDF = pd.DataFrame()
-        self.cur_Name_RawData_Pairs = []
 
         self.curGateItems = curGateItems_func
         self.curQSItem = curQSItem_func
@@ -39,7 +37,6 @@ class statWindow(QtWidgets.QWidget):
         self.tableView.verticalHeader().setDefaultAlignment(QtCore.Qt.AlignRight)
 
         self.exportStatsPB.clicked.connect(self.handle_ExportStats)
-        self.exportDataPB.clicked.connect(self.handle_ExportData)
 
         self.tableView.installEventFilter(self)
 
@@ -49,7 +46,6 @@ class statWindow(QtWidgets.QWidget):
             return
 
         if cachedPlotStats.smplNumber == 0:
-            self.cur_Name_RawData_Pairs = []
             self.dataDF = pd.DataFrame()
             self.displayDF = pd.DataFrame()
 
@@ -99,11 +95,7 @@ class statWindow(QtWidgets.QWidget):
             newDF['% of cells in quad: \nupper right'] = [quadFrac[3] for quadFrac in cachedPlotStats.quadFracs]
 
             formaterList += [percFormater] * 4
-            
-        # Save this value for furture faster raw export
-        self.cur_Name_RawData_Pairs = []
-        for idx in range(cachedPlotStats.smplNumber):
-            self.cur_Name_RawData_Pairs.append((cachedPlotStats.smplItems[idx].displayName, cachedPlotStats.gatedSmpls[idx]))
+
 
         # save the origin DF (number before conversion to str), and formatter
         self.dataDF = newDF
@@ -139,26 +131,6 @@ class statWindow(QtWidgets.QWidget):
 
         except BaseException as err:
             QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
-
-        pass
-
-
-    def handle_ExportData(self):
-        saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', dir=self.sessionDir)
-        if not saveFileDir:
-            return
-
-        self.exportLabel.setText('Starting...')
-        self.progressBar.setValue(0)
-
-        names = [a[0] for a in self.cur_Name_RawData_Pairs]
-        fcsDatas = [a[1] for a in self.cur_Name_RawData_Pairs]
-
-        writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
-        writterThread.prograssChanged.connect(self.handle_updateProgBar)
-        writterThread.finished.connect(self.handle_ExportDataFinished)
-
-        writterThread.start()
 
         pass
     
