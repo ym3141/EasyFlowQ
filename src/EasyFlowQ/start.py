@@ -9,7 +9,7 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
 else:
     print('running in a normal Python process')
 
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore, QtGui
 from .window_Main import mainUi
 from .window_Settings import localSettings
 
@@ -33,6 +33,9 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
     freeze_support()
 
     app = QtWidgets.QApplication(sys.argv)
+
+    # if sys.platform == "darwin":
+    #     app.setAttribute(QtGui.Qt.ApplicationAttribute.AA_DontUseNativeMenuBar)
 
     # Force fusion style so that UI are consistant between different plateforms
     if 'Fusion' in QtWidgets.QStyleFactory.keys():
