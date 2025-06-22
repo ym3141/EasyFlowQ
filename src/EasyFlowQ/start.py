@@ -34,8 +34,8 @@ def newWindowFunc(sessionSaveFile=None, pos=None):
 
     app = QtWidgets.QApplication(sys.argv)
 
-    if sys.platform == "darwin":
-        app.setAttribute(QtGui.Qt.ApplicationAttribute.AA_DontUseNativeMenuBar)
+    # if sys.platform == "darwin":
+    #     app.setAttribute(QtGui.Qt.ApplicationAttribute.AA_DontUseNativeMenuBar)
 
     # Force fusion style so that UI are consistant between different plateforms
     if 'Fusion' in QtWidgets.QStyleFactory.keys():
