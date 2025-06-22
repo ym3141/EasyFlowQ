@@ -22,6 +22,8 @@ test/venvs
 
 # data that is too large
 demoSamples/CompDemo/*
+
+# notebook checkpoints
 demoSamples/.ipynb_checkpoints/*
 
 # mkdocs related

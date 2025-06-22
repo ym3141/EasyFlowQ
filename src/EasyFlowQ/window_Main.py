@@ -148,7 +148,9 @@ class mainUi(QtWidgets.QMainWindow):
         self.actionDerivedParamNew.triggered.connect(self.handle_DrvedParam)
         self.actionDerivedParamView_Delete.triggered.connect(lambda : self.drvedParamEditWindow.show())
         self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
-        self.actionas_csv.triggered.connect(self.handle_ExportDataInGates)
+        self.action_csv.triggered.connect(self.handle_ExportDataInGates)
+        self.action_npy.triggered.connect(self.handle_ExportDataInGates)
+        self.action_npz.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
@@ -496,19 +498,26 @@ class mainUi(QtWidgets.QMainWindow):
     # This function export fcs data that are in gates to csv/npy files, 
     def handle_ExportDataInGates(self):
 
-        self.statWindow.updateStat(self.mpl_canvas.cachedPlotStats, forceUpdate=True)
+        # check the sender with the action text to get the output type
+        senderAction = self.sender()
+        if senderAction.text() == 'as .csv':
+            outputType = 'csv'
+        elif senderAction.text().startswith('as .npy'):
+            outputType = 'npy'
+        elif senderAction.text().startswith('as .npz'):
+            outputType = 'npz'
 
-        if len(self.statWindow.cur_Name_RawData_Pairs):
+        if len(self.mpl_canvas.cachedPlotStats.smplItems):
             saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', dir=self.sessionSavePath)
             if not saveFileDir:
                 return
 
             self.statusbar.showMessage('Export starting...')
 
-            names = [a[0] for a in self.statWindow.cur_Name_RawData_Pairs]
-            fcsDatas = [a[1] for a in self.statWindow.cur_Name_RawData_Pairs]
+            names = [item.displayName for item in self.mpl_canvas.cachedPlotStats.smplItems]
+            fcsDatas = [smpl for smpl in self.mpl_canvas.cachedPlotStats.gatedSmpls]
 
-            writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir)
+            writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir, outputType=outputType)
             writterThread.prograssChanged.connect(lambda a, b: self.handle_UpdateProgBar(a, b, 'Exporting: '))
             writterThread.finished.connect(self.handle_ExportDataFinished)
 

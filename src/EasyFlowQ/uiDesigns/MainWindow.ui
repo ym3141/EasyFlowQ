@@ -518,7 +518,7 @@
      <x>0</x>
      <y>0</y>
      <width>1350</width>
-     <height>21</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
@@ -553,7 +553,9 @@
      <property name="title">
       <string>Export raw (current gate)</string>
      </property>
-     <addaction name="actionas_csv"/>
+     <addaction name="action_csv"/>
+     <addaction name="action_npy"/>
+     <addaction name="action_npz"/>
     </widget>
     <widget class="QMenu" name="menuAdd_derived_parameter">
      <property name="title">
@@ -716,19 +718,9 @@
     <string>Show in folder...</string>
    </property>
   </action>
-  <action name="actionAnnotate_channels">
-   <property name="text">
-    <string>Anotate channels</string>
-   </property>
-  </action>
-  <action name="actionas_csv">
+  <action name="action_csv">
    <property name="text">
     <string>as .csv</string>
-   </property>
-  </action>
-  <action name="actionas_npy">
-   <property name="text">
-    <string>as .npy</string>
    </property>
   </action>
   <action name="actionEdit_stain_labels">
@@ -749,6 +741,16 @@
   <action name="actionDerivedParamView_Delete">
    <property name="text">
     <string>View or Delete</string>
+   </property>
+  </action>
+  <action name="action_npy">
+   <property name="text">
+    <string>as .npy (structured array)</string>
+   </property>
+  </action>
+  <action name="action_npz">
+   <property name="text">
+    <string>as .npz (compresed strctured array)</string>
    </property>
   </action>
  </widget>

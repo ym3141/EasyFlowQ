@@ -21,29 +21,59 @@ import sympy
 from sympy.parsing.sympy_parser import parse_expr
 
 class writeRawFcs(QThread):
+    # This thread is used to write the raw FCS data to csv or numpy files
     prograssChanged = Signal(str, float)
 
-    def __init__(self, parent, names, rawDatas: List[FCSData], saveDir: str) -> None:
+    def __init__(self, parent, names, rawDatas: List[FCSData], saveDir: str, outputType='csv') -> None:
         super().__init__(parent)
 
         self.names = names
         self.rawDatas = rawDatas
         self.saveDir = saveDir
+        self.outputType = outputType
 
     def run(self):
 
         for idx, name, fcsData in zip(range(len(self.names)), self.names, self.rawDatas):
-            df2Write = pd.DataFrame(fcsData, columns=fcsData.channels)
 
-            if not path.exists('{0}.csv'.format(path.join(self.saveDir, name))):
-                df2Write.to_csv('{0}.csv'.format(path.join(self.saveDir, name)))
+            if self.outputType in ('npy', 'npz'):
+                # Convert the FCSData to a numpy structured array
+                strArrDType = np.dtype([(chnl, fcsData.dtype) for chnl in fcsData.channels])
+                npData = np.array([tuple(dataRow) for dataRow in fcsData], dtype=strArrDType)
 
-            else:
-                alterName = 1
-                while path.exists('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName)):
-                    alterName += 1
+
+                if not path.exists('{0}.{1}'.format(path.join(self.saveDir, name), self.outputType)):
+                    if self.outputType == 'npz':
+                        np.savez_compressed('{0}.npz'.format(path.join(self.saveDir, name)), npData)
+                    else:
+                        # Save as numpy array
+                        np.save('{0}.npy'.format(path.join(self.saveDir, name)), npData)
+
+                else:
+                    # If the file already exists, we will add a number to the file name
+                    alterName = 1
+                    while path.exists('{0}_{1}'.format(path.join(self.saveDir, name), alterName)):
+                        alterName += 1
+                    
+                    if self.outputType == 'npz':
+                        np.savez_compressed('{0}_{1}.npz'.format(path.join(self.saveDir, name), alterName), npData)
+                    else:
+                        np.save('{0}_{1}.npy'.format(path.join(self.saveDir, name), alterName), npData)
                 
-                df2Write.to_csv('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName))
+
+            elif self.outputType == 'csv':
+                # Convert the FCSData to a pandas DataFrame and write to csv
+                df2Write = pd.DataFrame(fcsData, columns=fcsData.channels)
+
+                if not path.exists('{0}.csv'.format(path.join(self.saveDir, name))):
+                    df2Write.to_csv('{0}.csv'.format(path.join(self.saveDir, name)))
+
+                else:
+                    alterName = 1
+                    while path.exists('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName)):
+                        alterName += 1
+                    
+                    df2Write.to_csv('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName))
 
             self.prograssChanged.emit(name, idx/len(self.names))
 

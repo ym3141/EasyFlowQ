@@ -24,13 +24,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="exportDataPB">
-       <property name="text">
-        <string>Export raw data as .csv</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -61,10 +54,10 @@
      <attribute name="horizontalHeaderDefaultSectionSize">
       <number>105</number>
      </attribute>
-     <attribute name="verticalHeaderMinimumSectionSize">
+     <attribute name="verticalHeaderDefaultSectionSize">
       <number>25</number>
      </attribute>
-     <attribute name="verticalHeaderDefaultSectionSize">
+     <attribute name="verticalHeaderMinimumSectionSize">
       <number>25</number>
      </attribute>
     </widget>
