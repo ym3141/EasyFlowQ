@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Welcome to EasyFlowQ - EasyFLowQ</title>
+    <title>Access gated raw data - EasyFLowQ</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Welcome to EasyFlowQ";
-        var mkdocs_page_input_path = "README_PyPI.md";
+        var mkdocs_page_name = "Access gated raw data";
+        var mkdocs_page_input_path = "Raw data access.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -45,7 +45,7 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">Basics</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../Basic%20usage/">Startup, simple plot and gate</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Statistics/">Viewing the statistics</a>
@@ -54,7 +54,13 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Sample%20panel/">Subpopulations and sample selections</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Raw%20data%20access/">Access gated raw data</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Access gated raw data</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#exporting-as-csv-npyz-and-mat">Exporting as csv, npy(z) and mat</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#access-the-exported-raw-data">Access the exported raw data</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Compensation/">Compensation</a>
                   </li>
@@ -85,9 +91,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Welcome to EasyFlowQ</li>
+          <li class="breadcrumb-item">Basics</li>
+      <li class="breadcrumb-item active">Access gated raw data</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/ym3141/EasyFlowQ/edit/pyside6/docs/README_PyPI.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/ym3141/EasyFlowQ/edit/pyside6/docs/Raw data access.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -95,32 +102,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="welcome-to-easyflowq">Welcome to EasyFlowQ</h1>
-<p>EasyFlowQ is an open-source, user-friendly flow cytometry analyzer with graphic user interface (GUI).
-For full documentation and tutorials, visit <a href="https://ym3141.github.io/EasyFlowQ/">EasyFlowQ's Documentation Site</a>.</p>
-<h2 id="overview">Overview</h2>
-<p>A user friendly GUI interface for analyzing flow cytometry data. The program is implemented by Qt/Python, and its UI logics are largely influenced by the original matlab version of <a href="https://github.com/AntebiLab/easyflow">EasyFlow (by @ayaron)</a>. The fcs file parser is based on the <a href="https://github.com/taborlab/FlowCal">FlowCal package</a>, with slight modification for implementing into the GUI. The standalone installers are packaged by <a href="https://pyinstaller.org/en/stable/">PyInstaller</a> and <a href="https://installforge.net/">InstallForge</a>.</p>
-<h2 id="download-and-usage">Download and usage</h2>
-<p>To download EasyFlowQ from PyPI:</p>
-<pre><code>pip install EasyFlowQ
-</code></pre>
-<p>After installation, run:</p>
-<pre><code>EasyFlowQ
-</code></pre>
-<p>Or run it from a script using:</p>
-<pre><code>import EasyFlowQ.main_entry
-EasyFlowQ.main_entry.newWindowFunc()
-</code></pre>
-<h2 id="documentation-site">Documentation site:</h2>
-<p>Please refers to <a href="https://ym3141.github.io/EasyFlowQ/">the documentation site</a> for more information.</p>
-<h2 id="contact">Contact</h2>
-<p>For more info please contact <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#121;&#105;&#116;&#111;&#110;&#103;&#109;&#97;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#121;&#105;&#116;&#111;&#110;&#103;&#109;&#97;&#55;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>. If you use <em>EasyFlowQ</em> in your research, we would appreciate citation to the following preprint:</p>
-<blockquote>
-<p>Ma, Y., &amp; Antebi, Y. (2023). EasyFlow: An open source, user friendly cytometry analyzer with graphic user interface (GUI). bioRxiv, 2023-08.</p>
-</blockquote>
+                <h1 id="access-gated-raw-data">Access gated raw data</h1>
+<p>EasyFlowQ offers essential tools for exporting gated samples as raw data in widely-used formats. These formats are compatible with popular programming languages, ensuring seamless integration and accessibility for more complex analysis.</p>
+<h2 id="exporting-as-csv-npyz-and-mat">Exporting as csv, npy(z) and mat</h2>
+<h2 id="access-the-exported-raw-data">Access the exported raw data</h2>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../Sample%20panel/" class="btn btn-neutral float-left" title="Subpopulations and sample selections"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../Compensation/" class="btn btn-neutral float-right" title="Compensation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -146,6 +138,10 @@ EasyFlowQ.main_entry.newWindowFunc()
         </span>
     
     
+      <span><a href="../Sample%20panel/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../Compensation/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

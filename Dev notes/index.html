@@ -46,13 +46,15 @@
               </ul>
               <p class="caption"><span class="caption-text">Basics</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="../Basic usage.md">None</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../Basic%20usage/">Startup, simple plot and gate</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Statistics/">Viewing the statistics</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Batch%20renaming/">Batch-renaming with xlsx</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Sample%20panel/">Sample penal</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../Sample%20panel/">Subpopulations and sample selections</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Raw%20data%20access/">Access gated raw data</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../Compensation/">Compensation</a>
                   </li>
@@ -68,7 +70,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#basic-information-about-python-versions">Basic information about python versions</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#information-for-packaging-easyflowq-to-standalone-executables">Information for packaging EasyFlowQ to standalone executables</a>
+    <li class="toctree-l2"><a class="reference internal" href="#information-for-packaging-standalone-executables">Information for packaging standalone executables</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#prerequisite-for-packaging">Prerequisite for packaging</a>
     </li>
@@ -112,30 +114,30 @@
 <p>This document contains notes that is intended for developers.</p>
 <h2 id="basic-information-about-python-versions">Basic information about python versions</h2>
 <p>The development is mostly based on python 3.9. Backward capabilities are partially tested to python version 3.7.</p>
-<h2 id="information-for-packaging-easyflowq-to-standalone-executables">Information for packaging EasyFlowQ to standalone executables</h2>
-<p>Current EasyFlowQ standalone (python-installation-independent) packages is only available for Windows(x86) and MacOS(ARM) on the <a href="https://github.com/ym3141/EasyFlowQ/releases">release page</a>. This part of information is about how these packages are generated, and hopefully providing a helpful guide for people wanting to create similar packages on other platforms e.g. MacOS(intel based), native Windows on ARM, linux, etc.</p>
+<h2 id="information-for-packaging-standalone-executables">Information for packaging standalone executables</h2>
+<p>Current EasyFlowQ standalone (python-installation-independent) packages is only available for Windows(x86) and MacOS(ARM) on the <a href="https://github.com/ym3141/EasyFlowQ/releases">release page</a>. This part of information is about how these packages are generated, and hopefully provides a helpful guide for people wanting to create similar packages on other platforms e.g. MacOS(intel based), native Windows on ARM, linux, etc.</p>
 <p>In general, the the currently packaging workflow is largely based on this <a href="https://www.pythonguis.com/tutorials/packaging-pyqt5-pyside2-applications-windows-pyinstaller/">tutorial</a>. Thus, please read through and get familiar with some of the concepts, if you are interested.</p>
 <h3 id="prerequisite-for-packaging">Prerequisite for packaging</h3>
 <p>Besides the obvious requirement of downloading/cloning/forking the <a href="https://github.com/ym3141/EasyFlowQ">repository</a> properly into your local machine, there are two major categories of prerequisite.</p>
 <ol>
 <li>
 <p><strong>Setting up a proper python environment to run the source code.</strong><br />
-This is commonly accomplished by pip or conda. Please note that PySide6 (critical in ver&gt;=1.6) is yet available on conda, so it has to be installed from pip. Current python package dependencies can be found in the <code>pyproject.toml</code> file.<br />
+This is commonly accomplished by pip or conda. Please note that PySide6 (critical in ver&gt;=1.6) is not yet available on conda, so it has to be installed from pip. Current python package dependencies can be found in the <code>pyproject.toml</code> file.<br />
 Once all dependencies are ready, the source code can be simply run by <code>python ./main.py</code> (or <code>python3 ./main.py</code> depending on your system's default python commend). Make sure the program run as expected in the current environment.</p>
 </li>
 <li>
 <p><strong>Setting up tools for standalone packaging.</strong><br />
-The most critical step of the packaging is the use of <a href="https://pyinstaller.org/en/stable/">PyInstaller</a>. Note the PyInstaller from conda are slightly outdated comparing the one from pip, and might not be able to package PySide6, thus installing it from pip is preferred. On MacOS, <a href="https://github.com/create-dmg/create-dmg">create-dmg</a> is used to create dmg packages, which provide a more "native" experience for MacOS users, and also compress the package.  </p>
+The most critical step of the packaging is the use of <a href="https://pyinstaller.org/en/stable/">PyInstaller</a>. Note the PyInstaller from conda are slightly outdated comparing the one from pip, and might not be able to package PySide6, thus installing it from pip is preferred. On MacOS, <a href="https://github.com/create-dmg/create-dmg">create-dmg</a> is used to create dmg packages, which provide a more "native" experience for MacOS users, and also compresses the package.  </p>
 </li>
 </ol>
 <h3 id="scripts-for-packaging">Scripts for packaging</h3>
 <p>There are two scripts used for packaging on each system. The (power)shell script (<code>./release/pyi_mac.sh</code> for MacOS and <code>./release/pyi_win.ps1</code> for Windows) and the PyInstaller spec file (<code>release/pyi_universal.spec</code>). </p>
 <p>The shell scripts are system specific and responsible of cleaning up folders, getting the version number (as a string) and setting up environment for PyInstaller to run, subsequently calling PyInstaller. Eventually, these scripts also do the final packaging (making dmg files on MacOS, and simply zipping on Windows).</p>
-<p>Note in the step, the version string is obtained by running the <code>__init__.py</code> file using python as <code>__main__</code>. </p>
-<p>PyInstaller's spec file (<a href="https://pyinstaller.org/en/stable/spec-files.html">more details on PyInstaller's documentation site</a>) are now unified into a single file for both platforms. The script target the <code>./main.py</code> as the entry point of program. The script takes one parameter (<a href="https://pyinstaller.org/en/stable/spec-files.html#adding-parameters-to-spec-files">PyInstaller doc</a>) as the version number and use it as for the naming of package. Additionally, inside the spec file, it determine what platform it is being run (using python's <code>system.platform</code>), and include the proper "hidden_imports" for each platform. </p>
+<p>Note in this step, the version string is obtained by running the <code>__init__.py</code> file using python as <code>__main__</code>, and the shorthand commit hash from <code>git rev-parse --short HEAD</code>. </p>
+<p>PyInstaller's spec file (<a href="https://pyinstaller.org/en/stable/spec-files.html">more details on PyInstaller's documentation site</a>) are now unified into a single file for both platforms. The script target the <code>./main.py</code> as the entry point of program. The script takes one extra user-defined parameter (<a href="https://pyinstaller.org/en/stable/spec-files.html#adding-parameters-to-spec-files">PyInstaller doc</a>) as the version number and use it for the naming of package. Additionally, inside the spec file, it determine what platform it is being run (using python's <code>system.platform</code>), and include the proper "hidden_imports" for each platform. </p>
 <h3 id="potential-caveats-when-setting-up-the-packaging-workflow">Potential caveats when setting up the packaging workflow</h3>
 <p>This sections talks about the potential bugs and caveats of the process. The list is by no mean complete.</p>
-<p>One major factor here, is that the implementation of involved packages are different on different platform, even though python itself should be OS independent. A extreme example is the Intel MKL backend numpy uses, are not always used even on Windows with AMD CPU. This results in different things being packaged by PyInstaller on different machine running that "same" Windows OS.</p>
+<p>One major factor here, is that the implementation of involved packages are different on different platform, even though python itself should be OS independent. A extreme example is the Intel MKL backend numpy uses, are not always used even on Windows with AMD CPU. This results in different things being packaged by PyInstaller on different machine running even the "same" Windows OS.</p>
 <p><strong>PyInstaller version</strong>: It seems to me that different OS/python/env manager will install different built of PyInstaller by default, and some of them has caused problems before. The most reliable built in my experience is the one installed by the <code>pip</code> commend.</p>
 <p><strong>PyInstaller's "hidden_imports"</strong>: PyInstaller's "hidden_imports" should be able to handle most of the missing packages. If you find import errors running the packaged version, while not before the packaging, try adding the specific module into the "hidden_imports" list in the spec file. Note that lots of times, an error will only occurs when the missing module is called specifically. This means some of the import errors won't be triggered at start, but rather when the user do the specific functions. To identify all of this type of problems, one will need to test the packaged program extensively. Here is a not-so-complete list of things to look for this type of errors:
 1. Function about saving different type of images, especially the vector types.
