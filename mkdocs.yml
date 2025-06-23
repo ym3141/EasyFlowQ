@@ -10,7 +10,8 @@ nav:
     - "Basic usage.md"
     - "Statistics.md"
     - "Batch renaming.md"
-    - Sample penal: "Sample panel.md"
+    - "Sample panel.md"
+    - "Raw data access.md"
     - "Compensation.md"
   - Tutorials:
     - "Step-by-step example": "Tutorial.md"

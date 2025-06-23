@@ -1,4 +1,4 @@
-# Sample panel : Subpopulations and Sample selections
+# Subpopulations and sample selections
 This page talks about how the sample panel (the left section of the UI) functions.
 
 ## Subpopulation
