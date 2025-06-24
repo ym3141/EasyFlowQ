@@ -43,8 +43,8 @@ EasyFlowQ
 
 Or run it from a script using:
 ```
-import EasyFlowQ.main_entry
-EasyFlowQ.main_entry.newWindowFunc()
+import EasyFlowQ.start
+EasyFlowQ.start.startGUI()
 ```
 
 #### **Method #3:** Run from python (a python installation is needed)
