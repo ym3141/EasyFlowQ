@@ -56,9 +56,9 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Access gated raw data</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#exporting-as-csv-npyz-and-mat">Exporting as csv, npy(z) and mat</a>
+    <li class="toctree-l2"><a class="reference internal" href="#export-as-csv-npyz-and-mat">Export as csv, npy(z) and mat</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#access-the-exported-raw-data">Access the exported raw data</a>
+    <li class="toctree-l2"><a class="reference internal" href="#access-the-exported-raw-data-in-npy-format">Access the exported raw data in npy format</a>
     </li>
     </ul>
                   </li>
@@ -104,8 +104,58 @@
               
                 <h1 id="access-gated-raw-data">Access gated raw data</h1>
 <p>EasyFlowQ offers essential tools for exporting gated samples as raw data in widely-used formats. These formats are compatible with popular programming languages, ensuring seamless integration and accessibility for more complex analysis.</p>
-<h2 id="exporting-as-csv-npyz-and-mat">Exporting as csv, npy(z) and mat</h2>
-<h2 id="access-the-exported-raw-data">Access the exported raw data</h2>
+<h2 id="export-as-csv-npyz-and-mat">Export as csv, npy(z) and mat</h2>
+<p>The options for exporting the <strong>currently selected</strong> samples and subpopulation samples, with <strong>selected</strong> gate applied, can be access from the menu bar: Data --&gt; Export raw (current gate)</p>
+<p><img alt="RawExport" src="../img/RawExport.jpg" /></p>
+<p>Popular formats including csv, npy/npz (numpy array) and mat (matlab data file) are available for export. When exported, each sample (or subpopulation) will be exported as a single file with names of the samples. If the file name exist, either due to file pre-existing in the file system or another sample exported earlier has the same name, EasyFlowQ will attempt to export it under a different name (e.g. sample1_1, sample1_2, etc.). </p>
+<h2 id="access-the-exported-raw-data-in-npy-format">Access the exported raw data in npy format</h2>
+<p><a href="https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html">npy</a> is the standard file format used by numpy to store single matrix. Due to that regular numpy array does not store metadata (e.g. channel names), the exported npy is in fact a <a href="https://numpy.org/doc/stable/user/basics.rec.html">structured numpy array</a>, with channel names as the field name in the array.</p>
+<p>Here we provide a simple example importing an exported, gated sample in the npy format, and subsequently performs a simple clustering analysis with a mixed Gaussian model. The notebook of this example is also available in the github repo (<a href="https://github.com/ym3141/EasyFlowQ/blob/pyside6/demo_sample/python_analysis.ipynb">here</a>).</p>
+<p>Import the required packages</p>
+<pre><code>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import mixture
+</code></pre>
+<p>Load the npy file (can be downloaded <a href="https://github.com/ym3141/EasyFlowQ/blob/pyside6/demo_sample/01-Well-B1.npy">here</a>) and access to the channel names:</p>
+<pre><code>flow_data = np.load('./01-Well-B1.npy')
+print(flow_data.dtype.names)
+</code></pre>
+<p>This output: <code>('FSC-H', 'FSC-A', 'SSC-H', 'SSC-A', 'FL1-H', 'FL1-A', 'FL6-H', 'FL6-A', 'FL10-H', 'FL10-A', 'FL11-H', 'FL11-A', 'FSC-Width', 'Time')</code></p>
+<p>Plot the data in the channels that are gated in EasyFlow</p>
+<pre><code>fig, ax = plt.subplots(figsize=(5, 3))
+fig.dpi = 150
+ax.plot(flow_data['FSC-A'], flow_data['SSC-A'], '.', alpha=0.3)
+plt.xlabel('FSC-A')
+plt.ylabel('SSC-A')
+</code></pre>
+<p><img alt="RawExportExample1" src="../img/RawExportExample1.png" /></p>
+<p>Clustering the data based on FL1-A (FITC) vs FSC-A data with mixed Gaussian mode</p>
+<pre><code># convert to regular numpy array, and filter out &lt;0 elements
+flow_2d = np.vstack([flow_data['FSC-A'], flow_data['FL1-A']]).T
+flow_2d = flow_2d[np.all(flow_2d &gt; 0, axis=1), :]
+
+# transform and standardize data before clustering
+cluster_input = flow_2d.copy()
+cluster_input = np.log(cluster_input)
+cluster_input = (cluster_input - np.mean(cluster_input, axis=0)) / np.std(cluster_input, axis=0)
+
+# fit the Gaussian Mixture Model
+clf2 = mixture.GaussianMixture(n_components=2, covariance_type=&quot;full&quot;)
+clf2.fit(cluster_input)
+</code></pre>
+<p>Plot the clustering result with sub-sampling</p>
+<pre><code>sub_sample_index = np.random.choice(np.arange(len(flow_2d)), 10000, replace=False)
+
+fig, ax = plt.subplots(figsize=[5, 3])
+fig.dpi = 150
+ax.scatter(x=flow_2d[sub_sample_index,0], y=flow_2d[sub_sample_index,1], 
+           c=clf2.predict(cluster_input[sub_sample_index, :]), 
+           alpha=0.3, s=1)
+ax.set_yscale('log')
+ax.set_xlabel('FSC-A')
+ax.set_ylabel('FITC-A')
+</code></pre>
+<p><img alt="RawExportExample2" src="../img/RawExportExample2.png" /></p>
               
             </div>
           </div><footer>
