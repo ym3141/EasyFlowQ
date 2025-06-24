@@ -23,10 +23,9 @@ $pyinstallerArgs = @(
     "--distpath", ".\release\EasyFlowQ_release_win\"
     "--workpath", ".\_temp\"
     ".\release\pyi_universal.spec"
-    "--", "--version", $versionString
+    "--", "--version", $_ver
 )
 
-echo "Building EasyFlowQ version $versionString with PyInstaller: $pyinstallerArgs"
 pyinstaller @pyinstallerArgs
 
 # wait 5 second for the process to finish
