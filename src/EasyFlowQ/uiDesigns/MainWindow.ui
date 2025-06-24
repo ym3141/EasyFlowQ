@@ -518,7 +518,7 @@
      <x>0</x>
      <y>0</y>
      <width>1350</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">
@@ -556,6 +556,7 @@
      <addaction name="action_csv"/>
      <addaction name="action_npy"/>
      <addaction name="action_npz"/>
+     <addaction name="action_mat"/>
     </widget>
     <widget class="QMenu" name="menuAdd_derived_parameter">
      <property name="title">
@@ -751,6 +752,11 @@
   <action name="action_npz">
    <property name="text">
     <string>as .npz (compresed strctured array)</string>
+   </property>
+  </action>
+  <action name="action_mat">
+   <property name="text">
+    <string>as .mat</string>
    </property>
   </action>
  </widget>

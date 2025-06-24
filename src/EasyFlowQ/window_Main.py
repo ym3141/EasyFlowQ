@@ -148,9 +148,10 @@ class mainUi(QtWidgets.QMainWindow):
         self.actionDerivedParamNew.triggered.connect(self.handle_DrvedParam)
         self.actionDerivedParamView_Delete.triggered.connect(lambda : self.drvedParamEditWindow.show())
         self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
-        self.action_csv.triggered.connect(self.handle_ExportDataInGates)
-        self.action_npy.triggered.connect(self.handle_ExportDataInGates)
-        self.action_npz.triggered.connect(self.handle_ExportDataInGates)
+
+        # actions for exporting raw data
+        for action in [self.action_csv, self.action_npy, self.action_npz, self.action_mat]:
+            action.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
 
@@ -506,6 +507,8 @@ class mainUi(QtWidgets.QMainWindow):
             outputType = 'npy'
         elif senderAction.text().startswith('as .npz'):
             outputType = 'npz'
+        elif senderAction.text().startswith('as .mat'):
+            outputType = 'mat'
 
         if len(self.mpl_canvas.cachedPlotStats.smplItems):
             saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', dir=self.sessionSavePath)

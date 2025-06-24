@@ -133,15 +133,6 @@ class statWindow(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
 
         pass
-    
-    def handle_updateProgBar(self, curName, progFrac):
-        self.exportLabel.setText('{0}'.format(curName))
-        self.progressBar.setValue(int(progFrac*100))
-
-    def handle_ExportDataFinished(self):
-        self.exportLabel.setText('Finished')
-        self.progressBar.setValue(100)
-    
 
     def eventFilter(self, source, event):
 

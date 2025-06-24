@@ -17,6 +17,7 @@ from typing import List
 
 import pandas as pd
 import numpy as np
+from scipy.io import savemat
 import sympy
 from sympy.parsing.sympy_parser import parse_expr
 
@@ -74,6 +75,22 @@ class writeRawFcs(QThread):
                         alterName += 1
                     
                     df2Write.to_csv('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName))
+
+            elif self.outputType == 'mat':
+                matDict = {
+                    'data': np.array(fcsData),
+                    'channels': fcsData.channels,
+                    'channel_lables': fcsData.channel_labels(),
+                }
+
+                if not path.exists('{0}.mat'.format(path.join(self.saveDir, name))):
+                    savemat('{0}.mat'.format(path.join(self.saveDir, name)), matDict)
+                else:
+                    alterName = 1
+                    while path.exists('{0}_{1}.mat'.format(path.join(self.saveDir, name), alterName)):
+                        alterName += 1
+                    
+                    savemat('{0}_{1}.mat'.format(path.join(self.saveDir, name), alterName), matDict)
 
             self.prograssChanged.emit(name, idx/len(self.names))
 
