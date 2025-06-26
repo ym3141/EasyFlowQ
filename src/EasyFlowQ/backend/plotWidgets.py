@@ -11,11 +11,12 @@ import matplotlib.backends.backend_svg
 import matplotlib.backends.backend_pgf
 
 import numpy as np
+import io
 from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 from scipy.interpolate import interpn
 from scipy.stats import gaussian_kde
 
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtWidgets, QtGui
 
 from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
@@ -577,6 +578,27 @@ class plotCanvas(FigureCanvasQTAgg):
 class efNavigationToolbar(NavigationToolbar):
     # Customized NavigationToolbar2QT by removing the subplot and axis tool buttons
     toolitems = [t for t in NavigationToolbar.toolitems if t[0] in ('Home', 'Back', 'Forward', None, 'Pan', 'Zoom', 'Save')]
+
+    def __init__(self, canvas, parent=None):
+        super().__init__(canvas, parent)
+
+        copyIcon = QtGui.QIcon.fromTheme(QtGui.QIcon.ThemeIcon.EditCopy)
+        self.copyAction = QtGui.QAction(copyIcon, 'Copy plot', self)
+        self.copyAction.setShortcut('Ctrl+C')
+        self.copyAction.setStatusTip('Copy the current plot to clipboard')
+
+        self.copyAction.triggered.connect(self.handle_CopyPlot)
+        
+        # Insert the copy action
+        self.addAction(self.copyAction)
+
+    def handle_CopyPlot(self):
+        buf = io.BytesIO()
+        self.canvas.figure.savefig(buf, format='png', dpi=self.canvas.figure.dpi)
+        copiedImage = QtGui.QImage.fromData(buf.getvalue())
+        QtGui.QClipboard().setImage(copiedImage)
+
+        self.locLabel.setText('Plot copied to clipboard \t')
 
 
 def gateSmpls(smpls, gateList, lastGateStatOnly=False):

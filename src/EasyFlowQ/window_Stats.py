@@ -1,5 +1,5 @@
 import sys
-from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
+from PySide6 import QtWidgets, QtCore, QtGui
 from matplotlib.colors import to_hex
 from os import path, getcwd
 
@@ -23,6 +23,9 @@ class statWindow(QtWidgets.QWidget):
         super().__init__()
         UiLoader().loadUi('StatWindow.ui', self)
 
+        self.statusBar = QtWidgets.QStatusBar(self)
+        self.layout().addWidget(self.statusBar)
+
         self.sessionDir = sessionDir
         self.dataDF = pd.DataFrame()
         self.displayDF = pd.DataFrame()
@@ -37,6 +40,7 @@ class statWindow(QtWidgets.QWidget):
         self.tableView.verticalHeader().setDefaultAlignment(QtCore.Qt.AlignRight)
 
         self.exportStatsPB.clicked.connect(self.handle_ExportStats)
+        self.copyTablePB.clicked.connect(self.handle_CopyEntireTable)
 
         self.tableView.installEventFilter(self)
 
@@ -133,6 +137,15 @@ class statWindow(QtWidgets.QWidget):
             QtWidgets.QMessageBox.warning(self, 'Unexpected Error', 'Message: {0}'.format(err))
 
         pass
+
+    def handle_CopyEntireTable(self):
+        # this parts enables copy entire table.
+        stream = io.StringIO()
+        self.displayDF.to_csv(stream, sep='\t', index=True, header=True)
+        QtGui.QClipboard().setText(stream.getvalue())
+
+        self.statusBar.showMessage('Table copied to clipboard', 3000)
+        return
 
     def eventFilter(self, source, event):
 
