@@ -28,10 +28,10 @@ Here we list some of the basic operations for a simple analysis:
 2. **Change sample names:** Double click on the samples to change the sample's name.
 3. **Plotting:** Select the samples you want to plot on the main plotting region. Yes, it support multi-selection.
 4. **Change color:** To change colors of your sample, click the "Sample color" button on the top panel. Note that all the samples that are currently selected will be affected by your color change.
-5. **Tweak plot options:** You can change how the figures are plotted in the plotting option panel in the lower-right conner. EasyFlowQ support bot dot plots, and histograms, as well as customizable plotting ranges, axes scales, normalization and smoothing. More plot types like stacked histogram and density plots are on our developing road map. 
+5. **Tweak plot options:** You can change how the figures are plotted in the plotting option panel in the lower-right conner. EasyFlowQ support both dot/density plots, and different types of histogram, as well as customizable plotting ranges, axes scales, normalization and smoothing. 
 6. **Choose plot axises:** You can choose what channel(s) are plotted in the top panel. Note that the y-axis option is ignored in histogram mode.
-7. **Save the plot:** The plot can be save by clicking on the "Save" icon on top of the plot. Several types of image formats (png, jpg, pdf...) are supported. 
-8. **Save the session**: You can save the analysis session by using the "Save session" function in the menu (or simple Ctrl+S). We recommend put the session file in the same directory as your fcs files, or one level up.
+7. **Save/Copy the plot:** The plot can be save by clicking on the "Save" icon on top of the plot. Several types of image formats (png, jpg, pdf...) are supported. An option of copying the plots to clipboard is also available at the upper right conner of plotting region (the shortcut `Ctrl+C` is linked to this function in the main window). 
+8. **Save the session**: You can save the analysis session by using the "Save session" function in the menu (or simple `Ctrl+S`). We recommend put the session file in the same directory as your fcs files, or one level up.
 
 Below you can see an annotated screenshot about the operations mentioned above.
 
@@ -45,7 +45,7 @@ Check the desired gates in the "Gate" panel to apply that gate onto the samples.
 
 **For ver<=1.5, known bug specific to MacOS version**: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).
 
-#### Plot the gate
+#### Plot/Show the gate
 You can also select the gate to show on the plot. Note, it only works if you have the right axis(s) (where the gates are defined) selected. To clear the selection, click the "Clear selection" button in the "Gate" panel.
 
 #### Edit or delete existing gates
