@@ -1,3 +1,12 @@
 .wy-nav-content {
-    max-width: 1000px !important;
+    max-width: 85% !important;
+}
+
+h1 {
+    color: darkblue;
+    text-decoration: underline
+}
+
+h2 {
+    color: dodgerblue;
 }

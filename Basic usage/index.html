@@ -54,7 +54,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#gating">Gating</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#plot-the-gate">Plot the gate</a>
+    <li class="toctree-l3"><a class="reference internal" href="#plotshow-the-gate">Plot/Show the gate</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#edit-or-delete-existing-gates">Edit or delete existing gates</a>
     </li>
@@ -132,10 +132,10 @@
 <li><strong>Change sample names:</strong> Double click on the samples to change the sample's name.</li>
 <li><strong>Plotting:</strong> Select the samples you want to plot on the main plotting region. Yes, it support multi-selection.</li>
 <li><strong>Change color:</strong> To change colors of your sample, click the "Sample color" button on the top panel. Note that all the samples that are currently selected will be affected by your color change.</li>
-<li><strong>Tweak plot options:</strong> You can change how the figures are plotted in the plotting option panel in the lower-right conner. EasyFlowQ support bot dot plots, and histograms, as well as customizable plotting ranges, axes scales, normalization and smoothing. More plot types like stacked histogram and density plots are on our developing road map. </li>
+<li><strong>Tweak plot options:</strong> You can change how the figures are plotted in the plotting option panel in the lower-right conner. EasyFlowQ support both dot/density plots, and different types of histogram, as well as customizable plotting ranges, axes scales, normalization and smoothing. </li>
 <li><strong>Choose plot axises:</strong> You can choose what channel(s) are plotted in the top panel. Note that the y-axis option is ignored in histogram mode.</li>
-<li><strong>Save the plot:</strong> The plot can be save by clicking on the "Save" icon on top of the plot. Several types of image formats (png, jpg, pdf...) are supported. </li>
-<li><strong>Save the session</strong>: You can save the analysis session by using the "Save session" function in the menu (or simple Ctrl+S). We recommend put the session file in the same directory as your fcs files, or one level up.</li>
+<li><strong>Save/Copy the plot:</strong> The plot can be save by clicking on the "Save" icon on top of the plot. Several types of image formats (png, jpg, pdf...) are supported. An option of copying the plots to clipboard is also available at the upper right conner of plotting region (the shortcut <code>Ctrl+C</code> is linked to this function in the main window). </li>
+<li><strong>Save the session</strong>: You can save the analysis session by using the "Save session" function in the menu (or simple <code>Ctrl+S</code>). We recommend put the session file in the same directory as your fcs files, or one level up.</li>
 </ol>
 <p>Below you can see an annotated screenshot about the operations mentioned above.</p>
 <p><img alt="BasicOperations" src="../img/BasicOps.jpg" /></p>
@@ -144,7 +144,7 @@
 <p>Currently EasyFlowQ provides two gating types: <em>polygon (2D)</em> and <em>line (1D)</em>. To start drawing gates, click on the "+" in the "Gate" panel (upper right). You will enter the corresponding gate drawing mode, based on your current plot type (change in the "Plot type" section). For <em>polygon gate</em><em>, left click to create a new vertex, and right click will close the gate (if more than three vertices exist). For </em>line gate*, the 2nd vertex will automatically close the gate. </p>
 <p>Check the desired gates in the "Gate" panel to apply that gate onto the samples. <strong>Currently, all gatings are "global". This means if a gate is checked, all the samples plotted will be gated by that gate! This is enforced so that all samples plotted are under the same gating conditions.</strong> For situations that different gates for different samples are required, please refers to the <a href="../Sample%20panel/#Subpopulation">Subpopulation section</a>.</p>
 <p><strong>For ver&lt;=1.5, known bug specific to MacOS version</strong>: After closing of the polygon gates (right/ctrl click), there is a chance some parts of the interface will freeze. Simply right click again in the gate section, and the interface should unfreeze. This is likely due to the GUI is confused between right click vs ctrl-click on the MacOS (should be the same, but sometime is recorded differently).</p>
-<h4 id="plot-the-gate">Plot the gate</h4>
+<h4 id="plotshow-the-gate">Plot/Show the gate</h4>
 <p>You can also select the gate to show on the plot. Note, it only works if you have the right axis(s) (where the gates are defined) selected. To clear the selection, click the "Clear selection" button in the "Gate" panel.</p>
 <h4 id="edit-or-delete-existing-gates">Edit or delete existing gates</h4>
 <p>Right click the existing gates in the "Gate" section, and you will see the options to edit or delete.</p>
