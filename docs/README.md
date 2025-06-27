@@ -1,4 +1,5 @@
-![PyPI](https://img.shields.io/pypi/v/EasyFlowQ?label=pypi%20package)
+[![PyPI](https://img.shields.io/pypi/v/EasyFlowQ?label=pypi%20package)](https://pypi.org/project/EasyFlowQ/)
+[![DOI](https://img.shields.io/badge/DOI-10.1371/journal.pone.0308873-blue)](https://doi.org/10.1371/journal.pone.0308873)
 
 # Welcome to EasyFlowQ
 EasyFlowQ is an open-source, user-friendly flow cytometry analyzer with graphic user interface (GUI).
