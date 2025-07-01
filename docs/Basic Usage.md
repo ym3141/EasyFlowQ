@@ -3,7 +3,6 @@
 This page will describe the basics of using EasyFlowQ, including basic settings, loading sessions and FCS files, as well as basic analysis method. For a step-by-step example, please visit our [Tutorial](Tutorial.md) page.
 
 ## First time setup
----
 
 Upon the first time start, EasyFlowQ will greet you with the setting window (see below). If this is your first time using EasyFlowQ, we recommend you only change the first setting (**Default fcs directory**). Click browse and select the top-most folder that you normally keep your flow cytometry data. The EasyFlowQ will always open this directory when you load sessions or fcs files, and it will speed up your analysis workflow. 
 
@@ -21,7 +20,7 @@ If you encounter a "Permission Error" pop up after clicking "OK". That suggest y
 Don't worry if you missed this. This setting window is always available in the "settings" menu.
 
 ## Simple analysis workflow
----
+
 Here we list some of the basic operations for a simple analysis:
 
 1. **Load sample:** To load samples, on the click Data -> Load data files (or simply Ctrl+L). You can load multiple files, and a list of data will be shown on the left.
@@ -38,7 +37,7 @@ Below you can see an annotated screenshot about the operations mentioned above.
 ![BasicOperations](img/BasicOps.jpg)
 
 ## Gating
----
+
 Currently EasyFlowQ provides two gating types: *polygon (2D)* and *line (1D)*. To start drawing gates, click on the "+" in the "Gate" panel (upper right). You will enter the corresponding gate drawing mode, based on your current plot type (change in the "Plot type" section). For *polygon gate**, left click to create a new vertex, and right click will close the gate (if more than three vertices exist). For *line gate*, the 2nd vertex will automatically close the gate. 
 
 Check the desired gates in the "Gate" panel to apply that gate onto the samples. **Currently, all gatings are "global". This means if a gate is checked, all the samples plotted will be gated by that gate! This is enforced so that all samples plotted are under the same gating conditions.** For situations that different gates for different samples are required, please refers to the [Subpopulation section](Sample panel.md#Subpopulation).
