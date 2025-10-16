@@ -10,12 +10,14 @@ from copy import copy
 from os import path, getcwd
 
 from scipy.stats.mstats import gmean
+from scipy.stats import linregress
 
 
 from .backend.efio import getSysDefaultDir
 from .backend.qtModels import gateWidgetItem
 from .backend.comp import autoFluoTbModel, spillMatTbModel
 from .uiDesigns import UiLoader
+from .backend.dataIO import FCSData_ef
 
 class compWizard(QtWidgets.QWizard):
     mainCompValueEdited = Signal()
@@ -100,7 +102,7 @@ class compWizard(QtWidgets.QWizard):
                 self.selectedSmplModel.appendRow(comboItem)
 
             # Construct the boxes and add them to the scroll area
-            autoFBox = smplAssignBox(self.wP2Scroll, 'temp', self.selectedSmplModel)
+            autoFBox = smplAssignBox(self.wP2Scroll, 'auto-fl', self.selectedSmplModel)
             autoFBox.setTitle('No-color control (for auto-fluorescence)')
             self.wP2Scroll.layout().addWidget(autoFBox)
             self.p2AssignBoxes = [autoFBox]
@@ -223,62 +225,90 @@ class compWizard(QtWidgets.QWizard):
             if self.percentileCheck.checkState() == Qt.Checked:
                 self.usePercentile = self.percentileSlider.value()
             else:
-                self.usePercentile = -1
-            
-            self.progressLabel.setText('Calculating for auto-fluorescence...')
+                self.usePercentile = -1            
+
+            self.progressLabel.setText('Appplying gates...')
             self.progressBar.setValue(10)
 
-            if self.noAutoFCheck.checkState() == 0 and (not self.noAutoF):
-                noColorFCS = self.selectedSmplItems[self.assignedPairs[0][1]].data(role=0x100)
-                inGateFlag = np.ones(noColorFCS.shape[0], dtype=bool)
+            gatedFCSs = []
+            for chnlKey, smplIdx in self.assignedPairs:
+                if smplIdx == -1:
+                    gatedFCSs.append(None)
+                    continue # No sample assigned to this channel
+                
+                smplFCS = self.selectedSmplItems[smplIdx].data(role=0x100)
+                inGateFlag = np.ones(smplFCS.shape[0], dtype=bool)
 
                 for gate in gateList:
-                    if gate.chnls[0] in noColorFCS.channels and gate.chnls[1] in noColorFCS.channels:
-                        newFlag = gate.isInsideGate(noColorFCS)
-                        inGateFlag = np.logical_and(gate.isInsideGate(noColorFCS), inGateFlag)
+                    if gate.chnls[0] in smplFCS.channels and gate.chnls[1] in smplFCS.channels:
+                        newFlag = gate.isInsideGate(smplFCS)
+                        inGateFlag = np.logical_and(gate.isInsideGate(smplFCS), inGateFlag)
 
                     else: 
                         warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
                 
-                gatedFCS = noColorFCS[inGateFlag, :]
-                self.autoFs = self.meanFunc(gatedFCS, 0, keepdims=True)
+                gatedFCS = smplFCS[inGateFlag, :]
+                gatedFCSs.append(gatedFCS)
+
+            
+            self.progressLabel.setText('Calculating for auto-fluorescence...')
+            self.progressBar.setValue(20)
+
+            # Calculate the auto-fluorescence vector from no-color control
+            if self.noAutoFCheck.checkState() == 0 and (not self.noAutoF):
+                noColorFCS = gatedFCSs[0]
+                self.autoFs = self.meanFunc(noColorFCS, 0, keepdims=True)
+
+            # No-color control not available, use the minimal means acoss samples for channels
             else: 
-                self.autoFs = None
+                chnlMeans = [self.meanFunc(smplFCS, 0, keepdims=True) for smplFCS in gatedFCSs if not (smplFCS is None)]
+                if len(chnlMeans) < 2:
+                    QtWidgets.QMessageBox.critical(self, 
+                        'Not enough samples for auto-fluorescence estimation!', 
+                        'At least two single-color samples are required to estimate the auto-fluorescence. ' \
+                        'Please assign a no-color sample or more single-color samples.',
+                        buttons=QtWidgets.QMessageBox.Ok
+                        )
+                    return False
+                
+                self.autoFs = FCSData_ef.fromArray(chnlMeans[0], np.min(chnlMeans, axis=0))
+
+                # Set the autofluorescence of channels without assigned sample to 0. We do not estimate channels not selected
+                for chnlKey in self.autoFs.channels:
+                    if chnlKey not in self.chnlKeyList:
+                        self.autoFs[0, chnlKey] = 0
 
             self.progressLabel.setText('Calculating for spill matrix...')
-            self.progressBar.setValue(20)
+            self.progressBar.setValue(30)
 
             smplSpills = dict()
             for idx, chnlKey in enumerate(self.chnlKeyList):
                 smplIdx = self.assignedPairs[idx + 1][1]
-                if smplIdx != -1:
-                    smplFCS = self.selectedSmplItems[smplIdx].data(0x100)
 
-                    inGateFlag = np.ones(smplFCS.shape[0], dtype=bool)
-                    for gate in gateList:
-                        if gate.chnls[0] in smplFCS.channels and gate.chnls[1] in smplFCS.channels:
-                            inGateFlag = np.logical_and(gate.isInsideGate(smplFCS), inGateFlag)
+                # Prepare the spillover array, diagonal is 1
+                spills = np.zeros((1, len(self.chnlKeyList)))
+                spills[0, idx] = 1.0 # diagonal is 1
 
-                        else: 
-                            warnings.warn('Sample does not have channel(s) for this gate, skipping this gate', RuntimeWarning)
-                    
-                    gatedFCS = smplFCS[inGateFlag, :]
+                # If sample assigned to this channel: calculate the spillover from this channel
+                if gatedFCSs[idx+1] is not None:                    
+                    gatedFCS = gatedFCSs[idx+1]
 
-                    if self.usePercentile != -1:
-                        percMask = gatedFCS[:, chnlKey] >= np.percentile(np.array(gatedFCS[:, chnlKey]), 100 - self.usePercentile)
-                        gatedFCS = gatedFCS[percMask, :]
+                    for jdx, chnlKey2 in enumerate(self.chnlKeyList):
+                        if chnlKey2 == chnlKey:
+                            continue # skip self
+                        else:
+                            reg_res = linregress(gatedFCS[:, chnlKey], gatedFCS[:, chnlKey2], alternative='greater')
 
-                    if self.noAutoFCheck.checkState() == 0 and not (self.autoFs is None):
-                        gatedFCS = gatedFCS - self.autoFs
+                        spills[0, jdx] = max(reg_res.slope, 0)
 
-                    meanFCS = self.meanFunc(gatedFCS, 0, keepdims=True)
-                    spills = meanFCS / meanFCS[0, chnlKey]
                     smplSpills[chnlKey] = spills
+
+                # If no sample assigned to this channel
                 else:
-                    smplSpills[chnlKey] = None
+                    smplSpills[chnlKey] = spills # keep the spill as identity
 
                 self.progressLabel.setText('Finishing calculation on spill matrix: ({0}/{1})'.format(idx, len(self.chnlKeyList)))
-                self.progressBar.setValue(10 + 70 * ((idx + 1) / len(self.chnlKeyList)))
+                self.progressBar.setValue(20 + 70 * ((idx + 1) / len(self.chnlKeyList)))
 
             self.progressLabel.setText('Preparing autofluorescence matrix for preview')
             self.progressBar.setValue(80)
@@ -286,9 +316,8 @@ class compWizard(QtWidgets.QWizard):
             self.preAutoFluoModel = autoFluoTbModel(self.chnlKeyList, [self.chnlNameDict[chnl] for chnl in self.chnlKeyList], editable=False)
             self.preSpillMatModel = spillMatTbModel(self.chnlKeyList, editable=False)
 
-            if not (self.autoFs is None):
-                autoDF = pd.DataFrame(self.autoFs.T, index=(self.autoFs.channels))
-                self.preAutoFluoModel.loadDF(autoDF)
+            autoDF = pd.DataFrame(self.autoFs.T, index=(self.autoFs.channels))
+            self.preAutoFluoModel.loadDF(autoDF)
 
             self.progressLabel.setText('Preparing spill matrix for preview')
             self.progressBar.setValue(90)
@@ -298,7 +327,7 @@ class compWizard(QtWidgets.QWizard):
                 if smplSpills[chnlKey] is None:
                     spillDF.loc[chnlKey] = [0] * idx + [1] + [0] * (len(self.chnlKeyList) - idx - 1)
                 else:
-                    spillDF.loc[chnlKey] = smplSpills[chnlKey][0, (self.chnlKeyList)]
+                    spillDF.loc[chnlKey] = smplSpills[chnlKey][0]
             self.preSpillMatModel.loadMatDF(spillDF * 100)
 
             self.progressLabel.setText('Done!')
@@ -330,7 +359,6 @@ class compWizard(QtWidgets.QWizard):
 
     def handle_SelectSpillMat(self, selected):
         index = selected.indexes()[0]
-        print(selected.indexes())
         self.spillMatTable.selectRow(index.row())
     
     def handle_load2MainComp(self):
