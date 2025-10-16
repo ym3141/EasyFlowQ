@@ -1,9 +1,9 @@
 .wy-nav-content {
-    max-width: 85% !important;
+    max-width: 75% !important;
 }
 
 h1 {
-    color: darkblue;
+    color: darkslategray;
     text-decoration: underline
 }
 
