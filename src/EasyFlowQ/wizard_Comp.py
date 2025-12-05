@@ -59,9 +59,9 @@ class compWizard(QtWidgets.QWizard):
 
         # connect buttuns on several pages
         self.clearAllPB.clicked.connect(self.handle_P2ClearAll)
-        self.load2MainPB.clicked.connect(self.handle_load2MainComp)
+        self.load2MainPB.clicked.connect(self.handle_Load2MainComp)
         self.exportPB.clicked.connect(self.handle_ExportMat)
-        self.noAutoFCheck.checkStateChanged.connect(self.handle_p3NoAutoFCheck)
+        self.noAutoFCheck.checkStateChanged.connect(self.handle_P3NoAutoFCheck)
 
         # finish_button = self.button(QtWidgets.QWizard.FinishButton)
         # # finish_button.disconnect()
@@ -125,7 +125,9 @@ class compWizard(QtWidgets.QWizard):
                 self.noAutoFCheck.setChecked(True)
             else:
                 self.noAutoFCheck.setChecked(False)
-
+            # Force trigger the check handler to show/hide warning label
+            self.handle_P3NoAutoFCheck(self.noAutoFCheck.isChecked())
+            
             self.noAutoF = self.noAutoFCheck.isChecked()
 
         if id == 3:
@@ -345,7 +347,7 @@ class compWizard(QtWidgets.QWizard):
             return True
         
         elif self.currentId() == 3:
-            self.handle_load2MainComp()
+            self.handle_Load2MainComp()
             return True
         else: 
             return True
@@ -355,7 +357,7 @@ class compWizard(QtWidgets.QWizard):
             if isinstance(child, smplAssignBox):
                 child.handle_Clear()
 
-    def handle_p3NoAutoFCheck(self, checked):
+    def handle_P3NoAutoFCheck(self, checked):
         self.noAutoF = checked
         if hasattr(self, 'assignedPairs'):
             if self.assignedPairs[0][1] == -1 and checked == Qt.Unchecked:
@@ -370,7 +372,7 @@ class compWizard(QtWidgets.QWizard):
         index = selected.indexes()[0]
         self.spillMatTable.selectRow(index.row())
     
-    def handle_load2MainComp(self):
+    def handle_Load2MainComp(self):
         if not (self.curMainSpillMatModel.isIdentity() and self.curMainAutoFluoModel.isZeros()):
             input = QtWidgets.QMessageBox.warning(self, 
                     'Overwrite current compensation?',
