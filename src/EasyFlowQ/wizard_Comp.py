@@ -61,6 +61,7 @@ class compWizard(QtWidgets.QWizard):
         self.clearAllPB.clicked.connect(self.handle_P2ClearAll)
         self.load2MainPB.clicked.connect(self.handle_load2MainComp)
         self.exportPB.clicked.connect(self.handle_ExportMat)
+        self.noAutoFCheck.checkStateChanged.connect(self.handle_p3NoAutoFCheck)
 
         # finish_button = self.button(QtWidgets.QWizard.FinishButton)
         # # finish_button.disconnect()
@@ -121,13 +122,11 @@ class compWizard(QtWidgets.QWizard):
                 self.assignedPairs.append((p2AssignBox.chnlName, p2AssignBox.comboBox.currentIndex()))
 
             if self.assignedPairs[0][1] == -1:
-                self.noAutoFCheck.setDisabled(True)
                 self.noAutoFCheck.setChecked(True)
-                self.noAutoF = True
             else:
-                self.noAutoFCheck.setDisabled(False)
-                self.noAutoFCheck.setChecked(True)
-                self.noAutoF = False
+                self.noAutoFCheck.setChecked(False)
+
+            self.noAutoF = self.noAutoFCheck.isChecked()
 
         if id == 3:
             self.autoFluoTable.setModel(self.preAutoFluoModel)
@@ -158,19 +157,19 @@ class compWizard(QtWidgets.QWizard):
                 else:
                     return False
     
-            elif smplN - chnlN < 1:
-                input = QtWidgets.QMessageBox.warning(self, 
-                    'Not enough sample for each channel and auto-fluoresence', 
-                    'There is not enough sample for every channel and auto-fluoresence. \nIn the next page, ' +
-                        'auto-fluorescence will be ignored if no-color sample is not assigend. Or, ' +
-                        'channels that don\'t have a sample assigned will be ignored in calculation. Proceed?',
-                    buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
-                    )
+            # elif smplN - chnlN < 1:
+            #     input = QtWidgets.QMessageBox.warning(self, 
+            #         'Not enough sample for each channel and auto-fluoresence', 
+            #         'There is not enough sample for every channel and auto-fluoresence. \nIn the next page, ' +
+            #             'auto-fluorescence will be ignored if no-color sample is not assigend. Or, ' +
+            #             'channels that don\'t have a sample assigned will be ignored in calculation. Proceed?',
+            #         buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No
+            #         )
 
-                if input == QtWidgets.QMessageBox.Yes:
-                    return True
-                else:
-                    return False
+            #     if input == QtWidgets.QMessageBox.Yes:
+            #         return True
+            #     else:
+            #         return False
 
             else:
                 return True
@@ -188,7 +187,7 @@ class compWizard(QtWidgets.QWizard):
                     'Nothing is assigned!', 'Please assign the no-color and single-color samples to the channels')
                 return False
             else:
-                if np.any(uniqueSmplCount[1:] > 1):
+                if np.any(uniqueSmplCount > 1):
                     input = QtWidgets.QMessageBox.warning(self, 
                         'Sample assigned to multiple channels', 
                         'One or more samples are assigned to multiple channels. ' +
@@ -355,6 +354,17 @@ class compWizard(QtWidgets.QWizard):
         for child in self.wP2Scroll.children():
             if isinstance(child, smplAssignBox):
                 child.handle_Clear()
+
+    def handle_p3NoAutoFCheck(self, checked):
+        self.noAutoF = checked
+        if hasattr(self, 'assignedPairs'):
+            if self.assignedPairs[0][1] == -1 and checked == Qt.Unchecked:
+                self.p3EstiWarningLabel.setVisible(True)
+            else:
+                self.p3EstiWarningLabel.setVisible(False)
+        else:
+            return
+                
 
     def handle_SelectSpillMat(self, selected):
         index = selected.indexes()[0]
