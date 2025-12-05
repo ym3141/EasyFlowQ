@@ -714,6 +714,7 @@ class mainUi(QtWidgets.QMainWindow):
     def handle_CompWizard(self):
         compWizDialog = compWizard(self, self.chnlListModel, self.smplTreeWidget, self.gateListWidget, self.get_dir4Save(),
                                    self.compWindow.autoFluoModel, self.compWindow.spillMatModel)
+        compWizDialog.finished.connect(lambda : self.compApplyCheck.setChecked(True))
         compWizDialog.show()
 
     def handle_ExportComp(self):

@@ -35,6 +35,8 @@ class compWizard(QtWidgets.QWizard):
         self.autoFluoTable.verticalHeader().setMaximumSize(125, 16777215)
         self.autoFluoTable.horizontalHeader().setMaximumSectionSize(125)
 
+        self.setButtonText(QtWidgets.QWizard.FinishButton, 'Finish and apply')
+
         # setting up all the model for the page1
         self.wizChnlModel = wPage1Model(chnlItemModel=chnlModel)
         self.wizSmplModel = wPage1Model(smplTreeWidget=smplWidget)
@@ -209,27 +211,24 @@ class compWizard(QtWidgets.QWizard):
                     
                 return True
 
+        # The additional setting and calculation page
         elif self.currentId() == 2:
             self.progressLabel.setText('Starting...')
             self.progressBar.setValue(5)
                         
             gateList = [item.data(0x100) for item in self.selectedGateItems]
+            self.chnlKeyList = [item.data(0x101) for item in self.selectedChnlItems]
+
             self.meanFunc = np.mean
             if self.meanMethodBG.checkedButton is self.medRadio:
                 self.meanFunc = np.median
             elif self.meanMethodBG.checkedButton is self.gMeanRadio:
                 self.meanFunc = gmean
 
-            self.chnlKeyList = [item.data(0x101) for item in self.selectedChnlItems]
-
-            if self.percentileCheck.checkState() == Qt.Checked:
-                self.usePercentile = self.percentileSlider.value()
-            else:
-                self.usePercentile = -1            
-
             self.progressLabel.setText('Appplying gates...')
             self.progressBar.setValue(10)
 
+            # Apply gates to samples
             gatedFCSs = []
             for chnlKey, smplIdx in self.assignedPairs:
                 if smplIdx == -1:
@@ -297,9 +296,19 @@ class compWizard(QtWidgets.QWizard):
                         if chnlKey2 == chnlKey:
                             continue # skip self
                         else:
-                            reg_res = linregress(gatedFCS[:, chnlKey], gatedFCS[:, chnlKey2], alternative='greater')
+                            x = np.array(gatedFCS[:, chnlKey] - self.autoFs[0, chnlKey])
+                            y = np.array(gatedFCS[:, chnlKey2] - self.autoFs[0, chnlKey2])
 
-                        spills[0, jdx] = max(reg_res.slope, 0)
+                            # Remove extreme values after autofluorescence compensation
+                            x_low, x_high = np.percentile(x, [1, 99])
+                            y_low, y_high = np.percentile(y, [1, 99])
+                            mask = (x >= x_low) & (x <= x_high) & (y >= y_low) & (y <= y_high)
+                            x = x[mask]
+                            y = y[mask]
+
+                            reg_res = linregress(x, y, alternative='greater')
+
+                        spills[0, jdx] = max(reg_res.slope, 0) # avoid over-estimation
 
                     smplSpills[chnlKey] = spills
 
@@ -337,18 +346,8 @@ class compWizard(QtWidgets.QWizard):
             return True
         
         elif self.currentId() == 3:
-            if self.newCompFlag:
-                input = QtWidgets.QMessageBox.warning(self, 'Compenation not used or save!',
-                                                    'The new compensation has not been applied into the main window or exported. You will lose it if you exit now. Yes to exist',
-                                                    QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-            
-                if input == QtWidgets.QMessageBox.Yes:
-                    return True
-                else:
-                    return False
-            else:
-                return True
-
+            self.handle_load2MainComp()
+            return True
         else: 
             return True
 
