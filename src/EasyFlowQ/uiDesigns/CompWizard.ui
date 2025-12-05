@@ -268,7 +268,7 @@
        <item>
         <widget class="QPushButton" name="load2MainPB">
          <property name="text">
-          <string>Load into compensation (no apply)</string>
+          <string>Load compensation (no apply)</string>
          </property>
         </widget>
        </item>
