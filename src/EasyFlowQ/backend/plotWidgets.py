@@ -100,6 +100,8 @@ class plotCanvas(FigureCanvasQTAgg):
         self.drawnSplit = False
         self.drawnGates = False
 
+        self.legend = None
+
         self.cachedPlotStats = cachedStats()
         self.draw()
 
@@ -421,8 +423,9 @@ class plotCanvas(FigureCanvasQTAgg):
             self.updateAxLims(xlim, ylim)
 
 
-        # draw legends
+        # draw legends and annotations in statcked histograms
         if legendOps is QtCore.Qt.Checked or (legendOps is QtCore.Qt.PartiallyChecked and len(smplItems) < 12) or plotType == 'Aggregated histo':
+            self.legend = None
             if plotType == 'Stacked histo' and len(lines) > 0:
                 for idx, line in enumerate(lines):
                     yshift_text = idx / (len(lines) + 1)
@@ -432,11 +435,14 @@ class plotCanvas(FigureCanvasQTAgg):
                     )
             elif self.drawnQuadrant:
                 # if a quadrant is drawn, instruct legend will try to avoid the texts
-                self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
+                self.legend = self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0.1, 1, 0.8))
             elif self.drawnSplit:
-                self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0, 1, 0.9))
+                self.legend = self.ax.legend(markerscale=5, loc='best', bbox_to_anchor=(0, 0, 1, 0.9))
             else:
-                self.ax.legend(markerscale=5)
+                self.legend = self.ax.legend(markerscale=5)
+
+            if not self.legend is None:
+                self.legend.set_draggable(True)
 
         # hide the y axis ticks if it is a stacked histogram
         if plotType == 'Stacked histo':

@@ -776,10 +776,13 @@ class mainUi(QtWidgets.QMainWindow):
             event.accept()
 
     def _disableInputForGate(self, disable=True):
-        # return
+        # disable inputs that may interfere with gate drawing/editing
         self.toolBox.setEnabled(not disable)
         self.smplBox.setEnabled(not disable)
         self.rightFrame.setEnabled(not disable)
+
+        if self.mpl_canvas.legend:
+            self.mpl_canvas.legend.set_draggable(not disable)
 
     # load fcs file, as well as check if the current channel is compatible and change accordingly
     def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
