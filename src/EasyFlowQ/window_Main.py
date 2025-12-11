@@ -322,7 +322,7 @@ class mainUi(QtWidgets.QMainWindow):
             self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm, ESC to cancel.', 0)
             self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams))
         
-        elif plotType == 'Histogram':
+        elif plotType in ['Histogram', 'Stacked histo', 'Aggregated histo']:
             self.statusbar.showMessage('Left click to draw a line gate, Right click or ESC to cancel', 0)
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
         
@@ -595,7 +595,11 @@ class mainUi(QtWidgets.QMainWindow):
         if isinstance(curSelectedGate, polygonGate):
 
             # check if the current plot is compatible with the gate
-            rightPlotFlag = (plotType in ['Dot plot', 'Density plot']) and list(axScales) == curSelectedGate.axScales and self.curChnls == curSelectedGate.chnls
+            isRightPlotType = plotType in ['Dot plot', 'Density plot']
+            isRightChnls = self.curChnls == curSelectedGate.chnls
+            isRightAxScales = list(axScales) == curSelectedGate.axScales
+
+            rightPlotFlag = isRightPlotType and isRightAxScales and isRightChnls
             if not rightPlotFlag:
                 input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
                                                                               Switch to them (current plot will be lost)?')
@@ -621,7 +625,10 @@ class mainUi(QtWidgets.QMainWindow):
             self.gateEditor.connectInputs(add_or_edit='edit')
         
         elif isinstance(curSelectedGate, lineGate):
-            if not (plotType == 'Histogram' and self.curChnls[0] == curSelectedGate.chnl):
+            isRightPlotType = plotType in ['Histogram', 'Stacked histo', 'Aggregated histo']
+            isRightChnls = self.curChnls[0] == curSelectedGate.chnl
+            rightPlotFlag = isRightPlotType and isRightChnls
+            if not rightPlotFlag:
                 input = QtWidgets.QMessageBox.question(self, 'Change plot?', 'Current ploting parameters does not match those that the gate is created. \
                                                                               Switch to them (current plot will be lost)?')
                 if input == QtWidgets.QMessageBox.Yes:

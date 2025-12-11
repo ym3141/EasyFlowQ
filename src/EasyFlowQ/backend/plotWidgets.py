@@ -180,62 +180,14 @@ class plotCanvas(FigureCanvasQTAgg):
                         shorthand_scatter2d(gatedSmpl, smplItem)
             
             elif plotType == 'Density plot':
-                # Combine all the selected samples
+
+                sampledSmpl, smplMask, cmap = self.density_by_kde(gatedSmpls, xChnl, yChnl, axScales, perfModeN)
+
+                # determine the proper label for the legend
                 if len(gatedSmpls) > 1:
-                    allSmplCombined = np.vstack([smpl[:, [xChnl, yChnl]] for smpl in gatedSmpls])
-                    allSmplCombined = FCSData_ef.fromArray(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
                     plotLabel = 'All Selected Samples'
                 else:
-                    allSmplCombined = gatedSmpls[0][:, [xChnl, yChnl]]
                     plotLabel = smplItems[0].displayName
-
-                if perfModeN and len(allSmplCombined) > perfModeN:
-                    sampleRNG = np.random.default_rng(42)
-                    sampledIdx = sampleRNG.choice(len(allSmplCombined), size=perfModeN, replace=False, axis=0, shuffle=False)
-                    sampledSmpl = allSmplCombined[sampledIdx, :]
-                else: 
-                    sampledSmpl = allSmplCombined
-
-                kdeSize = 1024
-                if len(sampledSmpl) < kdeSize:
-                    kdeSmpl = sampledSmpl[:, [xChnl, yChnl]]
-                else:
-                    sampleRNG2 = np.random.default_rng(43)
-                    kdeSmplIdx = sampleRNG2.choice(len(sampledSmpl), size=kdeSize, replace=False, axis=0, shuffle=False)
-                    kdeSmpl = sampledSmpl[kdeSmplIdx, :]
-
-                # Transform the data if needed
-                transformed_kdeSmpl = []
-                transformed_sampledSmpl = []
-
-                for chnl, scale in zip(chnls, axScales):
-                    if scale == 'logicle':
-                        logicleT = _LogicleTransform(data=kdeSmpl[:, chnl], channel=chnl).inverted()
-                        transformed_kdeSmpl.append(logicleT.transform_non_affine(kdeSmpl[:, chnl]))
-                        transformed_sampledSmpl.append(logicleT.transform_non_affine(sampledSmpl[:, chnl]))
-                    elif scale == 'log':
-                        transformed_kdeSmpl.append(np.log10(kdeSmpl[:, chnl]))
-                        transformed_sampledSmpl.append(np.log10(sampledSmpl[:, chnl]))
-                    elif scale == 'linear':
-                        transformed_kdeSmpl.append(kdeSmpl[:, chnl])
-                        transformed_sampledSmpl.append(sampledSmpl[:, chnl])
-
-                transformed_kdeSmpl = np.vstack(transformed_kdeSmpl).T
-                transformed_sampledSmpl = np.vstack(transformed_sampledSmpl).T
-
-                # Remove NaN and INFs in rows
-                transformed_kdeSmpl = transformed_kdeSmpl[np.all(np.isfinite(transformed_kdeSmpl), axis=1), :]
-                smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=1)
-
-                # Normalize between dimentions for kde
-                minMax = np.array([np.min(transformed_kdeSmpl, axis=0), np.max(transformed_kdeSmpl, axis=0)])
-                transformed_kdeSmpl = (transformed_kdeSmpl - minMax[0]) / (minMax[1] - minMax[0])
-                transformed_sampledSmpl = (transformed_sampledSmpl - minMax[0]) / (minMax[1] - minMax[0])
-
-                # Construct the kdea
-                G_kde = gaussian_kde(transformed_kdeSmpl.T)
-                G_kde.set_bandwidth(G_kde.factor / (kdeSize**(-1./6)) * (len(transformed_sampledSmpl)**(-1./6)))
-                cmap = G_kde(transformed_sampledSmpl[smplMask, :].T)
 
                 # plotting
                 scatter2d(sampledSmpl[smplMask, :], self.ax, channels=[xChnl, yChnl], 
@@ -492,6 +444,63 @@ class plotCanvas(FigureCanvasQTAgg):
             compedSmpl = (smpl - autoFVector) @ compMat + autoFVector
             compedSmpls.append(compedSmpl)
         return compedSmpls
+
+    def density_by_kde(self, gatedSmpls, xChnl, yChnl, axScales, perfModeN, kde_size=1024):
+        if len(gatedSmpls) > 1:
+            allSmplCombined = np.vstack([smpl[:, [xChnl, yChnl]] for smpl in gatedSmpls])
+            allSmplCombined = FCSData_ef.fromArray(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
+        else:
+            allSmplCombined = gatedSmpls[0][:, [xChnl, yChnl]]
+
+        if perfModeN and len(allSmplCombined) > perfModeN:
+            sampleRNG = np.random.default_rng(42)
+            sampledIdx = sampleRNG.choice(len(allSmplCombined), size=perfModeN, replace=False, axis=0, shuffle=False)
+            sampledSmpl = allSmplCombined[sampledIdx, :]
+        else: 
+            sampledSmpl = allSmplCombined
+
+        if len(sampledSmpl) < min(kde_size, perfModeN):
+            kdeSmpl = sampledSmpl[:, [xChnl, yChnl]]
+        else:
+            sampleRNG2 = np.random.default_rng(43)
+            kdeSmplIdx = sampleRNG2.choice(len(sampledSmpl), size=min(kde_size, perfModeN), replace=False, axis=0, shuffle=False)
+            kdeSmpl = sampledSmpl[kdeSmplIdx, :]
+
+        # Transform the data if needed
+        transformed_kdeSmpl = []
+        transformed_sampledSmpl = []
+
+        for chnl, scale in zip([xChnl, yChnl], axScales):
+            if scale == 'logicle':
+                logicleT = _LogicleTransform(data=kdeSmpl[:, chnl], channel=chnl).inverted()
+                transformed_kdeSmpl.append(logicleT.transform_non_affine(kdeSmpl[:, chnl]))
+                transformed_sampledSmpl.append(logicleT.transform_non_affine(sampledSmpl[:, chnl]))
+            elif scale == 'log':
+                transformed_kdeSmpl.append(np.log10(kdeSmpl[:, chnl]))
+                transformed_sampledSmpl.append(np.log10(sampledSmpl[:, chnl]))
+            elif scale == 'linear':
+                transformed_kdeSmpl.append(kdeSmpl[:, chnl])
+                transformed_sampledSmpl.append(sampledSmpl[:, chnl])
+
+        transformed_kdeSmpl = np.vstack(transformed_kdeSmpl).T
+        transformed_sampledSmpl = np.vstack(transformed_sampledSmpl).T
+
+        # Remove NaN and INFs in rows
+        transformed_kdeSmpl = transformed_kdeSmpl[np.all(np.isfinite(transformed_kdeSmpl), axis=1), :]
+        smplMask = np.all(np.isfinite(transformed_sampledSmpl), axis=1)
+
+        # Normalize between dimentions for kde
+        minMax = np.array([np.min(transformed_kdeSmpl, axis=0), np.max(transformed_kdeSmpl, axis=0)])
+        transformed_kdeSmpl = (transformed_kdeSmpl - minMax[0]) / (minMax[1] - minMax[0])
+        transformed_sampledSmpl = (transformed_sampledSmpl - minMax[0]) / (minMax[1] - minMax[0])
+
+        # Construct the kdea
+        G_kde = gaussian_kde(transformed_kdeSmpl.T)
+        G_kde.set_bandwidth(G_kde.factor / (kde_size**(-1./6)) * (len(transformed_sampledSmpl)**(-1./6)))
+        cmap = G_kde(transformed_sampledSmpl[smplMask, :].T)
+
+        return sampledSmpl, smplMask, cmap
+
 
     # Update axis limites with lims. If 'auto', set auto axis. If None, then do nothing for that axis
     def updateAxLims(self, xlims = 'auto', ylims = 'auto'):
