@@ -1,5 +1,7 @@
 #!/bin/sh
 
+conda activate easyflowq6
+
 # delete and add folder
 rm -r release/EasyFlowQ_release_mac/*
 rm -r _temp/pyi_*
