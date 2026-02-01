@@ -247,9 +247,19 @@ class plotCanvas(FigureCanvasQTAgg):
 
             # re-adjust the lims if logicle scale is used, because logicle scale limit the lower limit based on the last sample
             if axScales[0] == 'logicle':
-                self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0])
+                if axRanges[0] == 'auto':
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0])
+                else:
+                    # Get T (max value) and min_neg (min negative value) from user defined limits
+                    min_neg = min(0, axRanges[0][0])
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0], min_neg=min_neg, T=axRanges[0][1])
+
             if axScales[1] == 'logicle':
-                self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1])
+                if axRanges[1] == 'auto':
+                    self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1])
+                else:
+                    min_neg = min(0, axRanges[1][0])
+                    self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1], min_neg=min_neg, T=axRanges[1][1])
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
@@ -318,7 +328,11 @@ class plotCanvas(FigureCanvasQTAgg):
             elif axScales[0] == 'logicle':
                 # re-adjust the xlims if logicle scale is used, because logicle scale limit the right limit based on the last sample
                 # This ensures the logical scale limits are based on all the data
-                self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
+                if axRanges[0] == 'auto':
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
+                else:
+                    min_neg = min(0, axRanges[0][0])
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl, min_neg=min_neg, T=axRanges[0][1])
 
             # force the y axis to be log scale if logicle is used
             if axScales[1] == 'logicle':
