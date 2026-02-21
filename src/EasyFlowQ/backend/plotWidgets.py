@@ -282,11 +282,12 @@ class plotCanvas(FigureCanvasQTAgg):
                 # if the plot type is aggregated, then we need to combine all the samples
 
                 aggregatedSmpl = FCSData_ef.fromArray(gatedSmpls[0], np.vstack(gatedSmpls))
-                gatedSmpls = [aggregatedSmpl]
                 smplNames = ['Aggregated sample']
-                smplColors = [smplItems[0].plotColor.getRgbF()]            
+                smplColors = [smplItems[0].plotColor.getRgbF()]
 
-            for gatedSmpl, smplName, smplColor in zip(gatedSmpls, smplNames, smplColors):
+                        
+            smpls_to_plot = gatedSmpls if plotType != 'Aggregated histo' else [aggregatedSmpl]
+            for gatedSmpl, smplName, smplColor in zip(smpls_to_plot, smplNames, smplColors):
                 if gatedSmpl.shape[0] < 1:
                     continue
 

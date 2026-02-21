@@ -343,7 +343,7 @@ class mainUi(QtWidgets.QMainWindow):
             self.quadEditor.quadrantConfirmed.connect(self.loadQuadrant)
             self.quadEditor.addQuad_connect()
 
-        elif plotType == 'Histogram':
+        elif plotType in ('Histogram', 'Stacked histo', 'Aggregated histo'):
             self.statusbar.showMessage('Left click to draw a split, Right click to cancel', 0)
             self.splitEditor = splitEditor(self.mpl_canvas.ax, self.curChnls[0])
             self.splitEditor.splitConfirmed.connect(self.loadSplit)

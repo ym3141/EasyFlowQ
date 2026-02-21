@@ -21,12 +21,7 @@
         "spillMat": null,
         "useAutoFluo": false
     },
-    "derivedParams": [
-        {
-            "formula": "Add(Symbol('FL10-A'), Symbol('FL11-A'))",
-            "name": "New param"
-        }
-    ],
+    "derivedParams": [],
     "figOptions": {
         "curAxLims": [
             "auto",
@@ -37,16 +32,16 @@
             "linear"
         ],
         "curChnls": [
-            "New param",
-            "FL11-A"
+            "FL6-A",
+            "FSC-H"
         ],
         "curDotSize": "Regular",
         "curNormOption": "Unit Area",
         "curOpacity": 80,
-        "curPlotType": "Dot plot",
+        "curPlotType": "Histogram",
         "curSmooth": 0
     },
-    "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/SaveTestSimple_v1.7.eflq",
+    "fileDir": "C:\\Users\\yiton\\Documents\\CodingProjects\\EasyFlowQ\\demo_sample\\SaveTestSimple_v1.7.eflq",
     "gateSaveList": [
         {
             "axScales": [
@@ -212,7 +207,7 @@
                 0.46666666865348816,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [],
@@ -226,7 +221,7 @@
                 0.007843137718737125,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [],
@@ -240,7 +235,7 @@
                 0.7019608020782471,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [],
@@ -254,7 +249,7 @@
                 0.5411764979362488,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [
@@ -272,7 +267,7 @@
                         0.46666666865348816,
                         1.0
                     ],
-                    "selected": true
+                    "selected": false
                 }
             ],
             "displayName": "02-Well-C2",
@@ -300,7 +295,6 @@
         "FSC-A": "",
         "FSC-H": "",
         "FSC-Width": "",
-        "New param": "",
         "SSC-A": "",
         "SSC-H": "",
         "Time": ""
