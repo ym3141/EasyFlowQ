@@ -229,7 +229,11 @@ class plotCanvas(FigureCanvasQTAgg):
                     if len(gatedSmpls) < 5 and gatePercOps:
                         inGateFracText = []
                         for idx in range(len(gatedSmpls)):
-                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
+                            if len(smplItems[idx].displayName) > 20:
+                                smplDisplayName = smplItems[idx].displayName[0:20] + '...'
+                            else:
+                                smplDisplayName = smplItems[idx].displayName
+                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplDisplayName))
                         inGateFracText = ''.join(inGateFracText)
 
                     else:
@@ -370,7 +374,11 @@ class plotCanvas(FigureCanvasQTAgg):
                     if len(gatedSmpls) <= 5 and gatePercOps:
                         inGateFracText = []
                         for idx in range(len(gatedSmpls)):
-                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
+                            if len(smplItems[idx].displayName) > 20:
+                                smplDisplayName = smplItems[idx].displayName[0:20] + '...'
+                            else:
+                                smplDisplayName = smplItems[idx].displayName
+                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplDisplayName))
                         inGateFracText = ''.join(inGateFracText)
                     else:
                         inGateFracText = ''
