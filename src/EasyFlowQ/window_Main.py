@@ -31,6 +31,7 @@ from .uiDesigns.MainWindow_SmplSect import mainUi_SmplSect
 from .uiDesigns import UiLoader
 
 matplotlib.use('QT5Agg')
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 
 
 class mainUi(QtWidgets.QMainWindow):
@@ -131,6 +132,17 @@ class mainUi(QtWidgets.QMainWindow):
         self.gateListWidget.addActions([self.actionDelete_Gate, self.actionEdit_Gate])
         self.qsListWidget.addActions([self.actionDelete_Quad, self.actionQuad2Gate])
 
+        # add the new addGate button
+        self.addGateToolButton.setPopupMode(QtWidgets.QToolButton.ToolButtonPopupMode.MenuButtonPopup)
+        # self.addGateToolButton.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonFollowStyle)
+        self.addGateMenu = QtWidgets.QMenu(self)
+        iconPath = path.join(__location__, 'uiDesigns', 'resource')
+        self.addPolyGateAct = self.addGateMenu.addAction(QtGui.QIcon(path.join(iconPath, 'polygon.png')), 'polygon', self.handle_AddGate)
+        self.addLineGateAct = self.addGateMenu.addAction(QtGui.QIcon(path.join(iconPath, 'line.png')), 'line', self.handle_AddGate)
+        self.addRectGateAct = self.addGateMenu.addAction(QtGui.QIcon(path.join(iconPath, 'rect.png')), 'rectangle', self.handle_AddGate)
+        self.addLineGateAct.setVisible(False)
+        self.addGateToolButton.setMenu(self.addGateMenu)
+
         # add the secret testing shortcut
         secretShortcut = QtGui.QShortcut(QtGui.QKeySequence('Alt+C'), self, self.secretCrash)
 
@@ -187,7 +199,10 @@ class mainUi(QtWidgets.QMainWindow):
         self.compWindow.compValueEdited.connect(self.handle_One)
 
         # gates
-        self.addGateButton.clicked.connect(self.handle_AddGate)
+        self.addGateToolButton.clicked.connect(self.handle_AddGate)
+        self.figOpsPanel.signal_HistTypeSelected.connect(self.addLineGateAct.setVisible)
+        self.figOpsPanel.signal_HistTypeSelected.connect(lambda isHist: self.addPolyGateAct.setVisible(not isHist))
+        self.figOpsPanel.signal_HistTypeSelected.connect(lambda isHist: self.addRectGateAct.setVisible(not isHist))
         self.addQuadButton.clicked.connect(self.handle_AddQuad)
         self.gateListWidget.itemSelectionChanged.connect(self.handle_GateSelectionChanged)
 
@@ -319,11 +334,15 @@ class mainUi(QtWidgets.QMainWindow):
                 logicleParams.append(None)
 
         if plotType == 'Dot plot' or plotType == 'Density plot':
-            self.statusbar.showMessage('Left click to draw, Right click to close the gate and confirm, ESC to cancel.', 0)
-            self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams))
+            if self.sender() == self.addRectGateAct:
+                self.statusbar.showMessage('Left click to start a rectangle gate; click again to close; ESC to cancel.', 0)
+                self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams), rectMode=True)
+            else:
+                self.statusbar.showMessage('Left click to draw; Right click to close the gate and confirm; ESC to cancel.', 0)
+                self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams))
         
         elif plotType in ['Histogram', 'Stacked histo', 'Aggregated histo']:
-            self.statusbar.showMessage('Left click to draw a line gate, Right click or ESC to cancel', 0)
+            self.statusbar.showMessage('Left click to draw a line gate; Right click or ESC to cancel', 0)
             self.gateEditor = lineGateEditor(self.mpl_canvas.ax, self.curChnls[0])
         
         else:

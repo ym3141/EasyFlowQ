@@ -101,7 +101,6 @@ class polygonGate():
 
         return insideFlags
 
-
 class lineGate:
     def __init__(self, chnl, ends:list) -> None:
 
@@ -127,6 +126,12 @@ class lineGate:
     @property
     def chnls(self):
         return [self.chnl, self.chnl]
+
+class rectGate(polygonGate):
+    def __init__(self, chnls, axScales, logicleParams=[None, None], xmin=None, xmax=None, ymin=None, ymax=None) -> None:
+        verts = np.array([[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]])
+        super().__init__(chnls, axScales, logicleParams, verts)
+
 
 class baseGateEditor(QtCore.QObject):
     """
