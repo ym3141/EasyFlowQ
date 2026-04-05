@@ -9,7 +9,7 @@ from os import path, getcwd, environ
 from . import __version__
 
 from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, quadWidgetItem, splitWidgetItem
-from .backend.gates import polygonGateEditor, lineGateEditor, quadrantEditor, polygonGate, lineGate, quadrantGate, split, splitEditor
+from .backend.gates import *
 from .backend.plotWidgets import plotCanvas
 from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from .backend.utils import colorGenerator
@@ -336,7 +336,7 @@ class mainUi(QtWidgets.QMainWindow):
         if plotType == 'Dot plot' or plotType == 'Density plot':
             if self.sender() == self.addRectGateAct:
                 self.statusbar.showMessage('Left click to start a rectangle gate; click again to close; ESC to cancel.', 0)
-                self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams), rectMode=True)
+                self.gateEditor = rectGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams))
             else:
                 self.statusbar.showMessage('Left click to draw; Right click to close the gate and confirm; ESC to cancel.', 0)
                 self.gateEditor = polygonGateEditor(self.mpl_canvas.ax, canvasParam=(self.curChnls, axScales, logicleParams))

@@ -38,7 +38,7 @@
         "curDotSize": "Regular",
         "curNormOption": "Unit Area",
         "curOpacity": 80,
-        "curPlotType": "Histogram",
+        "curPlotType": "Dot plot",
         "curSmooth": 0
     },
     "fileDir": "C:\\Users\\yiton\\Documents\\CodingProjects\\EasyFlowQ\\demo_sample\\SaveTestSimple_v1.7.eflq",
@@ -188,6 +188,53 @@
                 [
                     186329.24646139558,
                     125.84638224549444
+                ]
+            ]
+        },
+        {
+            "checkState": 0,
+            "chnl": "FL6-A",
+            "displayName": "lineGate2",
+            "ends": [
+                501.100508763276,
+                1850.799686732445
+            ],
+            "type": "lineGate",
+            "uuid": "u29bsmqx"
+        },
+        {
+            "axScales": [
+                "linear",
+                "linear"
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL6-A",
+                "FSC-H"
+            ],
+            "displayName": "yu",
+            "logicleParams": [
+                null,
+                null
+            ],
+            "type": "polygonGate",
+            "uuid": "shuxqul7",
+            "verts": [
+                [
+                    385.4537048975676,
+                    156159.73849708127
+                ],
+                [
+                    385.4537048975676,
+                    264172.26148689695
+                ],
+                [
+                    1391.0319498952385,
+                    264172.26148689695
+                ],
+                [
+                    1391.0319498952385,
+                    156159.73849708127
                 ]
             ]
         }
