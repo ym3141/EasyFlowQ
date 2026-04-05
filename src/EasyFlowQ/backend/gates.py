@@ -370,9 +370,7 @@ class polygonGateEditor(baseGateEditor):
             finishedNewGate = polygonGate(self.chnls, self.axScales, logicleParams=self.logicleParams, closedLine=self.line)
             self.gateConfirmed.emit(finishedNewGate)
 
-        elif event.key == 'escape':
-            self.disconnectInputs()
-            self.gateConfirmed.emit(None)
+        super().editGate_on_keyInput(event)
 
 class rectGateEditor(baseGateEditor):
     lineParam = {
@@ -580,15 +578,8 @@ class lineGateEditor(baseGateEditor):
             finishedNewGate = lineGate(self.chnl, ends=[xydata[0, 0], xydata[1, 0]])
             self.gateConfirmed.emit(finishedNewGate)
 
-        elif event.key == 'escape':
-            self.disconnectInputs()
-            self.gateConfirmed.emit(None)
+        super().editGate_on_keyInput(event)
 
-
-    def blitDraw(self):
-        self.canvas.restore_region(self.background)
-        self.ax.draw_artist(self.line)
-        self.canvas.blit(self.ax.bbox)
 
 class quadrant:
     corners = [[False, False], [False, True], [True, False], [True, True]]
@@ -773,7 +764,6 @@ class splitEditor(QtCore.QObject):
     def blitDraw(self):
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.vline)
-
         self.canvas.blit(self.ax.bbox)
 
 if __name__ == '__main__':
