@@ -423,6 +423,8 @@ class mainUi(QtWidgets.QMainWindow):
         self.settingDict.updateRecentSessions(saveFilePath)
         if not saveFilePath:
             return
+        elif not saveFilePath.endswith('.eflq'):
+            saveFilePath += '.eflq'
 
         self.set_sessionSavePath(saveFilePath)
         sessionSaveFile = sessionSave(self, saveFilePath)
@@ -754,6 +756,9 @@ class mainUi(QtWidgets.QMainWindow):
         saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export compensation', self.get_dir4Save(), filter='*.efComp')
         if not saveFileDir:
             return
+
+        if saveFileDir and not saveFileDir.endswith('.efComp'):
+            saveFileDir += '.efComp'
 
         with open(saveFileDir, 'w+') as f:
             json.dump(jDict, f, sort_keys=True, indent=4)

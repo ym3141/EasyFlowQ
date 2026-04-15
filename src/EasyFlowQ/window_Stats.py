@@ -118,6 +118,8 @@ class statWindow(QtWidgets.QWidget):
         saveFileDir, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export stats', self.sessionDir, filter='*.xlsx')
         if not saveFileDir:
             return
+        elif not saveFileDir.endswith('.xlsx'):
+            saveFileDir += '.xlsx'
 
         try:
             with pd.ExcelWriter(saveFileDir, engine='xlsxwriter') as writer:
