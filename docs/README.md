@@ -54,7 +54,7 @@ Path/To/Folder$ python ./main.py
 ```
 
 ## First time startup
-For first time startup settings, please go to our [usage page](https://ym3141.github.io/EasyFlowQ/Basic%20Usage/#first-time-setup).
+For first time startup settings, please go to our [usage page](<https://ym3141.github.io/EasyFlowQ/Basic usage/#first-time-setup>).
 
 ## Contact and citation
 For more info please contact <yitongma7@gmail.com>. If you use *EasyFlowQ* in your research, we would appreciate citation to the following publication:

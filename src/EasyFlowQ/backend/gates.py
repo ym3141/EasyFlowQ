@@ -12,6 +12,9 @@ from PySide6 import QtCore
 from functools import lru_cache
 import warnings
 
+__all__ = ['polygonGate', 'lineGate', 'rectGate', 'quadrant', 'quadrantGate', 'split',
+           'polygonGateEditor', 'lineGateEditor', 'rectGateEditor', 'quadrantEditor', 'splitEditor']
+
 def dist(x, y):
     """
     Return the distance between two points.
@@ -101,7 +104,6 @@ class polygonGate():
 
         return insideFlags
 
-
 class lineGate:
     def __init__(self, chnl, ends:list) -> None:
 
@@ -127,6 +129,12 @@ class lineGate:
     @property
     def chnls(self):
         return [self.chnl, self.chnl]
+
+class rectGate(polygonGate):
+    def __init__(self, chnls, axScales, logicleParams=[None, None], xmin=None, xmax=None, ymin=None, ymax=None) -> None:
+        verts = [[xmin, ymin], [xmin, ymax], [xmax, ymax], [xmax, ymin]]
+        super().__init__(chnls, axScales, logicleParams, verts=verts)
+
 
 class baseGateEditor(QtCore.QObject):
     """
@@ -159,6 +167,7 @@ class baseGateEditor(QtCore.QObject):
 
     def connectInputs(self, add_or_edit:str = 'add'):
         if add_or_edit == 'add':
+            print('Connecting add gate editor inputs')
             self.releaseCid = self.canvas.mpl_connect('button_release_event', self.addGate_on_release)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
             self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.addGate_on_keyInput)
@@ -202,6 +211,9 @@ class baseGateEditor(QtCore.QObject):
         pass
 
     def editGate_on_keyInput(self, event):
+        if self.event.key == 'escape':
+            self.disconnectInputs()
+            self.gateConfirmed.emit(None)
         pass
 
 
@@ -358,10 +370,78 @@ class polygonGateEditor(baseGateEditor):
             finishedNewGate = polygonGate(self.chnls, self.axScales, logicleParams=self.logicleParams, closedLine=self.line)
             self.gateConfirmed.emit(finishedNewGate)
 
-        elif event.key == 'escape':
+        super().editGate_on_keyInput(event)
+
+class rectGateEditor(baseGateEditor):
+    lineParam = {
+        'marker': 's',
+        'markerfacecolor': 'w',
+        'markersize': 5,
+        'color': 'r',
+        'linestyle': '--'
+    }
+
+    def __init__(self, ax, canvasParam=None, gate:polygonGate=None) -> None:
+        super().__init__(ax, rectGateEditor.lineParam)
+
+        if not gate:
+            self.line.set_data([], [])
+            self.chnls, self.axScales, self.logicleParams = canvasParam
+
+            self.firstVert = None
+            self.secondVert = None
+        else:
+            self.chnls = gate.chnls
+            self.axScales = gate.axScales
+            self.logicleParams = gate.logicleParams
+
+            xydata = np.vstack([gate.verts, gate.verts[0, :]])
+            self.line.set_data(xydata.T)
+
+        self.ax.add_line(self.line)
+        self.background = self.canvas.copy_from_bbox(self.ax.bbox)
+        self.blitDraw()
+
+    def addGate_on_release(self, event):
+        if event.button == 1:
+            vert = [event.xdata, event.ydata]
+            if self.firstVert is None:
+                self.firstVert = vert
+                self.line.set_data(np.array(vert)[np.newaxis].T)
+                self.blitDraw()
+
+            elif self.secondVert is None:
+                self.secondVert = vert
+                xmin = min(self.firstVert[0], self.secondVert[0])
+                xmax = max(self.firstVert[0], self.secondVert[0])
+                ymin = min(self.firstVert[1], self.secondVert[1])
+                ymax = max(self.firstVert[1], self.secondVert[1])
+                self.line.set_data([[xmin, xmax, xmax, xmin, xmin], [ymin, ymin, ymax, ymax, ymin]])
+                self.blitDraw()
+                finishedNewGate = rectGate(self.chnls, self.axScales, self.logicleParams, 
+                                           xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax)
+                self.disconnectInputs()
+                self.gateConfirmed.emit(finishedNewGate)
+        
+        if event.button == 3:
+            # right click recieved, exit and return None
             self.disconnectInputs()
             self.gateConfirmed.emit(None)
 
+    def addGate_on_motion(self, event):
+        vert = [event.xdata, event.ydata]
+        xydata = self.line.get_xydata()
+
+        if self.firstVert is None:
+            self.line.set_data(np.array(vert)[np.newaxis].T)
+        elif self.secondVert is None:
+            xmin = min(self.firstVert[0], vert[0])
+            xmax = max(self.firstVert[0], vert[0])
+            ymin = min(self.firstVert[1], vert[1])
+            ymax = max(self.firstVert[1], vert[1])
+            self.line.set_data([[xmin, xmax, xmax, xmin, xmin], [ymin, ymin, ymax, ymax, ymin]])
+        
+        self.blitDraw()
 
 class lineGateEditor(baseGateEditor):
 
@@ -498,15 +578,8 @@ class lineGateEditor(baseGateEditor):
             finishedNewGate = lineGate(self.chnl, ends=[xydata[0, 0], xydata[1, 0]])
             self.gateConfirmed.emit(finishedNewGate)
 
-        elif event.key == 'escape':
-            self.disconnectInputs()
-            self.gateConfirmed.emit(None)
+        super().editGate_on_keyInput(event)
 
-
-    def blitDraw(self):
-        self.canvas.restore_region(self.background)
-        self.ax.draw_artist(self.line)
-        self.canvas.blit(self.ax.bbox)
 
 class quadrant:
     corners = [[False, False], [False, True], [True, False], [True, True]]
@@ -691,7 +764,6 @@ class splitEditor(QtCore.QObject):
     def blitDraw(self):
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.vline)
-
         self.canvas.blit(self.ax.bbox)
 
 if __name__ == '__main__':

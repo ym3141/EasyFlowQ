@@ -229,7 +229,11 @@ class plotCanvas(FigureCanvasQTAgg):
                     if len(gatedSmpls) < 5 and gatePercOps:
                         inGateFracText = []
                         for idx in range(len(gatedSmpls)):
-                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
+                            if len(smplItems[idx].displayName) > 20:
+                                smplDisplayName = smplItems[idx].displayName[0:20] + '...'
+                            else:
+                                smplDisplayName = smplItems[idx].displayName
+                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplDisplayName))
                         inGateFracText = ''.join(inGateFracText)
 
                     else:
@@ -247,9 +251,19 @@ class plotCanvas(FigureCanvasQTAgg):
 
             # re-adjust the lims if logicle scale is used, because logicle scale limit the lower limit based on the last sample
             if axScales[0] == 'logicle':
-                self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0])
+                if axRanges[0] == 'auto':
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0])
+                else:
+                    # Get T (max value) and min_neg (min negative value) from user defined limits
+                    min_neg = min(0, axRanges[0][0])
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0], min_neg=min_neg, T=axRanges[0][1])
+
             if axScales[1] == 'logicle':
-                self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1])
+                if axRanges[1] == 'auto':
+                    self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1])
+                else:
+                    min_neg = min(0, axRanges[1][0])
+                    self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1], min_neg=min_neg, T=axRanges[1][1])
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
@@ -272,11 +286,12 @@ class plotCanvas(FigureCanvasQTAgg):
                 # if the plot type is aggregated, then we need to combine all the samples
 
                 aggregatedSmpl = FCSData_ef.fromArray(gatedSmpls[0], np.vstack(gatedSmpls))
-                gatedSmpls = [aggregatedSmpl]
                 smplNames = ['Aggregated sample']
-                smplColors = [smplItems[0].plotColor.getRgbF()]            
+                smplColors = [smplItems[0].plotColor.getRgbF()]
 
-            for gatedSmpl, smplName, smplColor in zip(gatedSmpls, smplNames, smplColors):
+                        
+            smpls_to_plot = gatedSmpls if plotType != 'Aggregated histo' else [aggregatedSmpl]
+            for gatedSmpl, smplName, smplColor in zip(smpls_to_plot, smplNames, smplColors):
                 if gatedSmpl.shape[0] < 1:
                     continue
 
@@ -318,7 +333,11 @@ class plotCanvas(FigureCanvasQTAgg):
             elif axScales[0] == 'logicle':
                 # re-adjust the xlims if logicle scale is used, because logicle scale limit the right limit based on the last sample
                 # This ensures the logical scale limits are based on all the data
-                self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
+                if axRanges[0] == 'auto':
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl)
+                else:
+                    min_neg = min(0, axRanges[0][0])
+                    self.ax.set_xscale('logicle', data=gatedSmpls, channel=xChnl, min_neg=min_neg, T=axRanges[0][1])
 
             # force the y axis to be log scale if logicle is used
             if axScales[1] == 'logicle':
@@ -355,7 +374,11 @@ class plotCanvas(FigureCanvasQTAgg):
                     if len(gatedSmpls) <= 5 and gatePercOps:
                         inGateFracText = []
                         for idx in range(len(gatedSmpls)):
-                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplItems[idx].displayName))
+                            if len(smplItems[idx].displayName) > 20:
+                                smplDisplayName = smplItems[idx].displayName[0:20] + '...'
+                            else:
+                                smplDisplayName = smplItems[idx].displayName
+                            inGateFracText.append('\n{1}: {0:7.2%}'.format(gateFracs[idx][-1], smplDisplayName))
                         inGateFracText = ''.join(inGateFracText)
                     else:
                         inGateFracText = ''

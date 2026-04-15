@@ -237,6 +237,8 @@ class _LogicleTransform(matplotlib.transforms.Transform):
     minimum negative event. If no negative events are present, W is set to
     zero.
 
+    Another option is to specify min_neg, which will replace r (the minimum negative event).
+
     References
     ----------
     .. [1] D.R. Parks, M. Roederer, W.A. Moore, "A New Logicle Display
@@ -254,7 +256,7 @@ class _LogicleTransform(matplotlib.transforms.Transform):
     # attribute.
     base = 10
 
-    def __init__(self, T=None, M=None, W=None, data=None, channel=None):
+    def __init__(self, T=None, M=None, W=None, min_neg=None, data=None, channel=None):
         matplotlib.transforms.Transform.__init__(self)
         # If data is included, try to obtain T, M and W from it
         if data is not None:
@@ -299,7 +301,7 @@ class _LogicleTransform(matplotlib.transforms.Transform):
                         y = d
                     # If negative events are present, use minimum.
                     if np.any(y < 0):
-                        r = np.percentile(np.array(y), .2)
+                        r = np.percentile(np.array(y), .2) if min_neg is None else min_neg
                         Wi = (M - np.log10(T / abs(r))) / 2 if r < 0 else 0
                         W = Wi if Wi > W else W
         else:

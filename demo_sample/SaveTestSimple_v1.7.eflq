@@ -21,12 +21,7 @@
         "spillMat": null,
         "useAutoFluo": false
     },
-    "derivedParams": [
-        {
-            "formula": "Add(Symbol('FL10-A'), Symbol('FL11-A'))",
-            "name": "New param"
-        }
-    ],
+    "derivedParams": [],
     "figOptions": {
         "curAxLims": [
             "auto",
@@ -37,8 +32,8 @@
             "linear"
         ],
         "curChnls": [
-            "New param",
-            "FL11-A"
+            "FL6-A",
+            "FSC-H"
         ],
         "curDotSize": "Regular",
         "curNormOption": "Unit Area",
@@ -46,7 +41,7 @@
         "curPlotType": "Dot plot",
         "curSmooth": 0
     },
-    "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/SaveTestSimple_v1.7.eflq",
+    "fileDir": "C:\\Users\\yiton\\Documents\\CodingProjects\\EasyFlowQ\\demo_sample\\SaveTestSimple_v1.7.eflq",
     "gateSaveList": [
         {
             "axScales": [
@@ -195,6 +190,53 @@
                     125.84638224549444
                 ]
             ]
+        },
+        {
+            "checkState": 0,
+            "chnl": "FL6-A",
+            "displayName": "lineGate2",
+            "ends": [
+                501.100508763276,
+                1850.799686732445
+            ],
+            "type": "lineGate",
+            "uuid": "u29bsmqx"
+        },
+        {
+            "axScales": [
+                "linear",
+                "linear"
+            ],
+            "checkState": 0,
+            "chnls": [
+                "FL6-A",
+                "FSC-H"
+            ],
+            "displayName": "yu",
+            "logicleParams": [
+                null,
+                null
+            ],
+            "type": "polygonGate",
+            "uuid": "shuxqul7",
+            "verts": [
+                [
+                    385.4537048975676,
+                    156159.73849708127
+                ],
+                [
+                    385.4537048975676,
+                    264172.26148689695
+                ],
+                [
+                    1391.0319498952385,
+                    264172.26148689695
+                ],
+                [
+                    1391.0319498952385,
+                    156159.73849708127
+                ]
+            ]
         }
     ],
     "qsSaveList": [],
@@ -212,7 +254,7 @@
                 0.46666666865348816,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [],
@@ -226,7 +268,7 @@
                 0.007843137718737125,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [],
@@ -240,7 +282,7 @@
                 0.7019608020782471,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [],
@@ -254,7 +296,7 @@
                 0.5411764979362488,
                 1.0
             ],
-            "selected": false
+            "selected": true
         },
         {
             "Subpops": [
@@ -272,7 +314,7 @@
                         0.46666666865348816,
                         1.0
                     ],
-                    "selected": true
+                    "selected": false
                 }
             ],
             "displayName": "02-Well-C2",
@@ -300,7 +342,6 @@
         "FSC-A": "",
         "FSC-H": "",
         "FSC-Width": "",
-        "New param": "",
         "SSC-A": "",
         "SSC-H": "",
         "Time": ""

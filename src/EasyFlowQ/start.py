@@ -12,9 +12,12 @@ else:
 from PySide6 import QtWidgets, QtCore, QtGui
 from .window_Main import mainUi
 from .window_Settings import localSettings
+from . import __version__
 
 from multiprocessing import Process, freeze_support
 from traceback import format_exception
+
+import argparse
 
 # set up the excepthook so unhandled exception won't crash the program
 _excepthook = sys.excepthook
@@ -60,7 +63,17 @@ def newWindowProc(sessionSaveFile, pos):
     newProcess.start()
 
 def startGUI():
-    newWindowFunc()
+
+    parser = argparse.ArgumentParser(prog='EasyFlowQ', description='Start EasyFlowQ')
+    parser.add_argument('--version', action='version', help='Show the version number and exit', version='%(prog)s ' + __version__)
+    parser.add_argument('--session', type=str, help='The session file to open when start the program')
+    args = parser.parse_args()
+
+    if args.session:
+        sessionSaveFile = args.session
+        newWindowFunc(sessionSaveFile=sessionSaveFile)
+    else:
+        newWindowFunc()
 
 if __name__ == "__main__":
     newWindowFunc()

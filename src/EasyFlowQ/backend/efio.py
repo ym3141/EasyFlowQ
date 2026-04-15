@@ -436,6 +436,10 @@ def _convert_gateItem(gateItem):
     for gateSaveKey in ['prebuiltPath', '_dataCurrentlyGating', 'invLogicleTs']: 
         if gateSaveKey in gateSave:
             del gateSave[gateSaveKey]
+    
+    if gateSave['type'] == 'rectGate':
+        # rectGate is a special case of polygonGate, we will save it as polygonGate for better compatibility with previous versions
+        gateSave['type'] = 'polygonGate'
 
     # convert the verts to list
     if gateSave['type'] == 'polygonGate':
