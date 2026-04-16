@@ -211,7 +211,7 @@ class baseGateEditor(QtCore.QObject):
         pass
 
     def editGate_on_keyInput(self, event):
-        if self.event.key == 'escape':
+        if event.key == 'escape':
             self.disconnectInputs()
             self.gateConfirmed.emit(None)
         pass
