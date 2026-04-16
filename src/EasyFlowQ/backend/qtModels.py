@@ -14,7 +14,10 @@ from ..FlowCal.transform import to_rfi
 from .plotWidgets import gateSmpls
 from .gates import polygonGate, lineGate, quadrantGate
 
-pd.set_option('future.no_silent_downcasting', True)
+try:
+    pd.set_option('future.no_silent_downcasting', True)
+except pd.errors.OptionError:
+    print('Not the pandas version that EasyFlowQ is built based on, but it should be fine.')
 
 def getFileStem(fileDir):
     if fileDir is None:
