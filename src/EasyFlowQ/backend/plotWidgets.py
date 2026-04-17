@@ -24,6 +24,7 @@ from .gates import quadrant, split, polygonGate, lineGate
 from .dataIO import FCSData_ef
 
 import warnings
+import time
 
 # Macros
 quadrantTextProps = dict(boxstyle='square', facecolor='w', alpha=0.8)
@@ -103,7 +104,8 @@ class plotCanvas(FigureCanvasQTAgg):
         self.legend = None
 
         self.cachedPlotStats = cachedStats()
-        self.draw()
+        self.draw_counter = 0
+        self.draw_idle()
 
     # the function that draw
     def redraw(
@@ -116,6 +118,9 @@ class plotCanvas(FigureCanvasQTAgg):
         selectedGateItem=None,
         dotSize = 0, dotOpacity = 0.8
         ):
+
+        # print('Plotting requested')
+        # cur_time = time.time()
 
         self.curPlotType = plotType
         self.ax.clear()
@@ -137,7 +142,7 @@ class plotCanvas(FigureCanvasQTAgg):
         
         # return if no sample to draw, call redraw to show blank
         if len(smplItems) == 0:
-            self.draw()
+            self.draw_idle()
             return []
 
         # apply the comp
@@ -153,6 +158,9 @@ class plotCanvas(FigureCanvasQTAgg):
         else:
             _gateList = gateList + [selectedGateItem.gate]
             gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, _gateList, lastGateStatOnly=True)
+
+        # print('Gating done, time used: {0:.2f}s'.format(time.time() - cur_time))
+        # cur_time = time.time()
                 
         # Plot dots, histogram or density plot
         if plotType == 'Dot plot' or plotType == 'Density plot':
@@ -422,8 +430,9 @@ class plotCanvas(FigureCanvasQTAgg):
         # hide the y axis ticks if it is a stacked histogram
         if plotType == 'Stacked histo':
             self.ax.set_yticks([], [])            
-            
-        self.draw()
+        
+        self.draw_idle()
+        # print('Plotting done, time used: {0:.2f}s'.format(time.time() - cur_time))
         self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
 
         # Update the cached stats, and evoke the signal
@@ -547,7 +556,7 @@ class plotCanvas(FigureCanvasQTAgg):
                 self.ax.autoscale(axis='y')
                 self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
 
-        self.draw()
+        self.draw_idle()
 
     # Adjust the axis to 1 and 99 percentile for dot and density plots, with some margins
     def adjustLim_noExtreme(self):
@@ -583,7 +592,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
                 self.signal_AxLimsUpdated.emit([lowerLeft_data[0], upperRight_data[0]], [lowerLeft_data[1], upperRight_data[1]])
 
-                self.draw()
+                self.draw_idle()
             else:
                 return
 
