@@ -478,12 +478,15 @@ class plotCanvas(FigureCanvasQTAgg):
         return compedSmpls
 
     def density_by_kde(self, gatedSmpls, xChnl, yChnl, axScales, perfModeN, kde_size=1024):
+
+        # Combine all the gated samples for density estimation. 
         if len(gatedSmpls) > 1:
             allSmplCombined = np.vstack([smpl[:, [xChnl, yChnl]] for smpl in gatedSmpls])
             allSmplCombined = FCSData_ef.fromArray(gatedSmpls[0][:, [xChnl, yChnl]], allSmplCombined)
         else:
             allSmplCombined = gatedSmpls[0][:, [xChnl, yChnl]]
 
+        # Subsample the data if the "performance/normalize mode" is enabled 
         if perfModeN and len(allSmplCombined) > perfModeN:
             sampleRNG = np.random.default_rng(42)
             sampledIdx = sampleRNG.choice(len(allSmplCombined), size=perfModeN, replace=False, axis=0, shuffle=False)
@@ -491,7 +494,8 @@ class plotCanvas(FigureCanvasQTAgg):
         else: 
             sampledSmpl = allSmplCombined
 
-        if len(sampledSmpl) < min(kde_size, perfModeN):
+        # Further downsample for KDE 
+        if len(sampledSmpl) < kde_size:
             kdeSmpl = sampledSmpl[:, [xChnl, yChnl]]
         else:
             sampleRNG2 = np.random.default_rng(43)
