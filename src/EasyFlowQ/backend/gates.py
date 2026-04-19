@@ -72,18 +72,10 @@ class polygonGate():
                 verts4path[:, idx] = invLogicleT.transform_non_affine(verts4path[:, idx])     
         self.prebuiltPath = mpl_path(verts4path)
 
-        # Cache for the data that is currently gating, for the lru_cahce to work
-        self._dataCurrentlyGating = None
-
-    def isInsideGate(self, fcsData):
-        dataHash = hash(fcsData.sum(axis=1).tobytes())
-        self._dataCurrentlyGating = fcsData
-
-        return self._isInsideGate_cached(dataHash)
     
-    @lru_cache(maxsize=128)
-    def _isInsideGate_cached(self, dataHash):
-        points = self._dataCurrentlyGating[:, self.chnls].copy()
+    @lru_cache(maxsize=512)
+    def isInsideGate(self, fcsData):
+        points = fcsData[:, self.chnls].copy()
 
         # Transform the points to the same scale as the gate
         with np.errstate(invalid='ignore', divide='ignore'):
@@ -112,17 +104,9 @@ class lineGate:
             ends.reverse()
         self.ends = ends
 
-        self._dataCurrentlyGating = None
-
+    @lru_cache(maxsize=512)
     def isInsideGate(self, fcsData):
-        dataHash = hash(fcsData.sum(axis=1).tobytes())
-        self._dataCurrentlyGating = fcsData
-
-        return self._isInsideGate_cached(dataHash)
-    
-    @lru_cache(maxsize=128)
-    def _isInsideGate_cached(self, dataHash):
-        points = self._dataCurrentlyGating[:, self.chnl]
+        points = fcsData[:, self.chnl]
         insideFlags = np.logical_and(points > self.ends[0], points < self.ends[1])
         return np.array(insideFlags)
 

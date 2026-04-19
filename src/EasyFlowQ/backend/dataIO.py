@@ -22,8 +22,21 @@ class FCSData_ef(FCSData):
     def __array_finalize__(self, obj):
         if obj is None: return
         self._drvedParams = getattr(obj, '_drvedParams', [])
+        self.dataSecHash = None
         super().__array_finalize__(obj)
 
+    def __hash__(self):
+        if self.dataSecHash is None:
+            self.dataSecHash = hash(self.tobytes())
+        return self.dataSecHash
+    
+    def __eq__(self, other):
+        if not isinstance(other, FCSData_ef):
+            return False
+        if self.dataSecHash is None:
+            self.dataSecHash = hash(self.tobytes())
+
+        return self.dataSecHash == other.dataSecHash
         
     def appendNewParam(self, newDrvedParam):
         self._drvedParams.append(newDrvedParam)
