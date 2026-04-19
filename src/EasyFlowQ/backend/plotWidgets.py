@@ -119,8 +119,8 @@ class plotCanvas(FigureCanvasQTAgg):
         dotSize = 0, dotOpacity = 0.8
         ):
 
-        # print('Plotting requested')
-        # cur_time = time.time()
+        print('Plotting requested')
+        cur_time = time.time()
 
         self.curPlotType = plotType
         self.ax.clear()
@@ -159,8 +159,8 @@ class plotCanvas(FigureCanvasQTAgg):
             _gateList = gateList + [selectedGateItem.gate]
             gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, _gateList, lastGateStatOnly=True)
 
-        # print('Gating done, time used: {0:.2f}s'.format(time.time() - cur_time))
-        # cur_time = time.time()
+        print('Gating done, time used: {0:.2f}s'.format(time.time() - cur_time))
+        cur_time = time.time()
                 
         # Plot dots, histogram or density plot
         if plotType == 'Dot plot' or plotType == 'Density plot':
@@ -169,9 +169,9 @@ class plotCanvas(FigureCanvasQTAgg):
             dotAlpha = dotOpacity / 100
 
             if plotType == 'Dot plot':
-                shorthand_scatter2d = lambda smpl, smplItem : scatter2d(smpl, self.ax, [xChnl, yChnl], xscale=axScales[0], yscale=axScales[1],
-                                                                        color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
-                                                                        s=dotSizeDict[dotSize], alpha=dotAlpha, linewidths=0)
+                plot_dots = lambda smpl, smplItem : self.ax.plot(smpl[:, xChnl], smpl[:, yChnl], '.', mew=0,
+                                                                    color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
+                                                                    ms=dotSizeDict[dotSize], alpha=dotAlpha)
                 if perfModeN:
                     NperSmpl = int(perfModeN / len(gatedSmpls))
                     for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -182,10 +182,10 @@ class plotCanvas(FigureCanvasQTAgg):
                         else: 
                             sampledSmpl = gatedSmpl
                     
-                        shorthand_scatter2d(sampledSmpl, smplItem)
+                        plot_dots(sampledSmpl, smplItem)
                 else:
                     for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
-                        shorthand_scatter2d(gatedSmpl, smplItem)
+                        plot_dots(gatedSmpl, smplItem)
             
             elif plotType == 'Density plot':
 
@@ -432,7 +432,7 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_yticks([], [])            
         
         self.draw_idle()
-        # print('Plotting done, time used: {0:.2f}s'.format(time.time() - cur_time))
+        print('Plotting done, time used: {0:.2f}s'.format(time.time() - cur_time))
         self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
 
         # Update the cached stats, and evoke the signal
