@@ -159,6 +159,10 @@ class plotCanvas(FigureCanvasQTAgg):
             _gateList = gateList + [selectedGateItem.gate]
             gatedSmpls, gateFracs, inGateFlags = gateSmpls(compedSmpls, _gateList, lastGateStatOnly=True)
 
+        if [len(smpl) for smpl in gatedSmpls] == [0] * len(gatedSmpls):
+            self.draw_idle()
+            return None
+
         print('Gating done, time used: {0:.2f}s'.format(time.time() - cur_time))
         cur_time = time.time()
                 
@@ -170,8 +174,8 @@ class plotCanvas(FigureCanvasQTAgg):
 
             if plotType == 'Dot plot':
                 plot_dots = lambda smpl, smplItem : self.ax.plot(smpl[:, xChnl], smpl[:, yChnl], '.', mew=0,
-                                                                    color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
-                                                                    ms=dotSizeDict[dotSize], alpha=dotAlpha)
+                                                                 color=smplItem.plotColor.getRgbF(), label=smplItem.displayName, 
+                                                                 ms=dotSizeDict[dotSize], alpha=dotAlpha)
                 if perfModeN:
                     NperSmpl = int(perfModeN / len(gatedSmpls))
                     for gatedSmpl, smplItem in zip(gatedSmpls, smplItems):
@@ -265,6 +269,8 @@ class plotCanvas(FigureCanvasQTAgg):
                     # Get T (max value) and min_neg (min negative value) from user defined limits
                     min_neg = min(0, axRanges[0][0])
                     self.ax.set_xscale('logicle', data=gatedSmpls, channel=chnls[0], min_neg=min_neg, T=axRanges[0][1])
+            else:
+                self.ax.set_xscale(axScales[0])
 
             if axScales[1] == 'logicle':
                 if axRanges[1] == 'auto':
@@ -272,6 +278,8 @@ class plotCanvas(FigureCanvasQTAgg):
                 else:
                     min_neg = min(0, axRanges[1][0])
                     self.ax.set_yscale('logicle', data=gatedSmpls, channel=chnls[1], min_neg=min_neg, T=axRanges[1][1])
+            else:
+                self.ax.set_yscale(axScales[1])
 
             self.updateAxLims(axRanges[0], axRanges[1])
 
@@ -312,6 +320,7 @@ class plotCanvas(FigureCanvasQTAgg):
 
             if plotType == 'Histogram' or plotType == 'Aggregated histo':
                 ymax_histo = max([np.max(ns), ymax_histo]) * 1.1
+
             else:  # It's stacked histogram
                 yShift = np.max(ns) * 0.5
                 ymax_histo = yShift * (len(ns) + 1.1)
@@ -728,9 +737,17 @@ def hist1d_line(data, ax, channel, xscale, color,
     # Plot
     n, edges = np.histogram(data[:, channel], bins=ploting_bins, weights=weights)
 
+    if smooth >= 8 and len(n) >= 128:
+        combine_folds = max(int(smooth / 8), 1) # combine every n bins, n is determined by the smooth parameter. Does not kick in till smooth = 8
+        combine_folds = min(combine_folds, len(n) // 128) # make sure there is at least 128 bins after combining
+        n = np.add.reduceat(n, np.arange(0, len(n), combine_folds))
+        edges = edges[::combine_folds]
+        edges[-1] = ploting_bins[-1] # make sure the last edge is the same as the last bin edge
+        edges = edges[:len(n)+1] # make sure edges has one more element than n
+
     if smooth:
-        uniformFilterSize = int(smooth / 8) * 2 + 1 # make sure it's a ood intiger. Does not kick in till smooth = 16
-        n = uniform_filter1d(n, size=uniformFilterSize, mode='nearest')
+        uniformFilterSize = int(smooth / 8) * 2 + 1 # make sure it's a ood intiger. Does not kick in till smooth = 8
+        # n = uniform_filter1d(n, size=uniformFilterSize, mode='nearest')
         n = gaussian_filter1d(n, sigma=smooth/16)
 
     line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color, label=label)
