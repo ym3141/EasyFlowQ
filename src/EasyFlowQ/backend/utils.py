@@ -30,7 +30,7 @@ class colorGenerator:
         if startCount + n < self.colorLibLength:
             returnColors =  colorGenerator.allColors[startCount: startCount + n]
         else:
-            cycledColors = np.vstack([colorGenerator.allColors] * int(np.ceil(n / self.colorLibLength)))
+            cycledColors = np.vstack([colorGenerator.allColors] * (n // self.colorLibLength + 2))
             returnColors = cycledColors[startCount: startCount + n]
 
         return returnColors
