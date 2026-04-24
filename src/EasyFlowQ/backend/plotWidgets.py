@@ -119,9 +119,6 @@ class plotCanvas(FigureCanvasQTAgg):
         dotSize = 0, dotOpacity = 0.8
         ):
 
-        print('Plotting requested')
-        cur_time = time.time()
-
         self.curPlotType = plotType
         self.ax.clear()
         self.ax.autoscale(False)
@@ -163,8 +160,6 @@ class plotCanvas(FigureCanvasQTAgg):
             self.draw_idle()
             return None
 
-        print('Gating done, time used: {0:.2f}s'.format(time.time() - cur_time))
-        cur_time = time.time()
                 
         # Plot dots, histogram or density plot
         if plotType == 'Dot plot' or plotType == 'Density plot':
@@ -441,7 +436,6 @@ class plotCanvas(FigureCanvasQTAgg):
             self.ax.set_yticks([], [])            
         
         self.draw_idle()
-        print('Plotting done, time used: {0:.2f}s'.format(time.time() - cur_time))
         self.signal_AxLimsUpdated.emit(self.ax.get_xlim(), self.ax.get_ylim())
 
         # Update the cached stats, and evoke the signal
@@ -742,7 +736,7 @@ def hist1d_line(data, ax, channel, xscale, color,
         combine_folds = min(combine_folds, len(n) // 128) # make sure there is at least 128 bins after combining
         n = np.add.reduceat(n, np.arange(0, len(n), combine_folds))
         edges = edges[::combine_folds]
-        edges[-1] = ploting_bins[-1] # make sure the last edge is the same as the last bin edge
+        edges = np.append(edges, ploting_bins[-1]) # make sure the last edge is the same as the last bin edge
         edges = edges[:len(n)+1] # make sure edges has one more element than n
 
     if smooth:
@@ -750,6 +744,7 @@ def hist1d_line(data, ax, channel, xscale, color,
         # n = uniform_filter1d(n, size=uniformFilterSize, mode='nearest')
         n = gaussian_filter1d(n, sigma=smooth/16)
 
+    print(len(n), len(edges))
     line = ax.plot((edges[1:] + edges[0:-1]) / 2, n, color=color, label=label)
 
     if xscale=='logicle':
