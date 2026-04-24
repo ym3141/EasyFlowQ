@@ -1,8 +1,37 @@
-from ..FlowCal.io import FCSData
+from ..FlowCal.io import FCSData, read_fcs_header_segment, read_fcs_text_segment
+from ..FlowCal.transform import to_rfi
+from tempfile import TemporaryFile
 from sympy import Expr, lambdify, exp
 import numpy as np
 
+from functools import lru_cache
+
 from PySide6.QtGui import QStandardItem
+
+@lru_cache(maxsize=64)
+def multiSmplFCS(filePath : str) -> list:
+    FCSDataList = []
+
+    curFileObject = open(filePath, 'rb')
+    while True:
+        curHeader = read_fcs_header_segment(curFileObject)
+        curTextSegment, dlim = read_fcs_text_segment(buf=curFileObject, begin=curHeader.text_begin, end=curHeader.text_end)
+        nextDataOffset= dict(curTextSegment).get('$NEXTDATA', '0')
+        nextDataOffset = int(nextDataOffset)
+        if nextDataOffset == 0:
+            FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
+            curFileObject.close()
+            return FCSDataList
+        else:
+            FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
+            curFileObject.seek(nextDataOffset)
+            newTempFile = TemporaryFile(mode='w+b')
+            newTempFile.write(curFileObject.read())
+            curFileObject.close()
+
+            curFileObject = newTempFile
+            curFileObject.seek(0)
+
 
 class FCSData_ef(FCSData):
     """
@@ -104,7 +133,6 @@ class FCSData_ef(FCSData):
         if len(self._drvedParams) == 0:
             return self._channels
         return self._channels[:-len(self._drvedParams)]
-
     
 class drvedParam(QStandardItem):
     def __init__(self, name, formumla: Expr):

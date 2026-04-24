@@ -13,7 +13,7 @@ from .backend.gates import *
 from .backend.plotWidgets import plotCanvas
 from .backend.efio import sessionSave, writeRawFcs, getSysDefaultDir
 from .backend.utils import colorGenerator
-from .backend.dataIO import drvedParam
+from .backend.dataIO import drvedParam, multiSmplFCS
 
 from .window_RenameCF import renameWindow_CF
 from .window_RenameMap import renameWindow_Map
@@ -313,7 +313,19 @@ class mainUi(QtWidgets.QMainWindow):
         for idx in range(len(fileNames)):
             loadingBarDiag.setLabelText('Loading FCS file {0} of {1}'.format(idx, len(fileNames)))
             loadingBarDiag.setValue(idx + 1)
-            self.loadFcsFile(fileNames[idx], newColorList[idx], selected=setSelectedFlag)
+
+            _data = multiSmplFCS(fileNames[idx]) # this is to trigger the cache loading avoid reloading the file.
+            print(len(_data))
+            if len(_data) > 1:
+                # more than one sample is in the fcs file, load 
+                subNames = ['{}_Sample{})'.format(path.basename(fileNames[idx]), jdx + 1) for jdx in range(len(_data))]
+                subColors = self.colorGen.giveColors(len(_data))
+                print(len(subColors), len(_data))
+                for jdx in range(len(_data)):
+                    self.loadFcsFile(fileNames[idx], subColors[jdx], displayName=subNames[jdx], selected=setSelectedFlag, infileIdx=jdx)    
+            else:
+                self.loadFcsFile(fileNames[idx], newColorList[idx], selected=setSelectedFlag)
+            multiSmplFCS.cache_clear() # clear the cache.
 
         self.smplTreeWidget.resizeColumnToContents(0)
         loadingBarDiag.setValue(idx + 2)
@@ -816,11 +828,17 @@ class mainUi(QtWidgets.QMainWindow):
             self.mpl_canvas.legend.set_draggable(not disable)
 
     # load fcs file, as well as check if the current channel is compatible and change accordingly
-    def loadFcsFile(self, fileDir, color, displayName=None, selected=False):
+    def loadFcsFile(self, fileDir, color, displayName=None, selected=False, infileIdx=0):
         self.set_saveFlag(True)
         
         curDrvedParams = [self.drvedParamModel.item(idx) for idx in range(self.drvedParamModel.rowCount())]
-        newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color), addDrvedParams=curDrvedParams)
+
+        if infileIdx == 0:
+            newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, plotColor=QtGui.QColor.fromRgbF(*color), addDrvedParams=curDrvedParams)
+        else:
+            FCSDataList = multiSmplFCS(fileDir)
+            newRootSmplItem = smplItem(self.smplTreeWidget, fileDir, fcsDataInput=FCSDataList[infileIdx], infileIdx=infileIdx,
+                                       plotColor=QtGui.QColor.fromRgbF(*color), addDrvedParams=curDrvedParams)
 
         self.smplTreeWidget.addTopLevelItem(newRootSmplItem)
         if displayName:

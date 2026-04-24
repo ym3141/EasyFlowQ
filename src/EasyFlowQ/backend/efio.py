@@ -210,7 +210,7 @@ class sessionSave():
             
                 if confirmedDir:
                     try:
-                        newSmplItem = mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], 
+                        newSmplItem = mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], infileIdx=jSmpl.get('infileIdx', 0),
                                                                displayName = jSmpl['displayName'], selected=jSmpl['selected'])
                         smpl_subpops.append((newSmplItem, jSmpl.get('Subpops', [])))
 
@@ -385,6 +385,7 @@ def _convert_smplItem(item, saveDir, selectedSmplItems=[]):
     except Exception as e:
         smplSave['fileDir_rel'] = None
     smplSave['fileDir_abs'] = _to_posixpath(path.abspath(smplSave['fileDir']))
+    smplSave['infileIdx'] = item.infileIdx if hasattr(item, 'infileIdx') else 0
     smplSave['displayName'] = item.displayName
     smplSave['plotColor'] = item.plotColor.getRgbF()
 

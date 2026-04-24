@@ -1,4 +1,4 @@
-from PySide6.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator, QValidator
+from PySide6.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleValidator, QIntValidator, QValidator, QColor
 from PySide6.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, Signal
 from PySide6.QtWidgets import QListWidgetItem, QTreeWidgetItem
 import pandas as pd
@@ -32,22 +32,29 @@ def genShortUID(n=8):
 
 
 class smplItem(QTreeWidgetItem):
-    def __init__(self, parent, fcsFileDir, plotColor, fcsDataInput=None, displayName=None, addDrvedParams=[]):
+    def __init__(self, 
+                 parent, fcsFileDir, plotColor=QColor.fromRgbF(0.1, 0.1, 0.1), 
+                 fcsDataInput=None, infileIdx=0, displayName=None, addDrvedParams=[]):
         super(smplItem, self).__init__(parent)
 
-        self.fileDir = fcsFileDir
-        
+        self.fileDir = fcsFileDir # if None, likely a subpop item
+        self.infileIdx = infileIdx # for multi-sample fcs file, which sample this item corresponds to. Default to 0 for single-sample fcs file.
+
         # From a fcs file
-        if not (fcsFileDir is None):
-            fcsData = to_rfi(FCSData(self.fileDir))
-            self.setText(0, getFileStem(self.fileDir))
-        # From name and fcs data
-        else:
+        if fcsDataInput is not None:
             fcsData = fcsDataInput
-            if not (displayName is None):
-                self.setText(0, displayName)
-            else:
+            if displayName is None:
                 self.setText(0, '(no name)')
+            else:
+                self.setText(0, displayName)
+
+        elif fcsFileDir is not None:
+                fcsData = to_rfi(FCSData(self.fileDir))
+                self.setText(0, getFileStem(self.fileDir))
+
+        else:
+            raise ValueError('Either fcsDataInput or fcsFileDir should be provided for smplItem.')
+
 
         for drvedParam in addDrvedParams:
             if not drvedParam in fcsData.channels:
