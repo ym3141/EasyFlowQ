@@ -153,10 +153,10 @@ def findDups(renamePlates):
 def colorByDuplicates(renamePlates, duplicats):
     colorPlates = []
     for renamePlate in renamePlates:
-        colorPlate = pd.DataFrame().reindex_like(renamePlate)
-        colorPlate.fillna(to_hex('k'), inplace=True)
+        colorPlate = pd.DataFrame().reindex_like(renamePlate).astype(str)
+        colorPlate.replace('nan', to_hex('k'), inplace=True)
 
-        dupMap = renamePlate.applymap(lambda x : x in duplicats)
+        dupMap = renamePlate.map(lambda x : x in duplicats)
         colorPlate[dupMap] = to_hex('tab:red')
         colorPlate.loc['Legend', 2] = to_hex('tab:red')
 
@@ -167,8 +167,8 @@ def colorByDuplicates(renamePlates, duplicats):
 def colorBySmplNames(renamePlates, splitNames):
     colorPlates = []
     for renamePlate in renamePlates:
-        colorPlate = pd.DataFrame().reindex_like(renamePlate)
-        colorPlate.fillna(to_hex('w'), inplace=True)
+        colorPlate = pd.DataFrame().reindex_like(renamePlate).astype(str)
+        colorPlate.replace('nan', to_hex('w'), inplace=True)
 
         colorPlate.loc['Legend', 1] = to_hex('xkcd:very light green')
         colorPlates.append(colorPlate)
