@@ -151,7 +151,6 @@ class baseGateEditor(QtCore.QObject):
 
     def connectInputs(self, add_or_edit:str = 'add'):
         if add_or_edit == 'add':
-            print('Connecting add gate editor inputs')
             self.releaseCid = self.canvas.mpl_connect('button_release_event', self.addGate_on_release)
             self.moveCid = self.canvas.mpl_connect('motion_notify_event', self.addGate_on_motion)
             self.keyPressCid = self.canvas.mpl_connect('key_press_event', self.addGate_on_keyInput)

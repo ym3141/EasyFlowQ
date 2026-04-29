@@ -5,32 +5,36 @@ from sympy import Expr, lambdify, exp
 import numpy as np
 
 from functools import lru_cache
+from warnings import catch_warnings, filterwarnings
 
 from PySide6.QtGui import QStandardItem
 
 @lru_cache(maxsize=64)
-def multiSmplFCS(filePath : str) -> list:
+def processFCS2List(filePath : str) -> list:
     FCSDataList = []
 
-    curFileObject = open(filePath, 'rb')
-    while True:
-        curHeader = read_fcs_header_segment(curFileObject)
-        curTextSegment, dlim = read_fcs_text_segment(buf=curFileObject, begin=curHeader.text_begin, end=curHeader.text_end)
-        nextDataOffset= dict(curTextSegment).get('$NEXTDATA', '0')
-        nextDataOffset = int(nextDataOffset)
-        if nextDataOffset == 0:
-            FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
-            curFileObject.close()
-            return FCSDataList
-        else:
-            FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
-            curFileObject.seek(nextDataOffset)
-            newTempFile = TemporaryFile(mode='w+b')
-            newTempFile.write(curFileObject.read())
-            curFileObject.close()
+    with catch_warnings():
+        filterwarnings('ignore', category=UserWarning)
 
-            curFileObject = newTempFile
-            curFileObject.seek(0)
+        curFileObject = open(filePath, 'rb')
+        while True:
+            curHeader = read_fcs_header_segment(curFileObject)
+            curTextSegment, dlim = read_fcs_text_segment(buf=curFileObject, begin=curHeader.text_begin, end=curHeader.text_end)
+            nextDataOffset= dict(curTextSegment).get('$NEXTDATA', '0')
+            nextDataOffset = int(nextDataOffset)
+            if nextDataOffset == 0:
+                FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
+                curFileObject.close()
+                return FCSDataList
+            else:
+                FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
+                curFileObject.seek(nextDataOffset)
+                newTempFile = TemporaryFile(mode='w+b')
+                newTempFile.write(curFileObject.read())
+                curFileObject.close()
+
+                curFileObject = newTempFile
+                curFileObject.seek(0)
 
 
 class FCSData_ef(FCSData):

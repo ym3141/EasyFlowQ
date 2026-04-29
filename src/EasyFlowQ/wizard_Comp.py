@@ -13,11 +13,11 @@ from scipy.stats.mstats import gmean
 from scipy.stats import linregress
 
 
-from .backend.efio import getSysDefaultDir
+from .backend.ioSession import getSysDefaultDir
 from .backend.qtModels import gateWidgetItem
 from .backend.comp import autoFluoTbModel, spillMatTbModel
 from .uiDesigns import UiLoader
-from .backend.dataIO import FCSData_ef
+from .backend.ioData import FCSData_ef
 
 class compWizard(QtWidgets.QWizard):
     mainCompValueEdited = Signal()

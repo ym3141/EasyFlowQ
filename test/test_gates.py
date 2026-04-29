@@ -1,6 +1,6 @@
 from src.EasyFlowQ.backend.gates import polygonGate, lineGate
 from src.EasyFlowQ.backend.qtModels import gateWidgetItem
-from src.EasyFlowQ.backend.efio import _convert_gateItem
+from src.EasyFlowQ.backend.ioSession import _convert_gateItem
 from src.EasyFlowQ.FlowCal import plot
 
 import json

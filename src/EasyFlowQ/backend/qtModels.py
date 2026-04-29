@@ -8,8 +8,7 @@ import os.path
 import secrets
 import string
 
-from ..backend.dataIO import FCSData_ef as FCSData
-from ..FlowCal.transform import to_rfi
+from .ioData import FCSData_ef as FCSData
 
 from .plotWidgets import gateSmpls
 from .gates import polygonGate, lineGate, quadrantGate
@@ -35,25 +34,26 @@ class smplItem(QTreeWidgetItem):
     def __init__(self, 
                  parent, fcsFileDir, plotColor=QColor.fromRgbF(0.1, 0.1, 0.1), 
                  fcsDataInput=None, infileIdx=0, displayName=None, addDrvedParams=[]):
+        # From 1.7.8, fcsDataInput is required for smplItem, and fcsFileDir is only used for display and as an identifier for merging. 
+        # For subpopItem, fcsFileDir should be None.
+
         super(smplItem, self).__init__(parent)
 
         self.fileDir = fcsFileDir # if None, likely a subpop item
         self.infileIdx = infileIdx # for multi-sample fcs file, which sample this item corresponds to. Default to 0 for single-sample fcs file.
 
-        # From a fcs file
+        # Use the input data
         if fcsDataInput is not None:
             fcsData = fcsDataInput
-            if displayName is None:
-                self.setText(0, '(no name)')
-            else:
+            if fcsFileDir is not None:
+                self.setText(0, getFileStem(fcsFileDir))
+            elif displayName is not None:
                 self.setText(0, displayName)
-
-        elif fcsFileDir is not None:
-                fcsData = to_rfi(FCSData(self.fileDir))
-                self.setText(0, getFileStem(self.fileDir))
+            else:
+                self.setText(0, '(no name)')
 
         else:
-            raise ValueError('Either fcsDataInput or fcsFileDir should be provided for smplItem.')
+            raise ValueError('Either fcsDataInput should be provided for smplItem.')
 
 
         for drvedParam in addDrvedParams:

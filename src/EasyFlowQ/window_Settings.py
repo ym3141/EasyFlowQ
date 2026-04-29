@@ -5,7 +5,7 @@ from os import path, getcwd
 from copy import deepcopy
 import json
 
-from .backend.efio import getSysDefaultDir
+from .backend.ioSession import getSysDefaultDir
 from .uiDesigns import UiLoader
 
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))

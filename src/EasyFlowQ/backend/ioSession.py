@@ -5,7 +5,7 @@ from copy import deepcopy
 
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
-from .dataIO import drvedParam
+from .ioData import drvedParam
 from .. import __version__
 
 from PySide6.QtCore import QThread, Signal, Qt

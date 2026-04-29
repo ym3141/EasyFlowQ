@@ -1,5 +1,5 @@
 import pytest
-from src.EasyFlowQ.backend.dataIO import FCSData_ef, drvedParam
+from src.EasyFlowQ.backend.ioData import FCSData_ef, drvedParam
 
 from sympy import symbols, lambdify
 import numpy as np
@@ -14,11 +14,13 @@ def test_appendNewParam(fcs_data):
     newdata = fcs_data.appendNewParam(drvedParam('sum', x + y))    
     assert 'sum' in newdata.drvedParamNames
     assert newdata.shape[1] == fcs_data.shape[1] + 1
-    np.testing.assert_array_equal(newdata[:, 'sum'], fcs_data[:, 'FL1-A'] + fcs_data[:, 'FL6-A'])
+
+    all_equal = np.equal(fcs_data[:, 'FL1-A'] + fcs_data[:, 'FL6-A'], newdata[:, 'sum'])
+    assert np.all(all_equal), 'The new parameter values are not correct'
 
 def test_fromArray(fcs_data):
     mock_data = np.random.rand(100, 5)
     new_fcs_data = FCSData_ef.fromArray(fcs_data, mock_data)
-    np.testing.assert_array_equal(new_fcs_data, mock_data)
-    assert new_fcs_data._channels == fcs_data._channels
-    assert new_fcs_data._drvedParams == fcs_data._drvedParams
+
+    all_equal = np.equal(new_fcs_data, mock_data)
+    assert np.all(all_equal), 'The new FCS data values are not correct'

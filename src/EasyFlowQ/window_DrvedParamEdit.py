@@ -1,7 +1,7 @@
 import sys
 from PySide6 import QtWidgets, QtCore, QtGui, QtUiTools
 from .backend.qtModels import chnlModel
-from .backend.dataIO import drvedParam
+from .backend.ioData import drvedParam
 from .uiDesigns import UiLoader
 
 from sympy.parsing.sympy_parser import parse_expr

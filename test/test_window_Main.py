@@ -5,7 +5,7 @@ Tests for the main window
 import pytest
 from src.EasyFlowQ.window_Main import mainUi
 from src.EasyFlowQ.window_Settings import localSettings
-from src.EasyFlowQ.backend.efio import sessionSave
+from src.EasyFlowQ.backend.ioSession import sessionSave
 from src.EasyFlowQ.backend.qtModels import pandasTableModel
 
 
@@ -106,6 +106,26 @@ def test_loading_eflq1_6b(qtbot):
     assert selectedSmpls[0].text(0) == 'micro-cytometry', 'Sample name wrong, in loading the micro-cytometry save file'
 
     mWindow.figOpsPanel.stackhistRadio.setChecked(True)
+
+    mWindow.close()
+
+def test_loading_eflq1_7(qtbot):
+    mWindow = mainUi(localSettings(testMode=True))
+    qtbot.addWidget(mWindow)
+    mWindow.show()
+
+    assert mWindow.isVisible()
+
+    # Test loading the v1.7 save file
+    sessionSave.loadSessionSave(mWindow, './demo_sample/SaveTestSimple_v1.7.eflq')
+    mWindow.set_saveFlag(False) # Avoid prompting the save dialog
+
+    selectedSmpls = mWindow.smplTreeWidget.selectedItems()
+    assert len(selectedSmpls) == 4
+    
+    mWindow.actionStats_window.trigger()
+    assert mWindow.statWindow.isVisible()
+    assert mWindow.statWindow.tableView.model().dfData.shape == (4, 10), 'Stat window does not have the correct number of rows and columns'
 
     mWindow.close()
 

@@ -21,7 +21,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 from ..FlowCal.plot import scatter2d, hist1d, _LogicleScale, _LogicleLocator, _LogicleTransform
 from ..FlowCal.io import FCSData
 from .gates import quadrant, split, polygonGate, lineGate
-from .dataIO import FCSData_ef
+from .ioData import FCSData_ef
 
 import warnings
 import time
