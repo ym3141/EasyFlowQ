@@ -24,7 +24,7 @@ dependencies = [
 description = "User-friendly flow cytometry analyzer with (GUI)"
 readme = "docs/README_PyPI.md"
 
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -49,3 +49,10 @@ exclude = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/EasyFlowQ"]
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.20.0",
+    "pytest>=8.4.2",
+    "pytest-qt>=4.5.0",
+]
