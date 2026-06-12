@@ -25,7 +25,10 @@ class autoFluoTbModel(pandasTableModel):
         else:
             editableDF = pd.DataFrame(np.zeros((len(chnlList), 1), dtype=bool), index=self.DFIndices, columns=['AutoFluor'])
         
-        autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).infer_objects(copy=False).fillna(0)
+        if pd.__version__ >= '3.0':
+            autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).infer_objects().fillna(0)
+        else:
+            autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).infer_objects(copy=False).fillna(0)
 
         super().__init__(autoFluoDF, editableDF=editableDF, validator=QtGui.QDoubleValidator())
 
@@ -170,5 +173,6 @@ class spillMatTbModel(pandasTableModel):
 def getGreyDiagDF(length):
     greyDiagDF = pd.DataFrame(index=range(length), columns=range(length)).fillna('#ffffff')
     if length > 0:
-        np.fill_diagonal(greyDiagDF.values, ['#b0b0b0'])
+        for i in range(length):
+            greyDiagDF.iat[i, i] = '#b0b0b0'
     return greyDiagDF

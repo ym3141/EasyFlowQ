@@ -2103,15 +2103,16 @@ class FCSData(np.ndarray):
 
     # Functions overridden to allow string-based indexing.
 
-    def __array_wrap__(self, out_arr, context = None):
+    def __array_wrap__(self, out_arr, *args, **kwargs):
         """
         Method called after numpy ufuncs.
 
         """
+    
         if out_arr.ndim == 0:
             return out_arr[()]
         else:
-            return np.ndarray.__array_wrap__(self, out_arr, context)
+            return np.ndarray.__array_wrap__(self, out_arr, *args, **kwargs)
 
     def __getitem__(self, key):
         """

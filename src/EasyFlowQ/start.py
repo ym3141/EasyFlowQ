@@ -9,6 +9,8 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
 else:
     print('running in a normal Python process')
 
+
+
 from PySide6 import QtWidgets, QtCore, QtGui
 from .window_Main import mainUi
 from .window_Settings import localSettings
@@ -18,6 +20,18 @@ from multiprocessing import Process, freeze_support
 from traceback import format_exception
 
 import argparse
+
+import pandas as pd
+import numpy as np
+import matplotlib
+
+print('Python version:', platform.python_version())
+print('PySide6 version:', QtCore.__version__)
+print('Matplotlib version:', matplotlib.__version__)
+print('pandas version:', pd.__version__)
+print('numpy version:', np.__version__)
+print('EasyFlowQ version:', __version__)
+
 
 # set up the excepthook so unhandled exception won't crash the program
 _excepthook = sys.excepthook
