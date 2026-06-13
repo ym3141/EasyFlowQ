@@ -14,7 +14,7 @@ def processFCS2List(filePath : str) -> list:
     FCSDataList = []
 
     with catch_warnings():
-        filterwarnings('ignore', category=UserWarning)
+        filterwarnings('ignore', message='detected (and ignoring) additional data set', category=UserWarning)
 
         curFileObject = open(filePath, 'rb')
         while True:

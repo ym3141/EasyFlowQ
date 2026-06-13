@@ -344,7 +344,9 @@ def read_fcs_text_segment(buf, begin, end, delim=None, supplemental=False):
 
     # List length should be even since all key-value entries should be pairs
     if len(pairs_list_reconstructed) % 2 != 0:
-        raise ValueError("odd # of (keys + values); unpaired key or value")
+        # raise ValueError("odd # of (keys + values); unpaired key or value")
+        pairs_list_reconstructed.append('Parsing_Error_Unpaired_Key_or_Value')
+        warnings.warn("detected odd number of keys and values in TEXT segment; appending \'Parsing_Error_Unpaired_Key_or_Value\' to the list")
 
     text = dict(zip(pairs_list_reconstructed[0::2],
                     pairs_list_reconstructed[1::2]))
