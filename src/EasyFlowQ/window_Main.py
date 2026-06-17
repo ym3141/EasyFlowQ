@@ -650,11 +650,12 @@ class mainUi(QtWidgets.QMainWindow):
                 if input == QtWidgets.QMessageBox.Yes:
                     self.holdFigureUpdate = True
                     self.set_curChnls(curSelectedGate.chnls)
-                    self.figOpsPanel.set_curPlotType('Dot plot')
+                    self.figOpsPanel.set_curPlotType(plotType)
                     self.figOpsPanel.set_curAxScales(curSelectedGate.axScales)
 
                     self.holdFigureUpdate = False
                     self.handle_One()
+                    QtWidgets.QApplication.processEvents() # make sure the plot is updated before loading the gate editor.
                 else:
                     return
 
@@ -682,6 +683,7 @@ class mainUi(QtWidgets.QMainWindow):
 
                     self.holdFigureUpdate = False
                     self.handle_One()
+                    QtWidgets.QApplication.processEvents() # make sure the plot is updated before loading the gate editor.
                 else:
                     return
 
