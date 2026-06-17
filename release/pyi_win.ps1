@@ -49,7 +49,7 @@ $pyinstallerArgs = @(
     "--", "--version", $_ver
 )
 
-pyinstaller @pyinstallerArgs
+uv run pyinstaller @pyinstallerArgs
 
 # wait 5 second for the process to finish
 Start-Sleep -Seconds 10
