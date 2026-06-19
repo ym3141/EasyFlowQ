@@ -279,7 +279,7 @@ wheels = [
 
 [[package]]
 name = "easyflowq"
-version = "1.7.5"
+version = "1.7.6"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib", version = "3.9.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },

@@ -650,7 +650,8 @@ class efNavigationToolbar(NavigationToolbar):
         buf = io.BytesIO()
         self.canvas.figure.savefig(buf, format='png', dpi=self.canvas.figure.dpi)
         copiedImage = QtGui.QImage.fromData(buf.getvalue())
-        QtGui.QClipboard().setImage(copiedImage)
+        qClipBoard = QtWidgets.QApplication.clipboard()
+        qClipBoard.setImage(copiedImage)
 
         self.locLabel.setText('Plot copied to clipboard \t')
 
