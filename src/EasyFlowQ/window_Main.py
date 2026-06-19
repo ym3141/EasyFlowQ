@@ -297,7 +297,7 @@ class mainUi(QtWidgets.QMainWindow):
 
         if fileNames is None:
             fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
-            fileNames = [name for name in fileNames if name.endswith('.fcs')]
+            fileNames = [name for name in fileNames if name.lower().endswith('.fcs')]
 
         if len(fileNames) == 0:
             return
@@ -317,7 +317,7 @@ class mainUi(QtWidgets.QMainWindow):
 
         for idx in range(len(fileNames)):
 
-            if not fileNames[idx].endswith('.fcs'):
+            if not fileNames[idx].lower().endswith('.fcs'):
                 warn('File {0} is not an FCS file, skipped.'.format(fileNames[idx]))
                 continue
 
@@ -325,18 +325,6 @@ class mainUi(QtWidgets.QMainWindow):
             loadingBarDiag.setValue(idx + 1)
 
             self.loadFcsFile(fileNames[idx], selected=setSelectedFlag)
-
-            # _data = multiSmplFCS(fileNames[idx]) # this is to trigger the cache loading avoid reloading the file.
-            # if len(_data) > 1:
-            #     # more than one sample is in the fcs file, load 
-            #     subNames = ['{}_Sample{})'.format(path.basename(fileNames[idx]), jdx + 1) for jdx in range(len(_data))]
-            #     subColors = self.colorGen.giveColors(len(_data))
-            #     print(len(subColors), len(_data))
-            #     for jdx in range(len(_data)):
-            #         self.loadFcsFile(fileNames[idx], subColors[jdx], displayName=subNames[jdx], selected=setSelectedFlag, infileIdx=jdx)    
-            # else:
-            #     self.loadFcsFile(fileNames[idx], newColorList[idx], selected=setSelectedFlag)
-            # multiSmplFCS.cache_clear() # clear the cache.
 
         self.smplTreeWidget.resizeColumnToContents(0)
         loadingBarDiag.setValue(idx + 2)
@@ -849,7 +837,8 @@ class mainUi(QtWidgets.QMainWindow):
         curDrvedParams = [self.drvedParamModel.item(idx) for idx in range(self.drvedParamModel.rowCount())]
 
         FCSDataList = processFCS2List(fileDir)
-        if infileIdx is None:
+        if infileIdx is None: 
+            # load all samples in the fcs file, and assign different colors for different samples if color is not specified.
             if color is None:
                 colorList = self.colorGen.giveColors(len(FCSDataList))
                 colorList = [QtGui.QColor.fromRgbF(*color) for color in colorList]

@@ -1,0 +1,780 @@
+{
+    "applyComp": false,
+    "curComp": {
+        "autoFluo": null,
+        "keyList": [
+            "FSC-HLin",
+            "SSC-HLin",
+            "GRN-HLog",
+            "YLW-HLog",
+            "RED-HLog",
+            "FSC-HLog",
+            "SSC-HLog",
+            "GRN-HLin",
+            "YLW-HLin",
+            "RED-HLin",
+            "TIME"
+        ],
+        "spillMat": null,
+        "useAutoFluo": false
+    },
+    "derivedParams": [],
+    "figOptions": {
+        "curAxLims": [
+            "auto",
+            "auto"
+        ],
+        "curAxScales": [
+            "log",
+            "log"
+        ],
+        "curChnls": [
+            "FSC-HLin",
+            "FSC-HLin"
+        ],
+        "curDotSize": "Regular",
+        "curNormOption": "Unit Area",
+        "curOpacity": 80,
+        "curPlotType": "Dot plot",
+        "curSmooth": 0
+    },
+    "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/SaveTestSimple_v1.7_multi.eflq",
+    "gateSaveList": [],
+    "qsSaveList": [],
+    "save_ver": 1.7,
+    "smplSaveList": [
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 0,
+            "plotColor": [
+                0.10588235408067703,
+                0.6196078658103943,
+                0.46666666865348816,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_1",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 1,
+            "plotColor": [
+                0.8509804010391235,
+                0.37254902720451355,
+                0.007843137718737125,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_2",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 2,
+            "plotColor": [
+                0.4588235318660736,
+                0.43921568989753723,
+                0.7019608020782471,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_3",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 3,
+            "plotColor": [
+                0.9058823585510254,
+                0.16078431904315948,
+                0.5411764979362488,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_4",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 4,
+            "plotColor": [
+                0.4000000059604645,
+                0.6509804129600525,
+                0.11764705926179886,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_5",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 5,
+            "plotColor": [
+                0.9019607901573181,
+                0.6705882549285889,
+                0.007843137718737125,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_6",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 6,
+            "plotColor": [
+                0.6509804129600525,
+                0.4627451002597809,
+                0.11372549086809158,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_7",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 7,
+            "plotColor": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_8",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 8,
+            "plotColor": [
+                0.8941176533699036,
+                0.10196078568696976,
+                0.10980392247438431,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_9",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 9,
+            "plotColor": [
+                0.21568627655506134,
+                0.4941176474094391,
+                0.7215686440467834,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_10",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 10,
+            "plotColor": [
+                0.3019607961177826,
+                0.686274528503418,
+                0.29019609093666077,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_11",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 11,
+            "plotColor": [
+                0.5960784554481506,
+                0.30588236451148987,
+                0.6392157077789307,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_12",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 12,
+            "plotColor": [
+                1.0,
+                0.49803921580314636,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_13",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 13,
+            "plotColor": [
+                1.0,
+                1.0,
+                0.20000000298023224,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_14",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 14,
+            "plotColor": [
+                0.6509804129600525,
+                0.33725491166114807,
+                0.1568627506494522,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_15",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 15,
+            "plotColor": [
+                0.9686274528503418,
+                0.5058823823928833,
+                0.7490196228027344,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_16",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 16,
+            "plotColor": [
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_17",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 17,
+            "plotColor": [
+                0.20000000298023224,
+                0.800000011920929,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_18",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 18,
+            "plotColor": [
+                0.4000000059604645,
+                0.6000000238418579,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_19",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 19,
+            "plotColor": [
+                0.6000000238418579,
+                0.4000000059604645,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_20",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 20,
+            "plotColor": [
+                0.800000011920929,
+                0.20000000298023224,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_21",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 21,
+            "plotColor": [
+                1.0,
+                0.20000000298023224,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_22",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 22,
+            "plotColor": [
+                1.0,
+                0.4000000059604645,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_23",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 23,
+            "plotColor": [
+                1.0,
+                0.6000000238418579,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_24",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 24,
+            "plotColor": [
+                1.0,
+                0.800000011920929,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_25",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 25,
+            "plotColor": [
+                0.10588235408067703,
+                0.6196078658103943,
+                0.46666666865348816,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_26",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 26,
+            "plotColor": [
+                0.8509804010391235,
+                0.37254902720451355,
+                0.007843137718737125,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_27",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 27,
+            "plotColor": [
+                0.4588235318660736,
+                0.43921568989753723,
+                0.7019608020782471,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_28",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 28,
+            "plotColor": [
+                0.9058823585510254,
+                0.16078431904315948,
+                0.5411764979362488,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_29",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 29,
+            "plotColor": [
+                0.4000000059604645,
+                0.6509804129600525,
+                0.11764705926179886,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_30",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 30,
+            "plotColor": [
+                0.9019607901573181,
+                0.6705882549285889,
+                0.007843137718737125,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_31",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 31,
+            "plotColor": [
+                0.6509804129600525,
+                0.4627451002597809,
+                0.11372549086809158,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_32",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 32,
+            "plotColor": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_33",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 33,
+            "plotColor": [
+                0.8941176533699036,
+                0.10196078568696976,
+                0.10980392247438431,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_34",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 34,
+            "plotColor": [
+                0.21568627655506134,
+                0.4941176474094391,
+                0.7215686440467834,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_35",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 35,
+            "plotColor": [
+                0.3019607961177826,
+                0.686274528503418,
+                0.29019609093666077,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_36",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 36,
+            "plotColor": [
+                0.5960784554481506,
+                0.30588236451148987,
+                0.6392157077789307,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_37",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 37,
+            "plotColor": [
+                1.0,
+                0.49803921580314636,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_38",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 38,
+            "plotColor": [
+                1.0,
+                1.0,
+                0.20000000298023224,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_39",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 39,
+            "plotColor": [
+                0.6509804129600525,
+                0.33725491166114807,
+                0.1568627506494522,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_40",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 40,
+            "plotColor": [
+                0.9686274528503418,
+                0.5058823823928833,
+                0.7490196228027344,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_41",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 41,
+            "plotColor": [
+                0.6000000238418579,
+                0.6000000238418579,
+                0.6000000238418579,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_42",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 42,
+            "plotColor": [
+                0.20000000298023224,
+                0.800000011920929,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_43",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 43,
+            "plotColor": [
+                0.4000000059604645,
+                0.6000000238418579,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_44",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 44,
+            "plotColor": [
+                0.6000000238418579,
+                0.4000000059604645,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_45",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 45,
+            "plotColor": [
+                0.800000011920929,
+                0.20000000298023224,
+                1.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_46",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 46,
+            "plotColor": [
+                1.0,
+                0.20000000298023224,
+                0.0,
+                1.0
+            ],
+            "selected": false
+        },
+        {
+            "Subpops": [],
+            "displayName": "multisample_example_1_47",
+            "fileDir": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_abs": "C:/Users/yiton/Documents/CodingProjects/EasyFlowQ/demo_sample/multisample_example_1.FCS",
+            "fileDir_rel": "multisample_example_1.FCS",
+            "infileIdx": 47,
+            "plotColor": [
+                1.0,
+                0.4000000059604645,
+                0.0,
+                1.0
+            ],
+            "selected": true
+        }
+    ],
+    "stainDict": {
+        "FSC-HLin": "",
+        "FSC-HLog": "",
+        "GRN-HLin": "",
+        "GRN-HLog": "",
+        "RED-HLin": "",
+        "RED-HLog": "",
+        "SSC-HLin": "",
+        "SSC-HLog": "",
+        "TIME": "",
+        "YLW-HLin": "",
+        "YLW-HLog": ""
+    }
+}

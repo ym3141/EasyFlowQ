@@ -31,29 +31,30 @@ def genShortUID(n=8):
 
 
 class smplItem(QTreeWidgetItem):
-    def __init__(self, 
-                 parent, fcsFileDir, plotColor=QColor.fromRgbF(0.1, 0.1, 0.1), 
-                 fcsDataInput=None, infileIdx=0, displayName=None, addDrvedParams=[]):
-        # From 1.7.8, fcsDataInput is required for smplItem, and fcsFileDir is only used for display and as an identifier for merging. 
+    def __init__(self, parent, fcsFileDir=None, 
+                 plotColor=QColor.fromRgbF(0.1, 0.1, 0.1), fcsDataInput=None,
+                 infileIdx=0, displayName=None, addDrvedParams=[]):
+        # From 1.7.6, fcsDataInput is required for smplItem, and fcsFileDir is only used for display and as an identifier for merging. 
         # For subpopItem, fcsFileDir should be None.
+
+        if fcsDataInput is None:
+            raise ValueError('fcsDataInput is required for smplItem.')
 
         super(smplItem, self).__init__(parent)
 
         self.fileDir = fcsFileDir # if None, likely a subpop item
         self.infileIdx = infileIdx # for multi-sample fcs file, which sample this item corresponds to. Default to 0 for single-sample fcs file.
 
-        # Use the input data
-        if fcsDataInput is not None:
-            fcsData = fcsDataInput
-            if fcsFileDir is not None:
-                self.setText(0, getFileStem(fcsFileDir))
-            elif displayName is not None:
-                self.setText(0, displayName)
-            else:
-                self.setText(0, '(no name)')
+        # Use the input data to set fcsData
+        fcsData = fcsDataInput
 
-        else:
-            raise ValueError('Either fcsDataInput should be provided for smplItem.')
+
+        if displayName is None: 
+            if fcsFileDir is not None:
+                displayName = getFileStem(fcsFileDir) + ('_{0}'.format(infileIdx) if infileIdx else '')
+            else:
+                displayName = '(no name)'
+        self.setText(0, displayName)
 
 
         for drvedParam in addDrvedParams:
