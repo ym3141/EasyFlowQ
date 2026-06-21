@@ -48,9 +48,11 @@ class smplItem(QTreeWidgetItem):
         # Use the input data to set fcsData
         fcsData = fcsDataInput
 
-
         if displayName is None: 
-            if fcsFileDir is not None:
+        # No name give for this sample, try to find a SMID from the FCS metadata or use the file name.
+            if 'SMID' in fcsData._text and fcsData._text['SMID'] != '':
+                displayName = fcsData._text['SMID']
+            elif fcsFileDir is not None:
                 displayName = getFileStem(fcsFileDir) + ('_{0}'.format(infileIdx) if infileIdx else '')
             else:
                 displayName = '(no name)'
