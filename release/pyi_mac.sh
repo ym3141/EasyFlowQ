@@ -1,7 +1,5 @@
 #!/bin/sh
 
-conda activate easyflowq6
-
 # delete and add folder
 rm -r release/EasyFlowQ_release_mac/*
 rm -r _temp/pyi_*
@@ -15,7 +13,7 @@ git_commit=$(git rev-parse --short HEAD)
 
 # package with pyinstaller and codesign
 # conda activate easyflow_env
-pyinstaller --noconfirm --distpath ./release/EasyFlowQ_release_mac/ --workpath ./_temp/ ./release/pyi_universal.spec -- --version $_ver
+uv run --python 3.12 pyinstaller --noconfirm --distpath ./release/EasyFlowQ_release_mac/ --workpath ./_temp/ ./release/pyi_universal.spec -- --version $_ver
 codesign -f -s YMa release/EasyFlowQ_release_mac/EasyFlowQ_MACOS.app
 
 # Copy the app bundle to the dmg folder.
