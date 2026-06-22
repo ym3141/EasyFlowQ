@@ -1,13 +1,11 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types: [published, edited]
+  workflow_dispatch:
   
 
 jobs:
   publish:
-    if: ${{ github.event.release.prerelease == false && github.event.release.draft == false }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
