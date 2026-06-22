@@ -46,16 +46,24 @@ import EasyFlowQ.start
 EasyFlowQ.start.startGUI()
 ```
 
-#### **Method #3:** Run from python (a python installation is needed)
+#### **Method #3:** Run the python script (a python installation + dependencies are needed)
 
 For running the program from the source, download the whole code and run the command below. Standard Anaconda should be sufficient for running the program **up to v1.5**. Starting from v1.6, PySide6 is also required for running the code.
+
+Clone the repo: 
 ```
-Path/To/Folder$ python ./main.py
+git clone https://github.com/ym3141/EasyFlowQ.git
+```
+
+Run the script:
+```
+python EasyFlowQ/main.py
 ```
 
 ## First time startup
 For first time startup settings, please go to our [usage page](<https://ym3141.github.io/EasyFlowQ/Basic usage/#first-time-setup>).
 
 ## Contact and citation
-For more info please contact <yitongma7@gmail.com>. If you use *EasyFlowQ* in your research, we would appreciate citation to the following publication:
+For reporting bugs and feature suggestions, consider [starting a issue](https://github.com/ym3141/EasyFlowQ/issues). For more info please contact <yitongma7@gmail.com>. 
+If you use *EasyFlowQ* in your research, we would appreciate citation to the following publication:
 > Ma Y, Eizenberg-Magar I, Antebi Y. EasyFlow: An open-source, user-friendly cytometry analyzer with graphic user interface (GUI). PLoS One. 2024 Nov 13;19(11):e0308873. doi: 10.1371/journal.pone.0308873. PMID: 39536028; PMCID: PMC11560029.
