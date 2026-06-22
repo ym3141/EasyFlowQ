@@ -296,7 +296,7 @@ class mainUi(QtWidgets.QMainWindow):
             fileNames = None
 
         if fileNames is None:
-            fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs')
+            fileNames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Open data files', self.get_dir4Save(), filter='*.fcs *.FSC')
             fileNames = [name for name in fileNames if name.lower().endswith('.fcs')]
 
         if len(fileNames) == 0:
