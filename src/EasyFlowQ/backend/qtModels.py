@@ -299,7 +299,13 @@ class pandasTableModel(QAbstractTableModel):
         if color_df is None:
             return pd.DataFrame(index=self._data.index, columns=self._data.columns).fillna(default_color)
 
-        normalized_df = color_df.reindex(index=self._data.index, columns=self._data.columns)
+        if color_df.shape == self._data.shape:
+            normalized_df = color_df.copy()
+            normalized_df = normalized_df.set_axis(self._data.index, axis='index')
+            normalized_df = normalized_df.set_axis(self._data.columns, axis='columns')
+        else:
+            normalized_df = color_df.reindex(index=self._data.index, columns=self._data.columns)
+
         return normalized_df.fillna(default_color)
 
     def _color_from_value(self, value, default_color):
@@ -310,7 +316,11 @@ class pandasTableModel(QAbstractTableModel):
             return QColor(default_color)
 
         color = QColor(str(value))
-        return color if color.isValid() else QColor(default_color)
+
+        if color.isValid():
+            return color 
+        else: 
+            return QColor(default_color)
 
     def data(self, index, role):
         if role == Qt.DisplayRole or role == Qt.EditRole:
