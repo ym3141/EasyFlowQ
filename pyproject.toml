@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "EasyFlowQ"
-version = "1.7.8"
+version = "1.7.9"
 authors = [
   { name="Yitong Ma", email="yitongma7@gmail.com" },
 ]
