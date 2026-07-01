@@ -8,6 +8,8 @@ from src.EasyFlowQ.window_Settings import localSettings
 from src.EasyFlowQ.backend.ioSession import sessionSave
 from src.EasyFlowQ.backend.qtModels import pandasTableModel
 
+from PySide6 import QtCore
+from PySide6.QtWidgets import QFileDialog
 
 def test_window_Main(qtbot): 
     mWindow = mainUi(localSettings(testMode=True))
@@ -109,7 +111,7 @@ def test_loading_eflq1_6b(qtbot):
 
     mWindow.close()
 
-def test_loading_eflq1_7(qtbot):
+def test_loading_eflq1_7(qtbot, monkeypatch):
     mWindow = mainUi(localSettings(testMode=True))
     qtbot.addWidget(mWindow)
     mWindow.show()
@@ -126,6 +128,13 @@ def test_loading_eflq1_7(qtbot):
     mWindow.actionStats_window.trigger()
     assert mWindow.statWindow.isVisible()
     assert mWindow.statWindow.tableView.model().dfData.shape == (4, 10), 'Stat window does not have the correct number of rows and columns'
+
+    # Test for the renamingCF part
+
+    # Replace the real method with our mock
+    monkeypatch.setattr(QFileDialog, "getOpenFileName", lambda *args, **kwargs: ('demo_sample/renamingCF2.xlsx', '*.xlsx'))
+    mWindow.actionFor_Cytoflex.trigger()
+    # qtbot.mouseClick(mWindow.actionFor_Cytoflex, QtCore.Qt.LeftButton)
 
     mWindow.close()
 
