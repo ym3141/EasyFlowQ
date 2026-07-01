@@ -151,8 +151,12 @@ class compWindow(QtWidgets.QWidget):
             self.autoFluoCheck.setChecked(jDict['useAutoFluo'])
 
     def handle_SelectAutoFluo(self, selected):
-        index = selected.indexes()[0]
-        self.autoFluoTable.selectRow(index.row())
+        indexes = selected.indexes()
+        if not indexes:
+            self.autoFluoTable.clearSelection()
+            return
+
+        self.autoFluoTable.selectRow(indexes[0].row())
 
 class verticalLabel(QtWidgets.QLabel):
 

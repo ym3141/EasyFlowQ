@@ -369,8 +369,12 @@ class compWizard(QtWidgets.QWizard):
                 
 
     def handle_SelectSpillMat(self, selected):
-        index = selected.indexes()[0]
-        self.spillMatTable.selectRow(index.row())
+        indexes = selected.indexes()
+        if not indexes:
+            self.spillMatTable.clearSelection()
+            return
+
+        self.spillMatTable.selectRow(indexes[0].row())
     
     def handle_Load2MainComp(self):
         if not (self.curMainSpillMatModel.isIdentity() and self.curMainAutoFluoModel.isZeros()):

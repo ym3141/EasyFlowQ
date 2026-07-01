@@ -185,7 +185,7 @@ def colorBySmplNames(renamePlates, splitNames):
 
 class tabPage(QtWidgets.QWidget):
     def __init__(self, parent, tblExample=None) -> None:
-        super().__init__(parent, flags=QtCore.Qt.Widget)
+        super().__init__(parent, QtCore.Qt.Widget)
 
         self.setLayout(QtWidgets.QHBoxLayout())
 

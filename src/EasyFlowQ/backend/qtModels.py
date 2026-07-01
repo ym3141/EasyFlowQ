@@ -284,15 +284,9 @@ class pandasTableModel(QAbstractTableModel):
         super(pandasTableModel, self).__init__()
         self._data = data
 
-        if foregroundDF is None:
-            self._foreground = pd.DataFrame().reindex_like(data).fillna('#000000')
-        else:
-            self._foreground = foregroundDF
+        self._foreground = self._normalize_color_df(foregroundDF, '#000000')
 
-        if backgroundDF is None:
-            self._background = pd.DataFrame().reindex_like(data).fillna('#ffffff')
-        else:
-            self._background = backgroundDF
+        self._background = self._normalize_color_df(backgroundDF, '#ffffff')
 
         if editableDF is None:
             self._editableDF = pd.DataFrame(index=data.index, columns=data.columns).fillna(True)
@@ -301,6 +295,23 @@ class pandasTableModel(QAbstractTableModel):
 
         self._validator = validator
 
+    def _normalize_color_df(self, color_df, default_color):
+        if color_df is None:
+            return pd.DataFrame(index=self._data.index, columns=self._data.columns).fillna(default_color)
+
+        normalized_df = color_df.reindex(index=self._data.index, columns=self._data.columns)
+        return normalized_df.fillna(default_color)
+
+    def _color_from_value(self, value, default_color):
+        if isinstance(value, QColor):
+            return value if value.isValid() else QColor(default_color)
+
+        if pd.isna(value):
+            return QColor(default_color)
+
+        color = QColor(str(value))
+        return color if color.isValid() else QColor(default_color)
+
     def data(self, index, role):
         if role == Qt.DisplayRole or role == Qt.EditRole:
             value = self._data.iloc[index.row(), index.column()]
@@ -308,11 +319,11 @@ class pandasTableModel(QAbstractTableModel):
 
         elif role == Qt.ForegroundRole:
             value = self._foreground.iloc[index.row(), index.column()]
-            return QColor(value)
+            return self._color_from_value(value, '#000000')
 
         elif role == Qt.BackgroundRole:
             value = self._background.iloc[index.row(), index.column()]
-            return QColor(value)
+            return self._color_from_value(value, '#ffffff')
 
     def rowCount(self, index):
         return self._data.shape[0]
