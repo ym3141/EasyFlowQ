@@ -25,10 +25,7 @@ class autoFluoTbModel(pandasTableModel):
         else:
             editableDF = pd.DataFrame(np.zeros((len(chnlList), 1), dtype=bool), index=self.DFIndices, columns=['AutoFluor'])
         
-        if pd.__version__ >= '3.0':
-            autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).infer_objects().fillna(0)
-        else:
-            autoFluoDF = pd.DataFrame(index=self.DFIndices, columns=['AutoFluor']).infer_objects(copy=False).fillna(0)
+        autoFluoDF = pd.DataFrame(0.0, index=self.DFIndices, columns=['AutoFluor'])
 
         super().__init__(autoFluoDF, editableDF=editableDF, validator=QtGui.QDoubleValidator())
 

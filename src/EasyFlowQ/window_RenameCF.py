@@ -123,13 +123,13 @@ def exel2renameTable(renamingFileDir, maxPlatN):
     # Seperate to plates:
     renamePlates = []
     for idx in range(plateNumber):
-        renamePlate = renames.iloc[idx * 8: idx * 8 + 8, 0: 12]
-        renamePlate = renamePlate.set_axis(np.arange(1, 13), axis='columns', copy=False)
-        renamePlate = renamePlate.set_axis(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], axis='index', copy=False)
+        renamePlate = renames.iloc[idx * 8: idx * 8 + 8, 0: 12].copy()
+        renamePlate.columns = np.arange(1, 13)
+        renamePlate.index = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         renamePlate.loc['Legend', [1,2]] = ['Sample exist', 'Duplicated name']
         renamePlate.fillna('', inplace=True)
         renamePlate.replace(emptyName, '', inplace=True)
-        renamePlates.append(renamePlate.copy())
+        renamePlates.append(renamePlate)
 
     # append empty dfs if there are more plates
     if len(renamePlates) < maxPlatN:

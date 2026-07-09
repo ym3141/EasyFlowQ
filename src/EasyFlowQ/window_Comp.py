@@ -113,10 +113,7 @@ class compWindow(QtWidgets.QWidget):
                 idxMap = dict(zip(self.autoFluoModel.DFIndices, self.autoFluoModel.chnlList))
                 outputAutoFluo = self.autoFluoModel.dfData.rename(index=idxMap)
             else:
-                if pd.__version__ >= '3.0':
-                    outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).infer_objects().fillna(0)
-                else:
-                    outputAutoFluo = pd.DataFrame(index=self.chnlListModel.keyList, columns=['AutoFluor']).infer_objects(copy=False).fillna(0)
+                outputAutoFluo = pd.DataFrame(0.0, index=self.chnlListModel.keyList, columns=['AutoFluor'])
             outputSpillMat = self.spillMatModel.dfData.copy()
             return (self.chnlListModel.keyList, outputAutoFluo, outputSpillMat)
 
