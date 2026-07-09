@@ -99,10 +99,10 @@ class sessionSave():
     # This is a json serializable class, used for save the session
 
     def __init__(self, mainUiWindow, saveFileDir) -> None:
-
-        self.save_ver = float(__version__)
         
-        self.fileDir = saveFileDir
+        self.save_ver = verStr2Float(__version__)
+        
+        self.fileDir = _to_posixpath(str(saveFileDir))
         baseDir = path.dirname(saveFileDir)
 
         self.smplSaveList = []
@@ -479,3 +479,15 @@ def getSysDefaultDir():
         
     else:
         return _expand_norm_path('~/')
+
+# Convert version string like "1.7.10" to float for version number (float) in save json file.
+def verStr2Float(verStr : str) -> float:
+    nList = verStr.split('.')
+    if len(nList) < 2:
+        return float(verStr)
+    else: 
+        baseFloat = float('.'.join(nList[0:2]))
+        if int(nList[2]) < 10:
+            return baseFloat + int(nList[2]) * 0.01
+        else:
+            return baseFloat + 0.099

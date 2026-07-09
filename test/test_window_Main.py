@@ -111,7 +111,7 @@ def test_loading_eflq1_6b(qtbot):
 
     mWindow.close()
 
-def test_loading_eflq1_7(qtbot, monkeypatch):
+def test_loading_eflq1_7(qtbot, monkeypatch, tmp_path):
     mWindow = mainUi(localSettings(testMode=True))
     qtbot.addWidget(mWindow)
     mWindow.show()
@@ -130,11 +130,18 @@ def test_loading_eflq1_7(qtbot, monkeypatch):
     assert mWindow.statWindow.tableView.model().dfData.shape == (4, 10), 'Stat window does not have the correct number of rows and columns'
 
     # Test for the renamingCF part
-
-    # Replace the real method with our mock
-    monkeypatch.setattr(QFileDialog, "getOpenFileName", lambda *args, **kwargs: ('demo_sample/renamingCF2.xlsx', '*.xlsx'))
+    # First Replace the real method with our mock
+    monkeypatch.setattr(QFileDialog, "getOpenFileName", 
+                        lambda *args, **kwargs: ('demo_sample/renamingCF2.xlsx', '*.xlsx'))   
     mWindow.actionFor_Cytoflex.trigger()
-    # qtbot.mouseClick(mWindow.actionFor_Cytoflex, QtCore.Qt.LeftButton)
+
+    # Test saving the session
+    testSavePath = tmp_path / "test.eflq"
+    save = sessionSave(mWindow, testSavePath)
+    assert len(save.smplSaveList) == 5
+    assert len(save.gateSaveList) == 5
+    save.saveJson()
+    assert testSavePath.exists()
 
     mWindow.close()
 
