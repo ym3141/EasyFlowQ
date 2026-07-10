@@ -400,7 +400,7 @@ class mainUi(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.critical(self, 'Open session error!', 
                                            'EasyFlowQ can only open files ends with .eflq at this moment.')
 
-        if self.isWindowAlmostNew():
+        if self.isWindowAlmostNew:
         #If there is nothing in this current window, update the current window
             self.holdFigureUpdate = True
             errorMsg = sessionSave.loadSessionSave(self, openFileDir)
@@ -1052,8 +1052,14 @@ class mainUi(QtWidgets.QMainWindow):
         pathStr = self.sessionSavePath if self.sessionSavePath else 'Not saved'
         self.setWindowTitle('EasyFlowQ v{0}; ({1}{2})'.format(__version__, ('*' if self.saveFlag else ''), pathStr)) 
 
+    @property
     def isWindowAlmostNew(self):
-        return not (len(self.chnlListModel.keyList) and self.smplTreeWidget.topLevelItemCount() and self.gateListWidget.count())
+        return not (
+            len(self.chnlListModel.keyList)
+            or self.smplTreeWidget.topLevelItemCount()
+            or self.gateListWidget.count()
+            or self.qsListWidget.count()
+        )
 
     def get_dir4Save(self):
         if hasattr(self, 'sessionSavePath') and (not self.sessionSavePath is None):

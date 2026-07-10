@@ -47,7 +47,6 @@ def myexcepthook(type, value, traceback):
 
 def newWindowFunc(sessionSaveFile=None, pos=None):
     sys.excepthook = myexcepthook
-    freeze_support()
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -77,6 +76,7 @@ def newWindowProc(sessionSaveFile, pos):
     newProcess.start()
 
 def startGUI():
+    freeze_support()
 
     parser = argparse.ArgumentParser(prog='EasyFlowQ', description='Start EasyFlowQ')
     parser.add_argument('--version', action='version', help='Show the version number and exit', version='%(prog)s ' + __version__)
@@ -90,4 +90,4 @@ def startGUI():
         newWindowFunc()
 
 if __name__ == "__main__":
-    newWindowFunc()
+    startGUI()
