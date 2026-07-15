@@ -290,6 +290,10 @@ class mainUi(QtWidgets.QMainWindow):
     def handle_LoadData(self, fileNames=None):
         # The fileNames parameter is used for the drag and drop loading, if it's None, then it will trigger the file dialog to select files.
 
+        # This protect the following logics if this is triggered by qAction, which passes fileNames as a bool
+        if isinstance(fileNames, bool):
+            fileNames = None
+
         if self.sender() == self.smplSect.loadDataPB:
         # if the load data button is clicked, the 2nd arg will be passed as a bool.
         # Set it to None to trigger the file dialog.
