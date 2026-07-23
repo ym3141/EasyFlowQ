@@ -14,7 +14,7 @@ import openpyxl.cell._writer
 from .backend.qtModels import pandasTableModel
 from .uiDesigns import UiLoader
 
-re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
+re_CFName = re.compile(r'^(\d{2})-(Well|Tube)-([A-H])(0?[1-9]|1[0-2])$')
 
 class renameWindow_CF(QtWidgets.QWidget):
     renameConfirmed = QtCore.Signal(dict)
@@ -26,12 +26,14 @@ class renameWindow_CF(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
         self.smplNameList = smplNameList
+        self.validSmplNameList = []
         self.fileRoot = dir4Save
 
         self.splitNames = []
         for smplName in smplNameList:
-            reMatch = re_CFName.match(smplName)
+            reMatch = re_CFName.fullmatch(smplName)
             if not (reMatch is None):
+                self.validSmplNameList.append(smplName)
                 self.splitNames.append((int(reMatch.group(1)), reMatch.group(3), int(reMatch.group(4))))
 
         if len(self.splitNames) == 0:
@@ -62,7 +64,7 @@ class renameWindow_CF(QtWidgets.QWidget):
     def handle_renameConfirm(self):
         renameDict = dict()
         if self.renames is not None:
-            for name, splitName in zip(self.smplNameList, self.splitNames):
+            for name, splitName in zip(self.validSmplNameList, self.splitNames):
                 if not (name in renameDict):
                     rename = self.renameTableViews[splitName[0] - 1].model().dfData.loc[splitName[1], splitName[2]]
                     if rename:
