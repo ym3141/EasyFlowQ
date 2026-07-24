@@ -152,6 +152,7 @@ class sessionSave():
         loadingBarDiag.setValue(0)
         
         failedFiles = []
+        failedDrvedParams = []
         gateLoadFlag = False
         figSettingFlag = False
         compFlag = False
@@ -189,25 +190,35 @@ class sessionSave():
                           'Do you want to load them?'
             loadParamResponse = QMessageBox.question(loadingBarDiag, 'Derived parameters in save file', 
                                                      qBoxMessage, QMessageBox.Yes | QMessageBox.No)
-            
+             
             if loadParamResponse == QMessageBox.Yes:
                 for jDrvedParam in jDrvedParams:
-                    newDrvedParam = drvedParam(jDrvedParam['name'], parse_expr(jDrvedParam['formula']))
-                    mainUiWindow.drvedParamModel.appendRow(newDrvedParam)
+                    try:
+                        newDrvedParam = drvedParam(jDrvedParam['name'], parse_expr(jDrvedParam['formula']))
+                        mainUiWindow.drvedParamModel.appendRow(newDrvedParam)
+                    except Exception as e:
+                        failedDrvedParams.append(jDrvedParam.get('name', 'Unknown derived parameter'))
+                        traceback.print_tb(e.__traceback__)
 
         smpl_subpops = []
         for jSmpl in jDict.get('smplSaveList', []):
 
             try:
-                _fileDir_rel = path.join(path.dirname(saveFileDir), jSmpl['fileDir_rel'])
+                fileDirRel = jSmpl.get('fileDir_rel')
+                fileDirAbs = jSmpl.get('fileDir_abs')
+                legacyFileDir = jSmpl.get('fileDir')
                 confirmedDir = None
-                if path.exists(_fileDir_rel):
-                    confirmedDir = _fileDir_rel
-                elif path.exists(jSmpl['fileDir_abs']):
-                    confirmedDir = jSmpl['fileDir_abs']
-                elif path.exists(jSmpl['fileDir']):
-                    confirmedDir = jSmpl['fileDir']
-            
+
+                if fileDirRel:
+                    _fileDir_rel = path.join(path.dirname(saveFileDir), fileDirRel)
+                    if path.exists(_fileDir_rel):
+                        confirmedDir = _fileDir_rel
+
+                if confirmedDir is None and fileDirAbs and path.exists(fileDirAbs):
+                    confirmedDir = fileDirAbs
+                elif confirmedDir is None and legacyFileDir and path.exists(legacyFileDir):
+                    confirmedDir = legacyFileDir
+             
                 if confirmedDir:
                     try:
                         newSmplItem = mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], infileIdx=jSmpl.get('infileIdx', 0),
@@ -215,10 +226,10 @@ class sessionSave():
                         smpl_subpops.append((newSmplItem, jSmpl.get('Subpops', [])))
 
                     except Exception as e:
-                        failedFiles.append(path.basename(jSmpl['fileDir_rel']))
+                        failedFiles.append(path.basename(fileDirRel or fileDirAbs or legacyFileDir or 'Unknown FCS'))
                         traceback.print_tb(e.__traceback__)
                 else:
-                    failedFiles.append(path.basename(jSmpl['fileDir_rel']))
+                    failedFiles.append(path.basename(fileDirRel or fileDirAbs or legacyFileDir or 'Unknown FCS'))
 
             except KeyError as e:
                 failedFiles.append('Unknown FCS')
@@ -352,16 +363,22 @@ class sessionSave():
         if save_ver >= 1.4:
             for rootSmpl, subpops in smpl_subpops:
                 for subpop in subpops:
-                    loadSubpop_recursive(subpop, rootSmpl, gateDict)
+                    try:
+                        loadSubpop_recursive(subpop, rootSmpl, gateDict)
+                    except Exception as e:
+                        gateLoadFlag = True
+                        traceback.print_tb(e.__traceback__)
 
         loadingBarDiag.setValue(7)
         loadingBarDiag.setLabelText('Finished')
             
         # report the potential errors:
-        if any([len(failedFiles), gateLoadFlag, figSettingFlag, compFlag]):
+        if any([len(failedFiles), len(failedDrvedParams), gateLoadFlag, figSettingFlag, compFlag]):
             errorMsg = 'The following things are not loaded succesfully:\n'
             if len(failedFiles) > 0:
                 errorMsg += 'FCS file: ' + ' ;'.join(failedFiles) + '\n'
+            if len(failedDrvedParams) > 0:
+                errorMsg += 'Derived parameter: ' + ' ;'.join(failedDrvedParams) + '\n'
             if gateLoadFlag:
                 errorMsg += 'We may failed to load some gates.\n'
             if figSettingFlag:
@@ -416,12 +433,16 @@ def iterSubpop_recursive(subpop:subpopItem, parentSmplSave:dict, selectedSmplIte
             iterSubpop_recursive(subpop.child(idx), subpopSave, selectedSmplItems)
 
 def loadSubpop_recursive(subpopDict:dict, parentItem:subpopItem, gateItemDict:dict):
-    gates = [gateItemDict[uuid] for uuid in subpopDict['gateIDs']]
+    missingGateIds = [uuid for uuid in subpopDict.get('gateIDs', []) if uuid not in gateItemDict]
+    if len(missingGateIds) > 0:
+        raise KeyError('Missing gate(s) for subpopulation: {0}'.format(', '.join(missingGateIds)))
+
+    gates = [gateItemDict[uuid] for uuid in subpopDict.get('gateIDs', [])]
     newSubpopItem = subpopItem(parentItem, QColor.fromRgbF(*(subpopDict['plotColor'])), subpopDict['displayName'], gates)
     newSubpopItem.setSelected(subpopDict.get('selected', False))
     parentItem.setExpanded(True)
 
-    for subpopDict_nextLevel in subpopDict['Subpops']:
+    for subpopDict_nextLevel in subpopDict.get('Subpops', []):
         loadSubpop_recursive(subpopDict_nextLevel, newSubpopItem, gateItemDict)
 
 
