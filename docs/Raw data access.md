@@ -1,12 +1,31 @@
 # Access gated raw data
 EasyFlowQ offers essential tools for exporting gated samples as raw data in widely-used formats. These formats are compatible with popular programming languages, ensuring seamless integration and accessibility for more complex analysis.
 
-## Export as csv, npy(z) and mat
+## Export as fcs, csv, npy(z) and mat
 The options for exporting the **currently selected** samples and subpopulation samples, with **selected** gate applied, can be access from the menu bar: Data --> Export raw (current gate)
 
 ![RawExport](img/RawExport.jpg)
 
-Popular formats including csv, npy/npz (numpy array) and mat (matlab data file) are available for export. When exported, each sample (or subpopulation) will be exported as a single file with names of the samples. If the file name exist, either due to file pre-existing in the file system or another sample exported earlier has the same name, EasyFlowQ will attempt to export it under a different name (e.g. sample1_1, sample1_2, etc.). 
+Popular formats including fcs (FCS3.1), csv, npy/npz (numpy array) and mat (matlab data file) are available for export. Each sample (or subpopulation) is exported as a single file, named `<sample>_<gate>` by default, where `<gate>` is the most downstream gate applied to it, i.e. the last checked gate of the gate list. Exporting the same samples under a different gate therefore produces a different set of files, rather than overwriting the previous one. A sample exported with no gate applied simply keeps its own name.
+
+Note that a gate that is merely *highlighted* in the gate list is drawn on the plot and its percentage is reported, but it is not applied to the data. It is consequently not part of the exported events, nor of the default file name.
+
+Before anything is written, EasyFlowQ asks where the files should go and lets you rename them:
+
+* When a **single** sample is exported, the usual "save as" dialog opens, with the default name filled in. Edit it as you like, and pick any folder.
+* When **several** samples are exported at once, a dialog lists every sample next to the file name it will be written under. Each name is editable, and the destination folder is picked once for the whole batch.
+
+Names that cannot be used as a file name (empty, or containing characters such as `/` or `:`) are rejected, as are two samples sharing a name, since they would overwrite each other. If a file of that name already exists in the destination folder, EasyFlowQ asks before overwriting it.
+
+## Export as fcs
+Exporting as fcs writes the gated events back into a standard FCS3.1 file, which can be opened by other cytometry software (FlowJo, FCS Express, FlowCal, ...) and re-imported into EasyFlowQ.
+
+A few things are worth keeping in mind about the exported file:
+
+* Only the events inside the currently applied gates are written, so the event count of the exported file is the gated count, not the acquired count.
+* The values are the ones EasyFlowQ works with internally, i.e. already converted to RFI (linearized and un-gained) and, if compensation was applied on the plot, already compensated. The file therefore declares linear parameters (`$PnE` is `0,0`), and the spillover matrix of the source file is *not* carried over — applying compensation again downstream would double-compensate the data.
+* Data is stored as 32-bit floating point (`$DATATYPE` `F`), so derived parameters and negative (compensated) values are preserved exactly.
+* Acquisition metadata from the source file (e.g. `$CYT`, `$DATE`, `$BTIM`, channel names and stain labels) is carried over. In addition, the keywords `EASYFLOWQ_SAMPLE`, `EASYFLOWQ_GATES`, `EASYFLOWQ_COMPENSATED` and `EASYFLOWQ_TRANSFORM` record how the exported events were produced.
 
 ## Access the exported raw data in npy format
 [npy](https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html) is the standard file format used by numpy to store single matrix. Due to that regular numpy array does not store metadata (e.g. channel names), the exported npy is in fact a [structured numpy array](https://numpy.org/doc/stable/user/basics.rec.html), with channel names as the field name in the array.

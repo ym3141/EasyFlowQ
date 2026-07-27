@@ -7,7 +7,9 @@ from src.EasyFlowQ.window_Main import mainUi
 from src.EasyFlowQ.window_Settings import localSettings
 from src.EasyFlowQ.backend.ioSession import sessionSave
 from src.EasyFlowQ.backend.qtModels import pandasTableModel
+from src.EasyFlowQ.backend.gates import polygonGate
 
+import numpy as np
 from PySide6 import QtCore
 from PySide6.QtWidgets import QFileDialog
 
@@ -146,3 +148,37 @@ def test_loading_eflq1_7(qtbot, monkeypatch, tmp_path):
     mWindow.close()
 
 
+
+
+def test_exportName_usesMostDownstreamGate(qtbot):
+    # The default file name of an export is <sample>_<most downstream gate>
+    mWindow = mainUi(localSettings(testMode=True))
+    qtbot.addWidget(mWindow)
+    mWindow.show()
+
+    mWindow.loadFcsFile('./demo_sample/01-Well-A1.fcs', mWindow.colorGen.giveColors(1)[0], 'Test Sample', True)
+
+    assert mWindow.curGateNames == []
+    assert mWindow.defaultExportName('Test Sample') == 'Test Sample', 'With no gate, the sample name is used as is'
+
+    verts = np.array([[1e2, 1e2], [1e7, 1e2], [1e7, 1e7], [1e2, 1e7]])
+    gateItems = [mWindow.loadGate(polygonGate(mWindow.curChnls, ['linear', 'linear'], verts),
+                                  gateName=gateName, checkState=QtCore.Qt.Checked)
+                 for gateName in ['cells', 'singlets']]
+
+    assert mWindow.curGateNames == ['cells', 'singlets']
+    assert mWindow.defaultExportName('Test Sample') == 'Test Sample_singlets', \
+        'The last gate of the list is the most downstream one'
+
+    # Unchecking a gate takes it out of the exported data, and out of the name
+    gateItems[1].setCheckState(QtCore.Qt.Unchecked)
+    assert mWindow.curGateNames == ['cells']
+    assert mWindow.defaultExportName('Test Sample') == 'Test Sample_cells'
+
+    # A gate that is only highlighted is drawn on the plot but not applied to
+    # the data, see gateSmpls(..., lastGateStatOnly=True), so it is not in the name
+    mWindow.gateListWidget.setCurrentRow(1)
+    assert mWindow.defaultExportName('Test Sample') == 'Test Sample_cells'
+
+    mWindow.set_saveFlag(False) # Avoid prompting the save dialog
+    mWindow.close()
