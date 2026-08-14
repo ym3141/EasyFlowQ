@@ -174,6 +174,8 @@ def _paramPairs(fcsData, data, dtype):
         pairs.append(('$P{0}R'.format(n), str(_channelRange(fcsData, chnlIdx, data))))
 
         label = _cleanValue(labels[chnlIdx]) if chnlIdx < len(labels) and labels[chnlIdx] else ''
+        if label.startswith('Derived Parameter'):
+            label = 'Derived' + label[len('Derived Parameter'):]
         if label:
             pairs.append(('$P{0}S'.format(n), label))
 

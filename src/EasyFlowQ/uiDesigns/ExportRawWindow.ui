@@ -42,7 +42,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Please edit the file names below, if needed</string>
+      <string>Please edit the file names on the right below, if needed</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
