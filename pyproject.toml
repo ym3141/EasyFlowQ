@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "EasyFlowQ"
-version = "1.7.9"
+version = "1.8.0dev"
 authors = [
   { name="Yitong Ma", email="yitongma7@gmail.com" },
 ]
@@ -18,13 +18,14 @@ dependencies = [
   "sympy>=1.7",
   "seaborn",
   "xlsxwriter",
-  "openpyxl"
+  "openpyxl",
+  "FigureForge @ git+https://github.com/ym3141/FigureForge.git@master"
 ]
 
 description = "User-friendly flow cytometry analyzer with (GUI)"
 readme = "docs/README_PyPI.md"
 
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -38,6 +39,9 @@ Issues = "https://github.com/ym3141/EasyFlowQ/issues"
 
 [project.scripts]
 EasyFlowQ = "EasyFlowQ.start:startGUI"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.sdist]
 exclude = [

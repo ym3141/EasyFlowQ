@@ -6,6 +6,7 @@ from copy import deepcopy
 from .gates import polygonGate, lineGate, quadrantGate, quadrant, split
 from .qtModels import quadWidgetItem, splitWidgetItem, subpopItem
 from .ioData import drvedParam
+from .fcsWriter import writeFCS
 from .. import __version__
 
 from PySide6.QtCore import QThread, Signal, Qt
@@ -22,59 +23,50 @@ import sympy
 from sympy.parsing.sympy_parser import parse_expr
 
 class writeRawFcs(QThread):
-    # This thread is used to write the raw FCS data to csv or numpy files
+    # This thread is used to write the raw FCS data to fcs, csv or numpy files
     prograssChanged = Signal(str, float)
 
-    def __init__(self, parent, names, rawDatas: List[FCSData], saveDir: str, outputType='csv') -> None:
+    def __init__(self, parent, names, rawDatas: List[FCSData], saveDir: str, outputType='csv',
+                 fileNames=None, extraKeywords=None) -> None:
         super().__init__(parent)
 
         self.names = names
+        # File names (without extension) to write each sample under. The caller
+        # is responsible for making these unique, and for confirming any
+        # overwrite with the user; defaults to the sample names.
+        self.fileNames = list(fileNames) if fileNames is not None else list(names)
         self.rawDatas = rawDatas
         self.saveDir = saveDir
         self.outputType = outputType
+        # Provenance keywords stored in the TEXT segment, only used for the fcs output
+        self.extraKeywords = extraKeywords or {}
+
+    def filePath(self, idx, ext):
+        return '{0}.{1}'.format(path.join(self.saveDir, self.fileNames[idx]), ext)
 
     def run(self):
 
         for idx, name, fcsData in zip(range(len(self.names)), self.names, self.rawDatas):
 
-            if self.outputType in ('npy', 'npz'):
+            if self.outputType == 'fcs':
+                writeFCS(self.filePath(idx, 'fcs'), fcsData,
+                         extraKeywords=dict(self.extraKeywords, EASYFLOWQ_SAMPLE=name))
+
+            elif self.outputType in ('npy', 'npz'):
                 # Convert the FCSData to a numpy structured array
                 strArrDType = np.dtype([(chnl, fcsData.dtype) for chnl in fcsData.channels])
                 npData = np.array([tuple(dataRow) for dataRow in fcsData], dtype=strArrDType)
 
-
-                if not path.exists('{0}.{1}'.format(path.join(self.saveDir, name), self.outputType)):
-                    if self.outputType == 'npz':
-                        np.savez_compressed('{0}.npz'.format(path.join(self.saveDir, name)), npData)
-                    else:
-                        # Save as numpy array
-                        np.save('{0}.npy'.format(path.join(self.saveDir, name)), npData)
-
+                if self.outputType == 'npz':
+                    np.savez_compressed(self.filePath(idx, 'npz'), npData)
                 else:
-                    # If the file already exists, we will add a number to the file name
-                    alterName = 1
-                    while path.exists('{0}_{1}'.format(path.join(self.saveDir, name), alterName)):
-                        alterName += 1
-                    
-                    if self.outputType == 'npz':
-                        np.savez_compressed('{0}_{1}.npz'.format(path.join(self.saveDir, name), alterName), npData)
-                    else:
-                        np.save('{0}_{1}.npy'.format(path.join(self.saveDir, name), alterName), npData)
-                
+                    # Save as numpy array
+                    np.save(self.filePath(idx, 'npy'), npData)
 
             elif self.outputType == 'csv':
                 # Convert the FCSData to a pandas DataFrame and write to csv
                 df2Write = pd.DataFrame(fcsData, columns=fcsData.channels)
-
-                if not path.exists('{0}.csv'.format(path.join(self.saveDir, name))):
-                    df2Write.to_csv('{0}.csv'.format(path.join(self.saveDir, name)))
-
-                else:
-                    alterName = 1
-                    while path.exists('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName)):
-                        alterName += 1
-                    
-                    df2Write.to_csv('{0}_{1}.csv'.format(path.join(self.saveDir, name), alterName))
+                df2Write.to_csv(self.filePath(idx, 'csv'))
 
             elif self.outputType == 'mat':
                 matDict = {
@@ -82,15 +74,7 @@ class writeRawFcs(QThread):
                     'channels': fcsData.channels,
                     'channel_lables': fcsData.channel_labels(),
                 }
-
-                if not path.exists('{0}.mat'.format(path.join(self.saveDir, name))):
-                    savemat('{0}.mat'.format(path.join(self.saveDir, name)), matDict)
-                else:
-                    alterName = 1
-                    while path.exists('{0}_{1}.mat'.format(path.join(self.saveDir, name), alterName)):
-                        alterName += 1
-                    
-                    savemat('{0}_{1}.mat'.format(path.join(self.saveDir, name), alterName), matDict)
+                savemat(self.filePath(idx, 'mat'), matDict)
 
             self.prograssChanged.emit(name, idx/len(self.names))
 
@@ -152,6 +136,7 @@ class sessionSave():
         loadingBarDiag.setValue(0)
         
         failedFiles = []
+        failedDrvedParams = []
         gateLoadFlag = False
         figSettingFlag = False
         compFlag = False
@@ -189,25 +174,35 @@ class sessionSave():
                           'Do you want to load them?'
             loadParamResponse = QMessageBox.question(loadingBarDiag, 'Derived parameters in save file', 
                                                      qBoxMessage, QMessageBox.Yes | QMessageBox.No)
-            
+             
             if loadParamResponse == QMessageBox.Yes:
                 for jDrvedParam in jDrvedParams:
-                    newDrvedParam = drvedParam(jDrvedParam['name'], parse_expr(jDrvedParam['formula']))
-                    mainUiWindow.drvedParamModel.appendRow(newDrvedParam)
+                    try:
+                        newDrvedParam = drvedParam(jDrvedParam['name'], parse_expr(jDrvedParam['formula']))
+                        mainUiWindow.drvedParamModel.appendRow(newDrvedParam)
+                    except Exception as e:
+                        failedDrvedParams.append(jDrvedParam.get('name', 'Unknown derived parameter'))
+                        traceback.print_tb(e.__traceback__)
 
         smpl_subpops = []
         for jSmpl in jDict.get('smplSaveList', []):
 
             try:
-                _fileDir_rel = path.join(path.dirname(saveFileDir), jSmpl['fileDir_rel'])
+                fileDirRel = jSmpl.get('fileDir_rel')
+                fileDirAbs = jSmpl.get('fileDir_abs')
+                legacyFileDir = jSmpl.get('fileDir')
                 confirmedDir = None
-                if path.exists(_fileDir_rel):
-                    confirmedDir = _fileDir_rel
-                elif path.exists(jSmpl['fileDir_abs']):
-                    confirmedDir = jSmpl['fileDir_abs']
-                elif path.exists(jSmpl['fileDir']):
-                    confirmedDir = jSmpl['fileDir']
-            
+
+                if fileDirRel:
+                    _fileDir_rel = path.join(path.dirname(saveFileDir), fileDirRel)
+                    if path.exists(_fileDir_rel):
+                        confirmedDir = _fileDir_rel
+
+                if confirmedDir is None and fileDirAbs and path.exists(fileDirAbs):
+                    confirmedDir = fileDirAbs
+                elif confirmedDir is None and legacyFileDir and path.exists(legacyFileDir):
+                    confirmedDir = legacyFileDir
+             
                 if confirmedDir:
                     try:
                         newSmplItem = mainUiWindow.loadFcsFile(confirmedDir, jSmpl['plotColor'], infileIdx=jSmpl.get('infileIdx', 0),
@@ -215,10 +210,10 @@ class sessionSave():
                         smpl_subpops.append((newSmplItem, jSmpl.get('Subpops', [])))
 
                     except Exception as e:
-                        failedFiles.append(path.basename(jSmpl['fileDir_rel']))
+                        failedFiles.append(path.basename(fileDirRel or fileDirAbs or legacyFileDir or 'Unknown FCS'))
                         traceback.print_tb(e.__traceback__)
                 else:
-                    failedFiles.append(path.basename(jSmpl['fileDir_rel']))
+                    failedFiles.append(path.basename(fileDirRel or fileDirAbs or legacyFileDir or 'Unknown FCS'))
 
             except KeyError as e:
                 failedFiles.append('Unknown FCS')
@@ -352,16 +347,22 @@ class sessionSave():
         if save_ver >= 1.4:
             for rootSmpl, subpops in smpl_subpops:
                 for subpop in subpops:
-                    loadSubpop_recursive(subpop, rootSmpl, gateDict)
+                    try:
+                        loadSubpop_recursive(subpop, rootSmpl, gateDict)
+                    except Exception as e:
+                        gateLoadFlag = True
+                        traceback.print_tb(e.__traceback__)
 
         loadingBarDiag.setValue(7)
         loadingBarDiag.setLabelText('Finished')
             
         # report the potential errors:
-        if any([len(failedFiles), gateLoadFlag, figSettingFlag, compFlag]):
+        if any([len(failedFiles), len(failedDrvedParams), gateLoadFlag, figSettingFlag, compFlag]):
             errorMsg = 'The following things are not loaded succesfully:\n'
             if len(failedFiles) > 0:
                 errorMsg += 'FCS file: ' + ' ;'.join(failedFiles) + '\n'
+            if len(failedDrvedParams) > 0:
+                errorMsg += 'Derived parameter: ' + ' ;'.join(failedDrvedParams) + '\n'
             if gateLoadFlag:
                 errorMsg += 'We may failed to load some gates.\n'
             if figSettingFlag:
@@ -416,12 +417,16 @@ def iterSubpop_recursive(subpop:subpopItem, parentSmplSave:dict, selectedSmplIte
             iterSubpop_recursive(subpop.child(idx), subpopSave, selectedSmplItems)
 
 def loadSubpop_recursive(subpopDict:dict, parentItem:subpopItem, gateItemDict:dict):
-    gates = [gateItemDict[uuid] for uuid in subpopDict['gateIDs']]
+    missingGateIds = [uuid for uuid in subpopDict.get('gateIDs', []) if uuid not in gateItemDict]
+    if len(missingGateIds) > 0:
+        raise KeyError('Missing gate(s) for subpopulation: {0}'.format(', '.join(missingGateIds)))
+
+    gates = [gateItemDict[uuid] for uuid in subpopDict.get('gateIDs', [])]
     newSubpopItem = subpopItem(parentItem, QColor.fromRgbF(*(subpopDict['plotColor'])), subpopDict['displayName'], gates)
     newSubpopItem.setSelected(subpopDict.get('selected', False))
     parentItem.setExpanded(True)
 
-    for subpopDict_nextLevel in subpopDict['Subpops']:
+    for subpopDict_nextLevel in subpopDict.get('Subpops', []):
         loadSubpop_recursive(subpopDict_nextLevel, newSubpopItem, gateItemDict)
 
 

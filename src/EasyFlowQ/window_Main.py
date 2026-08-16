@@ -13,7 +13,8 @@ from .backend.qtModels import smplItem, subpopItem, chnlModel, gateWidgetItem, q
 from .backend.gates import *
 from .backend.plotWidgets import plotCanvas
 from .backend.ioSession import sessionSave, writeRawFcs, getSysDefaultDir
-from .backend.utils import colorGenerator
+from .backend.fcsWriter import exportKeywords
+from .backend.utils import colorGenerator, sanitizeFileName
 from .backend.ioData import drvedParam, processFCS2List
 
 from .window_RenameCF import renameWindow_CF
@@ -25,6 +26,7 @@ from .window_Comp import compWindow
 from .wizard_Comp import compWizard
 from .window_EditStain import editStainWindow
 from .dialog_DrvedParam import drvedParamDialog
+from .dialog_ExportRaw import exportRawDialog
 from .window_DrvedParamEdit import drvedParamEditWindow
 
 from .uiDesigns.MainWindow_FigOptions import mainUI_figOps
@@ -163,7 +165,7 @@ class mainUi(QtWidgets.QMainWindow):
         self.actionEdit_stain_labels.triggered.connect(self.handle_EditStain)
 
         # actions for exporting raw data
-        for action in [self.action_csv, self.action_npy, self.action_npz, self.action_mat]:
+        for action in [self.action_fcs, self.action_csv, self.action_npy, self.action_npz, self.action_mat]:
             action.triggered.connect(self.handle_ExportDataInGates)
 
         self.actionStats_window.triggered.connect(self.handle_StatWindow)
@@ -532,12 +534,14 @@ class mainUi(QtWidgets.QMainWindow):
             return
 
 
-    # This function export fcs data that are in gates to csv/npy files, 
+    # This function export fcs data that are in gates to fcs/csv/npy files,
     def handle_ExportDataInGates(self):
 
         # check the sender with the action text to get the output type
         senderAction = self.sender()
-        if senderAction.text() == 'as .csv':
+        if senderAction.text().startswith('as .fcs'):
+            outputType = 'fcs'
+        elif senderAction.text() == 'as .csv':
             outputType = 'csv'
         elif senderAction.text().startswith('as .npy'):
             outputType = 'npy'
@@ -546,24 +550,57 @@ class mainUi(QtWidgets.QMainWindow):
         elif senderAction.text().startswith('as .mat'):
             outputType = 'mat'
 
-        if len(self.mpl_canvas.cachedPlotStats.smplItems):
-            saveFileDir = QtWidgets.QFileDialog.getExistingDirectory(self, caption='Export raw data', dir=self.sessionSavePath)
-            if not saveFileDir:
-                return
-
-            self.statusbar.showMessage('Export starting...')
-
-            names = [item.displayName for item in self.mpl_canvas.cachedPlotStats.smplItems]
-            fcsDatas = [smpl for smpl in self.mpl_canvas.cachedPlotStats.gatedSmpls]
-
-            writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir, outputType=outputType)
-            writterThread.prograssChanged.connect(lambda a, b: self.handle_UpdateProgBar(a, b, 'Exporting: '))
-            writterThread.finished.connect(self.handle_ExportDataFinished)
-
-            writterThread.start()
-
-        else:
+        if not len(self.mpl_canvas.cachedPlotStats.smplItems):
             QtWidgets.QMessageBox.warning(self, 'Error', 'No sample selected to export')
+            return
+
+        names = [item.displayName for item in self.mpl_canvas.cachedPlotStats.smplItems]
+        fcsDatas = [smpl for smpl in self.mpl_canvas.cachedPlotStats.gatedSmpls]
+
+        # Let the user rename the output before writing it. A single sample gets
+        # the usual "save as" dialog, several samples get a table of file names.
+        if len(names) == 1:
+            saveFileDir, fileNames = self.get_singleExportName(names[0], outputType)
+        else:
+            saveFileDir, fileNames = self.get_multiExportNames(names, outputType)
+
+        if saveFileDir is None:
+            return
+
+        self.statusbar.showMessage('Export starting...')
+
+        writterThread = writeRawFcs(self, names, fcsDatas, saveFileDir, outputType=outputType,
+                                    fileNames=fileNames, extraKeywords=self.curExportKeywords)
+        writterThread.prograssChanged.connect(lambda a, b: self.handle_UpdateProgBar(a, b, 'Exporting: '))
+        writterThread.finished.connect(self.handle_ExportDataFinished)
+
+        writterThread.start()
+
+    def get_singleExportName(self, smplName, outputType):
+        # Returns (directory, [file name without extension]), or (None, None) if cancelled
+        defaultPath = path.join(self.get_dir4Save(),
+                                '{0}.{1}'.format(self.defaultExportName(smplName), outputType))
+        savePath, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Export raw data', defaultPath,
+                                                            filter='*.{0}'.format(outputType))
+        if not savePath:
+            return None, None
+
+        saveFileDir, fileName = path.split(savePath)
+        if fileName.endswith('.{0}'.format(outputType)):
+            fileName = fileName[:-len(outputType) - 1]
+
+        return saveFileDir, [fileName]
+
+    def get_multiExportNames(self, smplNames, outputType):
+        # Returns (directory, [file names without extension]), or (None, None) if cancelled
+        defaultNames = [self.defaultExportName(smplName) for smplName in smplNames]
+        exportDialog = exportRawDialog(smplNames, defaultNames, outputType, self.get_dir4Save())
+        exportDialog.setWindowModality(QtCore.Qt.ApplicationModal)
+
+        if exportDialog.exec() == QtWidgets.QDialog.Accepted:
+            return exportDialog.saveDir, exportDialog.newNames
+
+        return None, None
 
     def handle_StatWindow(self):
         if not self.statWindow.isVisible():
@@ -1022,6 +1059,31 @@ class mainUi(QtWidgets.QMainWindow):
         allGateItems = [self.gateListWidget.item(idx) for idx in range(self.gateListWidget.count())]
 
         return [gateItem for gateItem in allGateItems if (gateItem.checkState() is QtCore.Qt.Checked)]
+
+    @property
+    def curGateNames(self):
+        # Names of the gates applied to the plotted (and exported) events, in
+        # the order they are applied, so the last one is the most downstream.
+        #
+        # The gate merely highlighted in the gate list is deliberately left out:
+        # it is drawn on the plot and its fraction is reported, but it is not
+        # applied to the data, see gateSmpls(..., lastGateStatOnly=True).
+        return [gateItem.text() for gateItem in self.curGateItems]
+
+    @property
+    def curExportKeywords(self):
+        # Provenance keywords describing how the exported events were produced
+        return exportKeywords(gateNames=self.curGateNames, compensated=self.compApplyCheck.isChecked())
+
+    def defaultExportName(self, smplName):
+        # Default file name of an exported sample: the sample name, suffixed
+        # with the most downstream gate applied to it, so that exports of the
+        # same sample under different gates do not land on the same name.
+        gateNames = self.curGateNames
+        if gateNames:
+            return sanitizeFileName('{0}_{1}'.format(smplName, gateNames[-1]))
+
+        return sanitizeFileName(smplName)
 
     @property
     def curQuadSplitItem(self):

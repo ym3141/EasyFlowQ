@@ -11,30 +11,37 @@ from PySide6.QtGui import QStandardItem
 
 @lru_cache(maxsize=64)
 def processFCS2List(filePath : str) -> list:
+    # Note: this cache currently returns the same FCSData_ef objects for repeated loads
+    # of the same file path. appendNewParam()/fromArray() share the _drvedParams list,
+    # so derived-parameter metadata can leak across repeated loads of one file.
+    # This is rare in practice, but the cached objects should ideally be copied or
+    # _drvedParams should be treated immutably when this is revisited.
     FCSDataList = []
 
     with catch_warnings():
-        filterwarnings('ignore', message='detected (and ignoring) additional data set', category=UserWarning)
+        filterwarnings('ignore', message=r'detected \(and ignoring\) additional data set.*', category=UserWarning)
 
         curFileObject = open(filePath, 'rb')
-        while True:
-            curHeader = read_fcs_header_segment(curFileObject)
-            curTextSegment, dlim = read_fcs_text_segment(buf=curFileObject, begin=curHeader.text_begin, end=curHeader.text_end)
-            nextDataOffset= dict(curTextSegment).get('$NEXTDATA', '0')
-            nextDataOffset = int(nextDataOffset)
-            if nextDataOffset == 0:
-                FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
-                curFileObject.close()
-                return FCSDataList
-            else:
-                FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
-                curFileObject.seek(nextDataOffset)
-                newTempFile = TemporaryFile(mode='w+b')
-                newTempFile.write(curFileObject.read())
-                curFileObject.close()
+        try:
+            while True:
+                curHeader = read_fcs_header_segment(curFileObject)
+                curTextSegment, dlim = read_fcs_text_segment(buf=curFileObject, begin=curHeader.text_begin, end=curHeader.text_end)
+                nextDataOffset= dict(curTextSegment).get('$NEXTDATA', '0')
+                nextDataOffset = int(nextDataOffset)
+                if nextDataOffset == 0:
+                    FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
+                    return FCSDataList
+                else:
+                    FCSDataList.append(to_rfi(FCSData_ef(curFileObject)))
+                    curFileObject.seek(nextDataOffset)
+                    newTempFile = TemporaryFile(mode='w+b')
+                    newTempFile.write(curFileObject.read())
+                    curFileObject.close()
 
-                curFileObject = newTempFile
-                curFileObject.seek(0)
+                    curFileObject = newTempFile
+                    curFileObject.seek(0)
+        finally:
+            curFileObject.close()
 
 
 class FCSData_ef(FCSData):
@@ -149,5 +156,3 @@ class drvedParam(QStandardItem):
     @property
     def name(self):
         return self.text()
-
-    

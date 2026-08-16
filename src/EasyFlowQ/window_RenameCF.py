@@ -14,7 +14,7 @@ import openpyxl.cell._writer
 from .backend.qtModels import pandasTableModel
 from .uiDesigns import UiLoader
 
-re_CFName = re.compile(r'(\d\d)-(Well|Tube)-([A-H])(\d\d?)')
+re_CFName = re.compile(r'^(\d{2})-(Well|Tube)-([A-H])(0?[1-9]|1[0-2])$')
 
 class renameWindow_CF(QtWidgets.QWidget):
     renameConfirmed = QtCore.Signal(dict)
@@ -26,12 +26,15 @@ class renameWindow_CF(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         
         self.smplNameList = smplNameList
+        self.validSmplNameList = []
         self.fileRoot = dir4Save
+        self._loadPromptShown = False
 
         self.splitNames = []
         for smplName in smplNameList:
-            reMatch = re_CFName.match(smplName)
+            reMatch = re_CFName.fullmatch(smplName)
             if not (reMatch is None):
+                self.validSmplNameList.append(smplName)
                 self.splitNames.append((int(reMatch.group(1)), reMatch.group(3), int(reMatch.group(4))))
 
         if len(self.splitNames) == 0:
@@ -50,19 +53,28 @@ class renameWindow_CF(QtWidgets.QWidget):
                 self.renameTableViews.append(newTabPage.rnTableView)
 
         self.renamePB.clicked.connect(self.handle_renameConfirm)
-        self.reloadPB.clicked.connect(self.handle_reloadXlsx)
+        self.reloadPB.clicked.connect(self.handle_promptRenameFile)
+
 
     def showEvent(self, event):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.fileRoot, filter='*.xlsx')
-        if not openFileDir:
-            return
+        super().showEvent(event)
 
-        self.loadRenameFile(openFileDir)
+        if not self._loadPromptShown:
+            self._loadPromptShown = True
+            QtCore.QTimer.singleShot(0, self.handle_promptRenameFile)
+
+
+    def handle_promptRenameFile(self):
+        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(
+        self, 'Load xlsx file for renaming', self.fileRoot, filter='*.xlsx')
+        if openFileDir:
+            self.loadRenameFile(openFileDir)
+
 
     def handle_renameConfirm(self):
         renameDict = dict()
         if self.renames is not None:
-            for name, splitName in zip(self.smplNameList, self.splitNames):
+            for name, splitName in zip(self.validSmplNameList, self.splitNames):
                 if not (name in renameDict):
                     rename = self.renameTableViews[splitName[0] - 1].model().dfData.loc[splitName[1], splitName[2]]
                     if rename:
@@ -71,25 +83,34 @@ class renameWindow_CF(QtWidgets.QWidget):
         self.renameConfirmed.emit(renameDict)
         self.close()
 
-    def handle_reloadXlsx(self):
-        openFileDir, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Load xlsx file for renaming', self.fileRoot, filter='*.xlsx')
-        if not openFileDir:
-            return
-
-        self.loadRenameFile(openFileDir)
-
     def loadRenameFile(self, renamingFileDir):
-        # Load the renaming file
-        self.renames = exel2renameTable(renamingFileDir, self.maxPlateNumber)
+        try:
+            renameTables = exel2renameTable(renamingFileDir, self.maxPlateNumber)
 
-        duplicates = findDups(self.renames)
-        dupColorMaps = colorByDuplicates(self.renames, duplicates)
-        smplColorMaps = colorBySmplNames(self.renames, self.splitNames)
+            duplicates = findDups(renameTables)
+            dupColorMaps = colorByDuplicates(renameTables, duplicates)
+            smplColorMaps = colorBySmplNames(renameTables, self.splitNames)
 
-        for idx in range(self.maxPlateNumber):
-            renameTableModel = pandasTableModel(self.renames[idx], foregroundDF=dupColorMaps[idx], backgroundDF=smplColorMaps[idx])
-            renameTableView = self.renameTableViews[idx]
-            renameTableView.setModel(renameTableModel)
+            for idx in range(self.maxPlateNumber):
+                renameTableModel = pandasTableModel(
+                    renameTables[idx],
+                    foregroundDF=dupColorMaps[idx],
+                    backgroundDF=smplColorMaps[idx]
+                )
+                renameTableView = self.renameTableViews[idx]
+                renameTableView.setModel(renameTableModel)
+        except Exception as err:
+            QtWidgets.QMessageBox.critical(
+                self,
+                'Failed to load rename file',
+                'EasyFlowQ could not load the selected Excel file.\n\n'
+                'File: {0}\n\n'
+                'Reason: {1}'.format(renamingFileDir, err)
+            )
+            return False
+
+        self.renames = renameTables
+        return True
 
 
 def exel2renameTable(renamingFileDir, maxPlatN):

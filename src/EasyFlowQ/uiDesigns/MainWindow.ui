@@ -546,6 +546,7 @@
      <property name="title">
       <string>Export raw (current gate)</string>
      </property>
+     <addaction name="action_fcs"/>
      <addaction name="action_csv"/>
      <addaction name="action_npy"/>
      <addaction name="action_npz"/>
@@ -710,6 +711,11 @@
   <action name="actionShow_in_folder">
    <property name="text">
     <string>Show in folder...</string>
+   </property>
+  </action>
+  <action name="action_fcs">
+   <property name="text">
+    <string>as .fcs</string>
    </property>
   </action>
   <action name="action_csv">
