@@ -11,6 +11,7 @@ import matplotlib.backends.backend_svg
 import matplotlib.backends.backend_pgf
 
 import numpy as np
+from copy import deepcopy
 import io
 from scipy.ndimage import gaussian_filter1d, uniform_filter1d
 from scipy.interpolate import interpn
@@ -87,6 +88,8 @@ class plotCanvas(FigureCanvasQTAgg):
         super().__init__(self.fig)
 
         self.navigationBar = efNavigationToolbar(self, self)
+        self.navigationBar.evokeFFSignal.connect(self.handler_EvokeFF)
+        self.figureForgeWindows = []
         self.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.setAcceptDrops(True)
 
@@ -428,8 +431,6 @@ class plotCanvas(FigureCanvasQTAgg):
             else:
                 self.legend = self.ax.legend(markerscale=5)
 
-            if not self.legend is None:
-                self.legend.set_draggable(True)
 
         # hide the y axis ticks if it is a stacked histogram
         if plotType == 'Stacked histo':
@@ -446,6 +447,36 @@ class plotCanvas(FigureCanvasQTAgg):
         self.cachedPlotStats.splitFracs = sFracs
         self.cachedPlotStats.selectedGateItem = selectedGateItem
         self.signal_PlotUpdated.emit(self.cachedPlotStats)
+
+    def handler_EvokeFF(self):
+        from FigureForge.main import create_MainWindow
+
+        figCopy = deepcopy(self.fig)
+        for ax in figCopy.axes:
+            for artist in (*ax.lines, *ax.collections):
+                artist.set_rasterized(True)
+
+        if len(self.cachedPlotStats.chnls) == 0:
+            chnlDscrp = ''
+        elif self.curPlotType in ('Histogram', 'Stacked histo', 'Aggregated histo'):
+            chnlDscrp = self.cachedPlotStats.chnls[0]
+        else:
+            chnlDscrp = '{0} - {1}'.format(*self.cachedPlotStats.chnls[0:2])
+
+        titleStr = '{0} of channel: {1}'.format(self.curPlotType, chnlDscrp)
+        figCopy.axes[0].set_title(titleStr)
+
+        figureForgeWindow = create_MainWindow(
+            figCopy,
+            no_show_splash=True,
+            block_set_theme=True
+        )
+        figureForgeWindow.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.figureForgeWindows.append(figureForgeWindow)
+        figureForgeWindow.destroyed.connect(
+            lambda: self.figureForgeWindows.remove(figureForgeWindow)
+        )
+        figureForgeWindow.show()
 
     def compSmpls(self, smpls, compValues):
         compedSmpls = []
@@ -632,6 +663,7 @@ class plotCanvas(FigureCanvasQTAgg):
 class efNavigationToolbar(NavigationToolbar):
     # Customized NavigationToolbar2QT by removing the subplot and axis tool buttons
     toolitems = [t for t in NavigationToolbar.toolitems if t[0] in ('Home', 'Back', 'Forward', None, 'Pan', 'Zoom', 'Save')]
+    evokeFFSignal = QtCore.Signal()
 
     def __init__(self, canvas, parent=None):
         super().__init__(canvas, parent)
@@ -640,11 +672,14 @@ class efNavigationToolbar(NavigationToolbar):
         self.copyAction = QtGui.QAction(copyIcon, 'Copy plot', self)
         self.copyAction.setShortcut('Ctrl+C')
         self.copyAction.setStatusTip('Copy the current plot to clipboard')
-
         self.copyAction.triggered.connect(self.handle_CopyPlot)
-        
-        # Insert the copy action
-        self.addAction(self.copyAction)
+
+        ffIcon = QtGui.QIcon.fromTheme(QtGui.QIcon.ThemeIcon.WindowNew)
+        self.ffEvokeAction = QtGui.QAction(ffIcon, 'Edit in FigureForge', self)
+        self.ffEvokeAction.setStatusTip('Open a copy of the current plot in FigureForge')
+        self.ffEvokeAction.triggered.connect(self.evokeFFSignal.emit)
+
+        self.addActions([self.copyAction, self.ffEvokeAction])
 
     def handle_CopyPlot(self):
         buf = io.BytesIO()
