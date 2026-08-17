@@ -465,7 +465,7 @@
      </widget>
     </item>
     <item row="0" column="0" rowspan="2">
-     <widget class="QGroupBox" name="smplBox">
+     <widget class="QFrame" name="smplBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -484,14 +484,14 @@
         <height>16777215</height>
        </size>
       </property>
-      <property name="title">
-       <string>Samples</string>
-      </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
         <number>0</number>
        </property>
        <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
@@ -511,7 +511,7 @@
      <x>0</x>
      <y>0</y>
      <width>1350</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSession">

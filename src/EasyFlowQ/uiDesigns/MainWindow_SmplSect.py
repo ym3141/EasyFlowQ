@@ -32,12 +32,15 @@ class mainUi_SmplSect(QtWidgets.QWidget):
 
         # Give the color button a icon
         self.colorPB.setIcon(QtGui.QIcon(path.join(__location__, 'resource/PelatteIcon2.png')))
+        self.colorGroupPB.setIcon(QtGui.QIcon(path.join(__location__, 'resource/PelatteIcon2.png')))
 
         # add actions to context manu and link functions
         self.smplTreeWidget.addActions([self.actionAdd_subpops_Current_gating])
         self.smplTreeWidget.addActions([self.actionDelete_sample])
+        self.smplTreeWidget.addActions([self.actionAdd_selected_samples_as_a_group])
         self.actionDelete_sample.triggered.connect(self.handle_DeleteSmpls)
         self.actionAdd_subpops_Current_gating.triggered.connect(self.handle_AddSubpops)
+        self.actionAdd_selected_samples_as_a_group.triggered.connect(self.handle_AddSmplGroup)
 
 
         self.smplTreeWidget.itemChanged.connect(self.to_handle_One)
@@ -46,6 +49,7 @@ class mainUi_SmplSect(QtWidgets.QWidget):
         # Connect signals for UI elements
         # Note: The load data PB is handled in window_Main.py
         self.colorPB.clicked.connect(self.handle_ChangeSmplColor)
+        self.colorGroupPB.clicked.connect(self.handle_ChangeSmplColor)
         self.expandAllPB.clicked.connect(lambda : self.handle_ExpandCollapseSmplTree(expand=True))
         self.collapseAllPB.clicked.connect(lambda : self.handle_ExpandCollapseSmplTree(expand=False))
         self.selectRootsPB.clicked.connect(self.handle_SelectAllRoots)
@@ -148,6 +152,10 @@ class mainUi_SmplSect(QtWidgets.QWidget):
             selectedSmpl.setExpanded(True)
         
         self.smplTreeWidget.resizeColumnToContents(0)
+
+    def handle_AddSmplGroup(self):
+        self.tabWidget.setCurrentIndex(1)
+
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():

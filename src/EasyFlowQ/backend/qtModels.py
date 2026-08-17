@@ -121,6 +121,8 @@ class subpopItem(smplItem):
 
         self.setData(0, 0x100, newFcss[0])
 
+class smplGroupItem(QListWidgetItem):
+    pass
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):
