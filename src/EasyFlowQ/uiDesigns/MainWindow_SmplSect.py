@@ -154,6 +154,14 @@ class mainUi_SmplSect(QtWidgets.QWidget):
         self.smplTreeWidget.resizeColumnToContents(0)
 
     def handle_AddSmplGroup(self):
+        selectedSmplItems = self.smplTreeWidget.selectedItems()
+        if len(selectedSmplItems) == 0:
+            QtWidgets.QMessageBox.warning(self, 'No sample is selected')
+            return
+
+        for smplItem in selectedSmplItems:
+            pass
+        
         self.tabWidget.setCurrentIndex(1)
 
 

@@ -2,6 +2,7 @@ from PySide6.QtGui import QStandardItem, QStandardItemModel, QColor, QDoubleVali
 from PySide6.QtCore import QModelIndex, QAbstractTableModel, QSortFilterProxyModel, Qt, Signal
 from PySide6.QtWidgets import QListWidgetItem, QTreeWidgetItem
 import pandas as pd
+import numpy as np
 
 import sys
 import os.path
@@ -122,7 +123,43 @@ class subpopItem(smplItem):
         self.setData(0, 0x100, newFcss[0])
 
 class smplGroupItem(QListWidgetItem):
-    pass
+    def __init__(self, fcsDataArrays=[], displayName=None, plotColor=QColor.fromRgbF(0.1, 0.1, 0.1)):
+        if not fcsDataArrays or len(fcsDataArrays) == 0:
+            raise ValueError('At least one FCS data array is required for smplGroupItem.')
+
+        super().__init__()
+
+        combinedData = np.vstack(fcsDataArrays)
+        fcsData = FCSData.fromArray(fcsDataArrays[0], combinedData)
+
+        if displayName is None:
+            displayName = '(no name)'
+
+        self.setText(displayName)
+        self.setData(0x100, fcsData)
+        self.setFlags(self.flags() | Qt.ItemIsEditable)
+        self.chnlNameDict = dict(zip(self.fcsSmpl.channels, self.fcsSmpl.channel_labels()))
+        self.setData(1, plotColor)
+
+    @property
+    def displayName(self):
+        return self.data(Qt.DisplayRole)
+
+    @property
+    def plotColor(self):
+        return self.data(1)
+
+    @property
+    def fcsSmpl(self) -> FCSData:
+        return self.data(0x100)
+
+    @displayName.setter
+    def displayName(self, displayName):
+        self.setData(Qt.DisplayRole, displayName)
+
+    @plotColor.setter
+    def plotColor(self, plotColor):
+        self.setData(1, plotColor)
 
 class gateWidgetItem(QListWidgetItem):
     def __init__(self, gateName, gate):
